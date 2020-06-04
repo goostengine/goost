@@ -20,6 +20,9 @@ below:
 | [Geometry](doc/geometry/README.md) | Geometry methods to perform polygon boolean operations, offsetting, decomposition. |
 | [Physics](doc/physics/README.md)   | Shape casting class.                                                               |
 
+There are also some modules which can be compiled alongside of the extension,
+see below for details.
+
 ## Installation
 
 Before installing, you must be able to 
