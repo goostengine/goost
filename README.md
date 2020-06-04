@@ -2,6 +2,9 @@
 
 # Goost: Godot Engine Extension
 
+[![Build Status](https://travis-ci.com/GoostGD/goost.svg?branch=gd3)](https://travis-ci.com/GoostGD/goost)
+[![Build status](https://ci.appveyor.com/api/projects/status/tbtra8e221si05bq/branch/gd3?svg=true)](https://ci.appveyor.com/project/GoostGD/goost/branch/gd3)
+
 This is a [Godot Engine](https://github.com/godotengine/godot) extension
 implemented as a single-entry C++ module.
 
@@ -24,7 +27,7 @@ Before installing, you must be able to
 from source. Once ready, build the engine with Goost:
 
 ```sh
-git clone https://github.com/Goost/goost.git
+git clone https://github.com/GoostGD/goost.git
 scons custom_modules="/path/to/directory/containing/goost"
 ```
 
@@ -73,7 +76,7 @@ git submodule update --init --recursive
 Or if you haven't yet cloned Goost:
 
 ```sh
-git clone https://github.com/Goost/goost.git --recurse-submodules
+git clone https://github.com/GoostGD/goost.git --recurse-submodules
 ```
 
 For other Goost-specific build options, run `scons --help | grep goost_`.
@@ -137,8 +140,8 @@ There are separate branches which are targeted for specific Godot Engine's major
 version.
 
 Regarding latest extension development version, switch to
-* [`gd3`](https://github.com/Goost/goost/tree/gd3) branch for Godot 3.2+
-* [`gd4`](https://github.com/Goost/goost/tree/gd4) branch for Godot 4.x
+* [`gd3`](https://github.com/GoostGD/goost/tree/gd3) branch for Godot 3.2+
+* [`gd4`](https://github.com/GoostGD/goost/tree/gd4) branch for Godot 4.x
 
 Similarly, you may use any of the stable branches with a similar branch
 encoding, such as `1.0-gd3` or `1.0-gd4`, if available.
@@ -153,8 +156,3 @@ The extension is released under the [MIT license](LICENSE.md).
 
 See the full list of third-party libraries with their licenses at
 [thirdparty/README.md](thirdparty/README.md) (MIT compatible).
-
----
-
-[![Build Status](https://travis-ci.com/Goost/goost.svg?branch=gd3)](https://travis-ci.com/Goost/goost)
-[![Build status](https://ci.appveyor.com/api/projects/status/tbtra8e221si05bq/branch/gd3?svg=true)](https://ci.appveyor.com/project/Goost/goost/branch/gd3)
