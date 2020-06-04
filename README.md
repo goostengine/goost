@@ -3,7 +3,7 @@
 # Goost: Godot Engine Extension
 
 [![Build Status](https://travis-ci.com/GoostGD/goost.svg?branch=gd3)](https://travis-ci.com/GoostGD/goost)
-[![Build status](https://ci.appveyor.com/api/projects/status/tbtra8e221si05bq/branch/gd3?svg=true)](https://ci.appveyor.com/project/GoostGD/goost/branch/gd3)
+[![Build status](https://ci.appveyor.com/api/projects/status/github/GoostGD/goost?branch=gd3&svg=true)](https://ci.appveyor.com/project/Xrayez/goost/branch/gd3)
 
 This is a [Godot Engine](https://github.com/godotengine/godot) extension
 implemented as a single-entry C++ module.
