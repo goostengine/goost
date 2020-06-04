@@ -1,0 +1,11 @@
+#!/usr/bin/env python
+Import("env_goost")
+
+subdirs = [
+    "bind",
+    "image",
+    "math",
+]
+SConscript(dirs=subdirs, name="SCsub", exports="env_goost")
+
+env_goost.add_source_files(env_goost.modules_sources, "*.cpp")

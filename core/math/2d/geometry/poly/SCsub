@@ -1,0 +1,22 @@
+#!/usr/bin/env python
+Import('env_goost')
+import os
+
+source_dirs = [
+    # Boolean
+    "boolean",
+    "boolean/clipper6",
+    "boolean/clipper10",
+    # Offset
+    "offset",
+    "offset/clipper6",
+    "offset/clipper10",
+    # Decomp
+    "decomp",
+    "decomp/polypartition",
+    "decomp/clipper10",
+    # Other
+    "utils",
+]
+sources = [Glob(d + "/" + "*.cpp") for d in source_dirs]
+env_goost.add_source_files(env_goost.modules_sources, sources)

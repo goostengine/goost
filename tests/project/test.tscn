@@ -1,0 +1,18 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://addons/gut/gut.gd" type="Script" id=1]
+
+[node name="Gut" type="Control"]
+self_modulate = Color( 1, 1, 1, 0 )
+margin_right = 740.0
+margin_bottom = 250.0
+rect_min_size = Vector2( 740, 250 )
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+_should_maximize = true
+_yield_between_tests = false
+_include_subdirectories = true
+_directory1 = "res://goost"
+_double_strategy = 1

@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="ShapeCast2D" inherits="Node2D" version="3.2">
+	<brief_description>
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="add_exception">
+			<return type="void">
+			</return>
+			<argument index="0" name="node" type="Object">
+			</argument>
+			<description>
+			</description>
+		</method>
+		<method name="add_exception_rid">
+			<return type="void">
+			</return>
+			<argument index="0" name="rid" type="RID">
+			</argument>
+			<description>
+			</description>
+		</method>
+		<method name="clear_exceptions">
+			<return type="void">
+			</return>
+			<description>
+			</description>
+		</method>
+		<method name="force_shapecast_update">
+			<return type="void">
+			</return>
+			<description>
+			</description>
+		</method>
+		<method name="get_closest_collider" qualifiers="const">
+			<return type="Object">
+			</return>
+			<description>
+			</description>
+		</method>
+		<method name="get_closest_collider_shape" qualifiers="const">
+			<return type="int">
+			</return>
+			<description>
+			</description>
+		</method>
+		<method name="get_closest_collision_normal" qualifiers="const">
+			<return type="Vector2">
+			</return>
+			<description>
+			</description>
+		</method>
+		<method name="get_closest_collision_point" qualifiers="const">
+			<return type="Vector2">
+			</return>
+			<description>
+			</description>
+		</method>
+		<method name="get_closest_collision_safe_distance" qualifiers="const">
+			<return type="float">
+			</return>
+			<description>
+			</description>
+		</method>
+		<method name="get_closest_collision_unsafe_distance" qualifiers="const">
+			<return type="float">
+			</return>
+			<description>
+			</description>
+		</method>
+		<method name="get_collider" qualifiers="const">
+			<return type="Object">
+			</return>
+			<argument index="0" name="index" type="int">
+			</argument>
+			<description>
+			</description>
+		</method>
+		<method name="get_collider_shape" qualifiers="const">
+			<return type="int">
+			</return>
+			<argument index="0" name="index" type="int">
+			</argument>
+			<description>
+			</description>
+		</method>
+		<method name="get_collision_count" qualifiers="const">
+			<return type="int">
+			</return>
+			<description>
+			</description>
+		</method>
+		<method name="get_collision_mask_bit" qualifiers="const">
+			<return type="bool">
+			</return>
+			<argument index="0" name="bit" type="int">
+			</argument>
+			<description>
+			</description>
+		</method>
+		<method name="get_collision_normal" qualifiers="const">
+			<return type="Vector2">
+			</return>
+			<argument index="0" name="index" type="int">
+			</argument>
+			<description>
+			</description>
+		</method>
+		<method name="get_collision_point" qualifiers="const">
+			<return type="Vector2">
+			</return>
+			<argument index="0" name="index" type="int">
+			</argument>
+			<description>
+			</description>
+		</method>
+		<method name="is_colliding" qualifiers="const">
+			<return type="bool">
+			</return>
+			<description>
+			</description>
+		</method>
+		<method name="remove_exception">
+			<return type="void">
+			</return>
+			<argument index="0" name="node" type="Object">
+			</argument>
+			<description>
+			</description>
+		</method>
+		<method name="remove_exception_rid">
+			<return type="void">
+			</return>
+			<argument index="0" name="rid" type="RID">
+			</argument>
+			<description>
+			</description>
+		</method>
+		<method name="set_collision_mask_bit">
+			<return type="void">
+			</return>
+			<argument index="0" name="bit" type="int">
+			</argument>
+			<argument index="1" name="value" type="bool">
+			</argument>
+			<description>
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="cast_to" type="Vector2" setter="set_cast_to" getter="get_cast_to" default="Vector2( 0, 50 )">
+		</member>
+		<member name="collide_with_areas" type="bool" setter="set_collide_with_areas" getter="is_collide_with_areas_enabled" default="false">
+		</member>
+		<member name="collide_with_bodies" type="bool" setter="set_collide_with_bodies" getter="is_collide_with_bodies_enabled" default="true">
+		</member>
+		<member name="collision_mask" type="int" setter="set_collision_mask" getter="get_collision_mask" default="1">
+		</member>
+		<member name="collision_result" type="Array" setter="" getter="_get_collision_result" default="[  ]">
+		</member>
+		<member name="enabled" type="bool" setter="set_enabled" getter="is_enabled" default="true">
+		</member>
+		<member name="exclude_parent" type="bool" setter="set_exclude_parent_body" getter="get_exclude_parent_body" default="true">
+		</member>
+		<member name="margin" type="float" setter="set_margin" getter="get_margin" default="0.0">
+		</member>
+		<member name="max_results" type="int" setter="set_max_results" getter="get_max_results" default="32">
+		</member>
+		<member name="shape" type="Shape2D" setter="set_shape" getter="get_shape">
+		</member>
+	</members>
+	<constants>
+	</constants>
+</class>

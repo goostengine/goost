@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="PolyNode2D" inherits="Reference" version="3.2">
+	<brief_description>
+		Represents a single polygon node in the hierarchy of nested polygons.
+	</brief_description>
+	<description>
+		A data structure which is used to receive solutions from clipping and offsetting operations. It's an alternative to the array-based data structures which also receive these solutions in [GeometryExtension2D]. The class has a major advantage over the [Array] structure by having an ability to properly represent the parent-child relationships of the returned polygons. However, since this is a more complex structure, and since it's more computationally expensive to process, it should only be used when parent-child polygon relationships are needed.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="clear">
+			<return type="void">
+			</return>
+			<description>
+				Removes all [PolyNode2D] children.
+			</description>
+		</method>
+		<method name="get_child">
+			<return type="PolyNode2D">
+			</return>
+			<argument index="0" name="index" type="int">
+			</argument>
+			<description>
+				Returns a child node by its index (see [method get_child_count]). This method can be used for iterating all children of a node.
+			</description>
+		</method>
+		<method name="get_child_count" qualifiers="const">
+			<return type="int">
+			</return>
+			<description>
+				Returns the number of child nodes.
+			</description>
+		</method>
+		<method name="get_children" qualifiers="const">
+			<return type="Array">
+			</return>
+			<description>
+				Returns an array of references to node's children.
+			</description>
+		</method>
+		<method name="get_parent" qualifiers="const">
+			<return type="PolyNode2D">
+			</return>
+			<description>
+				Returns the parent node of the current node, or an empty [PolyNode2D] if the node lacks a parent.
+			</description>
+		</method>
+		<method name="is_hole" qualifiers="const">
+			<return type="bool">
+			</return>
+			<description>
+				Tells whether the [PolyNode2D]'s polygon is a hole.
+				Children of outer polygons are always holes, and children of holes are always (nested) outer polygons.
+			</description>
+		</method>
+		<method name="new_child">
+			<return type="PolyNode2D">
+			</return>
+			<argument index="0" name="path" type="PoolVector2Array">
+			</argument>
+			<description>
+				Constructs a new [PolyNode2D] using the [code]path[/code] polygon vertices.
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="path" type="PoolVector2Array" setter="set_path" getter="get_path" default="PoolVector2Array(  )">
+			The contour representing the node. The top level root node has no contour, so this logic can be used to distinguish between the nodes and the tree itself containing them all.
+		</member>
+	</members>
+	<constants>
+	</constants>
+</class>

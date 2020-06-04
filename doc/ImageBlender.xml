@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="ImageBlender" inherits="Reference" version="3.2">
+	<brief_description>
+		Provides advanced image blending methods (derived from OpenGL specification).
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="blend_rect" qualifiers="const">
+			<return type="void">
+			</return>
+			<argument index="0" name="src" type="Image">
+			</argument>
+			<argument index="1" name="src_rect" type="Rect2">
+			</argument>
+			<argument index="2" name="dst" type="Image">
+			</argument>
+			<argument index="3" name="dst_pos" type="Vector2">
+			</argument>
+			<description>
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="alpha_dst_factor" type="int" setter="set_alpha_dst_factor" getter="get_alpha_dst_factor" enum="ImageBlender.BlendFactor" default="7">
+		</member>
+		<member name="alpha_equation" type="int" setter="set_alpha_equation" getter="get_alpha_equation" enum="ImageBlender.BlendEquation" default="0">
+		</member>
+		<member name="alpha_src_factor" type="int" setter="set_alpha_src_factor" getter="get_alpha_src_factor" enum="ImageBlender.BlendFactor" default="1">
+		</member>
+		<member name="rgb_dst_factor" type="int" setter="set_rgb_dst_factor" getter="get_rgb_dst_factor" enum="ImageBlender.BlendFactor" default="10">
+		</member>
+		<member name="rgb_equation" type="int" setter="set_rgb_equation" getter="get_rgb_equation" enum="ImageBlender.BlendEquation" default="0">
+		</member>
+		<member name="rgb_src_factor" type="int" setter="set_rgb_src_factor" getter="get_rgb_src_factor" enum="ImageBlender.BlendFactor" default="6">
+		</member>
+	</members>
+	<constants>
+		<constant name="FUNC_ADD" value="0" enum="BlendEquation">
+		</constant>
+		<constant name="FUNC_SUBTRACT" value="1" enum="BlendEquation">
+		</constant>
+		<constant name="FUNC_REVERSE_SUBTRACT" value="2" enum="BlendEquation">
+		</constant>
+		<constant name="FUNC_MIN" value="3" enum="BlendEquation">
+		</constant>
+		<constant name="FUNC_MAX" value="4" enum="BlendEquation">
+		</constant>
+		<constant name="FACTOR_ZERO" value="0" enum="BlendFactor">
+		</constant>
+		<constant name="FACTOR_ONE" value="1" enum="BlendFactor">
+		</constant>
+		<constant name="FACTOR_SRC_COLOR" value="2" enum="BlendFactor">
+		</constant>
+		<constant name="FACTOR_ONE_MINUS_SRC_COLOR" value="3" enum="BlendFactor">
+		</constant>
+		<constant name="FACTOR_DST_COLOR" value="4" enum="BlendFactor">
+		</constant>
+		<constant name="FACTOR_ONE_MINUS_DST_COLOR" value="5" enum="BlendFactor">
+		</constant>
+		<constant name="FACTOR_SRC_ALPHA" value="6" enum="BlendFactor">
+		</constant>
+		<constant name="FACTOR_ONE_MINUS_SRC_ALPHA" value="7" enum="BlendFactor">
+		</constant>
+		<constant name="FACTOR_DST_ALPHA" value="8" enum="BlendFactor">
+		</constant>
+		<constant name="FACTOR_ONE_MINUS_DST_ALPHA" value="9" enum="BlendFactor">
+		</constant>
+		<constant name="FACTOR_DST_ALPHA_TIMES_ONE_MINUS_SRC_ALPHA" value="10" enum="BlendFactor">
+		</constant>
+	</constants>
+</class>

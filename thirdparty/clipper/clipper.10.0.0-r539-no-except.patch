@@ -1,0 +1,271 @@
+diff --git a/thirdparty/clipper/clipper.cpp b/thirdparty/clipper/clipper.cpp
+index ba36de9..f393747 100644
+--- a/thirdparty/clipper/clipper.cpp
++++ b/thirdparty/clipper/clipper.cpp
+@@ -19,6 +19,38 @@
+ #include <functional>
+ #include "clipper.h"
+ 
++//Explicitly disables exceptions handling for target platform
++//#define CLIPPER_NOEXCEPTION
++
++#define CLIPPER_THROW(exception) std::abort()
++#define CLIPPER_TRY if(true)
++#define CLIPPER_CATCH(exception) if(false)
++
++#if defined(__cpp_exceptions) || defined(__EXCEPTIONS) || defined(_CPPUNWIND)
++  #ifndef CLIPPER_NOEXCEPTION
++    #undef CLIPPER_THROW
++    #define CLIPPER_THROW(exception) throw exception
++    #undef CLIPPER_TRY
++    #define CLIPPER_TRY try
++    #undef CLIPPER_CATCH
++    #define CLIPPER_CATCH(exception) catch(exception)
++  #endif
++#endif
++
++//Optionally allows to override exception macros
++#if defined(CLIPPER_THROW_USER)
++	#undef CLIPPER_THROW
++	#define CLIPPER_THROW CLIPPER_THROW_USER
++#endif
++#if defined(CLIPPER_TRY_USER)
++	#undef CLIPPER_TRY
++	#define CLIPPER_TRY CLIPPER_TRY_USER
++#endif
++#if defined(CLIPPER_CATCH_USER)
++	#undef CLIPPER_CATCH
++	#define CLIPPER_CATCH CLIPPER_CATCH_USER
++#endif
++
+ namespace clipperlib {
+ 
+   enum VertexFlags { vfNone = 0, vfOpenStart = 1, vfOpenEnd = 2, vfLocalMax = 4, vfLocMin = 8 };
+@@ -58,7 +90,7 @@ namespace clipperlib {
+   };
+ 
+   //------------------------------------------------------------------------------
+-  // PolyTree (PolyPath) methods ...
++  // PolyPath methods ...
+   //------------------------------------------------------------------------------
+ 
+   void PolyPath::Clear()
+@@ -71,6 +103,12 @@ namespace clipperlib {
+   }
+   //------------------------------------------------------------------------------
+ 
++  PolyPath::PolyPath()
++  {
++    parent_ = NULL;
++  }
++  //------------------------------------------------------------------------------
++
+   PolyPath::PolyPath(PolyPath *parent, const Path &path)
+   {
+     parent_ = parent;
+@@ -93,7 +131,7 @@ namespace clipperlib {
+   PolyPath& PolyPath::GetChild(unsigned index)
+   {
+     if (index < 0 || index >= childs_.size())
+-      throw ClipperException("invalid range in PolyPath::GetChild.");
++      CLIPPER_THROW(ClipperException("invalid range in PolyPath::GetChild."));
+     return *childs_[index];
+   }
+   //------------------------------------------------------------------------------
+@@ -582,7 +620,7 @@ namespace clipperlib {
+   {
+     if (is_open) {
+       if (polytype == ptClip)
+-        throw ClipperException("AddPath: Only subject paths may be open.");
++        CLIPPER_THROW(ClipperException("AddPath: Only subject paths may be open."));
+       has_open_paths_ = true;
+     }
+     minima_list_sorted_ = false;
+@@ -957,7 +995,7 @@ namespace clipperlib {
+   void Clipper::AddLocalMaxPoly(Active &e1, Active &e2, const Point64 pt)
+   {
+     if (!IsHotEdge(e2))
+-      throw new ClipperException("Error in AddLocalMaxPoly().");
++      CLIPPER_THROW(ClipperException("Error in AddLocalMaxPoly()."));
+     AddOutPt(e1, pt);
+     if (e1.outrec == e2.outrec) {
+       e1.outrec->start_e = NULL;
+@@ -979,7 +1017,7 @@ namespace clipperlib {
+       //one or other edge orientation is wrong...
+       if (IsOpen(e1)) SwapSides(*e2.outrec);
+       else if (!FixOrientation(e1) && !FixOrientation(e2)) 
+-        throw new ClipperException("Error in JoinOutrecPaths()");
++        CLIPPER_THROW(ClipperException("Error in JoinOutrecPaths()"));
+       if (e1.outrec->owner == e2.outrec) e1.outrec->owner = e2.outrec->owner;
+     }
+ 
+@@ -1323,7 +1361,7 @@ namespace clipperlib {
+   }
+   //------------------------------------------------------------------------------
+ 
+-  bool Clipper::Execute(ClipType clipType, PolyTree &solution_closed, Paths &solution_open, FillRule ft)
++  bool Clipper::Execute(ClipType clipType, PolyPath &solution_closed, Paths &solution_open, FillRule ft)
+   {
+     solution_closed.Clear();
+     if (!ExecuteInternal(clipType, ft)) return false;
+@@ -1830,7 +1868,7 @@ namespace clipperlib {
+   }
+   //------------------------------------------------------------------------------
+ 
+-  void Clipper::BuildResult2(PolyTree &pt, Paths *solution_open)
++  void Clipper::BuildResult2(PolyPath &pt, Paths *solution_open)
+   {
+     pt.Clear();
+     if (solution_open) {
+@@ -1866,19 +1904,19 @@ namespace clipperlib {
+ 
+   Rect64 Clipper::GetBounds()
+   {
+-    MinimaList::iterator lm_iter = minima_list_.begin();
+-    if (lm_iter == minima_list_.end()) return Rect64(0, 0, 0, 0);
+-
++    if (vertex_list_.size() == 0) return Rect64(0, 0, 0, 0);
+     Rect64 result = Rect64(INT64_MAX, INT64_MAX, INT64_MIN, INT64_MIN);
+-    while (lm_iter != minima_list_.end()) {
+-      Vertex  &v = *(*lm_iter)->vertex, v2 = v;
++    VerticesList::const_iterator it = vertex_list_.cbegin();
++    while (it != vertex_list_.cend()) {
++      Vertex  *v = *it, *v2 = v;
+       do {
+-        if (v2.pt.x < result.left) result.left = v2.pt.x;
+-        if (v2.pt.x > result.right) result.right = v2.pt.x;
+-        if (v2.pt.y < result.top) result.top = v2.pt.y;
+-        if (v2.pt.y > result.bottom) result.bottom = v2.pt.y;
+-      } while (&v2 != &v);
+-      ++lm_iter;
++        if (v2->pt.x < result.left) result.left = v2->pt.x;
++        if (v2->pt.x > result.right) result.right = v2->pt.x;
++        if (v2->pt.y < result.top) result.top = v2->pt.y;
++        if (v2->pt.y > result.bottom) result.bottom = v2->pt.y;
++        v2 = v2->next;
++      } while (v2 != v);
++      ++it;
+     }
+     return result;
+   }
+diff --git a/thirdparty/clipper/clipper.h b/thirdparty/clipper/clipper.h
+index 9888cf7..453b341 100644
+--- a/thirdparty/clipper/clipper.h
++++ b/thirdparty/clipper/clipper.h
+@@ -11,12 +11,18 @@
+ #ifndef clipper_h
+ #define clipper_h
+ 
+-#define CLIPPER_VERSION "10.0.0"
++#ifdef CLIPPER_VERSION
++  #undef CLIPPER_VERSION
++  #define CLIPPER_VERSION "10.0.0"
++#endif
+ 
+ #include <vector>
+ #include <queue>
+ #include <stdexcept>
+ #include <cstdlib>
++#include <cfloat>
++#include <cmath>
++#include <string>
+ 
+ namespace clipperlib {
+ 
+@@ -60,6 +66,7 @@ class PolyPath
+ 	  Path path_;
+ 	  std::vector< PolyPath* > childs_;
+   public:
++    PolyPath();
+ 	  PolyPath(PolyPath *parent, const Path &path);
+ 	  virtual ~PolyPath(){};
+     PolyPath &AddChild(const Path &path);
+@@ -71,8 +78,6 @@ class PolyPath
+ 	  void Clear();
+ };
+ 
+-class PolyTree : public PolyPath {};
+-
+ struct Rect64 { 
+ 	int64_t left; 
+ 	int64_t top; 
+@@ -161,9 +166,9 @@ class Clipper {
+     void SetWindingLeftEdgeOpen(Active &e);
+     void InsertEdgeIntoAEL(Active &edge, Active *startEdge);
+     virtual void InsertLocalMinimaIntoAEL(int64_t bot_y);
+-    inline void Clipper::PushHorz(Active &e);
+-    inline bool Clipper::PopHorz(Active *&e);
+-    inline OutRec* Clipper::GetOwner(const Active *e);
++    inline void PushHorz(Active &e);
++    inline bool PopHorz(Active *&e);
++    inline OutRec* GetOwner(const Active *e);
+     void JoinOutrecPaths(Active &e1, Active &e2);
+     inline void TerminateHotOpen(Active &e);
+     inline void StartOpenPath(Active &e, const Point64 pt);
+@@ -186,7 +191,7 @@ class Clipper {
+     void DoTopOfScanbeam(const int64_t top_y);
+     Active* DoMaxima(Active &e);
+     void BuildResult(Paths &paths_closed, Paths *paths_open);
+-    void BuildResult2(PolyTree &pt, Paths *solution_open);
++    void BuildResult2(PolyPath &pt, Paths *solution_open);
+   protected:
+     void CleanUp();
+     virtual OutPt* CreateOutPt();
+@@ -204,7 +209,7 @@ class Clipper {
+     virtual void AddPaths(const Paths &paths, PathType polytype, bool is_open = false);
+     virtual bool Execute(ClipType clipType, Paths &solution_closed, FillRule fr = frEvenOdd);
+     virtual bool Execute(ClipType clipType, Paths &solution_closed, Paths &solution_open, FillRule fr = frEvenOdd);
+-    virtual bool Execute(ClipType clipType, PolyTree &solution_closed, Paths &solution_open, FillRule fr = frEvenOdd);
++    virtual bool Execute(ClipType clipType, PolyPath &solution_closed, Paths &solution_open, FillRule fr = frEvenOdd);
+     void Clear();
+     Rect64 GetBounds();
+ };
+diff --git a/thirdparty/clipper/clipper_offset.h b/thirdparty/clipper/clipper_offset.h
+index 0a8f3b9..8649085 100644
+--- a/thirdparty/clipper/clipper_offset.h
++++ b/thirdparty/clipper/clipper_offset.h
+@@ -50,8 +50,8 @@ namespace clipperlib {
+     Path path_in_, path_out_;
+     NormalsList norms_;
+     NodeList nodes_;
+-    double arc_tolerance_;
+     double miter_limit_;
++    double arc_tolerance_;
+ 
+     //nb: miter_lim_ below is a temp field that differs from miter_limit
+     double delta_, sin_a_, sin_, cos_, miter_lim_, steps_per_radian_;
+diff --git a/thirdparty/clipper/clipper_triangulation.cpp b/thirdparty/clipper/clipper_triangulation.cpp
+index 909ab87..86b3a40 100644
+--- a/thirdparty/clipper/clipper_triangulation.cpp
++++ b/thirdparty/clipper/clipper_triangulation.cpp
+@@ -15,8 +15,6 @@
+ #include "clipper_triangulation.h"
+ #include "clipper.h"
+ 
+-#include "windows.h" //debugging only
+-
+ namespace clipperlib {
+ 
+   //------------------------------------------------------------------------------
+@@ -314,8 +312,6 @@ namespace clipperlib {
+     paths.reserve(triangles_.size());
+     for (Paths::const_iterator iter = triangles_.cbegin();
+       iter != triangles_.cend(); ++iter) {
+-        if ((*iter).size() != 3)
+-          MessageBeep(750);
+       paths.push_back(*iter);
+     }
+   }
+diff --git a/thirdparty/clipper/clipper_triangulation.h b/thirdparty/clipper/clipper_triangulation.h
+index 5e2a9fc..b3bfd3e 100644
+--- a/thirdparty/clipper/clipper_triangulation.h
++++ b/thirdparty/clipper/clipper_triangulation.h
+@@ -49,7 +49,7 @@ namespace clipperlib {
+     bool Execute(ClipType clipType, Paths &solution, FillRule fr = frEvenOdd);
+     bool Execute(ClipType clipType, Paths &solution_closed, Paths &solution_open, FillRule fr = frEvenOdd)
+       { return false; } //it's pointless triangulating open paths
+-    bool Execute(ClipType clipType, PolyTree &solution_closed, Paths &solution_open, FillRule fr = frEvenOdd)
++    bool Execute(ClipType clipType, PolyPath &solution_closed, Paths &solution_open, FillRule fr = frEvenOdd)
+     { return false; } //the PolyTree structure is of no benefit when triangulating 
+   };
+ 

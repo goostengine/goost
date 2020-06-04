@@ -1,0 +1,86 @@
+language: cpp
+
+dist: xenial
+
+env:
+  global:
+    - SCONS_CACHE=$HOME/.scons_cache
+    - SCONS_CACHE_LIMIT=1024
+    - OPTIONS="debug_symbols=no verbose=yes progress=no builtin_libpng=yes no_editor_splash=yes use_static_cpp=yes builtin_freetype=yes builtin_libpng=yes builtin_zlib=yes use_llvm=yes"
+    - MODULES_DISABLED=$(cat misc/ci/modules_disabled.txt)
+    - GODOT_REPO_URL="https://github.com/godotengine/godot"
+    - GODOT_DIR="godot"
+    - GODOT_BINARY_DIR="$HOME/godot/bin/"
+cache:
+  directories:
+    - $SCONS_CACHE
+
+jobs:
+  include:
+    - env: GODOT_TARGET=x11 TOOLS=yes CACHE_NAME=${GODOT_TARGET}-gcc-tools
+      os: linux
+      compiler: gcc
+    - env: GODOT_TARGET=x11 TOOLS=no CACHE_NAME=${GODOT_TARGET}-clang
+      os: linux
+      compiler: clang
+    - env: GODOT_TARGET=android TOOLS=no CACHE_NAME=${GODOT_TARGET}-gcc
+      os: linux
+      compiler: gcc
+    - env: GODOT_TARGET=osx TOOLS=yes CACHE_NAME=${GODOT_TARGET}-clang-tools
+      os: osx
+      osx_image: xcode9.3
+      compiler: clang
+    - env: GODOT_TARGET=iphone TOOLS=no CACHE_NAME=${GODOT_TARGET}-clang
+      os: osx
+      osx_image: xcode9.3
+      compiler: clang
+    - env: GODOT_TARGET=server TOOLS=no GODOT_BINARY="godot_server.x11.tools.64.llvm" CACHE_NAME=${GODOT_TARGET}-clang
+      os: linux
+      compiler: clang
+
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+      - llvm-toolchain-trusty-5.0
+    packages:
+      - build-essential
+      - scons
+      - pkg-config
+      - libx11-dev
+      - libxcursor-dev
+      - libxi-dev
+      - libxinerama-dev
+      - libxrandr-dev
+      - libgl1-mesa-dev
+      - libglu1-mesa-dev
+      - libasound2-dev
+      - libfreetype6-dev
+
+install:
+  - if [ "$TRAVIS_OS_NAME" = "linux" ] && [ "$GODOT_TARGET" = "android" ]; then
+      misc/ci/travis/android-tools-linux.sh;
+    fi
+  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then
+      misc/ci/travis/scons-local-osx.sh;
+    fi
+  - if [ "$TRAVIS_OS_NAME" = "osx" ] && [ "$GODOT_TARGET" = "android" ]; then
+      misc/ci/travis/android-tools-osx.sh;
+    fi
+
+before_script:
+  - if [ "$GODOT_TARGET" = "android" ]; then
+      export ANDROID_HOME=$TRAVIS_BUILD_DIR/godot-dev/build-tools/android-sdk;
+      export ANDROID_NDK_ROOT=$TRAVIS_BUILD_DIR/godot-dev/build-tools/android-ndk;
+    fi
+
+  - cd
+  - git clone --depth=1 "$GODOT_REPO_URL" -b 3.2 --single-branch
+  - cd "godot/"
+  - ln -s $TRAVIS_BUILD_DIR "modules/goost"
+
+script:
+  - scons -j3 CC=$CC CXX=$CXX platform=$GODOT_TARGET TOOLS=$TOOLS $OPTIONS $MODULES_DISABLED &&
+    if [ "$GODOT_TARGET" = "server" ]; then
+        $TRAVIS_BUILD_DIR/tests/run.sh "$GODOT_BINARY_DIR""$GODOT_BINARY";
+    fi

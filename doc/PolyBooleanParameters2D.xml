@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="PolyBooleanParameters2D" inherits="Reference" version="3.2">
+	<brief_description>
+		A set of parameters to configure various polygon and polyline boolean related methods in [GeometryExtension2D].
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+	</methods>
+	<members>
+		<member name="clip_fill_rule" type="int" setter="set_clip_fill_rule" getter="get_clip_fill_rule" enum="PolyBooleanParameters2D.FillRule" default="1">
+			The specific [enum FillRule] used for [code]polygons_b[/code].
+		</member>
+		<member name="preserve_collinear" type="bool" setter="set_preserve_collinear" getter="is_preserve_collinear" default="false">
+			By default, when three or more vertices are collinear in the input polygons (subject or clip), the "inner" vertices are removed before clipping. If [code]true[/code], prevents this default behavior to allow these inner vertices to appear in the solution.
+			[b]Note:[/b] this is only implemented in the [b]clipper6[/b] backend.
+		</member>
+		<member name="reverse_solution" type="bool" setter="set_reverse_solution" getter="is_reverse_solution" default="false">
+			If [code]true[/code], inverts the order of vertices in the clipping solution.
+			[b]Note:[/b] this is only implemented in the [b]clipper6[/b] backend.
+		</member>
+		<member name="strictly_simple" type="bool" setter="set_strictly_simple" getter="is_strictly_simple" default="false">
+			If [code]true[/code], ensures that the returned solution are always non self-intersecting polygons that does not contain "touching" vertices nor "touching" edges.
+			[b]Note:[/b] it's computationally expensive ensuring polygons are strictly simple in [b]clipper6[/b] backend so this property is disabled by default. Yet [b]clipper10[/b] backend always returns strictly simple polygons without performance costs, so this property is ignored there.
+		</member>
+		<member name="subject_fill_rule" type="int" setter="set_subject_fill_rule" getter="get_subject_fill_rule" enum="PolyBooleanParameters2D.FillRule" default="1">
+			The specific [enum FillRule] used for [code]polygons_a[/code].
+		</member>
+		<member name="subject_open" type="bool" setter="set_subject_open" getter="is_subject_open" default="false">
+			If [code]true[/code], the subject paths are treated as open polylines, otherwise they are treated as closed polygons. This property is usually set and overridden automatically, but can be fetched to tell whether the previous operation used polylines for clipping.
+		</member>
+	</members>
+	<constants>
+		<constant name="FILL_RULE_EVEN_ODD" value="0" enum="FillRule">
+			Odd numbered sub-regions are filled, while even numbered sub-regions are not.
+		</constant>
+		<constant name="FILL_RULE_NON_ZERO" value="1" enum="FillRule">
+			All non-zero sub-regions are filled.
+		</constant>
+		<constant name="FILL_RULE_POSITIVE" value="2" enum="FillRule">
+			All sub-regions with winding counts greater than 0 are filled.
+		</constant>
+		<constant name="FILL_RULE_NEGATIVE" value="3" enum="FillRule">
+			All sub-regions with winding counts less than 0 are filled.
+		</constant>
+	</constants>
+</class>

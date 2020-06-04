@@ -1,0 +1,44 @@
+# Godot auto generated files
+*.gen.*
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+*.pyc
+*.bc
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# Temporary files
+*~
+.*.swp
+
+# Editors
+.vscode
+
+# Godot files
+*.import
+
+# Cache
+__pycache__/
+
+# For projects that use SCons for building: http://http://www.scons.org/
+.sconf_temp
+.sconsign*.dblite
+*.pyc

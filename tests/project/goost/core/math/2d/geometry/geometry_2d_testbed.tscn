@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://goost/core/math/2d/geometry/geometry_2d_testbed.gd" type="Script" id=1]
+
+[node name="geometry_2d_testbed" type="Node2D"]
+script = ExtResource( 1 )

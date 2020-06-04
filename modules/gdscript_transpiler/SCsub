@@ -1,0 +1,17 @@
+#!/usr/bin/env python
+
+Import('env')
+Import('env_modules')
+
+env_gdscript_transpiler = env_modules.Clone()
+
+# Module source files
+source_dirs = [
+	"./",
+	"bind/",
+	"languages/",
+]
+env_gdscript_transpiler.Prepend(CPPPATH=source_dirs)
+sources = [Glob(d + "*.cpp") for d in source_dirs]
+
+env_gdscript_transpiler.add_source_files(env.modules_sources, sources)
