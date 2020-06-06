@@ -2,12 +2,12 @@
 
 #include "core/engine.h"
 
-#include "image/image_extension.h"
-#include "image/image_extension_bind.h"
-#include "image/image_indexed.h"
-#include "image/image_blender.h"
-#include "image/drivers/png/image_loader_indexed_png.h"
-#include "image/drivers/png/resource_saver_indexed_png.h"
+#include "image_extension.h"
+#include "image_extension_bind.h"
+#include "image_indexed.h"
+#include "image_blender.h"
+#include "drivers/png/image_loader_indexed_png.h"
+#include "drivers/png/resource_saver_indexed_png.h"
 
 static _ImageExtension *_image_extension = nullptr;
 static ImageLoaderIndexedPNG *image_loader_indexed_png;
