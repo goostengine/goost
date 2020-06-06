@@ -28,6 +28,12 @@ env_goost.Prepend(CPPPATH=[goost_path])
 
 env_goost.Prepend(CPPDEFINES={"SCALE_FACTOR" : env_goost["goost_scale_factor"]})
 
+if env_goost["goost_image_enabled"]:
+    env_goost.Prepend(CPPDEFINES=["GOOST_IMAGE_ENABLED"])
+
+if env_goost["goost_math_enabled"]:
+    env_goost.Prepend(CPPDEFINES=["GOOST_MATH_ENABLED"])
+
 env_goost.add_source_files(env.modules_sources, "*.cpp")
 
 # Build subdirs, the build order is dependent on the link order.

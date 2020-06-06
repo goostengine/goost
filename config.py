@@ -4,10 +4,13 @@ def can_build(env, platform):
 
 
 def configure(env):
-    from SCons.Script import Variables, Help
+    from SCons.Script import Variables, BoolVariable, Help
 
     opts = Variables()
-
+    # Components
+    opts.Add(BoolVariable("goost_image_enabled", "Build image component.", True))
+    opts.Add(BoolVariable("goost_math_enabled", "Build math component.", True))
+    # Misc
     opts.Add("goost_scale_factor", "The precision used for converting between integer and float coordinates.", "1e5")
 
     opts.Update(env)
