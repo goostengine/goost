@@ -1,5 +1,5 @@
 short_name = "goost"
-name = "Goost Godot Engine Extension"
+name = "Goost: Godot Engine Extension"
 major = 0
 minor = 1
 patch = 0

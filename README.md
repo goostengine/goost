@@ -40,9 +40,25 @@ are instantly accessible.
 
 ### Configuring the build
 
-The extension provides as set of optional modules which are also regular C++
-modules. They are disabled by default. In order to compile them, you can append
-to the list of paths specified by `custom_modules` option:
+#### Core components
+
+Core components are structure-agnostic, functional parts of the extension. By
+default, all components are built, but it's also possible to disable them.
+
+Disabling a single component involves compiling the engine with one of the
+`goost_*_enabled` build options:
+
+```sh
+scons custom_modules="/path/to/dir/containing/goost" goost_math_enabled=no
+```
+
+For the full list of components, see [core.py](core.py).
+
+#### Module components
+
+The extension provides as set of optional modules (regular C++ modules just like
+this extension) which are disabled by default. In order to compile them, you can
+append to the list of paths specified by `custom_modules` option:
 
 ```sh
 scons custom_modules="/path/to/dir/containing/goost,/path/to/goost/modules"
@@ -54,33 +70,12 @@ It's possible to compile the modules independently of whether Goost is enabled:
 scons module_goost_enabled="no" custom_modules="/path/to/goost/modules"
 ```
 
-If you'd like to opt-out from compiling certain modules which come with this
-extension, you'll have to disable each of the unused modules explicitly:
+But bear in mind that some built-in modules may rely on one of the core
+components listed above.
 
-```sh
-scons custom_modules="/path/to/dir/containing/goost,/path/to/goost/modules" \
-module_a_enabled="no" module_b_enabled="no" module_c_enabled="no" ...
-```
+For more advanced module-related options, see [Modules](modules/README.md).
 
-All of the above options can be conveniently defined by creating `custom.py` at
-the root of Godot source, or pointing to an existing configuration file with:
-
-```sh
-scons profile="path/to/modules_config.py"
-```
-
-There may be also community modules which are present as `git` submodules.
-In order to fetch them:
-
-```sh
-git submodule update --init --recursive
-```
-
-Or if you haven't yet cloned Goost:
-
-```sh
-git clone https://github.com/GoostGD/goost.git --recurse-submodules
-```
+---
 
 For other Goost-specific build options, run `scons --help | grep goost_`.
 
@@ -91,7 +86,7 @@ official documentation:
 
 ### Compatibility
 
-Mostly Godot Engine 3.2+ compatible. 
+Godot Engine 3.2 compatible.
 
 `custom_modules` build option is added since the release of Godot Engine 3.2.2.
 
@@ -106,14 +101,15 @@ As you may have already noticed, the extension's source tree structure closely
 resembles Godot Engine's structure. In fact, you can see this extension as a
 mini-engine which builds on top of the existing core functionality of Godot, as
 most features are easily accessible within a module, which is the **extension**
-in project's terms. Given this knowledge, the project tries to follow most
-conventions which are accepted for Godot Engine development.
+in the Goost terms. Given this knowledge, Goost tries to follow most conventions
+which are accepted for Godot Engine development.
 
-### 2D and 3D
+Components are developed in terms of functional value. It's the responsibility
+of Goost developers to make the necessary internal structural changes to
+maintain this user expectation.
 
-Where possible, most classes and methods are broken down into their own `2d` and
-`3d` subfolders, so that either 2D or 3D components can be easily disabled in
-the future.
+Similarly, most classes and methods are broken down into their own `2d` and `3d`
+subfolders, so that either 2D or 3D components can be easily disabled.
 
 ### Creating or adding new modules
 
