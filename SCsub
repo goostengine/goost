@@ -34,6 +34,9 @@ if env_goost["goost_image_enabled"]:
 if env_goost["goost_math_enabled"]:
     env_goost.Prepend(CPPDEFINES=["GOOST_MATH_ENABLED"])
 
+if env_goost["goost_physics_enabled"]:
+    env_goost.Prepend(CPPDEFINES=["GOOST_PHYSICS_ENABLED"])
+
 env_goost.add_source_files(env.modules_sources, "*.cpp")
 
 # Build subdirs, the build order is dependent on the link order.

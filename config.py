@@ -10,6 +10,7 @@ def configure(env):
     # Components
     opts.Add(BoolVariable("goost_image_enabled", "Build image component.", True))
     opts.Add(BoolVariable("goost_math_enabled", "Build math component.", True))
+    opts.Add(BoolVariable("goost_physics_enabled", "Build physics component.", True))
     # Misc
     opts.Add("goost_scale_factor", "The precision used for converting between integer and float coordinates.", "1e5")
 
