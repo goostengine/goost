@@ -16,7 +16,8 @@ if env_goost["goost_image_enabled"]:
     env_leptonica.add_source_files(env_goost.modules_sources, "leptonica/*.c")
     if env_goost["target"] in ["debug", "release_debug"]:
         env_leptonica.Prepend(CPPDEFINES=["DEBUG"])
-    env_leptonica.Prepend(CPPDEFINES=["NO_CONSOLE_IO"])
+    if env_goost["target"] != "debug":
+        env_leptonica.Prepend(CPPDEFINES=["NO_CONSOLE_IO"])
     # TODO: likely need to configure endianess properly on some platforms.
     env_leptonica.disable_warnings()
 

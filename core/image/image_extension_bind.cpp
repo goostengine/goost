@@ -17,6 +17,10 @@ void _ImageExtension::resize_hqx(Ref<Image> p_image, int p_scale) {
 	return ImageExtension::resize_hqx(p_image, p_scale);
 }
 
+void _ImageExtension::rotate(Ref<Image> p_image, real_t p_angle) {
+	return ImageExtension::rotate(p_image, p_angle);
+}
+
 bool _ImageExtension::has_pixel(Ref<Image> p_image, int x, int y) {
 
 	return ImageExtension::has_pixel(p_image, x, y);
@@ -47,7 +51,8 @@ void _ImageExtension::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("replace_color", "image", "color", "with_color"), &_ImageExtension::replace_color);
 	ClassDB::bind_method(D_METHOD("bucket_fill", "image", "at", "fill_color", "fill_image", "connectivity"), &_ImageExtension::bucket_fill, DEFVAL(true), DEFVAL(KERNEL_FOUR_WAY));
 	ClassDB::bind_method(D_METHOD("resize_hqx", "image", "scale"), &_ImageExtension::resize_hqx, DEFVAL(2));
-	
+	ClassDB::bind_method(D_METHOD("rotate", "image", "angle"), &_ImageExtension::rotate);
+
 	// Pixel methods
 	ClassDB::bind_method(D_METHOD("get_pixel_or_null", "image", "x", "y"), &_ImageExtension::get_pixel_or_null);
 	ClassDB::bind_method(D_METHOD("get_pixelv_or_null", "image", "pos"), &_ImageExtension::get_pixelv_or_null);
