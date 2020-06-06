@@ -1,0 +1,20 @@
+#!/usr/bin/env python
+import os
+Import('env_goost')
+
+subdirs = [
+    "clipper",
+    "exoquant",
+    "hqx",
+]
+env_third = env_goost.Clone()
+
+env_third.Prepend(CPPPATH=[os.path.realpath(".")])
+env_goost.Prepend(CPPPATH=[os.path.realpath(".")])
+
+for d in subdirs:
+    env_third.add_source_files(env_goost.modules_sources, os.path.join(d, "*.cpp"))
+    env_third.add_source_files(env_goost.modules_sources, os.path.join(d, "*.cc"))
+    env_third.add_source_files(env_goost.modules_sources, os.path.join(d, "*.c"))
+
+env_third.disable_warnings()

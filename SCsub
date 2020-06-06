@@ -6,27 +6,10 @@ from core import components
 Import("env")
 env_goost = env.Clone()
 
-# Thirdparty sources
-thirdparty_dirs = [
-    "thirdparty/clipper/",
-    "thirdparty/exoquant/",
-    "thirdparty/hqx/",
-]
+# Make include paths independent of Goost location.
+env_goost.Prepend(CPPPATH=[os.path.dirname(os.path.realpath(os.curdir))])
 
-env_thirdparty = env_goost.Clone()
-for d in thirdparty_dirs:
-    env_thirdparty.add_source_files(env.modules_sources, d + "*.cpp")
-    env_thirdparty.add_source_files(env.modules_sources, d + "*.cc")
-    env_thirdparty.add_source_files(env.modules_sources, d + "*.c")
-env_thirdparty.disable_warnings()
-thirdparty_path = os.path.realpath("thirdparty")
-env_thirdparty.Prepend(CPPPATH=[thirdparty_path])
-
-env_goost.Prepend(CPPPATH=[thirdparty_path])
-
-goost_path = os.path.dirname(os.path.realpath(os.curdir))
-env_goost.Prepend(CPPPATH=[goost_path])
-
+# Add options to build core components.
 for name in components:
     opt = "goost_%s_enabled" % (name)
     if env_goost[opt]:
@@ -39,7 +22,8 @@ subdirs = [
     "core",
     "scene",
     "editor",
-    # "modules", # Not build directly, use `custom_modules` option explicitly.
+    "thirdparty",
+    # "modules", # Cannot build directly, use `custom_modules` option explicitly.
 ]
 SConscript(dirs=subdirs, name="SCsub", exports="env_goost")
 
