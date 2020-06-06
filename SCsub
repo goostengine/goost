@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import os
+from core import components
 
 Import("env")
 env_goost = env.Clone()
@@ -26,18 +27,12 @@ env_goost.Prepend(CPPPATH=[thirdparty_path])
 goost_path = os.path.dirname(os.path.realpath(os.curdir))
 env_goost.Prepend(CPPPATH=[goost_path])
 
+for name in components:
+    opt = "goost_%s_enabled" % (name)
+    if env_goost[opt]:
+        env_goost.Prepend(CPPDEFINES=[opt.upper()])
+
 env_goost.Prepend(CPPDEFINES={"SCALE_FACTOR" : env_goost["goost_scale_factor"]})
-
-if env_goost["goost_image_enabled"]:
-    env_goost.Prepend(CPPDEFINES=["GOOST_IMAGE_ENABLED"])
-
-if env_goost["goost_math_enabled"]:
-    env_goost.Prepend(CPPDEFINES=["GOOST_MATH_ENABLED"])
-
-if env_goost["goost_physics_enabled"]:
-    env_goost.Prepend(CPPDEFINES=["GOOST_PHYSICS_ENABLED"])
-
-env_goost.add_source_files(env.modules_sources, "*.cpp")
 
 # Build subdirs, the build order is dependent on the link order.
 subdirs = [
@@ -47,3 +42,5 @@ subdirs = [
     # "modules", # Not build directly, use `custom_modules` option explicitly.
 ]
 SConscript(dirs=subdirs, name="SCsub", exports="env_goost")
+
+env_goost.add_source_files(env.modules_sources, "*.cpp")
