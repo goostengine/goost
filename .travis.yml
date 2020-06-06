@@ -2,6 +2,11 @@ language: cpp
 
 dist: xenial
 
+notifications:
+  email:
+    on_success: never
+    on_failure: change
+
 env:
   global:
     - SCONS_CACHE=$HOME/.scons_cache
