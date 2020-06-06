@@ -1,20 +1,17 @@
 #!/usr/bin/env python
 import os
-Import('env_goost')
 
-subdirs = [
-    "clipper",
-    "exoquant",
-    "hqx",
-]
-env_third = env_goost.Clone()
+Import("env_goost")
 
-env_third.Prepend(CPPPATH=[os.path.realpath(".")])
+env_thirdparty = env_goost.Clone()
+
+env_thirdparty.Prepend(CPPPATH=[os.path.realpath(".")])
 env_goost.Prepend(CPPPATH=[os.path.realpath(".")])
 
-for d in subdirs:
-    env_third.add_source_files(env_goost.modules_sources, os.path.join(d, "*.cpp"))
-    env_third.add_source_files(env_goost.modules_sources, os.path.join(d, "*.cc"))
-    env_third.add_source_files(env_goost.modules_sources, os.path.join(d, "*.c"))
+if env_goost["goost_math_enabled"]:
+    env_thirdparty.add_source_files(env_goost.modules_sources, "clipper/*.cpp")
+if env_goost["goost_image_enabled"]:
+    env_thirdparty.add_source_files(env_goost.modules_sources, "exoquant/*.c")
+    env_thirdparty.add_source_files(env_goost.modules_sources, "hqx/*.cc")
 
-env_third.disable_warnings()
+env_thirdparty.disable_warnings()
