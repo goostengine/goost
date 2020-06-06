@@ -6,7 +6,7 @@ env:
   global:
     - SCONS_CACHE=$HOME/.scons_cache
     - SCONS_CACHE_LIMIT=1024
-    - OPTIONS="debug_symbols=no verbose=yes progress=no builtin_libpng=yes no_editor_splash=yes use_static_cpp=yes builtin_freetype=yes builtin_libpng=yes builtin_zlib=yes use_llvm=yes"
+    - OPTIONS="debug_symbols=no verbose=yes progress=no no_editor_splash=yes use_static_cpp=yes builtin_freetype=yes builtin_libpng=yes builtin_zlib=yes use_llvm=yes"
     - MODULES_DISABLED=$(cat misc/ci/modules_disabled.txt)
     - GODOT_REPO_URL="https://github.com/godotengine/godot"
     - GODOT_DIR="godot"
