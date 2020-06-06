@@ -2,7 +2,6 @@
 Import("env_goost")
 
 subdirs = [
-    "bind",
     "image",
     "math",
 ]

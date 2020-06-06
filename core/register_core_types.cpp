@@ -2,16 +2,15 @@
 
 #include "core/engine.h"
 
-#include "bind/2d/image_extension_bind.h"
-#include "bind/2d/geometry_extension_bind.h"
-
 #include "image/image_extension.h"
+#include "image/image_extension_bind.h"
 #include "image/image_indexed.h"
 #include "image/image_blender.h"
 #include "image/drivers/png/image_loader_indexed_png.h"
 #include "image/drivers/png/resource_saver_indexed_png.h"
 
 #include "math/2d/geometry/geometry_extension.h"
+#include "math/2d//geometry/geometry_extension_bind.h"
 
 static _ImageExtension *_image_extension = nullptr;
 static ImageLoaderIndexedPNG *image_loader_indexed_png;

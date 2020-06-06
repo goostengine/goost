@@ -1,7 +1,7 @@
-#ifndef GOOST_GEOMETRY_TOOLS_BIND_H
-#define GOOST_GEOMETRY_TOOLS_BIND_H
+#ifndef GOOST_GEOMETRY_EXTENSION_BIND_H
+#define GOOST_GEOMETRY_EXTENSION_BIND_H
 
-#include "goost/core/math/2d/geometry/geometry_extension.h"
+#include "geometry_extension.h"
 
 class _GeometryExtension2D : public Object {
 	GDCLASS(_GeometryExtension2D, Object);
@@ -82,4 +82,4 @@ public:
 VARIANT_ENUM_CAST(_GeometryExtension2D::PolyBooleanOperation);
 VARIANT_ENUM_CAST(_GeometryExtension2D::PolyDecompType);
 
-#endif // GOOST_GEOMETRY_TOOLS_BIND_H
+#endif // GOOST_GEOMETRY_EXTENSION_BIND_H

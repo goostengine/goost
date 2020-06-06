@@ -1,5 +1,5 @@
-#include "goost/core/bind/2d/image_extension_bind.h"
-#include "goost/core/image/image_extension.h"
+#include "image_extension_bind.h"
+#include "image_extension.h"
 
 _ImageExtension *_ImageExtension::singleton = NULL;
 
