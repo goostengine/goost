@@ -23,6 +23,11 @@ The following lists C/C++ libraries which are bundled and used by Goost.
 - Version: git (187250b), file structure differs (extracted `src`)
 - License: [BSD-2-Clause](leptonica/leptonica-license.txt)
 
+### Notes
+- Function prototypes are generated inline in `allheaders.h` with the suggested
+  `xtractprotos` utility to allow building only the necessary sources while also
+  reducing binary size.
+
 ## Clipper
 - Upstream: https://sourceforge.net/projects/polyclipping/
 - Version: 10.0.0 r539 (sandbox)
