@@ -100,6 +100,24 @@
 				See also [method Image.expand_2x_hq2x].
 			</description>
 		</method>
+		<method name="rotate">
+			<return type="void">
+			</return>
+			<argument index="0" name="image" type="Image">
+			</argument>
+			<argument index="1" name="angle" type="float">
+			</argument>
+			<description>
+				Rotates the image around its center. The [code]angle[/code] is specified in radians. If [code]angle[/code] is positive, rotates the image in clockwise direction. The method will grow the image size with non-orthogonal angles (90, 180, 270 degrees).
+				[codeblock]
+				# Rotate Godot icon by 45 degrees.
+				var texture = preload("res://icon.png")
+				var image = texture.get_data()
+				ImageExtension.rotate(image, deg2rad(45))
+				image.save_png("res://icon_rotated.png")
+				[/codeblock]
+			</description>
+		</method>
 	</methods>
 	<constants>
 		<constant name="KERNEL_FOUR_WAY" value="0" enum="KernelConnectivity">
