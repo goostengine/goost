@@ -163,15 +163,18 @@ void ImageExtension::rotate(Ref<Image> p_image, real_t p_angle) {
 	
 	int new_width = p_image->get_width();
 	int new_height = p_image->get_height();
+	
+	PIX *pix_in = nullptr;
+	PIX *pix_out = nullptr;
 	{
 		PoolVector<uint8_t>::Read r = src.read();
 		ERR_FAIL_COND(!r.ptr());
 
 		const uint8_t bpp = Image::get_format_pixel_size(format) * 8;
-		PIX *pix_in = pixCreate(p_image->get_width(), p_image->get_height(), bpp);
+		pix_in = pixCreate(p_image->get_width(), p_image->get_height(), bpp);
 		pixSetData(pix_in, (l_uint32 *)r.ptr());
 
-		PIX *pix_out = pixRotate(
+		pix_out = pixRotate(
 				pix_in, p_angle, L_ROTATE_SHEAR, L_BRING_IN_BLACK, 
 				p_image->get_width(), p_image->get_height()
 		);
@@ -188,8 +191,11 @@ void ImageExtension::rotate(Ref<Image> p_image, real_t p_angle) {
 		PoolVector<uint8_t>::Write w = dest.write();
 		copymem((uint32_t *)w.ptr(), (uint32_t *)read, data_size);
 	}
-	p_image->create(new_width, new_height, false, Image::FORMAT_RGBA8, dest);
-	
+	p_image->create(new_width, new_height, false, format, dest);
+
+	if (pix_out) {
+		pixDestroy(&pix_out);
+	}
 	if (used_mipmaps) {
 		p_image->generate_mipmaps();
 	}
