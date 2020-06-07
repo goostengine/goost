@@ -18,6 +18,16 @@ The following lists C/C++ libraries which are bundled and used by Goost.
 ### Notes
 - Godot 3.2 includes `hq2x` version only. This module includes `hq3x` as well.
 
+## Leptonica
+- Upstream: https://github.com/DanBloomberg/leptonica
+- Version: git (187250b), file structure differs (extracted `src`)
+- License: [BSD-2-Clause](leptonica/leptonica-license.txt)
+
+### Notes
+- Function prototypes are generated inline in `allheaders.h` with the suggested
+  `xtractprotos` utility to allow building only the necessary sources while also
+  reducing binary size.
+
 ## Clipper
 - Upstream: https://sourceforge.net/projects/polyclipping/
 - Version: 10.0.0 r539 (sandbox)

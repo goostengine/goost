@@ -11,7 +11,40 @@ env_goost.Prepend(CPPPATH=[os.path.realpath(".")])
 if env_goost["goost_math_enabled"]:
     env_thirdparty.add_source_files(env_goost.modules_sources, "clipper/*.cpp")
 if env_goost["goost_image_enabled"]:
+    env_leptonica = env_thirdparty.Clone()
+    """
+    Function prototypes may need to be re-generated manually with:
+
+        sudo apt install leptonica-progs
+        cd leptonica
+        xtractprotos -prestring=LEPT_DLL -protos=inline $(cat ../leptonica_sources.txt)
+
+    This generates `allheaders.h` with only the used functions for all 
+    the Leptonica sources listed in `leptonica_sources.txt` file.
+
+    If you need to find missing sources needed for new features:
+     
+        ls *.c > ../leptonica_sources.txt
+        git diff
+    """
+    leptonica_sources = []
+    with open("leptonica_sources.txt", "r") as f:
+        leptonica_sources = f.read().splitlines()
+
+    leptonica_sources = [Glob("leptonica/" + f) for f in leptonica_sources]
+    env_leptonica.add_source_files(env_goost.modules_sources, leptonica_sources)
+    
+    if env_goost["target"] in ["debug", "release_debug"]:
+        env_leptonica.Prepend(CPPDEFINES=["DEBUG"])
+    if env_goost["target"] != "debug":
+        env_leptonica.Prepend(CPPDEFINES=["NO_CONSOLE_IO"])
+    # TODO: likely need to configure endianess properly on some platforms.
+
+    env_leptonica.disable_warnings()
+
+    # TODO: replace by Leptonica's quantization functions (?)
     env_thirdparty.add_source_files(env_goost.modules_sources, "exoquant/*.c")
+    
     env_thirdparty.add_source_files(env_goost.modules_sources, "hqx/*.cc")
 
 env_thirdparty.disable_warnings()

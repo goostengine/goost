@@ -16,7 +16,9 @@ _global_script_class_icons={
 [application]
 
 config/name="Goost"
+config/description="Goost Test Project"
 run/main_scene="res://test.tscn"
+config/icon="res://icon.png"
 
 [editor_plugins]
 

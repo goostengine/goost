@@ -1,6 +1,8 @@
 #include "image_extension.h"
+
 #include "goost/thirdparty/hqx/HQ2x.hh"
 #include "goost/thirdparty/hqx/HQ3x.hh"
+#include "goost/thirdparty/leptonica/allheaders.h"
 
 void ImageExtension::replace_color(Ref<Image> p_image, const Color &p_color, const Color &p_with_color) {
 
@@ -143,6 +145,57 @@ void ImageExtension::resize_hqx(Ref<Image> p_image, int p_scale) {
 	}
 	p_image->create(new_width, new_height, false, Image::FORMAT_RGBA8, dest);
 
+	if (used_mipmaps) {
+		p_image->generate_mipmaps();
+	}
+}
+
+void ImageExtension::rotate(Ref<Image> p_image, real_t p_angle) {
+	bool used_mipmaps = p_image->has_mipmaps();
+
+	Image::Format format = p_image->get_format();
+	if (format != Image::FORMAT_RGBA8) {
+		p_image->convert(Image::FORMAT_RGBA8);
+		format = Image::FORMAT_RGBA8;
+	}
+	PoolVector<uint8_t> dest;
+	PoolVector<uint8_t> src = p_image->get_data();
+	
+	int new_width = p_image->get_width();
+	int new_height = p_image->get_height();
+	
+	PIX *pix_in = nullptr;
+	PIX *pix_out = nullptr;
+	{
+		PoolVector<uint8_t>::Read r = src.read();
+		ERR_FAIL_COND(!r.ptr());
+
+		const uint8_t bpp = Image::get_format_pixel_size(format) * 8;
+		pix_in = pixCreate(p_image->get_width(), p_image->get_height(), bpp);
+		pixSetData(pix_in, (l_uint32 *)r.ptr());
+
+		pix_out = pixRotate(
+				pix_in, p_angle, L_ROTATE_SHEAR, L_BRING_IN_BLACK, 
+				p_image->get_width(), p_image->get_height()
+		);
+		ERR_FAIL_COND_MSG(!pix_out, "Invalid image input data.");
+		
+		l_uint32 * read = pixExtractData(pix_out);
+		ERR_FAIL_COND_MSG(!read, "Could not extract image data.");
+		
+		new_width = pix_out->w;
+		new_height = pix_out->h;
+		
+		const int data_size = Image::get_image_data_size(new_width, new_height, format);
+		dest.resize(data_size);
+		PoolVector<uint8_t>::Write w = dest.write();
+		copymem((uint32_t *)w.ptr(), (uint32_t *)read, data_size);
+	}
+	p_image->create(new_width, new_height, false, format, dest);
+
+	if (pix_out) {
+		pixDestroy(&pix_out);
+	}
 	if (used_mipmaps) {
 		p_image->generate_mipmaps();
 	}
