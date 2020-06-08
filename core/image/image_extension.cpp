@@ -202,7 +202,7 @@ bool ImageExtension::get_pixelv_or_null(Ref<Image> p_image, const Vector2 &p_pos
 // PIX to Image conversion
 
 PIX *pix_create_from_image(Ref<Image> p_image, bool p_convert) {
-	if (p_convert && p_image->get_format() == Image::FORMAT_RGB8) {
+	if (p_convert && p_image->get_format() != Image::FORMAT_RGBA8) {
 		p_image->convert(Image::FORMAT_RGBA8);
 	}
 	PoolVector<uint8_t> src = p_image->get_data();

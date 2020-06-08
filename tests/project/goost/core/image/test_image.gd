@@ -25,13 +25,45 @@ func test_image_resize_hqx3_rgba():
 	assert_eq(output.get_size(), input_size * 3)
 
 
-func test_image_rotate():
+func test_image_rotate_rgba():
+	var input = Image.new()
+	input.load("res://goost/core/image/samples/rect_rgba.png")
+	var input_size = input.get_size()
+	output = input
+	ImageExtension.rotate(output, deg2rad(45))
+	assert_almost_eq(output.get_size(), input_size * sqrt(2), Vector2.ONE * 0.5)
+	output.lock()
+	var pixel = output.get_pixel(output.get_size().x - 1, output.get_size().y / 2)
+	assert_eq(pixel.a, 0.0)
+	output.unlock()
+
+
+func test_image_rotate_rgb():
 	var input = Image.new()
 	input.load("res://goost/core/image/samples/rect_rgb.png")
 	var input_size = input.get_size()
 	output = input
 	ImageExtension.rotate(output, deg2rad(45))
 	assert_almost_eq(output.get_size(), input_size * sqrt(2), Vector2.ONE * 0.5)
+	output.lock()
+	var pixel = output.get_pixel(output.get_size().x - 1, output.get_size().y / 2)
+	assert_almost_eq(pixel.r, 0.0, 0.01)
+	assert_almost_eq(pixel.g, 0.0, 0.01)
+	assert_almost_eq(pixel.b, 0.0, 0.01)
+	output.unlock()
+
+
+func test_image_rotate_grayscale():
+	var input = Image.new()
+	input.load("res://goost/core/image/samples/rect_grayscale.png")
+	var input_size = input.get_size()
+	output = input
+	ImageExtension.rotate(output, deg2rad(45))
+	assert_almost_eq(output.get_size(), input_size * sqrt(2), Vector2.ONE * 0.5)
+	output.lock()
+	var pixel = output.get_pixel(output.get_size().x - 1, output.get_size().y / 2)
+	assert_eq(pixel, Color("#010101"))
+	output.unlock()
 
 
 func test_image_rotate_90_cw():
