@@ -11,8 +11,7 @@ implemented as a single-entry C++ module.
 ## Overview
 
 The current feature set of this extension can be summarized as a list of
-functional core components. To learn more about them, proceed to the links
-below:
+functional components. To learn more about them, proceed to the links below:
 
 | Method                             | Notable features                                                                   |
 | ---------------------------------- | ---------------------------------------------------------------------------------- |
@@ -40,9 +39,9 @@ are instantly accessible.
 
 ### Configuring the build
 
-#### Core components
+#### Components
 
-Core components are structure-agnostic, functional parts of the extension. By
+Components are mostly structure-agnostic, functional parts of the extension. By
 default, all components are built, but it's also possible to disable them.
 
 Disabling a single component involves compiling the engine with one of the
@@ -52,13 +51,21 @@ Disabling a single component involves compiling the engine with one of the
 scons custom_modules="/path/to/dir/containing/goost" goost_math_enabled=no
 ```
 
-For the full list of components, see [core.py](core.py).
+It's also possible to disable a entire branch of components:
 
-#### Module components
+```sh
+# For instance, this disables both `image` and `math` components.
+scons custom_modules="/path/to/dir/containing/goost" goost_core_enabled=no
+```
+
+For the full list of components, see [goost.py](goost.py).
+
+#### Modules
 
 The extension provides as set of optional modules (regular C++ modules just like
-this extension) which are disabled by default. In order to compile them, you can
-append to the list of paths specified by `custom_modules` option:
+this extension) which are not compiled alongside this extension by default. In
+order to compile them, you can append to the list of paths specified by
+`custom_modules` option:
 
 ```sh
 scons custom_modules="/path/to/dir/containing/goost,/path/to/goost/modules"
@@ -70,8 +77,8 @@ It's possible to compile the modules independently of whether Goost is enabled:
 scons module_goost_enabled="no" custom_modules="/path/to/goost/modules"
 ```
 
-But bear in mind that some built-in modules may rely on one of the core
-components listed above.
+But bear in mind that some built-in modules may rely on one of the components
+listed above (the build should abort if dependencies are not satisfied anyway).
 
 For more advanced module-related options, see [Modules](modules/README.md).
 
