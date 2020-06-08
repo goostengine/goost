@@ -5,7 +5,7 @@ def can_build(env, platform):
 
 def configure(env):
     from SCons.Script import Variables, BoolVariable, Help
-    from core import components
+    from builtin import components
 
     opts = Variables()
     for name in components:
