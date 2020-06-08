@@ -10,6 +10,9 @@ needs.
 | `replace_color`     | Replaces all occurrences of a given color with another one within an image. |
 | `bucket_fill`       | Fills the area with a color confined by opaque pixels.                      |
 | `resize_hqx`        | Expands the image using either HQ2X or HQ3X algorithms.                     |
+| `rotate`            | Rotates the image around its center.                                        |
+| `rotate_90`         | Rotates the image by 90 degrees in either direction.                        |
+| `rotate_180`        | Rotates the image by 180 degrees.                                           |
 | `has_pixel`         | Tells whether a pixel lies inside image coordinates.                        |
 | `get_pixel_or_null` | Returns a pixel at specified image coordinates, or null if doesn't exist.   |
 

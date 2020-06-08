@@ -108,7 +108,7 @@
 			<argument index="1" name="angle" type="float">
 			</argument>
 			<description>
-				Rotates the image around its center. The [code]angle[/code] is specified in radians. If [code]angle[/code] is positive, rotates the image in clockwise direction. The method will grow the image size with non-orthogonal angles (90, 180, 270 degrees).
+				Rotates the image around its center. The [code]angle[/code] is specified in radians. If [code]angle[/code] is positive, rotates the image in clockwise direction. The method shall expand the image size with non-orthogonal angles automatically (90, 180, 270 degrees).
 				[codeblock]
 				# Rotate Godot icon by 45 degrees.
 				var texture = preload("res://icon.png")
@@ -118,6 +118,31 @@
 				[/codeblock]
 			</description>
 		</method>
+		<method name="rotate_180">
+			<return type="void">
+			</return>
+			<argument index="0" name="image" type="Image">
+			</argument>
+			<description>
+				Rotates the image by 180 degrees. The result is equivalent to:
+				[codeblock]
+				image.flip_x()
+				image.flip_y()
+				[/codeblock]
+				See [method Image.flip_x], [method Image.flip_y].
+			</description>
+		</method>
+		<method name="rotate_90">
+			<return type="void">
+			</return>
+			<argument index="0" name="image" type="Image">
+			</argument>
+			<argument index="1" name="direction" type="int" enum="ImageExtension.Direction">
+			</argument>
+			<description>
+				Rotates the image by 90 degrees in either clockwise or counterclockwise [enum Direction]. The method performs faster and doesn't lose any image pixel information as opposed to [method rotate] with the [code]angle[/code] parameter set to [code]PI / 2[/code].
+			</description>
+		</method>
 	</methods>
 	<constants>
 		<constant name="KERNEL_FOUR_WAY" value="0" enum="KernelConnectivity">
@@ -125,6 +150,12 @@
 		</constant>
 		<constant name="KERNEL_EIGHT_WAY" value="1" enum="KernelConnectivity">
 			Describes the Moore neighborhood.
+		</constant>
+		<constant name="CW" value="1" enum="Direction">
+			Clockwise direction or orientation.
+		</constant>
+		<constant name="CCW" value="-1" enum="Direction">
+			Counterclockwise (a.k.a. Anticlockwise) direction or orientation.
 		</constant>
 	</constants>
 </class>

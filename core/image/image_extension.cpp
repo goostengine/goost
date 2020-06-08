@@ -150,55 +150,31 @@ void ImageExtension::resize_hqx(Ref<Image> p_image, int p_scale) {
 	}
 }
 
+PIX *pix_create_from_image(Ref<Image> p_image, bool p_convert);
+void image_create_from_pix(Ref<Image> p_image, PIX *pix);
+
 void ImageExtension::rotate(Ref<Image> p_image, real_t p_angle) {
-	bool used_mipmaps = p_image->has_mipmaps();
+	PIX *pix_in = pix_create_from_image(p_image, true);
+	PIX *pix_out = pixRotate(
+			pix_in, p_angle, L_ROTATE_SHEAR, L_BRING_IN_BLACK, 
+			p_image->get_width(), p_image->get_height()
+	);
+	image_create_from_pix(p_image, pix_out);
+	pixDestroy(&pix_out);
+}
 
-	Image::Format format = p_image->get_format();
-	if (format != Image::FORMAT_RGBA8) {
-		p_image->convert(Image::FORMAT_RGBA8);
-		format = Image::FORMAT_RGBA8;
-	}
-	PoolVector<uint8_t> dest;
-	PoolVector<uint8_t> src = p_image->get_data();
-	
-	int new_width = p_image->get_width();
-	int new_height = p_image->get_height();
-	
-	PIX *pix_in = nullptr;
-	PIX *pix_out = nullptr;
-	{
-		PoolVector<uint8_t>::Read r = src.read();
-		ERR_FAIL_COND(!r.ptr());
+void ImageExtension::rotate_90(Ref<Image> p_image, Direction p_direction) {
+	PIX *pix_in = pix_create_from_image(p_image, true);
+	PIX *pix_out = pixRotate90(pix_in, static_cast<int>(p_direction));
+	image_create_from_pix(p_image, pix_out);
+	pixDestroy(&pix_out);
+}
 
-		const uint8_t bpp = Image::get_format_pixel_size(format) * 8;
-		pix_in = pixCreate(p_image->get_width(), p_image->get_height(), bpp);
-		pixSetData(pix_in, (l_uint32 *)r.ptr());
-
-		pix_out = pixRotate(
-				pix_in, p_angle, L_ROTATE_SHEAR, L_BRING_IN_BLACK, 
-				p_image->get_width(), p_image->get_height()
-		);
-		ERR_FAIL_COND_MSG(!pix_out, "Invalid image input data.");
-		
-		l_uint32 * read = pixExtractData(pix_out);
-		ERR_FAIL_COND_MSG(!read, "Could not extract image data.");
-		
-		new_width = pix_out->w;
-		new_height = pix_out->h;
-		
-		const int data_size = Image::get_image_data_size(new_width, new_height, format);
-		dest.resize(data_size);
-		PoolVector<uint8_t>::Write w = dest.write();
-		copymem((uint32_t *)w.ptr(), (uint32_t *)read, data_size);
-	}
-	p_image->create(new_width, new_height, false, format, dest);
-
-	if (pix_out) {
-		pixDestroy(&pix_out);
-	}
-	if (used_mipmaps) {
-		p_image->generate_mipmaps();
-	}
+void ImageExtension::rotate_180(Ref<Image> p_image) {
+	PIX *pix_in = pix_create_from_image(p_image, true);
+	PIX *pix_out = pixRotate180(nullptr, pix_in);
+	image_create_from_pix(p_image, pix_out);
+	pixDestroy(&pix_out);
 }
 
 bool ImageExtension::has_pixel(Ref<Image> p_image, int x, int y) {
@@ -221,4 +197,40 @@ bool ImageExtension::get_pixel_or_null(Ref<Image> p_image, int x, int y, Color* 
 
 bool ImageExtension::get_pixelv_or_null(Ref<Image> p_image, const Vector2 &p_pos, Color* r_pixel) {
 	return get_pixel_or_null(p_image, p_pos.x, p_pos.y, r_pixel);
+}
+
+// PIX to Image conversion
+
+PIX *pix_create_from_image(Ref<Image> p_image, bool p_convert) {
+	if (p_convert && p_image->get_format() == Image::FORMAT_RGB8) {
+		p_image->convert(Image::FORMAT_RGBA8);
+	}
+	PoolVector<uint8_t> src = p_image->get_data();
+	PoolVector<uint8_t>::Read read = src.read();
+	ERR_FAIL_COND_V(!read.ptr(), nullptr);
+
+	const uint8_t bpp = Image::get_format_pixel_size(p_image->get_format()) * 8;
+	PIX *pix_in = pixCreateNoInit(p_image->get_width(), p_image->get_height(), bpp);
+	pixSetData(pix_in, (l_uint32 *)read.ptr());
+
+	return pix_in;
+}
+
+void image_create_from_pix(Ref<Image> p_image, PIX *pix) {
+	ERR_FAIL_COND_MSG(!pix, "Invalid image input data.");
+	
+	l_uint32 * src_data = pixExtractData(pix);
+	ERR_FAIL_COND_MSG(!src_data, "Could not extract image data.");
+
+	const int width = pix->w;
+	const int height = pix->h;
+	
+	PoolVector<uint8_t> dest;
+	{	
+		const int data_size = Image::get_image_data_size(width, height, p_image->get_format());
+		dest.resize(data_size);
+		PoolVector<uint8_t>::Write w = dest.write();
+		copymem((uint32_t *)w.ptr(), (uint32_t *)src_data, data_size);
+	}
+	p_image->create(width, height, false, p_image->get_format(), dest);
 }
