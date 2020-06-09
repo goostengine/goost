@@ -16,9 +16,9 @@ public:
 	static _ImageExtension *get_singleton() { return singleton; }
 
 public:
-	enum KernelConnectivity {
-		KERNEL_FOUR_WAY,
-		KERNEL_EIGHT_WAY,
+	enum Connectivity {
+		FOUR_CONNECTED,
+		EIGHT_CONNECTED,
 	};
 	enum Direction {
 		CW = 1,
@@ -27,11 +27,12 @@ public:
 public:
 	// Image methods
 	void replace_color(Ref<Image> p_image, const Color &p_color, const Color &p_with_color);
-	Ref<Image> bucket_fill(Ref<Image> p_image, const Point2 &p_at, const Color &p_fill_color, bool p_fill_image = true, KernelConnectivity p_kc = KERNEL_FOUR_WAY);
+	Ref<Image> bucket_fill(Ref<Image> p_image, const Point2 &p_at, const Color &p_fill_color, bool p_fill_image = true, Connectivity p_con = FOUR_CONNECTED);
 	void resize_hqx(Ref<Image> p_image, int p_scale);
 	void rotate(Ref<Image> p_image, real_t p_angle);
 	void rotate_90(Ref<Image> p_image, Direction p_direction);
 	void rotate_180(Ref<Image> p_image);
+	Ref<Image> render_polygon(Vector<Point2> p_polygon, bool p_fill, const Color &p_color, const Color &p_bg_color);
 
 	// Pixel methods
 	bool has_pixel(Ref<Image> p_image, int x, int y);
@@ -42,7 +43,7 @@ public:
 	_ImageExtension();
 };
 
-VARIANT_ENUM_CAST(_ImageExtension::KernelConnectivity);
+VARIANT_ENUM_CAST(_ImageExtension::Connectivity);
 VARIANT_ENUM_CAST(_ImageExtension::Direction);
 
 #endif

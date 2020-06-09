@@ -7,8 +7,8 @@ void _ImageExtension::replace_color(Ref<Image> p_image, const Color &p_color, co
 	ImageExtension::replace_color(p_image, p_color, p_with_color);
 }
 
-Ref<Image> _ImageExtension::bucket_fill(Ref<Image> p_image, const Point2 &p_at, const Color &p_fill_color, bool p_fill_image, KernelConnectivity p_kc) {
-	return ImageExtension::bucket_fill(p_image, p_at, p_fill_color, p_fill_image, ImageExtension::KernelConnectivity(p_kc));
+Ref<Image> _ImageExtension::bucket_fill(Ref<Image> p_image, const Point2 &p_at, const Color &p_fill_color, bool p_fill_image, Connectivity p_con) {
+	return ImageExtension::bucket_fill(p_image, p_at, p_fill_color, p_fill_image, ImageExtension::Connectivity(p_con));
 }
 
 void _ImageExtension::resize_hqx(Ref<Image> p_image, int p_scale) {
@@ -25,6 +25,10 @@ void _ImageExtension::rotate_90(Ref<Image> p_image, Direction p_direction) {
 
 void _ImageExtension::rotate_180(Ref<Image> p_image) {
 	return ImageExtension::rotate_180(p_image);
+}
+
+Ref<Image> _ImageExtension::render_polygon(Vector<Point2> p_polygon, bool p_fill, const Color &p_color, const Color &p_bg_color) {
+	return ImageExtension::render_polygon(p_polygon, p_fill, p_color, p_bg_color);
 }
 
 bool _ImageExtension::has_pixel(Ref<Image> p_image, int x, int y) {
@@ -51,11 +55,12 @@ Variant _ImageExtension::get_pixelv_or_null(Ref<Image> p_image, const Vector2 &p
 void _ImageExtension::_bind_methods() {
 	// Image methods
 	ClassDB::bind_method(D_METHOD("replace_color", "image", "color", "with_color"), &_ImageExtension::replace_color);
-	ClassDB::bind_method(D_METHOD("bucket_fill", "image", "at", "fill_color", "fill_image", "connectivity"), &_ImageExtension::bucket_fill, DEFVAL(true), DEFVAL(KERNEL_FOUR_WAY));
+	ClassDB::bind_method(D_METHOD("bucket_fill", "image", "at", "fill_color", "fill_image", "connectivity"), &_ImageExtension::bucket_fill, DEFVAL(true), DEFVAL(FOUR_CONNECTED));
 	ClassDB::bind_method(D_METHOD("resize_hqx", "image", "scale"), &_ImageExtension::resize_hqx, DEFVAL(2));
 	ClassDB::bind_method(D_METHOD("rotate", "image", "angle"), &_ImageExtension::rotate);
 	ClassDB::bind_method(D_METHOD("rotate_90", "image", "direction"), &_ImageExtension::rotate_90);
 	ClassDB::bind_method(D_METHOD("rotate_180", "image"), &_ImageExtension::rotate_180);
+	ClassDB::bind_method(D_METHOD("render_polygon", "polygon", "fill", "foreground_color", "background_color"), &_ImageExtension::render_polygon, DEFVAL(false), DEFVAL(Color(1,1,1,1)), DEFVAL(Color(0,0,0,0)));
 
 	// Pixel methods
 	ClassDB::bind_method(D_METHOD("get_pixel_or_null", "image", "x", "y"), &_ImageExtension::get_pixel_or_null);
@@ -63,8 +68,8 @@ void _ImageExtension::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("has_pixel", "image", "x", "y"), &_ImageExtension::has_pixel);
 	ClassDB::bind_method(D_METHOD("has_pixelv", "image", "pos"), &_ImageExtension::has_pixelv);
 
-	BIND_ENUM_CONSTANT(KERNEL_FOUR_WAY);
-	BIND_ENUM_CONSTANT(KERNEL_EIGHT_WAY);
+	BIND_ENUM_CONSTANT(FOUR_CONNECTED);
+	BIND_ENUM_CONSTANT(EIGHT_CONNECTED);
 
 	BIND_ENUM_CONSTANT(CW);
 	BIND_ENUM_CONSTANT(CCW);
