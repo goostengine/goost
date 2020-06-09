@@ -12,19 +12,19 @@ Ref<Image> _ImageExtension::bucket_fill(Ref<Image> p_image, const Point2 &p_at, 
 }
 
 void _ImageExtension::resize_hqx(Ref<Image> p_image, int p_scale) {
-	return ImageExtension::resize_hqx(p_image, p_scale);
+	ImageExtension::resize_hqx(p_image, p_scale);
 }
 
 void _ImageExtension::rotate(Ref<Image> p_image, real_t p_angle) {
-	return ImageExtension::rotate(p_image, p_angle);
+	ImageExtension::rotate(p_image, p_angle);
 }
 
 void _ImageExtension::rotate_90(Ref<Image> p_image, Direction p_direction) {
-	return ImageExtension::rotate_90(p_image, ImageExtension::Direction(p_direction));
+	ImageExtension::rotate_90(p_image, ImageExtension::Direction(p_direction));
 }
 
 void _ImageExtension::rotate_180(Ref<Image> p_image) {
-	return ImageExtension::rotate_180(p_image);
+	ImageExtension::rotate_180(p_image);
 }
 
 Ref<Image> _ImageExtension::render_polygon(Vector<Point2> p_polygon, bool p_fill, const Color &p_color, const Color &p_bg_color) {
