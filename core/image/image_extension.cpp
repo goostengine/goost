@@ -150,31 +150,54 @@ void ImageExtension::resize_hqx(Ref<Image> p_image, int p_scale) {
 	}
 }
 
-PIX *pix_create_from_image(Ref<Image> p_image, bool p_convert);
-void image_create_from_pix(Ref<Image> p_image, PIX *pix);
+PIX *pix_create_from_image(Ref<Image> p_image, Image::Format p_convert = Image::FORMAT_RGBA8);
+Ref<Image> image_create_from_pix(PIX *p_pix);
+void image_copy_from_pix(Ref<Image> p_image, PIX *p_pix);
 
 void ImageExtension::rotate(Ref<Image> p_image, real_t p_angle) {
-	PIX *pix_in = pix_create_from_image(p_image, true);
+	PIX *pix_in = pix_create_from_image(p_image);
 	PIX *pix_out = pixRotate(
 			pix_in, p_angle, L_ROTATE_SHEAR, L_BRING_IN_BLACK, 
 			p_image->get_width(), p_image->get_height()
 	);
-	image_create_from_pix(p_image, pix_out);
+	image_copy_from_pix(p_image, pix_out);
 	pixDestroy(&pix_out);
 }
 
 void ImageExtension::rotate_90(Ref<Image> p_image, Direction p_direction) {
-	PIX *pix_in = pix_create_from_image(p_image, true);
+	PIX *pix_in = pix_create_from_image(p_image);
 	PIX *pix_out = pixRotate90(pix_in, static_cast<int>(p_direction));
-	image_create_from_pix(p_image, pix_out);
+	image_copy_from_pix(p_image, pix_out);
 	pixDestroy(&pix_out);
 }
 
 void ImageExtension::rotate_180(Ref<Image> p_image) {
-	PIX *pix_in = pix_create_from_image(p_image, true);
+	PIX *pix_in = pix_create_from_image(p_image);
 	PIX *pix_out = pixRotate180(nullptr, pix_in);
-	image_create_from_pix(p_image, pix_out);
+	image_copy_from_pix(p_image, pix_out);
 	pixDestroy(&pix_out);
+}
+
+Ref<Image> ImageExtension::render_polygon(Vector<Point2> p_polygon) {
+	ERR_FAIL_COND_V_MSG(p_polygon.size() < 3, Variant(), "Bad polygon!")
+
+	PTA *pta_in = ptaCreate(p_polygon.size());
+	for (int i = 0; i < p_polygon.size(); ++i) {
+		ptaAddPt(pta_in, p_polygon[i].x, p_polygon[i].y);
+	}
+	int xmin, ymin;
+	PIX *pix_poly = pixRenderPolygon(pta_in, 1.0, &xmin, &ymin);
+	PIX *pix_fill = pixFillPolygon(pix_poly, pta_in, xmin, ymin);
+	pixDestroy(&pix_poly);
+	ptaDestroy(&pta_in);
+
+	PIX *pix_out = pixConvert1To32(nullptr, pix_fill, 0, 0xffffffff);
+	pixDestroy(&pix_fill);
+
+	Ref<Image> image = image_create_from_pix(pix_out);
+	pixDestroy(&pix_out);
+
+	return image;
 }
 
 bool ImageExtension::has_pixel(Ref<Image> p_image, int x, int y) {
@@ -201,10 +224,8 @@ bool ImageExtension::get_pixelv_or_null(Ref<Image> p_image, const Vector2 &p_pos
 
 // PIX to Image conversion
 
-PIX *pix_create_from_image(Ref<Image> p_image, bool p_convert) {
-	if (p_convert && p_image->get_format() != Image::FORMAT_RGBA8) {
-		p_image->convert(Image::FORMAT_RGBA8);
-	}
+PIX *pix_create_from_image(Ref<Image> p_image, Image::Format p_format) {
+	p_image->convert(p_format); // Does nothing if the same format.
 	PoolVector<uint8_t> src = p_image->get_data();
 	PoolVector<uint8_t>::Read read = src.read();
 	ERR_FAIL_COND_V(!read.ptr(), nullptr);
@@ -216,21 +237,44 @@ PIX *pix_create_from_image(Ref<Image> p_image, bool p_convert) {
 	return pix_in;
 }
 
-void image_create_from_pix(Ref<Image> p_image, PIX *pix) {
-	ERR_FAIL_COND_MSG(!pix, "Invalid image input data.");
-	
-	l_uint32 * src_data = pixExtractData(pix);
+void _image_from_pix(Ref<Image> p_image, PIX *p_pix) {
+	ERR_FAIL_COND_MSG(!p_pix, "Invalid image input data.");
+
+	l_uint32 * src_data = pixExtractData(p_pix);
 	ERR_FAIL_COND_MSG(!src_data, "Could not extract image data.");
 
-	const int width = pix->w;
-	const int height = pix->h;
+	const int width = p_pix->w;
+	const int height = p_pix->h;
 	
+	Image::Format format = Image::FORMAT_RGBA8;
+	switch (p_pix->d) {
+		case 32: {
+			format = Image::FORMAT_RGBA8;
+		} break;
+		case 24: {
+			format = Image::FORMAT_RGB8;
+		} break;
+		case 8: {
+			format = Image::FORMAT_L8;
+		} break;
+	}
 	PoolVector<uint8_t> dest;
 	{	
-		const int data_size = Image::get_image_data_size(width, height, p_image->get_format());
+		const int data_size = Image::get_image_data_size(width, height, format);
 		dest.resize(data_size);
 		PoolVector<uint8_t>::Write w = dest.write();
 		copymem((uint32_t *)w.ptr(), (uint32_t *)src_data, data_size);
 	}
-	p_image->create(width, height, false, p_image->get_format(), dest);
+	p_image->create(width, height, false, format, dest);
+}
+
+Ref<Image> image_create_from_pix(PIX *p_pix) {
+	Ref<Image> image;
+	image.instance();
+	_image_from_pix(image, p_pix);
+	return image;
+}
+
+void image_copy_from_pix(Ref<Image> p_image, PIX *p_pix) {
+	_image_from_pix(p_image, p_pix);
 }

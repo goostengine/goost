@@ -100,3 +100,9 @@ func test_image_rotate_180_grayscale():
 	output.lock()
 	assert_eq(output.get_pixel(0, 63), Color("#010101"))
 	output.unlock()
+
+
+func test_image_render_polygon():
+	var polygon = PoolVector2Array([Vector2(10, 10), Vector2(50, 25), Vector2(90, 70), Vector2(12, 100)])
+	output = ImageExtension.render_polygon(polygon)
+	output.convert(Image.FORMAT_RGB8)
