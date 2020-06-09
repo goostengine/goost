@@ -178,22 +178,32 @@ void ImageExtension::rotate_180(Ref<Image> p_image) {
 	pixDestroy(&pix_out);
 }
 
-Ref<Image> ImageExtension::render_polygon(Vector<Point2> p_polygon) {
+Ref<Image> ImageExtension::render_polygon(Vector<Point2> p_polygon, bool p_fill, const Color &p_color, const Color &p_bg_color) {
 	ERR_FAIL_COND_V_MSG(p_polygon.size() < 3, Variant(), "Bad polygon!")
 
 	PTA *pta_in = ptaCreate(p_polygon.size());
 	for (int i = 0; i < p_polygon.size(); ++i) {
 		ptaAddPt(pta_in, p_polygon[i].x, p_polygon[i].y);
 	}
+	// Outline width is not exposed, width > 1 produces squarish results.
+	static constexpr int width = 1;
 	int xmin, ymin;
-	PIX *pix_poly = pixRenderPolygon(pta_in, 1.0, &xmin, &ymin);
-	PIX *pix_fill = pixFillPolygon(pix_poly, pta_in, xmin, ymin);
-	pixDestroy(&pix_poly);
+
+	PIX *pix_poly = pixRenderPolygon(pta_in, width, &xmin, &ymin);
+	PIX *pix_fill = nullptr;
+	if (p_fill) {
+		pix_fill = pixFillPolygon(pix_poly, pta_in, xmin, ymin);
+	}
 	ptaDestroy(&pta_in);
 
-	PIX *pix_out = pixConvert1To32(nullptr, pix_fill, 0, 0xffffffff);
-	pixDestroy(&pix_fill);
-
+	PIX *pix_out = pixConvert1To32(
+			nullptr, p_fill ? pix_fill : pix_poly, 
+			p_bg_color.to_abgr32(), p_color.to_abgr32()
+	);
+	pixDestroy(&pix_poly);
+	if (pix_fill) {
+		pixDestroy(&pix_fill);
+	}
 	Ref<Image> image = image_create_from_pix(pix_out);
 	pixDestroy(&pix_out);
 

@@ -27,8 +27,8 @@ void _ImageExtension::rotate_180(Ref<Image> p_image) {
 	return ImageExtension::rotate_180(p_image);
 }
 
-Ref<Image> _ImageExtension::render_polygon(Vector<Point2> p_polygon) {
-	return ImageExtension::render_polygon(p_polygon);
+Ref<Image> _ImageExtension::render_polygon(Vector<Point2> p_polygon, bool p_fill, const Color &p_color, const Color &p_bg_color) {
+	return ImageExtension::render_polygon(p_polygon, p_fill, p_color, p_bg_color);
 }
 
 bool _ImageExtension::has_pixel(Ref<Image> p_image, int x, int y) {
@@ -60,7 +60,7 @@ void _ImageExtension::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("rotate", "image", "angle"), &_ImageExtension::rotate);
 	ClassDB::bind_method(D_METHOD("rotate_90", "image", "direction"), &_ImageExtension::rotate_90);
 	ClassDB::bind_method(D_METHOD("rotate_180", "image"), &_ImageExtension::rotate_180);
-	ClassDB::bind_method(D_METHOD("render_polygon", "polygon"), &_ImageExtension::render_polygon);
+	ClassDB::bind_method(D_METHOD("render_polygon", "polygon", "fill", "foreground_color", "background_color"), &_ImageExtension::render_polygon, DEFVAL(false), DEFVAL(Color(1,1,1,1)), DEFVAL(Color(0,0,0,0)));
 
 	// Pixel methods
 	ClassDB::bind_method(D_METHOD("get_pixel_or_null", "image", "x", "y"), &_ImageExtension::get_pixel_or_null);

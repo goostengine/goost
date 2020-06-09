@@ -32,7 +32,7 @@ public:
 	void rotate(Ref<Image> p_image, real_t p_angle);
 	void rotate_90(Ref<Image> p_image, Direction p_direction);
 	void rotate_180(Ref<Image> p_image);
-	Ref<Image> render_polygon(Vector<Point2> p_polygon);
+	Ref<Image> render_polygon(Vector<Point2> p_polygon, bool p_fill, const Color &p_color, const Color &p_bg_color);
 
 	// Pixel methods
 	bool has_pixel(Ref<Image> p_image, int x, int y);

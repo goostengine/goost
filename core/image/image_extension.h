@@ -2,7 +2,6 @@
 #define GOOST_IMAGE_H
 
 #include "core/image.h"
-#include "core/map.h"
 
 class ImageExtension {
 
@@ -23,7 +22,7 @@ public:
 	static void rotate(Ref<Image> p_image, real_t p_angle);
 	static void rotate_90(Ref<Image> p_image, Direction p_direction);
 	static void rotate_180(Ref<Image> p_image);
-	static Ref<Image> render_polygon(Vector<Point2> p_polygon);
+	static Ref<Image> render_polygon(Vector<Point2> p_polygon, bool p_fill = false, const Color &p_color = Color(1,1,1,1), const Color &p_bg_color = Color(0,0,0,0));
 
 	// Pixel methods
 	static bool has_pixel(Ref<Image> p_image, int x, int y);

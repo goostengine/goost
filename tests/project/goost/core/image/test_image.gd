@@ -102,7 +102,32 @@ func test_image_rotate_180_grayscale():
 	output.unlock()
 
 
-func test_image_render_polygon():
-	var polygon = PoolVector2Array([Vector2(10, 10), Vector2(50, 25), Vector2(90, 70), Vector2(12, 100)])
-	output = ImageExtension.render_polygon(polygon)
-	output.convert(Image.FORMAT_RGB8)
+func test_image_render_polygon_non_filled():
+	var polygon = [Vector2(124, 44), Vector2(101, 115), Vector2(26, 115), Vector2(0, 44), Vector2(64, 0)]
+	output = ImageExtension.render_polygon(polygon, false)
+	output.convert(Image.FORMAT_RGB8) # So it's visible on image preview.
+	output.lock()
+	for p in polygon:
+		var pixel = output.get_pixelv(p)
+		assert_eq(pixel, Color.white, "Outline on the image should match polygon vertices.")
+	output.unlock()
+
+
+func test_image_render_polygon_filled():
+	var polygon = [Vector2(124, 44), Vector2(101, 115), Vector2(26, 115), Vector2(0, 44), Vector2(64, 0)]
+	output = ImageExtension.render_polygon(polygon, true)
+	output.lock()
+	var pixel = output.get_pixelv(output.get_size() / 2)
+	assert_eq(pixel, Color.white, "Center of the image should be white.")
+	output.unlock()
+
+
+func test_image_render_polygon_filled_color():
+	var polygon = [Vector2(124, 44), Vector2(101, 115), Vector2(26, 115), Vector2(0, 44), Vector2(64, 0)]
+	output = ImageExtension.render_polygon(polygon, true, Color.green, Color.blue)
+	output.lock()
+	var pixel_fg = output.get_pixelv(output.get_size() / 2)
+	assert_eq(pixel_fg, Color.green)
+	var pixel_bg = output.get_pixel(0, 0)
+	assert_eq(pixel_bg, Color.blue)
+	output.unlock()
