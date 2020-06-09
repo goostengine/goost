@@ -3,7 +3,7 @@
 
 #include "core/image.h"
 
-class ImageExtension {
+class GoostImage {
 
 public:
 	enum Connectivity {

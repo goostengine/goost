@@ -1,5 +1,5 @@
-#ifndef GOOST_GEOMETRY_H
-#define GOOST_GEOMETRY_H
+#ifndef GOOST_GEOMETRY_2D_H
+#define GOOST_GEOMETRY_2D_H
 
 #include "core/object.h"
 #include "core/project_settings.h"
@@ -8,7 +8,7 @@
 #include "poly/offset/poly_offset.h"
 #include "poly/decomp/poly_decomp.h"
 
-class GeometryExtension2D {
+class GoostGeometry2D {
 public:
 	enum PolyBooleanOperation {
 		OPERATION_NONE, // May perform polygons fixup, build hierarchy etc.
@@ -204,7 +204,7 @@ public:
 	}
 };
 
-class GeometryExtension2DManager {
+class GoostGeometry2DManager {
 public:
 	static PolyBackend2DManager<PolyBoolean2D *> poly_boolean;
 	static PolyBackend2DManager<PolyOffset2D *> poly_offset;
@@ -213,11 +213,11 @@ public:
 	static void poly_backends_changed_update() {
 		String selected;
 		selected = poly_boolean.update();
-		GeometryExtension2D::set_poly_boolean_instance(poly_boolean.get_backend_instance(selected));
+		GoostGeometry2D::set_poly_boolean_instance(poly_boolean.get_backend_instance(selected));
 		selected = poly_offset.update();
-		GeometryExtension2D::set_poly_offset_instance(poly_offset.get_backend_instance(selected));
+		GoostGeometry2D::set_poly_offset_instance(poly_offset.get_backend_instance(selected));
 		selected = poly_decomp.update();
-		GeometryExtension2D::set_poly_decomp_instance(poly_decomp.get_backend_instance(selected));
+		GoostGeometry2D::set_poly_decomp_instance(poly_decomp.get_backend_instance(selected));
 	}
 	static void finalize() {
 		poly_boolean.finalize();
@@ -226,4 +226,4 @@ public:
 	}
 };
 
-#endif // GOOST_GEOMETRY_H
+#endif // GOOST_GEOMETRY_2D_H

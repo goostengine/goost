@@ -1,10 +1,10 @@
-#include "image_extension.h"
+#include "goost_image.h"
 
 #include "goost/thirdparty/hqx/HQ2x.hh"
 #include "goost/thirdparty/hqx/HQ3x.hh"
 #include "goost/thirdparty/leptonica/allheaders.h"
 
-void ImageExtension::replace_color(Ref<Image> p_image, const Color &p_color, const Color &p_with_color) {
+void GoostImage::replace_color(Ref<Image> p_image, const Color &p_color, const Color &p_with_color) {
 
 	if (p_color == p_with_color) {
 		return;
@@ -23,7 +23,7 @@ void ImageExtension::replace_color(Ref<Image> p_image, const Color &p_color, con
 	p_image->unlock();
 }
 
-Ref<Image> ImageExtension::bucket_fill(Ref<Image> p_image, const Point2 &p_at, const Color &p_fill_color, bool p_fill_image, Connectivity p_con) {
+Ref<Image> GoostImage::bucket_fill(Ref<Image> p_image, const Point2 &p_at, const Color &p_fill_color, bool p_fill_image, Connectivity p_con) {
 
 	// Based on flood-fill algorithm
 	// Runs up to x35 faster compared to GDScript implementation
@@ -110,7 +110,7 @@ Ref<Image> ImageExtension::bucket_fill(Ref<Image> p_image, const Point2 &p_at, c
 	return fill_image;
 }
 
-void ImageExtension::resize_hqx(Ref<Image> p_image, int p_scale) {
+void GoostImage::resize_hqx(Ref<Image> p_image, int p_scale) {
 	ERR_FAIL_COND(p_scale < 2);
 	ERR_FAIL_COND(p_scale > 3);
 	
@@ -154,7 +154,7 @@ PIX *pix_create_from_image(Ref<Image> p_image, Image::Format p_convert = Image::
 Ref<Image> image_create_from_pix(PIX *p_pix);
 void image_copy_from_pix(Ref<Image> p_image, PIX *p_pix);
 
-void ImageExtension::rotate(Ref<Image> p_image, real_t p_angle) {
+void GoostImage::rotate(Ref<Image> p_image, real_t p_angle) {
 	PIX *pix_in = pix_create_from_image(p_image);
 	PIX *pix_out = pixRotate(
 			pix_in, p_angle, L_ROTATE_SHEAR, L_BRING_IN_BLACK, 
@@ -164,21 +164,21 @@ void ImageExtension::rotate(Ref<Image> p_image, real_t p_angle) {
 	pixDestroy(&pix_out);
 }
 
-void ImageExtension::rotate_90(Ref<Image> p_image, Direction p_direction) {
+void GoostImage::rotate_90(Ref<Image> p_image, Direction p_direction) {
 	PIX *pix_in = pix_create_from_image(p_image);
 	PIX *pix_out = pixRotate90(pix_in, static_cast<int>(p_direction));
 	image_copy_from_pix(p_image, pix_out);
 	pixDestroy(&pix_out);
 }
 
-void ImageExtension::rotate_180(Ref<Image> p_image) {
+void GoostImage::rotate_180(Ref<Image> p_image) {
 	PIX *pix_in = pix_create_from_image(p_image);
 	PIX *pix_out = pixRotate180(nullptr, pix_in);
 	image_copy_from_pix(p_image, pix_out);
 	pixDestroy(&pix_out);
 }
 
-Ref<Image> ImageExtension::render_polygon(Vector<Point2> p_polygon, bool p_fill, const Color &p_color, const Color &p_bg_color) {
+Ref<Image> GoostImage::render_polygon(Vector<Point2> p_polygon, bool p_fill, const Color &p_color, const Color &p_bg_color) {
 	ERR_FAIL_COND_V_MSG(p_polygon.size() < 3, Variant(), "Bad polygon!")
 
 	PTA *pta_in = ptaCreate(p_polygon.size());
@@ -210,15 +210,15 @@ Ref<Image> ImageExtension::render_polygon(Vector<Point2> p_polygon, bool p_fill,
 	return image;
 }
 
-bool ImageExtension::has_pixel(Ref<Image> p_image, int x, int y) {
+bool GoostImage::has_pixel(Ref<Image> p_image, int x, int y) {
 	return get_pixel_or_null(p_image, x, y);
 }
 
-bool ImageExtension::has_pixelv(Ref<Image> p_image, const Vector2 &p_pos) {
+bool GoostImage::has_pixelv(Ref<Image> p_image, const Vector2 &p_pos) {
 	return get_pixelv_or_null(p_image, p_pos);
 }
 
-bool ImageExtension::get_pixel_or_null(Ref<Image> p_image, int x, int y, Color* r_pixel) {
+bool GoostImage::get_pixel_or_null(Ref<Image> p_image, int x, int y, Color* r_pixel) {
 	if (x >= 0 && x < p_image->get_width() && y >= 0 && y < p_image->get_height()) {
 		if (r_pixel) {
 			*r_pixel = p_image->get_pixel(x, y);
@@ -228,7 +228,7 @@ bool ImageExtension::get_pixel_or_null(Ref<Image> p_image, int x, int y, Color* 
 	return false;
 }
 
-bool ImageExtension::get_pixelv_or_null(Ref<Image> p_image, const Vector2 &p_pos, Color* r_pixel) {
+bool GoostImage::get_pixelv_or_null(Ref<Image> p_image, const Vector2 &p_pos, Color* r_pixel) {
 	return get_pixel_or_null(p_image, p_pos.x, p_pos.y, r_pixel);
 }
 

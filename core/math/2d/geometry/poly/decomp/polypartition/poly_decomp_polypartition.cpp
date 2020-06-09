@@ -1,4 +1,4 @@
-#include "goost/core/math/2d/geometry/geometry_extension.h"
+#include "goost/core/math/2d/geometry/goost_geometry_2d.h"
 #include "poly_decomp_polypartition.h"
 #include "thirdparty/misc/triangulator.h"
 
@@ -8,7 +8,7 @@ List<TriangulatorPoly> configure(PolyDecomp2DPolyPartition::DecompType p_type, c
     // Split between inner and outer polygons first.
     Vector<int> outer_indices, inner_indices;
     for (int i = 0; i < p_polygons.size(); ++i) {
-        if (GeometryExtension2D::polygon_area(p_polygons[i]) >= 0.0) {
+        if (GoostGeometry2D::polygon_area(p_polygons[i]) >= 0.0) {
             outer_indices.push_back(i);
         } else {
             if (p_type == PolyDecomp2DPolyPartition::DECOMP_TRIANGLES_OPT || p_type == PolyDecomp2DPolyPartition::DECOMP_CONVEX_OPT) {

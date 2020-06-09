@@ -2,19 +2,19 @@
 
 #include "core/engine.h"
 
-#include "2d/geometry/geometry_extension.h"
-#include "2d/geometry/geometry_extension_bind.h"
+#include "2d/geometry/goost_geometry_2d.h"
+#include "2d/geometry/goost_geometry_2d_bind.h"
 
-static _GeometryExtension2D *_geometry_extension = nullptr;
+static _GoostGeometry2D *_goost_geometry_2d = nullptr;
 
 namespace goost {
 
 void register_math_types() {
-	_geometry_extension = memnew(_GeometryExtension2D);
-	GeometryExtension2D::initialize();
+	_goost_geometry_2d = memnew(_GoostGeometry2D);
+	GoostGeometry2D::initialize();
 	
-	ClassDB::register_class<_GeometryExtension2D>();
-	Engine::get_singleton()->add_singleton(Engine::Singleton("GeometryExtension2D", _GeometryExtension2D::get_singleton()));
+	ClassDB::register_class<_GoostGeometry2D>();
+	Engine::get_singleton()->add_singleton(Engine::Singleton("GoostGeometry2D", _GoostGeometry2D::get_singleton()));
 	
 	ClassDB::register_class<PolyBooleanParameters2D>();
 	ClassDB::register_class<PolyOffsetParameters2D>();
@@ -24,8 +24,8 @@ void register_math_types() {
 }
 
 void unregister_math_types() {
-	memdelete(_geometry_extension);
-	GeometryExtension2D::finalize();
+	memdelete(_goost_geometry_2d);
+	GoostGeometry2D::finalize();
 }
 
 } // namespace goost

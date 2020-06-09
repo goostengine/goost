@@ -1,19 +1,19 @@
 #ifndef GOOST_GEOMETRY_EXTENSION_BIND_H
 #define GOOST_GEOMETRY_EXTENSION_BIND_H
 
-#include "geometry_extension.h"
+#include "goost_geometry_2d.h"
 
-class _GeometryExtension2D : public Object {
-	GDCLASS(_GeometryExtension2D, Object);
+class _GoostGeometry2D : public Object {
+	GDCLASS(_GoostGeometry2D, Object);
 
 private:
-	static _GeometryExtension2D *singleton;
+	static _GoostGeometry2D *singleton;
 
 protected:
 	static void _bind_methods();
 
 public:
-	static _GeometryExtension2D *get_singleton() { return singleton; }
+	static _GoostGeometry2D *get_singleton() { return singleton; }
 	
 public:
 	enum PolyBooleanOperation {
@@ -76,10 +76,10 @@ public:
 	Vector<Point2> regular_polygon(int p_edge_count, real_t p_size) const;
 	Vector<Point2> circle(real_t p_radius, real_t p_max_error) const;
 	
-	_GeometryExtension2D();
+	_GoostGeometry2D();
 };
 
-VARIANT_ENUM_CAST(_GeometryExtension2D::PolyBooleanOperation);
-VARIANT_ENUM_CAST(_GeometryExtension2D::PolyDecompType);
+VARIANT_ENUM_CAST(_GoostGeometry2D::PolyBooleanOperation);
+VARIANT_ENUM_CAST(_GoostGeometry2D::PolyDecompType);
 
 #endif // GOOST_GEOMETRY_EXTENSION_BIND_H
