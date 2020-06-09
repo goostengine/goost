@@ -8,8 +8,7 @@ func after_each():
 
 
 func test_image_resize_hqx2_rgb():
-	var input = Image.new()
-	input.load("res://goost/core/image/samples/rect_rgb.png")
+	var input = Goost.image_load_no_warning("res://goost/core/image/samples/rect_rgb.png")
 	var input_size = input.get_size()
 	output = input
 	ImageExtension.resize_hqx(output, 2)
@@ -17,8 +16,7 @@ func test_image_resize_hqx2_rgb():
 
 
 func test_image_resize_hqx3_rgba():
-	var input = Image.new()
-	input.load("res://goost/core/image/samples/rect_rgba.png")
+	var input = Goost.image_load_no_warning("res://goost/core/image/samples/rect_rgba.png")
 	var input_size = input.get_size()
 	output = input
 	ImageExtension.resize_hqx(output, 3)
@@ -26,8 +24,7 @@ func test_image_resize_hqx3_rgba():
 
 
 func test_image_rotate_rgba():
-	var input = Image.new()
-	input.load("res://goost/core/image/samples/rect_rgba.png")
+	var input = Goost.image_load_no_warning("res://goost/core/image/samples/rect_rgba.png")
 	var input_size = input.get_size()
 	output = input
 	ImageExtension.rotate(output, deg2rad(45))
@@ -39,8 +36,7 @@ func test_image_rotate_rgba():
 
 
 func test_image_rotate_rgb():
-	var input = Image.new()
-	input.load("res://goost/core/image/samples/rect_rgb.png")
+	var input = Goost.image_load_no_warning("res://goost/core/image/samples/rect_rgb.png")
 	var input_size = input.get_size()
 	output = input
 	ImageExtension.rotate(output, deg2rad(45))
@@ -54,8 +50,7 @@ func test_image_rotate_rgb():
 
 
 func test_image_rotate_grayscale():
-	var input = Image.new()
-	input.load("res://goost/core/image/samples/rect_grayscale.png")
+	var input = Goost.image_load_no_warning("res://goost/core/image/samples/rect_grayscale.png")
 	var input_size = input.get_size()
 	output = input
 	ImageExtension.rotate(output, deg2rad(45))
@@ -67,8 +62,7 @@ func test_image_rotate_grayscale():
 
 
 func test_image_rotate_90_cw():
-	var input = Image.new()
-	input.load("res://goost/core/image/samples/rect_rgba.png")
+	var input = Goost.image_load_no_warning("res://goost/core/image/samples/rect_rgba.png")
 	var input_size = input.get_size()
 	output = input
 	ImageExtension.rotate_90(output, ImageExtension.CW)
@@ -79,8 +73,7 @@ func test_image_rotate_90_cw():
 
 
 func test_image_rotate_90_ccw():
-	var input = Image.new()
-	input.load("res://goost/core/image/samples/rect_rgba.png")
+	var input = Goost.image_load_no_warning("res://goost/core/image/samples/rect_rgba.png")
 	var input_size = input.get_size()
 	output = input
 	ImageExtension.rotate_90(output, ImageExtension.CCW)
@@ -91,8 +84,7 @@ func test_image_rotate_90_ccw():
 
 
 func test_image_rotate_180_grayscale():
-	var input = Image.new()
-	input.load("res://goost/core/image/samples/rect_grayscale.png")
+	var input = Goost.image_load_no_warning("res://goost/core/image/samples/rect_grayscale.png")
 	var input_size = input.get_size()
 	output = input
 	ImageExtension.rotate_180(output)
