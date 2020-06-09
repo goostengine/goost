@@ -13,6 +13,7 @@ needs.
 | `rotate`            | Rotates the image around its center.                                        |
 | `rotate_90`         | Rotates the image by 90 degrees in either direction.                        |
 | `rotate_180`        | Rotates the image by 180 degrees.                                           |
+| `render_polygon`    | Renders a binary representation of the polygon as a new image.              |
 | `has_pixel`         | Tells whether a pixel lies inside image coordinates.                        |
 | `get_pixel_or_null` | Returns a pixel at specified image coordinates, or null if doesn't exist.   |
 

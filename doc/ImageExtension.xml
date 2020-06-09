@@ -75,6 +75,21 @@
 				Same as [method has_pixel] but uses [Vector2] for specifying image coordinates.
 			</description>
 		</method>
+		<method name="render_polygon">
+			<return type="Image">
+			</return>
+			<argument index="0" name="polygon" type="PoolVector2Array">
+			</argument>
+			<argument index="1" name="fill" type="bool" default="false">
+			</argument>
+			<argument index="2" name="foreground_color" type="Color" default="Color( 1, 1, 1, 1 )">
+			</argument>
+			<argument index="3" name="background_color" type="Color" default="Color( 0, 0, 0, 0 )">
+			</argument>
+			<description>
+				Renders a binary representation of the polygon as a new image. If [code]fill[/code] is [code]true[/code], fills the interior of the polygon with [code]foreground_color[/code] (white by default), else just renders the polygon's outline alone with the same color. The boundary pixels are always [constant FOUR_CONNECTED]. The image [code]background_color[/code] can also be overridden (transparent by default).
+			</description>
+		</method>
 		<method name="replace_color">
 			<return type="void">
 			</return>
