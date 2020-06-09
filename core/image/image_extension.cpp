@@ -23,7 +23,7 @@ void ImageExtension::replace_color(Ref<Image> p_image, const Color &p_color, con
 	p_image->unlock();
 }
 
-Ref<Image> ImageExtension::bucket_fill(Ref<Image> p_image, const Point2 &p_at, const Color &p_fill_color, bool p_fill_image, KernelConnectivity p_kc) {
+Ref<Image> ImageExtension::bucket_fill(Ref<Image> p_image, const Point2 &p_at, const Color &p_fill_color, bool p_fill_image, Connectivity p_con) {
 
 	// Based on flood-fill algorithm
 	// Runs up to x35 faster compared to GDScript implementation
@@ -49,15 +49,15 @@ Ref<Image> ImageExtension::bucket_fill(Ref<Image> p_image, const Point2 &p_at, c
 	Color pixel;
 
 	Vector<Vector2> kernel;
-	switch (p_kc) {
-		case KERNEL_FOUR_WAY: {
+	switch (p_con) {
+		case FOUR_CONNECTED: {
 			kernel.push_back(Vector2(1, 0));
 			kernel.push_back(Vector2(0, -1));
 			kernel.push_back(Vector2(-1, 0));
 			kernel.push_back(Vector2(0, 1));
 		} break;
 
-		case KERNEL_EIGHT_WAY: {
+		case EIGHT_CONNECTED: {
 			kernel.push_back(Vector2(1, 0));
 			kernel.push_back(Vector2(1, -1));
 			kernel.push_back(Vector2(0, -1));

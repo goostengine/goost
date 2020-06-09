@@ -20,11 +20,11 @@
 			</argument>
 			<argument index="3" name="fill_image" type="bool" default="true">
 			</argument>
-			<argument index="4" name="connectivity" type="int" enum="ImageExtension.KernelConnectivity" default="0">
+			<argument index="4" name="connectivity" type="int" enum="ImageExtension.Connectivity" default="0">
 			</argument>
 			<description>
 				Fills the area with a [code]fill_color[/code] confined by other opaque pixels. If [code]fill_image[/code] is [code]false[/code], the filled image chunk shall not overwrite the original image. The filled chunk is returned as another [Image] in all cases.
-				[enum KernelConnectivity] specifies the flood fill algorithm. [constant KERNEL_FOUR_WAY] allows the filling pixels to go through diagonally placed opaque pixels and is slightly more efficient compared to [constant KERNEL_EIGHT_WAY].
+				[enum Connectivity] specifies the flood fill algorithm. [constant FOUR_CONNECTED] allows the filling pixels to go through diagonally placed opaque pixels and is slightly more efficient compared to [constant EIGHT_CONNECTED].
 			</description>
 		</method>
 		<method name="get_pixel_or_null">
@@ -145,10 +145,10 @@
 		</method>
 	</methods>
 	<constants>
-		<constant name="KERNEL_FOUR_WAY" value="0" enum="KernelConnectivity">
+		<constant name="FOUR_CONNECTED" value="0" enum="Connectivity">
 			Describes the Neumann neighborhood.
 		</constant>
-		<constant name="KERNEL_EIGHT_WAY" value="1" enum="KernelConnectivity">
+		<constant name="EIGHT_CONNECTED" value="1" enum="Connectivity">
 			Describes the Moore neighborhood.
 		</constant>
 		<constant name="CW" value="1" enum="Direction">
