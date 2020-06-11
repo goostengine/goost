@@ -5,7 +5,7 @@
 
 ## Overview
 
-The module exposes a `GeometryExtension2D` singleton with the methods for
+The module exposes a `GoostGeometry2D` singleton with the methods for
 performing polygon clipping, offsetting (deflating/buffering) and decomposition
 (triangulation, convex decomposition), as well as providing polypath queries
 such as polygon area, centroid of a polygon, point in polygon, and generating

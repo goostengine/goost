@@ -2,24 +2,24 @@
 
 #include "core/engine.h"
 
-#include "image_extension.h"
-#include "image_extension_bind.h"
+#include "goost_image.h"
+#include "goost_image_bind.h"
 #include "image_indexed.h"
 #include "image_blender.h"
 #include "drivers/png/image_loader_indexed_png.h"
 #include "drivers/png/resource_saver_indexed_png.h"
 
-static _ImageExtension *_image_extension = nullptr;
+static _GoostImage *_goost_image = nullptr;
 static ImageLoaderIndexedPNG *image_loader_indexed_png;
 static Ref<ResourceSaverIndexedPNG> resource_saver_indexed_png;
 
 namespace goost {
 
 void register_image_types() {
-	_image_extension = memnew(_ImageExtension);
+	_goost_image = memnew(_GoostImage);
 
-	ClassDB::register_class<_ImageExtension>();
-	Engine::get_singleton()->add_singleton(Engine::Singleton("ImageExtension", _ImageExtension::get_singleton()));
+	ClassDB::register_class<_GoostImage>();
+	Engine::get_singleton()->add_singleton(Engine::Singleton("GoostImage", _GoostImage::get_singleton()));
 
 	ClassDB::register_class<ImageIndexed>();
 
@@ -33,7 +33,7 @@ void register_image_types() {
 }
 
 void unregister_image_types() {
-	memdelete(_image_extension);
+	memdelete(_goost_image);
 
 	if (image_loader_indexed_png)
 		memdelete(image_loader_indexed_png);

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="ImageExtension" inherits="Object" version="3.2">
+<class name="GoostImage" inherits="Object" version="3.2">
 	<brief_description>
 		An image processing and utility singleton.
 	</brief_description>
@@ -20,7 +20,7 @@
 			</argument>
 			<argument index="3" name="fill_image" type="bool" default="true">
 			</argument>
-			<argument index="4" name="connectivity" type="int" enum="ImageExtension.Connectivity" default="0">
+			<argument index="4" name="connectivity" type="int" enum="GoostImage.Connectivity" default="0">
 			</argument>
 			<description>
 				Fills the area with a [code]fill_color[/code] confined by other opaque pixels. If [code]fill_image[/code] is [code]false[/code], the filled image chunk shall not overwrite the original image. The filled chunk is returned as another [Image] in all cases.
@@ -128,7 +128,7 @@
 				# Rotate Godot icon by 45 degrees.
 				var texture = preload("res://icon.png")
 				var image = texture.get_data()
-				ImageExtension.rotate(image, deg2rad(45))
+				GoostImage.rotate(image, deg2rad(45))
 				image.save_png("res://icon_rotated.png")
 				[/codeblock]
 			</description>
@@ -152,7 +152,7 @@
 			</return>
 			<argument index="0" name="image" type="Image">
 			</argument>
-			<argument index="1" name="direction" type="int" enum="ImageExtension.Direction">
+			<argument index="1" name="direction" type="int" enum="GoostImage.Direction">
 			</argument>
 			<description>
 				Rotates the image by 90 degrees in either clockwise or counterclockwise [enum Direction]. The method performs faster and doesn't lose any image pixel information as opposed to [method rotate] with the [code]angle[/code] parameter set to [code]PI / 2[/code].

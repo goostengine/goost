@@ -1,4 +1,4 @@
-#include "geometry_extension.h"
+#include "goost_geometry_2d.h"
 
 #include "poly/boolean/clipper6/poly_boolean_clipper6.h"
 #include "poly/boolean/clipper10/poly_boolean_clipper10.h"
@@ -7,49 +7,49 @@
 #include "poly/decomp/polypartition/poly_decomp_polypartition.h"
 #include "poly/decomp/clipper10/poly_decomp_clipper10.h"
 
-PolyBoolean2D *GeometryExtension2D::poly_boolean = nullptr;
-PolyOffset2D *GeometryExtension2D::poly_offset = nullptr;
-PolyDecomp2D *GeometryExtension2D::poly_decomp = nullptr;
+PolyBoolean2D *GoostGeometry2D::poly_boolean = nullptr;
+PolyOffset2D *GoostGeometry2D::poly_offset = nullptr;
+PolyDecomp2D *GoostGeometry2D::poly_decomp = nullptr;
 
-PolyBackend2DManager<PolyBoolean2D *> GeometryExtension2DManager::poly_boolean = PolyBackend2DManager<PolyBoolean2D *>();
-PolyBackend2DManager<PolyOffset2D *> GeometryExtension2DManager::poly_offset = PolyBackend2DManager<PolyOffset2D *>();
-PolyBackend2DManager<PolyDecomp2D *> GeometryExtension2DManager::poly_decomp = PolyBackend2DManager<PolyDecomp2D *>();
+PolyBackend2DManager<PolyBoolean2D *> GoostGeometry2DManager::poly_boolean = PolyBackend2DManager<PolyBoolean2D *>();
+PolyBackend2DManager<PolyOffset2D *> GoostGeometry2DManager::poly_offset = PolyBackend2DManager<PolyOffset2D *>();
+PolyBackend2DManager<PolyDecomp2D *> GoostGeometry2DManager::poly_decomp = PolyBackend2DManager<PolyDecomp2D *>();
 
-Ref<PolyBooleanParameters2D> GeometryExtension2D::default_poly_boolean_params = nullptr;
-Ref<PolyOffsetParameters2D> GeometryExtension2D::default_poly_offset_params = nullptr;
-Ref<PolyDecompParameters2D> GeometryExtension2D::default_poly_decomp_params = nullptr;
+Ref<PolyBooleanParameters2D> GoostGeometry2D::default_poly_boolean_params = nullptr;
+Ref<PolyOffsetParameters2D> GoostGeometry2D::default_poly_offset_params = nullptr;
+Ref<PolyDecompParameters2D> GoostGeometry2D::default_poly_decomp_params = nullptr;
 
 
-void GeometryExtension2D::initialize() {
+void GoostGeometry2D::initialize() {
 	default_poly_boolean_params.instance();
 	default_poly_offset_params.instance();
 	default_poly_decomp_params.instance();
 	
-	GeometryExtension2DManager::poly_boolean.setting_name = "goost/geometry/2d/backends/poly_boolean";
-	GeometryExtension2DManager::poly_offset.setting_name = "goost/geometry/2d/backends/poly_offset";
-	GeometryExtension2DManager::poly_decomp.setting_name = "goost/geometry/2d/backends/poly_decomp";
+	GoostGeometry2DManager::poly_boolean.setting_name = "goost/geometry/2d/backends/poly_boolean";
+	GoostGeometry2DManager::poly_offset.setting_name = "goost/geometry/2d/backends/poly_offset";
+	GoostGeometry2DManager::poly_decomp.setting_name = "goost/geometry/2d/backends/poly_decomp";
 	
-	GeometryExtension2DManager::poly_boolean.register_backend("clipper6", memnew(PolyBoolean2DClipper6), true);
-	GeometryExtension2DManager::poly_boolean.register_backend("clipper10", memnew(PolyBoolean2DClipper10));
+	GoostGeometry2DManager::poly_boolean.register_backend("clipper6", memnew(PolyBoolean2DClipper6), true);
+	GoostGeometry2DManager::poly_boolean.register_backend("clipper10", memnew(PolyBoolean2DClipper10));
 	
-	GeometryExtension2DManager::poly_offset.register_backend("clipper6", memnew(PolyOffset2DClipper6), true);
-	GeometryExtension2DManager::poly_offset.register_backend("clipper10", memnew(PolyOffset2DClipper10));
+	GoostGeometry2DManager::poly_offset.register_backend("clipper6", memnew(PolyOffset2DClipper6), true);
+	GoostGeometry2DManager::poly_offset.register_backend("clipper10", memnew(PolyOffset2DClipper10));
 	
-	GeometryExtension2DManager::poly_decomp.register_backend("polypartition", memnew(PolyDecomp2DPolyPartition));
-	GeometryExtension2DManager::poly_decomp.register_backend("clipper10:polypartition", memnew(PolyDecomp2DClipper10), true);
+	GoostGeometry2DManager::poly_decomp.register_backend("polypartition", memnew(PolyDecomp2DPolyPartition));
+	GoostGeometry2DManager::poly_decomp.register_backend("clipper10:polypartition", memnew(PolyDecomp2DClipper10), true);
 	
-	GeometryExtension2DManager::poly_backends_changed_update();
+	GoostGeometry2DManager::poly_backends_changed_update();
 }
 
-void GeometryExtension2D::finalize() {
+void GoostGeometry2D::finalize() {
 	default_poly_boolean_params.unref();
 	default_poly_offset_params.unref();
 	default_poly_decomp_params.unref();
 	
-	GeometryExtension2DManager::finalize();
+	GoostGeometry2DManager::finalize();
 }
 
-Ref<PolyBooleanParameters2D> GeometryExtension2D::configure_boolean(const Ref<PolyBooleanParameters2D> &p_params) {
+Ref<PolyBooleanParameters2D> GoostGeometry2D::configure_boolean(const Ref<PolyBooleanParameters2D> &p_params) {
 	default_poly_boolean_params->reset();
 	if (p_params.is_valid()) {
 		poly_boolean->set_params(p_params);
@@ -59,7 +59,7 @@ Ref<PolyBooleanParameters2D> GeometryExtension2D::configure_boolean(const Ref<Po
 	return default_poly_boolean_params;
 }
 
-Ref<PolyOffsetParameters2D> GeometryExtension2D::configure_offset(const Ref<PolyOffsetParameters2D> &p_params) {
+Ref<PolyOffsetParameters2D> GoostGeometry2D::configure_offset(const Ref<PolyOffsetParameters2D> &p_params) {
 	default_poly_offset_params->reset();
 	if (p_params.is_valid()) {
 		poly_offset->set_params(p_params);
@@ -69,7 +69,7 @@ Ref<PolyOffsetParameters2D> GeometryExtension2D::configure_offset(const Ref<Poly
 	return default_poly_offset_params;
 }
 
-Ref<PolyDecompParameters2D> GeometryExtension2D::configure_decomp(const Ref<PolyDecompParameters2D> &p_params) {
+Ref<PolyDecompParameters2D> GoostGeometry2D::configure_decomp(const Ref<PolyDecompParameters2D> &p_params) {
 	default_poly_decomp_params->reset();
 	if (p_params.is_valid()) {
 		poly_decomp->set_params(p_params);
@@ -79,7 +79,7 @@ Ref<PolyDecompParameters2D> GeometryExtension2D::configure_decomp(const Ref<Poly
 	return default_poly_decomp_params;
 }
 
-Vector<Vector<Point2> > GeometryExtension2D::merge_polygons(const Vector<Point2> &p_polygon_a, const Vector<Point2> &p_polygon_b, Ref<PolyBooleanParameters2D> p_params) {
+Vector<Vector<Point2> > GoostGeometry2D::merge_polygons(const Vector<Point2> &p_polygon_a, const Vector<Point2> &p_polygon_b, Ref<PolyBooleanParameters2D> p_params) {
 	configure_boolean(p_params)->subject_open = false;
 	Vector<Vector<Point2> > polygons_a;
 	polygons_a.push_back(p_polygon_a);
@@ -88,7 +88,7 @@ Vector<Vector<Point2> > GeometryExtension2D::merge_polygons(const Vector<Point2>
 	return poly_boolean->polypaths_boolean(PolyBoolean2D::OPERATION_UNION, polygons_a, polygons_b);
 }
 
-Vector<Vector<Point2> > GeometryExtension2D::clip_polygons(const Vector<Point2> &p_polygon_a, const Vector<Point2> &p_polygon_b, Ref<PolyBooleanParameters2D> p_params) {
+Vector<Vector<Point2> > GoostGeometry2D::clip_polygons(const Vector<Point2> &p_polygon_a, const Vector<Point2> &p_polygon_b, Ref<PolyBooleanParameters2D> p_params) {
 	configure_boolean(p_params)->subject_open = false;
 	Vector<Vector<Point2> > polygons_a;
 	polygons_a.push_back(p_polygon_a);
@@ -97,7 +97,7 @@ Vector<Vector<Point2> > GeometryExtension2D::clip_polygons(const Vector<Point2> 
 	return poly_boolean->polypaths_boolean(PolyBoolean2D::OPERATION_DIFFERENCE, polygons_a, polygons_b);
 }
 
-Vector<Vector<Point2> > GeometryExtension2D::intersect_polygons(const Vector<Point2> &p_polygon_a, const Vector<Point2> &p_polygon_b, Ref<PolyBooleanParameters2D> p_params) {
+Vector<Vector<Point2> > GoostGeometry2D::intersect_polygons(const Vector<Point2> &p_polygon_a, const Vector<Point2> &p_polygon_b, Ref<PolyBooleanParameters2D> p_params) {
 	configure_boolean(p_params)->subject_open = false;
 	Vector<Vector<Point2> > polygons_a;
 	polygons_a.push_back(p_polygon_a);
@@ -106,7 +106,7 @@ Vector<Vector<Point2> > GeometryExtension2D::intersect_polygons(const Vector<Poi
 	return poly_boolean->polypaths_boolean(PolyBoolean2D::OPERATION_INTERSECTION, polygons_a, polygons_b);
 }
 
-Vector<Vector<Point2> > GeometryExtension2D::exclude_polygons(const Vector<Point2> &p_polygon_a, const Vector<Point2> &p_polygon_b, Ref<PolyBooleanParameters2D> p_params) {
+Vector<Vector<Point2> > GoostGeometry2D::exclude_polygons(const Vector<Point2> &p_polygon_a, const Vector<Point2> &p_polygon_b, Ref<PolyBooleanParameters2D> p_params) {
 	configure_boolean(p_params)->subject_open = false;
 	Vector<Vector<Point2> > polygons_a;
 	polygons_a.push_back(p_polygon_a);
@@ -115,27 +115,27 @@ Vector<Vector<Point2> > GeometryExtension2D::exclude_polygons(const Vector<Point
 	return poly_boolean->polypaths_boolean(PolyBoolean2D::OPERATION_XOR, polygons_a, polygons_b);
 }
 
-Vector<Vector<Point2> > GeometryExtension2D::merge_multiple_polygons(const Vector<Vector<Point2> > &p_polygons_a, const Vector<Vector<Point2> > &p_polygons_b, Ref<PolyBooleanParameters2D> p_params) {
+Vector<Vector<Point2> > GoostGeometry2D::merge_multiple_polygons(const Vector<Vector<Point2> > &p_polygons_a, const Vector<Vector<Point2> > &p_polygons_b, Ref<PolyBooleanParameters2D> p_params) {
 	configure_boolean(p_params)->subject_open = false;
 	return poly_boolean->polypaths_boolean(PolyBoolean2D::OPERATION_UNION, p_polygons_a, p_polygons_b);
 }
 
-Vector<Vector<Point2> > GeometryExtension2D::clip_multiple_polygons(const Vector<Vector<Point2> > &p_polygons_a, const Vector<Vector<Point2> > &p_polygons_b, Ref<PolyBooleanParameters2D> p_params) {
+Vector<Vector<Point2> > GoostGeometry2D::clip_multiple_polygons(const Vector<Vector<Point2> > &p_polygons_a, const Vector<Vector<Point2> > &p_polygons_b, Ref<PolyBooleanParameters2D> p_params) {
 	configure_boolean(p_params)->subject_open = false;
 	return poly_boolean->polypaths_boolean(PolyBoolean2D::OPERATION_DIFFERENCE, p_polygons_a, p_polygons_b);
 }
 
-Vector<Vector<Point2> > GeometryExtension2D::intersect_multiple_polygons(const Vector<Vector<Point2> > &p_polygons_a, const Vector<Vector<Point2> > &p_polygons_b, Ref<PolyBooleanParameters2D> p_params) {
+Vector<Vector<Point2> > GoostGeometry2D::intersect_multiple_polygons(const Vector<Vector<Point2> > &p_polygons_a, const Vector<Vector<Point2> > &p_polygons_b, Ref<PolyBooleanParameters2D> p_params) {
 	configure_boolean(p_params)->subject_open = false;
 	return poly_boolean->polypaths_boolean(PolyBoolean2D::OPERATION_INTERSECTION, p_polygons_a, p_polygons_b);
 }
 
-Vector<Vector<Point2> > GeometryExtension2D::exclude_multiple_polygons(const Vector<Vector<Point2> > &p_polygons_a, const Vector<Vector<Point2> > &p_polygons_b, Ref<PolyBooleanParameters2D> p_params) {
+Vector<Vector<Point2> > GoostGeometry2D::exclude_multiple_polygons(const Vector<Vector<Point2> > &p_polygons_a, const Vector<Vector<Point2> > &p_polygons_b, Ref<PolyBooleanParameters2D> p_params) {
 	configure_boolean(p_params)->subject_open = false;
 	return poly_boolean->polypaths_boolean(PolyBoolean2D::OPERATION_XOR, p_polygons_a, p_polygons_b);
 }
 
-Vector<Vector<Point2> > GeometryExtension2D::clip_polyline_with_polygon(const Vector<Point2> &p_polyline, const Vector<Point2> &p_polygon, Ref<PolyBooleanParameters2D> p_params) {
+Vector<Vector<Point2> > GoostGeometry2D::clip_polyline_with_polygon(const Vector<Point2> &p_polyline, const Vector<Point2> &p_polygon, Ref<PolyBooleanParameters2D> p_params) {
 	configure_boolean(p_params)->subject_open = true;
 	Vector<Vector<Point2> > polylines;
 	polylines.push_back(p_polyline);
@@ -144,7 +144,7 @@ Vector<Vector<Point2> > GeometryExtension2D::clip_polyline_with_polygon(const Ve
 	return poly_boolean->polypaths_boolean(PolyBoolean2D::OPERATION_DIFFERENCE, polylines, polygons);
 }
 
-Vector<Vector<Point2> > GeometryExtension2D::intersect_polyline_with_polygon(const Vector<Point2> &p_polyline, const Vector<Point2> &p_polygon, Ref<PolyBooleanParameters2D> p_params) {
+Vector<Vector<Point2> > GoostGeometry2D::intersect_polyline_with_polygon(const Vector<Point2> &p_polyline, const Vector<Point2> &p_polygon, Ref<PolyBooleanParameters2D> p_params) {
 	configure_boolean(p_params)->subject_open = true;
 	Vector<Vector<Point2> > polylines;
 	polylines.push_back(p_polyline);
@@ -153,27 +153,27 @@ Vector<Vector<Point2> > GeometryExtension2D::intersect_polyline_with_polygon(con
 	return poly_boolean->polypaths_boolean(PolyBoolean2D::OPERATION_INTERSECTION, polylines, polygons);
 }
 
-Vector<Vector<Point2> > GeometryExtension2D::clip_multiple_polylines_with_polygons(const Vector<Vector<Point2> > &p_polylines, const Vector<Vector<Point2> > &p_polygons, Ref<PolyBooleanParameters2D> p_params) {
+Vector<Vector<Point2> > GoostGeometry2D::clip_multiple_polylines_with_polygons(const Vector<Vector<Point2> > &p_polylines, const Vector<Vector<Point2> > &p_polygons, Ref<PolyBooleanParameters2D> p_params) {
 	configure_boolean(p_params)->subject_open = true;
 	return poly_boolean->polypaths_boolean(PolyBoolean2D::OPERATION_DIFFERENCE, p_polylines, p_polygons);
 }
 
-Vector<Vector<Point2> > GeometryExtension2D::intersect_multiple_polylines_with_polygons(const Vector<Vector<Point2> > &p_polylines, const Vector<Vector<Point2> > &p_polygons, Ref<PolyBooleanParameters2D> p_params) {
+Vector<Vector<Point2> > GoostGeometry2D::intersect_multiple_polylines_with_polygons(const Vector<Vector<Point2> > &p_polylines, const Vector<Vector<Point2> > &p_polygons, Ref<PolyBooleanParameters2D> p_params) {
 	configure_boolean(p_params)->subject_open = true;
 	return poly_boolean->polypaths_boolean(PolyBoolean2D::OPERATION_INTERSECTION, p_polylines, p_polygons);
 }
 
-Vector<Vector<Point2> > GeometryExtension2D::polygons_boolean(PolyBooleanOperation p_op, const Vector<Vector<Point2> > &p_polygons_a, const Vector<Vector<Point2> > &p_polygons_b, Ref<PolyBooleanParameters2D> p_params) {
+Vector<Vector<Point2> > GoostGeometry2D::polygons_boolean(PolyBooleanOperation p_op, const Vector<Vector<Point2> > &p_polygons_a, const Vector<Vector<Point2> > &p_polygons_b, Ref<PolyBooleanParameters2D> p_params) {
 	configure_boolean(p_params)->subject_open = false;
 	return poly_boolean->polypaths_boolean(PolyBoolean2D::Operation(p_op), p_polygons_a, p_polygons_b);
 }
 
-Ref<PolyNode2D> GeometryExtension2D::polygons_boolean_tree(PolyBooleanOperation p_op, const Vector<Vector<Point2> > &p_polygons_a, const Vector<Vector<Point2> > &p_polygons_b, Ref<PolyBooleanParameters2D> p_params) {
+Ref<PolyNode2D> GoostGeometry2D::polygons_boolean_tree(PolyBooleanOperation p_op, const Vector<Vector<Point2> > &p_polygons_a, const Vector<Vector<Point2> > &p_polygons_b, Ref<PolyBooleanParameters2D> p_params) {
 	configure_boolean(p_params)->subject_open = false;
 	return poly_boolean->polypaths_boolean_tree(PolyBoolean2D::Operation(p_op), p_polygons_a, p_polygons_b);
 }
 
-Vector<Vector<Point2> > GeometryExtension2D::inflate_polygon(const Vector<Point2> &p_polygon, real_t p_delta, Ref<PolyOffsetParameters2D> p_params) {
+Vector<Vector<Point2> > GoostGeometry2D::inflate_polygon(const Vector<Point2> &p_polygon, real_t p_delta, Ref<PolyOffsetParameters2D> p_params) {
 	ERR_FAIL_COND_V(p_delta < 0, Vector<Vector<Point2> >());
 	configure_offset(p_params)->end_type = PolyOffsetParameters2D::END_POLYGON;
 	Vector<Vector<Point2> > polygons;
@@ -181,7 +181,7 @@ Vector<Vector<Point2> > GeometryExtension2D::inflate_polygon(const Vector<Point2
 	return poly_offset->offset_polypaths(polygons, -p_delta);
 }
 
-Vector<Vector<Point2> > GeometryExtension2D::deflate_polygon(const Vector<Point2> &p_polygon, real_t p_delta, Ref<PolyOffsetParameters2D> p_params) {
+Vector<Vector<Point2> > GoostGeometry2D::deflate_polygon(const Vector<Point2> &p_polygon, real_t p_delta, Ref<PolyOffsetParameters2D> p_params) {
 	ERR_FAIL_COND_V(p_delta < 0, Vector<Vector<Point2> >());
 	configure_offset(p_params)->end_type = PolyOffsetParameters2D::END_POLYGON;
 	Vector<Vector<Point2> > polygons;
@@ -189,19 +189,19 @@ Vector<Vector<Point2> > GeometryExtension2D::deflate_polygon(const Vector<Point2
 	return poly_offset->offset_polypaths(polygons, p_delta);
 }
 
-Vector<Vector<Point2> > GeometryExtension2D::inflate_multiple_polygons(const Vector<Vector<Point2> > &p_polygons, real_t p_delta, Ref<PolyOffsetParameters2D> p_params) {
+Vector<Vector<Point2> > GoostGeometry2D::inflate_multiple_polygons(const Vector<Vector<Point2> > &p_polygons, real_t p_delta, Ref<PolyOffsetParameters2D> p_params) {
 	ERR_FAIL_COND_V(p_delta < 0, Vector<Vector<Point2> >());
 	configure_offset(p_params)->end_type = PolyOffsetParameters2D::END_POLYGON;
 	return poly_offset->offset_polypaths(p_polygons, -p_delta);
 }
 
-Vector<Vector<Point2> > GeometryExtension2D::deflate_multiple_polygons(const Vector<Vector<Point2> > &p_polygons, real_t p_delta, Ref<PolyOffsetParameters2D> p_params) {
+Vector<Vector<Point2> > GoostGeometry2D::deflate_multiple_polygons(const Vector<Vector<Point2> > &p_polygons, real_t p_delta, Ref<PolyOffsetParameters2D> p_params) {
 	ERR_FAIL_COND_V(p_delta < 0, Vector<Vector<Point2> >());
 	configure_offset(p_params)->end_type = PolyOffsetParameters2D::END_POLYGON;
 	return poly_offset->offset_polypaths(p_polygons, p_delta);
 }
 
-Vector<Vector<Point2> > GeometryExtension2D::deflate_polyline(const Vector<Point2> &p_polyline, real_t p_delta, Ref<PolyOffsetParameters2D> p_params) {
+Vector<Vector<Point2> > GoostGeometry2D::deflate_polyline(const Vector<Point2> &p_polyline, real_t p_delta, Ref<PolyOffsetParameters2D> p_params) {
 	ERR_FAIL_COND_V(p_delta < 0, Vector<Vector<Point2> >());
 	Ref<PolyOffsetParameters2D> params = configure_offset(p_params);
 	if (params->end_type == PolyOffsetParameters2D::END_POLYGON) {
@@ -213,7 +213,7 @@ Vector<Vector<Point2> > GeometryExtension2D::deflate_polyline(const Vector<Point
 	return poly_offset->offset_polypaths(polylines, p_delta);
 }
 
-Vector<Vector<Point2> > GeometryExtension2D::deflate_multiple_polylines(const Vector<Vector<Point2> > &p_polylines, real_t p_delta, Ref<PolyOffsetParameters2D> p_params) {
+Vector<Vector<Point2> > GoostGeometry2D::deflate_multiple_polylines(const Vector<Vector<Point2> > &p_polylines, real_t p_delta, Ref<PolyOffsetParameters2D> p_params) {
 	ERR_FAIL_COND_V(p_delta < 0, Vector<Vector<Point2> >());
 	Ref<PolyOffsetParameters2D> params = configure_offset(p_params);
 	if (params->end_type == PolyOffsetParameters2D::END_POLYGON) {
@@ -223,48 +223,48 @@ Vector<Vector<Point2> > GeometryExtension2D::deflate_multiple_polylines(const Ve
 	return poly_offset->offset_polypaths(p_polylines, p_delta);
 }
 
-Vector<Vector<Point2> > GeometryExtension2D::offset_polygon(const Vector<Point2> &p_polygon, real_t p_delta, Ref<PolyOffsetParameters2D> p_params) {
+Vector<Vector<Point2> > GoostGeometry2D::offset_polygon(const Vector<Point2> &p_polygon, real_t p_delta, Ref<PolyOffsetParameters2D> p_params) {
 	configure_offset(p_params)->end_type = PolyOffsetParameters2D::END_POLYGON;
 	Vector<Vector<Point2> > polygons;
 	polygons.push_back(p_polygon);
 	return poly_offset->offset_polypaths(polygons, p_delta);
 }
 
-Vector<Vector<Point2> > GeometryExtension2D::offset_multiple_polygons(const Vector<Vector<Point2> > &p_polygons, real_t p_delta, Ref<PolyOffsetParameters2D> p_params) {
+Vector<Vector<Point2> > GoostGeometry2D::offset_multiple_polygons(const Vector<Vector<Point2> > &p_polygons, real_t p_delta, Ref<PolyOffsetParameters2D> p_params) {
 	configure_offset(p_params)->end_type = PolyOffsetParameters2D::END_POLYGON;
 	return poly_offset->offset_polypaths(p_polygons, p_delta);
 }
 
-Vector<Vector<Point2> > GeometryExtension2D::triangulate_polygon(const Vector<Point2> &p_polygon, Ref<PolyDecompParameters2D> p_params) {
+Vector<Vector<Point2> > GoostGeometry2D::triangulate_polygon(const Vector<Point2> &p_polygon, Ref<PolyDecompParameters2D> p_params) {
 	configure_decomp(p_params);
 	Vector<Vector<Point2> > polygons;
 	polygons.push_back(p_polygon);
 	return poly_decomp->decompose_polygons(PolyDecomp2D::DECOMP_TRIANGLES_EC, polygons);
 }
 
-Vector<Vector<Point2> > GeometryExtension2D::triangulate_multiple_polygons(const Vector<Vector<Point2> > &p_polygons, Ref<PolyDecompParameters2D> p_params) {
+Vector<Vector<Point2> > GoostGeometry2D::triangulate_multiple_polygons(const Vector<Vector<Point2> > &p_polygons, Ref<PolyDecompParameters2D> p_params) {
 	configure_decomp(p_params);
 	return poly_decomp->decompose_polygons(PolyDecomp2D::DECOMP_TRIANGLES_EC, p_polygons);
 }
 
-Vector<Vector<Point2> > GeometryExtension2D::decompose_polygon_into_convex(const Vector<Point2> &p_polygon, Ref<PolyDecompParameters2D> p_params) {
+Vector<Vector<Point2> > GoostGeometry2D::decompose_polygon_into_convex(const Vector<Point2> &p_polygon, Ref<PolyDecompParameters2D> p_params) {
 	configure_decomp(p_params);
 	Vector<Vector<Point2> > polygons;
 	polygons.push_back(p_polygon);
 	return poly_decomp->decompose_polygons(PolyDecomp2D::DECOMP_CONVEX_HM, polygons);
 }
 
-Vector<Vector<Point2> > GeometryExtension2D::decompose_multiple_polygons_into_convex(const Vector<Vector<Point2> > &p_polygons, Ref<PolyDecompParameters2D> p_params) {
+Vector<Vector<Point2> > GoostGeometry2D::decompose_multiple_polygons_into_convex(const Vector<Vector<Point2> > &p_polygons, Ref<PolyDecompParameters2D> p_params) {
 	configure_decomp(p_params);
 	return poly_decomp->decompose_polygons(PolyDecomp2D::DECOMP_CONVEX_HM, p_polygons);
 }
 
-Vector<Vector<Point2> > GeometryExtension2D::decompose_polygons(PolyDecompType p_type, const Vector<Vector<Point2> > &p_polygons, Ref<PolyDecompParameters2D> p_params) {
+Vector<Vector<Point2> > GoostGeometry2D::decompose_polygons(PolyDecompType p_type, const Vector<Vector<Point2> > &p_polygons, Ref<PolyDecompParameters2D> p_params) {
 	configure_decomp(p_params);
 	return poly_decomp->decompose_polygons(PolyDecomp2D::DecompType(p_type), p_polygons);
 }
 
-Point2 GeometryExtension2D::polygon_centroid(const Vector<Point2> &p_polygon) {
+Point2 GoostGeometry2D::polygon_centroid(const Vector<Point2> &p_polygon) {
 	// Based on formulae from:
 	// "Calculating The Area And Centroid Of A Polygon" Written by Paul Bourke July 1988
 	// https://www.seas.upenn.edu/~sys502/extra_materials/Polygon%20Area%20and%20Centroid.pdf
@@ -290,7 +290,7 @@ Point2 GeometryExtension2D::polygon_centroid(const Vector<Point2> &p_polygon) {
 	return centroid;
 }
 
-real_t GeometryExtension2D::polygon_area(const Vector<Point2> &p_polygon) {
+real_t GoostGeometry2D::polygon_area(const Vector<Point2> &p_polygon) {
 	if (p_polygon.size() < 3) {
         return 0.0;
     }
@@ -302,7 +302,7 @@ real_t GeometryExtension2D::polygon_area(const Vector<Point2> &p_polygon) {
     return -area * 0.5;
 }
 
-real_t GeometryExtension2D::polygon_perimeter(const Vector<Point2> &p_polygon) {
+real_t GoostGeometry2D::polygon_perimeter(const Vector<Point2> &p_polygon) {
 	ERR_FAIL_COND_V(p_polygon.size() < 3, 0.0);
 	
 	real_t perimeter = 0.0;
@@ -315,7 +315,7 @@ real_t GeometryExtension2D::polygon_perimeter(const Vector<Point2> &p_polygon) {
 	return perimeter;
 }
 
-real_t GeometryExtension2D::polyline_length(const Vector<Point2> &p_polyline) {
+real_t GoostGeometry2D::polyline_length(const Vector<Point2> &p_polyline) {
 	ERR_FAIL_COND_V(p_polyline.size() < 2, 0.0);
 	
 	real_t length = 0.0;
@@ -333,7 +333,7 @@ real_t GeometryExtension2D::polyline_length(const Vector<Point2> &p_polyline) {
 //
 // Implementation ported from Clipper 6.4.2.
 //
-int GeometryExtension2D::point_in_polygon(const Point2 &p_point, const Vector<Point2> &p_polygon) {
+int GoostGeometry2D::point_in_polygon(const Point2 &p_point, const Vector<Point2> &p_polygon) {
 	ERR_FAIL_COND_V(p_polygon.size() < 3, 0);
 
 	int pip_result = 0;
@@ -377,7 +377,7 @@ int GeometryExtension2D::point_in_polygon(const Point2 &p_point, const Vector<Po
 	return pip_result;
 }
 
-Vector<Point2> GeometryExtension2D::regular_polygon(int p_edge_count, real_t p_size) {
+Vector<Point2> GoostGeometry2D::regular_polygon(int p_edge_count, real_t p_size) {
 	ERR_FAIL_COND_V(p_edge_count < 3, Vector<Point2>());
 	
 	Vector<Point2> polygon;
@@ -390,7 +390,7 @@ Vector<Point2> GeometryExtension2D::regular_polygon(int p_edge_count, real_t p_s
 	return polygon;
 }
 
-Vector<Point2> GeometryExtension2D::circle(real_t p_radius, real_t p_max_error) {
+Vector<Point2> GoostGeometry2D::circle(real_t p_radius, real_t p_max_error) {
 	ERR_FAIL_COND_V(p_radius < 0.0, Vector<Point2>());
 	ERR_FAIL_COND_V(p_max_error < 0.0, Vector<Point2>());
 	

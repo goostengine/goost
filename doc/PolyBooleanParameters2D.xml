@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="PolyBooleanParameters2D" inherits="Reference" version="3.2">
 	<brief_description>
-		A set of parameters to configure various polygon and polyline boolean related methods in [GeometryExtension2D].
+		A set of parameters to configure various polygon and polyline boolean related methods in [GoostGeometry2D].
 	</brief_description>
 	<description>
 	</description>

@@ -1,4 +1,4 @@
-#include "goost/core/math/2d/geometry/geometry_extension.h"
+#include "goost/core/math/2d/geometry/goost_geometry_2d.h"
 #include "poly_decomp.h"
 
 Vector<Vector<Point2> > PolyDecomp2D::decompose_polygons(DecompType p_type, const Vector<Vector<Point2> > &p_polygons) {

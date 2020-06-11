@@ -1,6 +1,6 @@
 # Image
 
-The component provides `ImageExtension` singleton for easy image processing. It
+The component provides `GoostImage` singleton for easy image processing. It
 aims to build on top of Godot's built-in `Image` class to cater specific user
 needs.
 

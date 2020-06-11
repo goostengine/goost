@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="GeometryExtension2D" inherits="Object" version="3.2">
+<class name="GoostGeometry2D" inherits="Object" version="3.2">
 	<brief_description>
 		[Geometry] singleton extension.
 	</brief_description>
@@ -98,7 +98,7 @@
 		<method name="decompose_polygons" qualifiers="const">
 			<return type="Array">
 			</return>
-			<argument index="0" name="type" type="int" enum="GeometryExtension2D.PolyDecompType">
+			<argument index="0" name="type" type="int" enum="GoostGeometry2D.PolyDecompType">
 			</argument>
 			<argument index="1" name="polygons" type="Array">
 			</argument>
@@ -364,7 +364,7 @@
 		<method name="polygons_boolean" qualifiers="const">
 			<return type="Array">
 			</return>
-			<argument index="0" name="operation" type="int" enum="GeometryExtension2D.PolyBooleanOperation">
+			<argument index="0" name="operation" type="int" enum="GoostGeometry2D.PolyBooleanOperation">
 			</argument>
 			<argument index="1" name="polygons_a" type="Array">
 			</argument>
@@ -382,7 +382,7 @@
 				var params = PolyBooleanParameters2D.new()
 				# May not be required on some backends, but provides an explicit intention.
 				params.strictly_simple = true
-				var solution = GeometryExtension2D.polygons_boolean(GeometryExtension2D.OPERATION_UNION, polygons, params)
+				var solution = GoostGeometry2D.polygons_boolean(GoostGeometry2D.OPERATION_UNION, polygons, params)
 				[/codeblock]
 				[constant OPERATION_DIFFERENCE]:
 				Clips polygons, the [i]subject[/i] remains intact if neither polygons overlap. Returns an empty array if [code]polygons_b[/code] completely covers [code]polygons_a[/code]. If [code]polygons_b[/code] are enclosed by [code]polygons_a[/code], returns an array of boundary and hole polygons.
@@ -395,7 +395,7 @@
 		<method name="polygons_boolean_tree" qualifiers="const">
 			<return type="PolyNode2D">
 			</return>
-			<argument index="0" name="operation" type="int" enum="GeometryExtension2D.PolyBooleanOperation">
+			<argument index="0" name="operation" type="int" enum="GoostGeometry2D.PolyBooleanOperation">
 			</argument>
 			<argument index="1" name="polygons_a" type="Array">
 			</argument>

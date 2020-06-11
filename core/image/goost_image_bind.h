@@ -3,17 +3,17 @@
 
 #include "core/image.h"
 
-class _ImageExtension : public Object {
-	GDCLASS(_ImageExtension, Object);
+class _GoostImage : public Object {
+	GDCLASS(_GoostImage, Object);
 
 private:
-	static _ImageExtension *singleton;
+	static _GoostImage *singleton;
 
 protected:
 	static void _bind_methods();
 
 public:
-	static _ImageExtension *get_singleton() { return singleton; }
+	static _GoostImage *get_singleton() { return singleton; }
 
 public:
 	enum Connectivity {
@@ -40,10 +40,10 @@ public:
 	Variant get_pixel_or_null(Ref<Image> p_image, int x, int y);
 	Variant get_pixelv_or_null(Ref<Image> p_image, const Vector2 &p_pos);
 
-	_ImageExtension();
+	_GoostImage();
 };
 
-VARIANT_ENUM_CAST(_ImageExtension::Connectivity);
-VARIANT_ENUM_CAST(_ImageExtension::Direction);
+VARIANT_ENUM_CAST(_GoostImage::Connectivity);
+VARIANT_ENUM_CAST(_GoostImage::Direction);
 
 #endif
