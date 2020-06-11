@@ -135,3 +135,12 @@ func test_image_render_polygon_filled_color():
 	var pixel_bg = output.get_pixel(0, 0)
 	assert_eq(pixel_bg, Color.blue)
 	output.unlock()
+
+
+func test_image_centroid():
+	output = Goost.image_load_no_warning("res://goost/core/image/samples/rect_rgba.png")
+	var centroid = GoostImage.get_centroid(output)
+	assert_almost_eq(centroid, Vector2(30.899677, 23.945793), Vector2(0.001, 0.001))
+	output.lock()
+	output.set_pixelv(centroid, Color.white) # For debugging purposes.
+	output.unlock()

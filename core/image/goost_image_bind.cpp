@@ -27,6 +27,10 @@ void _GoostImage::rotate_180(Ref<Image> p_image) {
 	GoostImage::rotate_180(p_image);
 }
 
+Vector2 _GoostImage::get_centroid(const Ref<Image> &p_image) {
+	return GoostImage::get_centroid(p_image);
+}
+
 Ref<Image> _GoostImage::render_polygon(Vector<Point2> p_polygon, bool p_fill, const Color &p_color, const Color &p_bg_color) {
 	return GoostImage::render_polygon(p_polygon, p_fill, p_color, p_bg_color);
 }
@@ -53,16 +57,17 @@ Variant _GoostImage::get_pixelv_or_null(Ref<Image> p_image, const Vector2 &p_pos
 }
 
 void _GoostImage::_bind_methods() {
-	// Image methods
 	ClassDB::bind_method(D_METHOD("replace_color", "image", "color", "with_color"), &_GoostImage::replace_color);
 	ClassDB::bind_method(D_METHOD("bucket_fill", "image", "at", "fill_color", "fill_image", "connectivity"), &_GoostImage::bucket_fill, DEFVAL(true), DEFVAL(FOUR_CONNECTED));
 	ClassDB::bind_method(D_METHOD("resize_hqx", "image", "scale"), &_GoostImage::resize_hqx, DEFVAL(2));
 	ClassDB::bind_method(D_METHOD("rotate", "image", "angle", "expand"), &_GoostImage::rotate, DEFVAL(true));
 	ClassDB::bind_method(D_METHOD("rotate_90", "image", "direction"), &_GoostImage::rotate_90);
 	ClassDB::bind_method(D_METHOD("rotate_180", "image"), &_GoostImage::rotate_180);
+
+	ClassDB::bind_method(D_METHOD("get_centroid", "image"), &_GoostImage::get_centroid);
+
 	ClassDB::bind_method(D_METHOD("render_polygon", "polygon", "fill", "foreground_color", "background_color"), &_GoostImage::render_polygon, DEFVAL(false), DEFVAL(Color(1, 1, 1, 1)), DEFVAL(Color(0, 0, 0, 0)));
 
-	// Pixel methods
 	ClassDB::bind_method(D_METHOD("get_pixel_or_null", "image", "x", "y"), &_GoostImage::get_pixel_or_null);
 	ClassDB::bind_method(D_METHOD("get_pixelv_or_null", "image", "pos"), &_GoostImage::get_pixelv_or_null);
 	ClassDB::bind_method(D_METHOD("has_pixel", "image", "x", "y"), &_GoostImage::has_pixel);

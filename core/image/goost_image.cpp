@@ -176,6 +176,15 @@ void GoostImage::rotate_180(Ref<Image> p_image) {
 	pixDestroy(&pix_out);
 }
 
+Point2 GoostImage::get_centroid(const Ref<Image> &p_image) {
+	PIX *pix_in = pix_create_from_image(p_image);
+	PIX *pix_bin = pixConvertTo1Adaptive(pix_in);
+	l_float32 x, y;
+	pixCentroid(pix_bin, nullptr, nullptr, &x, &y);
+	pixDestroy(&pix_bin);
+	return Point2(static_cast<real_t>(x), static_cast<real_t>(y));
+}
+
 Ref<Image> GoostImage::render_polygon(Vector<Point2> p_polygon, bool p_fill, const Color &p_color, const Color &p_bg_color) {
 	ERR_FAIL_COND_V_MSG(p_polygon.size() < 3, Variant(), "Bad polygon!")
 
