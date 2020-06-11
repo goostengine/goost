@@ -171,8 +171,9 @@ typedef uintptr_t l_uintptr_t;
  * To use these functions in linux, you must define HAVE_FMEMOPEN to 1.
  * To use them on MacOS, which does not support these functions, set it to 0.
  *-------------------------------------------------------------------------*/
-#if !defined(HAVE_CONFIG_H) && !defined(ANDROID_BUILD) && !defined(OS_IOS) && \
-    !defined(_WIN32)
+#if !defined(HAVE_CONFIG_H) && \
+    !defined(ANDROID_BUILD) && !defined(__ANDROID__) && !defined(ANDROID) && \
+    !defined(OS_IOS) && !defined(_WIN32)
 #define  HAVE_FMEMOPEN    1
 #endif  /* ! HAVE_CONFIG_H etc. */
 
