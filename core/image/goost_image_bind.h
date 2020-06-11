@@ -32,6 +32,7 @@ public:
 	void rotate(Ref<Image> p_image, real_t p_angle, bool p_expand);
 	void rotate_90(Ref<Image> p_image, Direction p_direction);
 	void rotate_180(Ref<Image> p_image);
+	void binarize(Ref<Image> p_image, real_t p_threshold = -1, bool p_invert = false);
 
 	Vector2 get_centroid(const Ref<Image> &p_image);
 

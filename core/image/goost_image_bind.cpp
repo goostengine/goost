@@ -27,6 +27,10 @@ void _GoostImage::rotate_180(Ref<Image> p_image) {
 	GoostImage::rotate_180(p_image);
 }
 
+void _GoostImage::binarize(Ref<Image> p_image, real_t p_threshold, bool p_invert) {
+	return GoostImage::binarize(p_image, p_threshold, p_invert);
+}
+
 Vector2 _GoostImage::get_centroid(const Ref<Image> &p_image) {
 	return GoostImage::get_centroid(p_image);
 }
@@ -63,6 +67,7 @@ void _GoostImage::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("rotate", "image", "angle", "expand"), &_GoostImage::rotate, DEFVAL(true));
 	ClassDB::bind_method(D_METHOD("rotate_90", "image", "direction"), &_GoostImage::rotate_90);
 	ClassDB::bind_method(D_METHOD("rotate_180", "image"), &_GoostImage::rotate_180);
+	ClassDB::bind_method(D_METHOD("binarize", "image", "threshold", "invert"), &_GoostImage::binarize, DEFVAL(-1), DEFVAL(false));
 
 	ClassDB::bind_method(D_METHOD("get_centroid", "image"), &_GoostImage::get_centroid);
 

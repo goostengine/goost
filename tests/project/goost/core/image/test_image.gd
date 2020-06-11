@@ -137,10 +137,39 @@ func test_image_render_polygon_filled_color():
 	output.unlock()
 
 
+func test_image_binarize_adaptive():
+	output = Goost.image_load_no_warning("res://goost/core/image/samples/icon.png")
+	GoostImage.binarize(output)
+	output.lock()
+	assert_eq(output.get_pixel(8, 9), Color.white)
+	output.unlock()
+	output.convert(Image.FORMAT_RGB8) # For debugging purposes.
+
+
+func test_image_binarize_threshold():
+	output = Goost.image_load_no_warning("res://goost/core/image/samples/icon.png")
+	GoostImage.binarize(output, 0.85)
+	output.lock()
+	assert_eq(output.get_pixel(8, 9), Color(0,0,0,0))
+	assert_eq(output.get_pixel(32, 24), Color.white)
+	output.unlock()
+	output.convert(Image.FORMAT_RGB8) # For debugging purposes.
+
+
+func test_image_binarize_threshold_invert():
+	output = Goost.image_load_no_warning("res://goost/core/image/samples/icon.png")
+	GoostImage.binarize(output, 0.85, true)
+	output.lock()
+	assert_eq(output.get_pixel(8, 9), Color.white)
+	assert_eq(output.get_pixel(32, 24), Color(0,0,0,0))
+	output.unlock()
+	output.convert(Image.FORMAT_RGB8) # For debugging purposes.
+
+
 func test_image_centroid():
-	output = Goost.image_load_no_warning("res://goost/core/image/samples/rect_rgba.png")
+	output = Goost.image_load_no_warning("res://goost/core/image/samples/stroke.png")
 	var centroid = GoostImage.get_centroid(output)
-	assert_almost_eq(centroid, Vector2(30.899677, 23.945793), Vector2(0.001, 0.001))
+	assert_almost_eq(centroid, Vector2(35.8, 35.5), Vector2(0.5, 0.5))
 	output.lock()
 	output.set_pixelv(centroid, Color.white) # For debugging purposes.
 	output.unlock()

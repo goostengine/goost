@@ -176,6 +176,23 @@ void GoostImage::rotate_180(Ref<Image> p_image) {
 	pixDestroy(&pix_out);
 }
 
+void GoostImage::binarize(Ref<Image> p_image, real_t p_threshold, bool p_invert) {
+	PIX *pix_in = pix_create_from_image(p_image);
+	PIX *pix_bin = nullptr;
+	if (p_threshold < 0) {
+		pix_bin = pixConvertTo1Adaptive(pix_in);
+	} else {
+		pix_bin = pixConvertTo1(pix_in, uint8_t(CLAMP(p_threshold * 255.0, 0, 255)));
+	}
+	const l_uint32 val0 = p_invert ? 0 : 0xffffffff;
+	const l_uint32 val1 = p_invert ? 0xffffffff : 0;
+	PIX *pix_color = pixConvert1To32(nullptr, pix_bin, val0, val1);
+	pixDestroy(&pix_bin);
+
+	image_copy_from_pix(p_image, pix_color);
+	pixDestroy(&pix_color);
+}
+
 Point2 GoostImage::get_centroid(const Ref<Image> &p_image) {
 	PIX *pix_in = pix_create_from_image(p_image);
 	PIX *pix_bin = pixConvertTo1Adaptive(pix_in);
