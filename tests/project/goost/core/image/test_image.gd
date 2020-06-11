@@ -61,6 +61,18 @@ func test_image_rotate_grayscale():
 	output.unlock()
 
 
+func test_image_rotate_no_expand():
+	var input = Goost.image_load_no_warning("res://goost/core/image/samples/rect_rgba.png")
+	var input_size = input.get_size()
+	output = input
+	GoostImage.rotate(output, deg2rad(45), false)
+	assert_eq(output.get_size(), input_size)
+	output.lock()
+	var pixel = output.get_pixel(output.get_size().x - 1, output.get_size().y / 2)
+	assert_eq(pixel.a, 0.0)
+	output.unlock()
+
+
 func test_image_rotate_90_cw():
 	var input = Goost.image_load_no_warning("res://goost/core/image/samples/rect_rgba.png")
 	var input_size = input.get_size()

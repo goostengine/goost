@@ -122,8 +122,10 @@
 			</argument>
 			<argument index="1" name="angle" type="float">
 			</argument>
+			<argument index="2" name="expand" type="bool" default="true">
+			</argument>
 			<description>
-				Rotates the image around its center. The [code]angle[/code] is specified in radians. If [code]angle[/code] is positive, rotates the image in clockwise direction. The method shall expand the image size with non-orthogonal angles automatically (90, 180, 270 degrees).
+				Rotates the image around its center. The [code]angle[/code] is specified in radians. If [code]angle[/code] is positive, rotates the image in clockwise direction. If [code]expand[/code] is [code]true[/code], the size is expanded to preserve all image details (prevents clipping) given non-orthogonal angles (90, 180, 270 degrees).
 				[codeblock]
 				# Rotate Godot icon by 45 degrees.
 				var texture = preload("res://icon.png")

@@ -150,11 +150,14 @@ PIX *pix_create_from_image(Ref<Image> p_image, Image::Format p_convert = Image::
 Ref<Image> image_create_from_pix(PIX *p_pix);
 void image_copy_from_pix(Ref<Image> p_image, PIX *p_pix);
 
-void GoostImage::rotate(Ref<Image> p_image, real_t p_angle) {
+void GoostImage::rotate(Ref<Image> p_image, real_t p_angle, bool p_expand) {
 	PIX *pix_in = pix_create_from_image(p_image);
-	PIX *pix_out = pixRotate(
-			pix_in, p_angle, L_ROTATE_SHEAR, L_BRING_IN_BLACK,
-			p_image->get_width(), p_image->get_height());
+	const int width = p_expand ? p_image->get_width() : 0;
+	const int height = p_expand ? p_image->get_height() : 0;
+
+	PIX *pix_out = pixRotate(pix_in, p_angle,
+			L_ROTATE_SHEAR, L_BRING_IN_BLACK, width, height);
+
 	image_copy_from_pix(p_image, pix_out);
 	pixDestroy(&pix_out);
 }

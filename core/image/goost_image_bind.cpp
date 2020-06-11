@@ -15,8 +15,8 @@ void _GoostImage::resize_hqx(Ref<Image> p_image, int p_scale) {
 	GoostImage::resize_hqx(p_image, p_scale);
 }
 
-void _GoostImage::rotate(Ref<Image> p_image, real_t p_angle) {
-	GoostImage::rotate(p_image, p_angle);
+void _GoostImage::rotate(Ref<Image> p_image, real_t p_angle, bool p_expand) {
+	GoostImage::rotate(p_image, p_angle, p_expand);
 }
 
 void _GoostImage::rotate_90(Ref<Image> p_image, Direction p_direction) {
@@ -57,7 +57,7 @@ void _GoostImage::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("replace_color", "image", "color", "with_color"), &_GoostImage::replace_color);
 	ClassDB::bind_method(D_METHOD("bucket_fill", "image", "at", "fill_color", "fill_image", "connectivity"), &_GoostImage::bucket_fill, DEFVAL(true), DEFVAL(FOUR_CONNECTED));
 	ClassDB::bind_method(D_METHOD("resize_hqx", "image", "scale"), &_GoostImage::resize_hqx, DEFVAL(2));
-	ClassDB::bind_method(D_METHOD("rotate", "image", "angle"), &_GoostImage::rotate);
+	ClassDB::bind_method(D_METHOD("rotate", "image", "angle", "expand"), &_GoostImage::rotate, DEFVAL(true));
 	ClassDB::bind_method(D_METHOD("rotate_90", "image", "direction"), &_GoostImage::rotate_90);
 	ClassDB::bind_method(D_METHOD("rotate_180", "image"), &_GoostImage::rotate_180);
 	ClassDB::bind_method(D_METHOD("render_polygon", "polygon", "fill", "foreground_color", "background_color"), &_GoostImage::render_polygon, DEFVAL(false), DEFVAL(Color(1, 1, 1, 1)), DEFVAL(Color(0, 0, 0, 0)));
