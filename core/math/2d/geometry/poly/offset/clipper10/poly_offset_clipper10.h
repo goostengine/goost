@@ -6,11 +6,11 @@
 
 class PolyOffset2DClipper10 : public PolyOffset2D {
 public:
-	virtual Vector<Vector<Point2> > offset_polypaths(const Vector<Vector<Point2> > &p_polypaths, real_t p_delta) override;
-	
+	virtual Vector<Vector<Point2>> offset_polypaths(const Vector<Vector<Point2>> &p_polypaths, real_t p_delta) override;
+
 protected:
 	clipperlib::ClipperOffset configure(const Ref<PolyOffsetParameters2D> &p_params);
-	
+
 private:
 	clipperlib::JoinType join_type;
 	clipperlib::EndType end_type;

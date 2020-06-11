@@ -111,9 +111,7 @@ void ImageBlender::blend_rect(const Ref<Image> p_src, const Rect2 &p_src_rect, R
 	img->lock();
 
 	for (int i = 0; i < dest_rect.size.y; i++) {
-
 		for (int j = 0; j < dest_rect.size.x; j++) {
-
 			int src_x = clipped_src_rect.position.x + j;
 			int src_y = clipped_src_rect.position.y + i;
 

@@ -24,6 +24,7 @@ public:
 		CW = 1,
 		CCW = -1,
 	};
+
 public:
 	// Image methods
 	void replace_color(Ref<Image> p_image, const Color &p_color, const Color &p_with_color);

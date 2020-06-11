@@ -8,13 +8,11 @@
 #include <png.h>
 
 static void _write_png_data(png_structp png_ptr, png_bytep data, png_size_t p_length) {
-
 	FileAccess *f = (FileAccess *)png_get_io_ptr(png_ptr);
 	f->store_buffer((const uint8_t *)data, p_length);
 }
 
 Error ResourceSaverIndexedPNG::save(const String &p_path, const RES &p_resource, uint32_t p_flags) {
-
 	Ref<ImageTexture> texture = p_resource;
 
 	ERR_FAIL_COND_V_MSG(texture.is_null(), ERR_INVALID_PARAMETER, "Invalid texture passed.");
@@ -31,7 +29,6 @@ Error ResourceSaverIndexedPNG::save(const String &p_path, const RES &p_resource,
 };
 
 Error ResourceSaverIndexedPNG::save_image(const String &p_path, const Ref<ImageIndexed> &p_img) {
-
 	Ref<Image> img = p_img->duplicate();
 
 	if (img->is_compressed())
@@ -81,36 +78,28 @@ Error ResourceSaverIndexedPNG::save_image(const String &p_path, const Ref<ImageI
 		cs = 1;
 	} else {
 		switch (img->get_format()) {
-
 			case Image::FORMAT_L8: {
-
 				pngf = PNG_COLOR_TYPE_GRAY;
 				cs = 1;
 			} break;
 			case Image::FORMAT_LA8: {
-
 				pngf = PNG_COLOR_TYPE_GRAY_ALPHA;
 				cs = 2;
 			} break;
 			case Image::FORMAT_RGB8: {
-
 				pngf = PNG_COLOR_TYPE_RGB;
 				cs = 3;
 			} break;
 			case Image::FORMAT_RGBA8: {
-
 				pngf = PNG_COLOR_TYPE_RGB_ALPHA;
 				cs = 4;
 			} break;
 			default: {
-
 				if (has_alpha) {
-
 					img->convert(Image::FORMAT_RGBA8);
 					pngf = PNG_COLOR_TYPE_RGB_ALPHA;
 					cs = 4;
 				} else {
-
 					img->convert(Image::FORMAT_RGB8);
 					pngf = PNG_COLOR_TYPE_RGB;
 					cs = 3;
@@ -136,8 +125,12 @@ Error ResourceSaverIndexedPNG::save_image(const String &p_path, const Ref<ImageI
 		int ps = 4;
 
 		switch (format) {
-			case Image::FORMAT_RGB8: ps = 3; break;
-			case Image::FORMAT_RGBA8: ps = 4; break;
+			case Image::FORMAT_RGB8:
+				ps = 3;
+				break;
+			case Image::FORMAT_RGBA8:
+				ps = 4;
+				break;
 			default: {
 				ERR_FAIL_V_MSG(ERR_UNAVAILABLE, "Cannot save indexed PNG image, unsupported format");
 			}
@@ -185,7 +178,6 @@ Error ResourceSaverIndexedPNG::save_image(const String &p_path, const Ref<ImageI
 
 	row_pointers = (png_bytep *)memalloc(sizeof(png_bytep) * h);
 	for (int i = 0; i < h; i++) {
-
 		row_pointers[i] = (png_bytep)&r[i * w * cs];
 	}
 	png_write_image(png_ptr, row_pointers);
@@ -194,7 +186,6 @@ Error ResourceSaverIndexedPNG::save_image(const String &p_path, const Ref<ImageI
 
 	/* end write */
 	if (setjmp(png_jmpbuf(png_ptr))) {
-
 		memdelete(f);
 		ERR_FAIL_V(ERR_CANT_OPEN);
 	}
@@ -211,17 +202,14 @@ Error ResourceSaverIndexedPNG::save_image(const String &p_path, const Ref<ImageI
 }
 
 bool ResourceSaverIndexedPNG::recognize(const RES &p_resource) const {
-
 	return (p_resource.is_valid() && p_resource->is_class("ImageTexture"));
 }
 void ResourceSaverIndexedPNG::get_recognized_extensions(const RES &p_resource, List<String> *p_extensions) const {
-
 	if (Object::cast_to<Texture>(*p_resource)) {
 		p_extensions->push_back("png");
 	}
 }
 
 ResourceSaverIndexedPNG::ResourceSaverIndexedPNG() {
-
 	ImageIndexed::save_indexed_png_func = &save_image;
 };

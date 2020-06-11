@@ -2,12 +2,12 @@
 
 #include "core/engine.h"
 
-#include "goost_image.h"
-#include "goost_image_bind.h"
-#include "image_indexed.h"
-#include "image_blender.h"
 #include "drivers/png/image_loader_indexed_png.h"
 #include "drivers/png/resource_saver_indexed_png.h"
+#include "goost_image.h"
+#include "goost_image_bind.h"
+#include "image_blender.h"
+#include "image_indexed.h"
 
 static _GoostImage *_goost_image = nullptr;
 static ImageLoaderIndexedPNG *image_loader_indexed_png;

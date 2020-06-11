@@ -1,7 +1,7 @@
 #include "core/object.h"
 
-#include "register_scene_types.h"
 #include "physics/register_physics_types.h"
+#include "register_scene_types.h"
 
 namespace goost {
 

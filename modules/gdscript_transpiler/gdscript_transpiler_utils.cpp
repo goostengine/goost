@@ -6,7 +6,6 @@
 // https://github.com/godotengine/godot/blob/27ddb27da8a78b21a83ee7ee049fe92d32c66727/modules/mono/editor/bindings_generator.cpp#L117-L183
 
 String GDScriptTranspilerUtils::snake_to_pascal_case(const String &p_identifier, bool p_input_is_upper) {
-
 	String ret;
 	Vector<String> parts = p_identifier.split("_", true);
 
@@ -39,7 +38,6 @@ String GDScriptTranspilerUtils::snake_to_pascal_case(const String &p_identifier,
 }
 
 String GDScriptTranspilerUtils::snake_to_camel_case(const String &p_identifier, bool p_input_is_upper) {
-
 	String ret;
 	Vector<String> parts = p_identifier.split("_", true);
 
@@ -77,14 +75,14 @@ String GDScriptTranspilerUtils::filepath_to_pascal_case(const String &p_path, bo
 	return snake_to_pascal_case(p_path.get_basename().get_file(), p_input_is_upper);
 }
 
-// Common code generator 
+// Common code generator
 
 void GDScriptTranspilerUtils::CodeBuilder::set_indent_sequence(const String &p_indent_sequence) {
-    indent_sequence = p_indent_sequence;
+	indent_sequence = p_indent_sequence;
 }
 
 String GDScriptTranspilerUtils::CodeBuilder::get_indent_string() const {
-    return indent_sequence.repeat(indent_level);
+	return indent_sequence.repeat(indent_level);
 }
 
 void GDScriptTranspilerUtils::CodeBuilder::operator+=(const String &p_string) {
@@ -92,21 +90,21 @@ void GDScriptTranspilerUtils::CodeBuilder::operator+=(const String &p_string) {
 		code += "\n";
 		return;
 	}
-    String str;
-    str += get_indent_string();
-    str += p_string;
-    if (newline) {
-        str += "\n";
-    }
-    code += str;
+	String str;
+	str += get_indent_string();
+	str += p_string;
+	if (newline) {
+		str += "\n";
+	}
+	code += str;
 }
 
 String GDScriptTranspilerUtils::CodeBuilder::get_code() const {
-    return code.as_string().format(map);
+	return code.as_string().format(map);
 }
 
 GDScriptTranspilerUtils::CodeBuilder::CodeBuilder() {
-    indent_level = 0;
-    indent_sequence = "\t";
-    newline = true;
+	indent_level = 0;
+	indent_sequence = "\t";
+	newline = true;
 }

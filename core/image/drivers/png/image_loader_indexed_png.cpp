@@ -6,30 +6,27 @@
 #include <string.h>
 
 void ImageLoaderIndexedPNG::_read_png_data(png_structp png_ptr, png_bytep data, png_size_t p_length) {
-
 	FileAccess *f = (FileAccess *)png_get_io_ptr(png_ptr);
 	f->get_buffer((uint8_t *)data, p_length);
 }
 
 static png_voidp _png_malloc_fn(png_structp png_ptr, png_size_t size) {
-
 	return memalloc(size);
 }
 
 static void _png_free_fn(png_structp png_ptr, png_voidp ptr) {
-
 	memfree(ptr);
 }
 
 static void _png_error_function(png_structp, png_const_charp text) {
-
 	ERR_PRINT(text);
 }
 
 static void _png_warn_function(png_structp, png_const_charp text) {
 #ifdef TOOLS_ENABLED
 	if (Engine::get_singleton()->is_editor_hint()) {
-		if (String(text).begins_with("iCCP")) return;
+		if (String(text).begins_with("iCCP"))
+			return;
 	}
 #endif
 	WARN_PRINT(text);
@@ -38,7 +35,6 @@ static void _png_warn_function(png_structp, png_const_charp text) {
 typedef void(PNGAPI *png_error_ptr) PNGARG((png_structp, png_const_charp));
 
 Error ImageLoaderIndexedPNG::_load_image(void *rf_up, png_rw_ptr p_func, Ref<ImageIndexed> p_image) {
-
 	png_structp png;
 	png_infop info;
 
@@ -55,7 +51,6 @@ Error ImageLoaderIndexedPNG::_load_image(void *rf_up, png_rw_ptr p_func, Ref<Ima
 	}
 
 	if (setjmp(png_jmpbuf(png))) {
-
 		png_destroy_read_struct(&png, NULL, NULL);
 		ERR_PRINT("PNG Corrupted");
 		return ERR_FILE_CORRUPT;
@@ -106,34 +101,27 @@ Error ImageLoaderIndexedPNG::_load_image(void *rf_up, png_rw_ptr p_func, Ref<Ima
 
 	Image::Format fmt;
 	switch (color) {
-
 		case PNG_COLOR_TYPE_PALETTE: {
-
 			fmt = Image::FORMAT_L8;
 			components = 1;
 		} break;
 		case PNG_COLOR_TYPE_GRAY: {
-
 			fmt = Image::FORMAT_L8;
 			components = 1;
 		} break;
 		case PNG_COLOR_TYPE_GRAY_ALPHA: {
-
 			fmt = Image::FORMAT_LA8;
 			components = 2;
 		} break;
 		case PNG_COLOR_TYPE_RGB: {
-
 			fmt = Image::FORMAT_RGB8;
 			components = 3;
 		} break;
 		case PNG_COLOR_TYPE_RGB_ALPHA: {
-
 			fmt = Image::FORMAT_RGBA8;
 			components = 4;
 		} break;
 		default: {
-
 			ERR_PRINT("INVALID PNG TYPE");
 			png_destroy_read_struct(&png, &info, NULL);
 			return ERR_UNAVAILABLE;
@@ -170,7 +158,6 @@ Error ImageLoaderIndexedPNG::_load_image(void *rf_up, png_rw_ptr p_func, Ref<Ima
 		PoolVector<uint8_t>::Write w = palette_data.write();
 
 		if (png_palette_alpha && palette_alpha_size == palette_size) {
-
 			for (int i = 0; i < palette_size; i++) {
 				png_colorp c = &png_palette[i];
 				w[i * 4 + 0] = c->red;
@@ -206,7 +193,6 @@ Error ImageLoaderIndexedPNG::_load_image(void *rf_up, png_rw_ptr p_func, Ref<Ima
 }
 
 Error ImageLoaderIndexedPNG::load_image(Ref<Image> p_image, FileAccess *f, bool p_force_linear, float p_scale) {
-
 	Ref<ImageIndexed> img_i = p_image;
 	ERR_FAIL_COND_V(img_i.is_null(), ERR_BUG);
 
@@ -217,20 +203,17 @@ Error ImageLoaderIndexedPNG::load_image(Ref<Image> p_image, FileAccess *f, bool 
 }
 
 void ImageLoaderIndexedPNG::get_recognized_extensions(List<String> *p_extensions) const {
-
 	// TODO: can't detect whether a PNG image is indexed only by extension...
 	// p_extensions->push_back("png");
 }
 
 struct PNGReadStatus {
-
 	uint32_t offset;
 	uint32_t size;
 	const unsigned char *image;
 };
 
 static void user_read_data(png_structp png_ptr, png_bytep data, png_size_t p_length) {
-
 	PNGReadStatus *rstatus;
 	rstatus = (PNGReadStatus *)png_get_io_ptr(png_ptr);
 
@@ -244,7 +227,6 @@ static void user_read_data(png_structp png_ptr, png_bytep data, png_size_t p_len
 }
 
 static Ref<ImageIndexed> _load_mem_indexed_png(const uint8_t *p_png, int p_size) {
-
 	PNGReadStatus prs;
 	prs.image = p_png;
 	prs.offset = 0;
@@ -259,6 +241,5 @@ static Ref<ImageIndexed> _load_mem_indexed_png(const uint8_t *p_png, int p_size)
 }
 
 ImageLoaderIndexedPNG::ImageLoaderIndexedPNG() {
-
 	ImageIndexed::_indexed_png_mem_loader_func = _load_mem_indexed_png;
 }

@@ -1,7 +1,7 @@
 #include "core/object.h"
 
-#include "register_physics_types.h"
 #include "2d/shape_cast_2d.h"
+#include "register_physics_types.h"
 
 namespace goost {
 

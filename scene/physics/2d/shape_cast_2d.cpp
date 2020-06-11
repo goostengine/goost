@@ -1,11 +1,11 @@
 #include "shape_cast_2d.h"
 
-#include "scene/2d/collision_object_2d.h"
-#include "scene/resources/circle_shape_2d.h"
-#include "scene/2d/physics_body_2d.h"
-#include "core/engine.h"
-#include "servers/physics_2d_server.h"
 #include "core/core_string_names.h"
+#include "core/engine.h"
+#include "scene/2d/collision_object_2d.h"
+#include "scene/2d/physics_body_2d.h"
+#include "scene/resources/circle_shape_2d.h"
+#include "servers/physics_2d_server.h"
 
 void ShapeCast2D::set_cast_to(const Vector2 &p_point) {
 	cast_to = p_point;
@@ -38,12 +38,10 @@ void ShapeCast2D::set_collision_mask(uint32_t p_mask) {
 }
 
 uint32_t ShapeCast2D::get_collision_mask() const {
-
 	return collision_mask;
 }
 
 void ShapeCast2D::set_collision_mask_bit(int p_bit, bool p_value) {
-
 	uint32_t mask = get_collision_mask();
 	if (p_value)
 		mask |= 1 << p_bit;
@@ -53,7 +51,6 @@ void ShapeCast2D::set_collision_mask_bit(int p_bit, bool p_value) {
 }
 
 bool ShapeCast2D::get_collision_mask_bit(int p_bit) const {
-
 	return get_collision_mask() & (1 << p_bit);
 }
 
@@ -67,7 +64,7 @@ bool ShapeCast2D::is_colliding() const {
 
 Object *ShapeCast2D::get_collider(int p_idx) const {
 	ERR_FAIL_INDEX_V_MSG(p_idx, result.size(), NULL, "No collider found.");
-	
+
 	if (result[p_idx].collider_id == 0)
 		return NULL;
 
@@ -144,7 +141,6 @@ Ref<Shape2D> ShapeCast2D::get_shape() const {
 }
 
 void ShapeCast2D::set_exclude_parent_body(bool p_exclude_parent_body) {
-
 	if (exclude_parent_body == p_exclude_parent_body)
 		return;
 
@@ -162,16 +158,12 @@ void ShapeCast2D::set_exclude_parent_body(bool p_exclude_parent_body) {
 }
 
 bool ShapeCast2D::get_exclude_parent_body() const {
-
 	return exclude_parent_body;
 }
 
 void ShapeCast2D::_notification(int p_what) {
-
 	switch (p_what) {
-
 		case NOTIFICATION_ENTER_TREE: {
-
 			if (enabled && !Engine::get_singleton()->is_editor_hint())
 				set_physics_process_internal(true);
 			else
@@ -185,7 +177,6 @@ void ShapeCast2D::_notification(int p_what) {
 			}
 		} break;
 		case NOTIFICATION_EXIT_TREE: {
-
 			if (enabled)
 				set_physics_process_internal(false);
 
@@ -213,13 +204,13 @@ void ShapeCast2D::_notification(int p_what) {
 				shape->draw(get_canvas_item(), draw_col);
 			}
 			draw_set_transform(Vector2(), 0.0, Size2(1, 1));
-			
+
 			// Draw an arrow indicating where the ShapeCast is pointing to.
 			if (cast_to != Vector2()) {
 				Transform2D xf;
 				xf.rotate(cast_to.angle());
 				xf.translate(Vector2(cast_to.length(), 0));
-				
+
 				draw_line(Vector2(), cast_to, draw_col, 2);
 				Vector<Vector2> pts;
 				float tsize = 8;
@@ -244,7 +235,7 @@ void ShapeCast2D::_notification(int p_what) {
 
 void ShapeCast2D::_update_shapecast_state() {
 	ERR_FAIL_COND_MSG(shape.is_null(), "Invalid shape.");
-	
+
 	Ref<World2D> w2d = get_world_2d();
 	ERR_FAIL_COND(w2d.is_null());
 
@@ -253,27 +244,27 @@ void ShapeCast2D::_update_shapecast_state() {
 
 	Transform2D gt = get_global_transform();
 	bool process_intersections = true;
-	
+
 	if (cast_to != Vector2()) {
 		Vector2 to = gt.basis_xform(cast_to);
-		
-		bool can_move = dss->cast_motion(shape_rid, gt, to, margin, 
-				collision_safe_distance, collision_unsafe_distance, 
+
+		bool can_move = dss->cast_motion(shape_rid, gt, to, margin,
+				collision_safe_distance, collision_unsafe_distance,
 				exclude, collision_mask, collide_with_bodies, collide_with_areas);
-				
+
 		gt.set_origin(gt.get_origin() + to * collision_unsafe_distance);
-		
+
 		process_intersections = !can_move || collision_unsafe_distance < 1.0;
 	}
 	if (process_intersections) {
 		result.clear();
-		
+
 		bool intersected = true;
 		Set<RID> checked = exclude;
-		
+
 		while (intersected && result.size() < max_results) {
 			Physics2DDirectSpaceState::ShapeRestInfo sri;
-			intersected = dss->rest_info(shape_rid, gt, Vector2(), margin, &sri, 
+			intersected = dss->rest_info(shape_rid, gt, Vector2(), margin, &sri,
 					checked, collision_mask, collide_with_bodies, collide_with_areas);
 			if (intersected) {
 				result.push_back(sri);
@@ -289,12 +280,10 @@ void ShapeCast2D::force_shapecast_update() {
 }
 
 void ShapeCast2D::add_exception_rid(const RID &p_rid) {
-
 	exclude.insert(p_rid);
 }
 
 void ShapeCast2D::add_exception(const Object *p_object) {
-
 	ERR_FAIL_NULL(p_object);
 	const CollisionObject2D *co = Object::cast_to<CollisionObject2D>(p_object);
 	if (!co)
@@ -303,12 +292,10 @@ void ShapeCast2D::add_exception(const Object *p_object) {
 }
 
 void ShapeCast2D::remove_exception_rid(const RID &p_rid) {
-
 	exclude.erase(p_rid);
 }
 
 void ShapeCast2D::remove_exception(const Object *p_object) {
-
 	ERR_FAIL_NULL(p_object);
 	const CollisionObject2D *co = Object::cast_to<CollisionObject2D>(p_object);
 	if (!co)
@@ -317,27 +304,22 @@ void ShapeCast2D::remove_exception(const Object *p_object) {
 }
 
 void ShapeCast2D::clear_exceptions() {
-
 	exclude.clear();
 }
 
 void ShapeCast2D::set_collide_with_areas(bool p_clip) {
-
 	collide_with_areas = p_clip;
 }
 
 bool ShapeCast2D::is_collide_with_areas_enabled() const {
-
 	return collide_with_areas;
 }
 
 void ShapeCast2D::set_collide_with_bodies(bool p_clip) {
-
 	collide_with_bodies = p_clip;
 }
 
 bool ShapeCast2D::is_collide_with_bodies_enabled() const {
-
 	return collide_with_bodies;
 }
 
@@ -346,7 +328,7 @@ Array ShapeCast2D::_get_collision_result() const {
 
 	for (int i = 0; i < result.size(); ++i) {
 		const Physics2DDirectSpaceState::ShapeRestInfo &sri = result[i];
-		
+
 		Dictionary col;
 		col["point"] = sri.point;
 		col["normal"] = sri.normal;
@@ -356,14 +338,13 @@ Array ShapeCast2D::_get_collision_result() const {
 		col["shape"] = sri.shape;
 		col["linear_velocity"] = sri.linear_velocity;
 		col["metadata"] = sri.metadata;
-		
+
 		ret.push_back(col);
 	}
 	return ret;
 }
 
 String ShapeCast2D::get_configuration_warning() const {
-
 	String warning = Node2D::get_configuration_warning();
 
 	if (shape.is_null()) {
@@ -379,22 +360,22 @@ String ShapeCast2D::get_configuration_warning() const {
 void ShapeCast2D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_enabled", "enabled"), &ShapeCast2D::set_enabled);
 	ClassDB::bind_method(D_METHOD("is_enabled"), &ShapeCast2D::is_enabled);
-	
+
 	ClassDB::bind_method(D_METHOD("set_shape", "shape"), &ShapeCast2D::set_shape);
 	ClassDB::bind_method(D_METHOD("get_shape"), &ShapeCast2D::get_shape);
-	
+
 	ClassDB::bind_method(D_METHOD("set_cast_to", "local_point"), &ShapeCast2D::set_cast_to);
 	ClassDB::bind_method(D_METHOD("get_cast_to"), &ShapeCast2D::get_cast_to);
-	
+
 	ClassDB::bind_method(D_METHOD("set_margin", "margin"), &ShapeCast2D::set_margin);
 	ClassDB::bind_method(D_METHOD("get_margin"), &ShapeCast2D::get_margin);
-	
+
 	ClassDB::bind_method(D_METHOD("set_max_results", "max_results"), &ShapeCast2D::set_max_results);
 	ClassDB::bind_method(D_METHOD("get_max_results"), &ShapeCast2D::get_max_results);
 
 	ClassDB::bind_method(D_METHOD("is_colliding"), &ShapeCast2D::is_colliding);
 	ClassDB::bind_method(D_METHOD("get_collision_count"), &ShapeCast2D::get_collision_count);
-	
+
 	ClassDB::bind_method(D_METHOD("force_shapecast_update"), &ShapeCast2D::force_shapecast_update);
 
 	ClassDB::bind_method(D_METHOD("get_collider", "index"), &ShapeCast2D::get_collider);
@@ -431,7 +412,7 @@ void ShapeCast2D::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("set_collide_with_bodies", "enable"), &ShapeCast2D::set_collide_with_bodies);
 	ClassDB::bind_method(D_METHOD("is_collide_with_bodies_enabled"), &ShapeCast2D::is_collide_with_bodies_enabled);
-	
+
 	ClassDB::bind_method(D_METHOD("_get_collision_result"), &ShapeCast2D::_get_collision_result);
 
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "enabled"), "set_enabled", "is_enabled");

@@ -42,7 +42,7 @@ bool _GoostImage::has_pixelv(Ref<Image> p_image, const Vector2 &p_pos) {
 Variant _GoostImage::get_pixel_or_null(Ref<Image> p_image, int x, int y) {
 	Variant ret;
 	Color pixel;
-	if(GoostImage::get_pixel_or_null(p_image, x, y, &pixel)) {
+	if (GoostImage::get_pixel_or_null(p_image, x, y, &pixel)) {
 		ret = pixel;
 	}
 	return ret;
@@ -60,7 +60,7 @@ void _GoostImage::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("rotate", "image", "angle"), &_GoostImage::rotate);
 	ClassDB::bind_method(D_METHOD("rotate_90", "image", "direction"), &_GoostImage::rotate_90);
 	ClassDB::bind_method(D_METHOD("rotate_180", "image"), &_GoostImage::rotate_180);
-	ClassDB::bind_method(D_METHOD("render_polygon", "polygon", "fill", "foreground_color", "background_color"), &_GoostImage::render_polygon, DEFVAL(false), DEFVAL(Color(1,1,1,1)), DEFVAL(Color(0,0,0,0)));
+	ClassDB::bind_method(D_METHOD("render_polygon", "polygon", "fill", "foreground_color", "background_color"), &_GoostImage::render_polygon, DEFVAL(false), DEFVAL(Color(1, 1, 1, 1)), DEFVAL(Color(0, 0, 0, 0)));
 
 	// Pixel methods
 	ClassDB::bind_method(D_METHOD("get_pixel_or_null", "image", "x", "y"), &_GoostImage::get_pixel_or_null);

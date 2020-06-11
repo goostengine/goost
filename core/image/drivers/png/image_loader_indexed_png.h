@@ -7,7 +7,6 @@
 #include <png.h>
 
 class ImageLoaderIndexedPNG : public ImageFormatLoader {
-
 	static void _read_png_data(png_structp png_ptr, png_bytep data, png_size_t p_length);
 
 public:

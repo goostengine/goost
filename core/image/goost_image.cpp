@@ -5,7 +5,6 @@
 #include "goost/thirdparty/leptonica/allheaders.h"
 
 void GoostImage::replace_color(Ref<Image> p_image, const Color &p_color, const Color &p_with_color) {
-
 	if (p_color == p_with_color) {
 		return;
 	}
@@ -14,7 +13,6 @@ void GoostImage::replace_color(Ref<Image> p_image, const Color &p_color, const C
 
 	for (int y = 0; y < p_image->get_height(); ++y) {
 		for (int x = 0; x < p_image->get_width(); ++x) {
-
 			if (p_image->get_pixel(x, y) == p_color) {
 				p_image->set_pixel(x, y, p_with_color);
 			}
@@ -24,7 +22,6 @@ void GoostImage::replace_color(Ref<Image> p_image, const Color &p_color, const C
 }
 
 Ref<Image> GoostImage::bucket_fill(Ref<Image> p_image, const Point2 &p_at, const Color &p_fill_color, bool p_fill_image, Connectivity p_con) {
-
 	// Based on flood-fill algorithm
 	// Runs up to x35 faster compared to GDScript implementation
 
@@ -77,7 +74,6 @@ Ref<Image> GoostImage::bucket_fill(Ref<Image> p_image, const Point2 &p_at, const
 		to_fill.pop_front();
 
 		for (int i = 0; i < kernel.size(); ++i) {
-
 			const Vector2 &dir = kernel[i];
 			at = pos + dir;
 
@@ -113,7 +109,7 @@ Ref<Image> GoostImage::bucket_fill(Ref<Image> p_image, const Point2 &p_at, const
 void GoostImage::resize_hqx(Ref<Image> p_image, int p_scale) {
 	ERR_FAIL_COND(p_scale < 2);
 	ERR_FAIL_COND(p_scale > 3);
-	
+
 	bool used_mipmaps = p_image->has_mipmaps();
 
 	Image::Format current = p_image->get_format();
@@ -122,20 +118,20 @@ void GoostImage::resize_hqx(Ref<Image> p_image, int p_scale) {
 	}
 	PoolVector<uint8_t> dest;
 	PoolVector<uint8_t> src = p_image->get_data();
-	
+
 	const int new_width = p_image->get_width() * p_scale;
 	const int new_height = p_image->get_height() * p_scale;
 	dest.resize(new_width * new_height * 4);
 	{
 		PoolVector<uint8_t>::Read r = src.read();
 		PoolVector<uint8_t>::Write w = dest.write();
-		
+
 		ERR_FAIL_COND(!r.ptr());
-		
+
 		HQx *hqx;
 		if (p_scale == 2) {
 			hqx = memnew(HQ2x);
-		} else if (p_scale == 3) {	
+		} else if (p_scale == 3) {
 			hqx = memnew(HQ3x);
 		} else {
 			hqx = memnew(HQ2x); // Fallback to HQ2x in all cases.
@@ -157,9 +153,8 @@ void image_copy_from_pix(Ref<Image> p_image, PIX *p_pix);
 void GoostImage::rotate(Ref<Image> p_image, real_t p_angle) {
 	PIX *pix_in = pix_create_from_image(p_image);
 	PIX *pix_out = pixRotate(
-			pix_in, p_angle, L_ROTATE_SHEAR, L_BRING_IN_BLACK, 
-			p_image->get_width(), p_image->get_height()
-	);
+			pix_in, p_angle, L_ROTATE_SHEAR, L_BRING_IN_BLACK,
+			p_image->get_width(), p_image->get_height());
 	image_copy_from_pix(p_image, pix_out);
 	pixDestroy(&pix_out);
 }
@@ -197,9 +192,8 @@ Ref<Image> GoostImage::render_polygon(Vector<Point2> p_polygon, bool p_fill, con
 	ptaDestroy(&pta_in);
 
 	PIX *pix_out = pixConvert1To32(
-			nullptr, p_fill ? pix_fill : pix_poly, 
-			p_bg_color.to_abgr32(), p_color.to_abgr32()
-	);
+			nullptr, p_fill ? pix_fill : pix_poly,
+			p_bg_color.to_abgr32(), p_color.to_abgr32());
 	pixDestroy(&pix_poly);
 	if (pix_fill) {
 		pixDestroy(&pix_fill);
@@ -218,7 +212,7 @@ bool GoostImage::has_pixelv(Ref<Image> p_image, const Vector2 &p_pos) {
 	return get_pixelv_or_null(p_image, p_pos);
 }
 
-bool GoostImage::get_pixel_or_null(Ref<Image> p_image, int x, int y, Color* r_pixel) {
+bool GoostImage::get_pixel_or_null(Ref<Image> p_image, int x, int y, Color *r_pixel) {
 	if (x >= 0 && x < p_image->get_width() && y >= 0 && y < p_image->get_height()) {
 		if (r_pixel) {
 			*r_pixel = p_image->get_pixel(x, y);
@@ -228,7 +222,7 @@ bool GoostImage::get_pixel_or_null(Ref<Image> p_image, int x, int y, Color* r_pi
 	return false;
 }
 
-bool GoostImage::get_pixelv_or_null(Ref<Image> p_image, const Vector2 &p_pos, Color* r_pixel) {
+bool GoostImage::get_pixelv_or_null(Ref<Image> p_image, const Vector2 &p_pos, Color *r_pixel) {
 	return get_pixel_or_null(p_image, p_pos.x, p_pos.y, r_pixel);
 }
 
@@ -250,12 +244,12 @@ PIX *pix_create_from_image(Ref<Image> p_image, Image::Format p_format) {
 void _image_from_pix(Ref<Image> p_image, PIX *p_pix) {
 	ERR_FAIL_COND_MSG(!p_pix, "Invalid image input data.");
 
-	l_uint32 * src_data = pixExtractData(p_pix);
+	l_uint32 *src_data = pixExtractData(p_pix);
 	ERR_FAIL_COND_MSG(!src_data, "Could not extract image data.");
 
 	const int width = p_pix->w;
 	const int height = p_pix->h;
-	
+
 	Image::Format format = Image::FORMAT_RGBA8;
 	switch (p_pix->d) {
 		case 32: {
@@ -269,7 +263,7 @@ void _image_from_pix(Ref<Image> p_image, PIX *p_pix) {
 		} break;
 	}
 	PoolVector<uint8_t> dest;
-	{	
+	{
 		const int data_size = Image::get_image_data_size(width, height, format);
 		dest.resize(data_size);
 		PoolVector<uint8_t>::Write w = dest.write();

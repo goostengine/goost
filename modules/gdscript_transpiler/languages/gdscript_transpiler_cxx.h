@@ -33,23 +33,23 @@ public:
 		Node *next;
 		Type type;
 		AccessSpecifier access;
-		
+
 		Node() {
 			next = nullptr;
 			access = ACCESS_PUBLIC; // everything is public in GDScript
 		}
 	};
-	
+
 	struct FunctionNode;
 	struct BlockNode;
 	struct ConstantNode;
 	struct LocalVarNode;
 	struct OperatorNode;
-	
+
 	struct ClassNode : public Node {
 		String class_name;
 		String inherits;
-		
+
 		struct Member {
 			PropertyInfo info;
 			String identifier;
@@ -71,7 +71,7 @@ public:
 			Node *expression;
 			String datatype;
 			bool is_enum;
-			
+
 			Constant() {
 				is_enum = false;
 				expression = nullptr;
@@ -80,12 +80,12 @@ public:
 		Vector<Member> variables;
 		Map<StringName, Constant> constant_expressions;
 		Vector<FunctionNode *> functions;
-		
+
 		ClassNode() {
 			type = TYPE_CLASS;
 		}
 	};
-	
+
 	struct FunctionNode : public Node {
 		bool is_static;
 		// MultiplayerAPI::RPCMode rpc_mode;
@@ -105,7 +105,7 @@ public:
 			has_yield = false;
 		}
 	};
-	
+
 	struct BlockNode : public Node {
 		ClassNode *parent_class;
 		BlockNode *parent_block;
@@ -120,7 +120,7 @@ public:
 			has_return = false;
 		}
 	};
-	
+
 	struct IdentifierNode : public Node {
 		String name;
 		String datatype;
@@ -128,7 +128,7 @@ public:
 			type = TYPE_IDENTIFIER;
 		}
 	};
-	
+
 	struct LocalVarNode : public Node {
 		String name;
 		Node *assign;
@@ -136,7 +136,7 @@ public:
 		// int assignments;
 		// int usages;
 		String datatype;
-		
+
 		LocalVarNode() {
 			type = TYPE_LOCAL_VAR;
 			assign = nullptr;
@@ -203,25 +203,26 @@ public:
 		String datatype;
 		OperatorNode() { type = TYPE_OPERATOR; }
 	};
-	
+
 	struct ConstantNode : public Node {
 		Variant value;
 		String datatype;
 		bool is_enum;
-		
+
 		ConstantNode() {
 			type = TYPE_CONSTANT;
 			is_enum = false;
 		}
 	};
+
 private:
 	Node *head;
 	Node *list;
-	template <typename T> 
+	template <typename T>
 	T *new_node();
-	
+
 	String parsed_expression;
-	
+
 	String to_string(const GDScriptParser::DataType &p_type);
 
 protected:
@@ -229,19 +230,19 @@ protected:
 	ClassNode *translate_class(const GDScriptParser::ClassNode *p_class);
 	FunctionNode *translate_function(const GDScriptParser::FunctionNode *p_function);
 	BlockNode *translate_block(const GDScriptParser::BlockNode *p_block);
-	
+
 	void transpile_node(const Node *p_node);
 	void transpile_class(const ClassNode *p_class);
 	// void transpile_expression(const Node *p_expression);
 	// void transpile_block(const BlockNode *p_block);
 	// void transpile_function(const FunctionNode *p_function);
-	
+
 	void clear();
-	
+
 public:
 	virtual String get_name() const;
 	virtual Variant transpile(const Ref<GDScript> &p_script);
-	
+
 	GDScriptTranspilerCpp();
 	~GDScriptTranspilerCpp();
 };

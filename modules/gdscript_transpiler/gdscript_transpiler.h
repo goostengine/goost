@@ -8,7 +8,6 @@
 
 #include "gdscript_transpiler_utils.h"
 
-
 class GDScriptTranspilerLanguage;
 
 class GDScriptTranspiler {
@@ -31,6 +30,7 @@ class GDScriptTranspilerLanguage {
 protected:
 	Map<String, GDScriptTranspilerUtils::CodeBuilder> code;
 	String script_path;
+
 public:
 	virtual String get_name() const = 0;
 	virtual bool handles(const String &p_language) const;
