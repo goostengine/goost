@@ -37,6 +37,7 @@ func test_image_rotate_rgba():
 
 func test_image_rotate_rgb():
 	var input = Goost.image_load_no_warning("res://goost/core/image/samples/rect_rgb.png")
+	assert_eq(input.get_format(), Image.FORMAT_RGB8)
 	var input_size = input.get_size()
 	output = input
 	GoostImage.rotate(output, deg2rad(45))
@@ -53,7 +54,7 @@ func test_image_rotate_grayscale():
 	var input = Goost.image_load_no_warning("res://goost/core/image/samples/rect_grayscale.png")
 	var input_size = input.get_size()
 	output = input
-	GoostImage.rotate(output, deg2rad(45))
+	GoostImage.rotate(output, deg2rad(45), true)
 	assert_almost_eq(output.get_size(), input_size * sqrt(2), Vector2.ONE * 0.5)
 	output.lock()
 	var pixel = output.get_pixel(output.get_size().x - 1, output.get_size().y / 2)
@@ -169,7 +170,62 @@ func test_image_binarize_threshold_invert():
 func test_image_centroid():
 	output = Goost.image_load_no_warning("res://goost/core/image/samples/stroke.png")
 	var centroid = GoostImage.get_centroid(output)
-	assert_almost_eq(centroid, Vector2(35.8, 35.5), Vector2(0.5, 0.5))
+	assert_almost_eq(centroid, Vector2(37, 38), Vector2(0.5, 0.5))
 	output.lock()
-	output.set_pixelv(centroid, Color.white) # For debugging purposes.
+	output.set_pixelv(centroid, Color.red) # For debugging purposes.
+	output.unlock()
+
+
+func test_image_morph_type_dilate():
+	output = Goost.image_load_no_warning("res://goost/core/image/samples/stroke.png")
+	GoostImage.morph(output, GoostImage.MORPH_DILATE)
+	output.lock()
+	assert_eq(output.get_pixel(50, 35), Color.white)
+	output.unlock()
+
+
+func test_image_morph_type_erode():
+	output = Goost.image_load_no_warning("res://goost/core/image/samples/stroke.png")
+	GoostImage.morph(output, GoostImage.MORPH_ERODE)
+	output.lock()
+	assert_eq(output.get_pixel(16, 33), Color.black)
+	assert_eq(output.get_pixel(39, 7), Color.white)
+	output.unlock()
+
+
+func test_image_dilate_5px():
+	output = Goost.image_load_no_warning("res://goost/core/image/samples/stroke.png")
+	GoostImage.dilate(output, 5)
+	output.lock()
+	assert_ne(output.get_pixel(11, 38), Color.black)
+	output.unlock()
+
+
+func test_image_erode_5px():
+	output = Goost.image_load_no_warning("res://goost/core/image/samples/stroke.png")
+	GoostImage.erode(output, 5)
+	output.lock()
+	assert_eq(output.get_pixel(50, 32), Color.black)
+	output.unlock()
+
+
+func test_image_morph_open():
+	output = Goost.image_load_no_warning("res://goost/core/image/samples/stroke.png")
+	GoostImage.morph(output, GoostImage.MORPH_OPEN)
+	output.lock()
+	assert_eq(output.get_pixel(38, 6), Color.white)
+	assert_eq(output.get_pixel(33, 19), Color.white)
+	assert_eq(output.get_pixel(16, 33), Color.black)
+	assert_eq(output.get_pixel(19, 10), Color.black)
+	output.unlock()
+
+
+func test_image_morph_close():
+	output = Goost.image_load_no_warning("res://goost/core/image/samples/stroke.png")
+	GoostImage.morph(output, GoostImage.MORPH_CLOSE)
+	output.lock()
+	assert_eq(output.get_pixel(55, 16), Color.white)
+	assert_eq(output.get_pixel(51, 36), Color.white)
+	assert_eq(output.get_pixel(34, 53), Color.white)
+	assert_eq(output.get_pixel(20, 53), Color.white)
 	output.unlock()

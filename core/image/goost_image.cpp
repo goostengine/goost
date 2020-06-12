@@ -146,19 +146,22 @@ void GoostImage::resize_hqx(Ref<Image> p_image, int p_scale) {
 	}
 }
 
-PIX *pix_create_from_image(Ref<Image> p_image, Image::Format p_convert = Image::FORMAT_RGBA8);
-Ref<Image> image_create_from_pix(PIX *p_pix);
-void image_copy_from_pix(Ref<Image> p_image, PIX *p_pix);
+// PIX <-> Godot Image conversion.
+PIX *pix_create_from_image(Ref<Image> p_image);
+Ref<Image> image_create_from_pix(PIX *p_pix, bool p_include_alpha = true);
+void image_copy_from_pix(Ref<Image> p_image, PIX *p_pix, bool p_include_alpha = true);
 
 void GoostImage::rotate(Ref<Image> p_image, real_t p_angle, bool p_expand) {
 	PIX *pix_in = pix_create_from_image(p_image);
-	const int width = p_expand ? p_image->get_width() : 0;
-	const int height = p_expand ? p_image->get_height() : 0;
 
-	PIX *pix_out = pixRotate(pix_in, p_angle,
-			L_ROTATE_SHEAR, L_BRING_IN_BLACK, width, height);
+	const int w = p_expand ? p_image->get_width() : 0;
+	const int h = p_expand ? p_image->get_height() : 0;
+	const int type = L_ROTATE_SHEAR;
+	const bool hq = type == L_ROTATE_AREA_MAP;
 
-	image_copy_from_pix(p_image, pix_out);
+	PIX *pix_out = pixRotate(pix_in, p_angle, type, L_BRING_IN_BLACK, w, h);
+
+	image_copy_from_pix(p_image, pix_out, hq ? false : true);
 	pixDestroy(&pix_out);
 }
 
@@ -193,9 +196,52 @@ void GoostImage::binarize(Ref<Image> p_image, real_t p_threshold, bool p_invert)
 	pixDestroy(&pix_color);
 }
 
+void GoostImage::dilate(Ref<Image> p_image, int p_kernel_size) {
+	morph(p_image, MORPH_DILATE, Size2i(p_kernel_size, p_kernel_size));
+}
+
+void GoostImage::erode(Ref<Image> p_image, int p_kernel_size) {
+	morph(p_image, MORPH_ERODE, Size2i(p_kernel_size, p_kernel_size));
+}
+
+void GoostImage::morph(Ref<Image> p_image, MorphOperation p_op, Size2i p_kernel_size) {
+	const int hs = p_kernel_size.x;
+	const int vs = p_kernel_size.y;
+#ifdef DEBUG_ENABLED
+	ERR_FAIL_COND_MSG(hs % 2 == 0, "Kernel X size must be an odd number.");
+	ERR_FAIL_COND_MSG(vs % 2 == 0, "Kernel Y size must be an odd number.");
+	ERR_FAIL_COND_MSG(hs <= 1 || vs <= 1, "Kernel size must be greater than 1.");
+#endif
+	p_image->convert(Image::FORMAT_RGBA8);
+
+	PIX *pix_in = pix_create_from_image(p_image);
+	l_int32 type = -1;
+	switch (p_op) {
+		case MORPH_DILATE: {
+			type = L_MORPH_DILATE;
+		} break;
+		case MORPH_ERODE: {
+			type = L_MORPH_ERODE;
+		} break;
+		case MORPH_OPEN: {
+			type = L_MORPH_OPEN;
+		} break;
+		case MORPH_CLOSE: {
+			type = L_MORPH_CLOSE;
+		} break;
+		default: {
+			ERR_FAIL_MSG("Invalid morph type");
+		}
+	}
+	PIX *pix_morph = pixColorMorph(pix_in, type, hs, vs);
+
+	image_copy_from_pix(p_image, pix_morph, false);
+	pixDestroy(&pix_morph);
+}
+
 Point2 GoostImage::get_centroid(const Ref<Image> &p_image) {
 	PIX *pix_in = pix_create_from_image(p_image);
-	PIX *pix_bin = pixConvertTo1Adaptive(pix_in);
+	PIX *pix_bin = pixConvertTo8(pix_in, 0);
 	l_float32 x, y;
 	pixCentroid(pix_bin, nullptr, nullptr, &x, &y);
 	pixDestroy(&pix_bin);
@@ -220,9 +266,14 @@ Ref<Image> GoostImage::render_polygon(Vector<Point2> p_polygon, bool p_fill, con
 	}
 	ptaDestroy(&pta_in);
 
-	PIX *pix_out = pixConvert1To32(
-			nullptr, p_fill ? pix_fill : pix_poly,
-			p_bg_color.to_abgr32(), p_color.to_abgr32());
+#ifdef L_LITTLE_ENDIAN
+	const uint32_t bg_color = p_bg_color.to_rgba32();
+	const uint32_t color = p_color.to_rgba32();
+#else
+	const uint32_t bg_color = p_bg_color.to_abgr32();
+	const uint32_t color = p_color.to_abgr32();
+#endif
+	PIX *pix_out = pixConvert1To32(nullptr, p_fill ? pix_fill : pix_poly, bg_color, color);
 	pixDestroy(&pix_poly);
 	if (pix_fill) {
 		pixDestroy(&pix_fill);
@@ -257,57 +308,131 @@ bool GoostImage::get_pixelv_or_null(Ref<Image> p_image, const Vector2 &p_pos, Co
 
 // PIX to Image conversion
 
-PIX *pix_create_from_image(Ref<Image> p_image, Image::Format p_format) {
-	p_image->convert(p_format); // Does nothing if the same format.
+PIX *pix_create_from_image(Ref<Image> p_image) {
+	if (p_image->get_format() == Image::FORMAT_RGB8) {
+		// 24 bpp is not a valid image type in Leptonica.
+		p_image->convert(Image::FORMAT_RGBA8);
+	}
+	const Image::Format format = p_image->get_format();
+
 	PoolVector<uint8_t> src = p_image->get_data();
 	PoolVector<uint8_t>::Read read = src.read();
 	ERR_FAIL_COND_V(!read.ptr(), nullptr);
+	const uint8_t *r = read.ptr();
 
-	const uint8_t bpp = Image::get_format_pixel_size(p_image->get_format()) * 8;
-	PIX *pix_in = pixCreateNoInit(p_image->get_width(), p_image->get_height(), bpp);
-	pixSetData(pix_in, (l_uint32 *)read.ptr());
+	const int w = p_image->get_width();
+	const int h = p_image->get_height();
 
-	return pix_in;
+	const int ds = Image::get_image_data_size(w, h, format);
+	const int ps = Image::get_format_pixel_size(format);
+	const uint8_t d = ps * 8;
+	
+	PIX *pix = pixCreateNoInit(w, h, d);
+	l_uint32 *pix_data = pixGetData(pix);
+	l_int32 wpl = pixGetWpl(pix);
+	l_uint32 *line = nullptr;
+	size_t index = 0;
+
+	switch (ps) {
+		case 1: {
+			for (int i = 0; i < h; i++) {
+				line = pix_data + i * wpl;
+				for (int j = 0; j < w; j++) {
+					SET_DATA_BYTE(line, j, r[index++]);
+				}
+			}
+		} break;
+		case 4: {
+			for (int i = 0; i < ds; ++i) {
+				SET_DATA_BYTE(pix_data, i, r[i]);
+			}	
+		} break;
+		default: {
+			ERR_FAIL_V_MSG(nullptr, "Unsupported image format.");
+		}
+	}
+	return pix;
 }
 
-void _image_from_pix(Ref<Image> p_image, PIX *p_pix) {
+void _image_from_pix(Ref<Image> p_image, PIX *p_pix, bool p_include_alpha) {
 	ERR_FAIL_COND_MSG(!p_pix, "Invalid image input data.");
 
-	l_uint32 *src_data = pixExtractData(p_pix);
-	ERR_FAIL_COND_MSG(!src_data, "Could not extract image data.");
+	const int width = pixGetWidth(p_pix);
+	const int height = pixGetHeight(p_pix);
+	
+	PIX *pix = p_pix;
 
-	const int width = p_pix->w;
-	const int height = p_pix->h;
-
-	Image::Format format = Image::FORMAT_RGBA8;
-	switch (p_pix->d) {
-		case 32: {
-			format = Image::FORMAT_RGBA8;
-		} break;
-		case 24: {
-			format = Image::FORMAT_RGB8;
-		} break;
+	Image::Format format;
+	switch (pix->d) {
 		case 8: {
 			format = Image::FORMAT_L8;
 		} break;
+		case 32: {
+			format = Image::FORMAT_RGBA8;
+		} break;
+		default: {
+			ERR_FAIL_MSG(vformat("Image depth %s not supported.", pix->d));
+		}
 	}
-	PoolVector<uint8_t> dest;
+	l_uint32 *pix_data = pixGetData(pix);
+	ERR_FAIL_COND_MSG(!pix_data, "Could not fetch image data.");
+	PoolVector<uint8_t> image_data;
 	{
 		const int data_size = Image::get_image_data_size(width, height, format);
-		dest.resize(data_size);
-		PoolVector<uint8_t>::Write w = dest.write();
-		copymem((uint32_t *)w.ptr(), (uint32_t *)src_data, data_size);
+		image_data.resize(data_size);
+		PoolVector<uint8_t>::Write write = image_data.write();
+		uint8_t *w = write.ptr();
+
+		const int pixel_count = width * height;
+		const int pixel_size = Image::get_format_pixel_size(format);
+
+		size_t index = 0;
+		l_uint32 val = 0;
+		l_int32 wpl = pixGetWpl(pix);
+		l_uint32 *line = nullptr;
+
+		switch (pixel_size) {
+			case 1: {
+				for (int i = 0; i < height; i++) {
+					line = pix_data + i * wpl;
+					for (int j = 0; j < width; j++) {
+						w[index++] = GET_DATA_BYTE(line, j);
+					}
+				}
+			} break;
+			case 4: {
+				if (p_include_alpha) {
+					for (int i = 0; i < pixel_count; ++i) {
+						val = pix_data[i];
+						w[index + 0] = GET_DATA_BYTE(&val, COLOR_RED);
+						w[index + 1] = GET_DATA_BYTE(&val, COLOR_GREEN);
+						w[index + 2] = GET_DATA_BYTE(&val, COLOR_BLUE);
+						w[index + 3] = GET_DATA_BYTE(&val, L_ALPHA_CHANNEL);
+						index += pixel_size;
+					}
+				} else {
+					for (int i = 0; i < pixel_count; ++i) {
+						val = pix_data[i];
+						w[index + 0] = GET_DATA_BYTE(&val, COLOR_RED);
+						w[index + 1] = GET_DATA_BYTE(&val, COLOR_GREEN);
+						w[index + 2] = GET_DATA_BYTE(&val, COLOR_BLUE);
+						w[index + 3] = 0xff;
+						index += pixel_size;
+					}
+				}
+			} break;
+		}
 	}
-	p_image->create(width, height, false, format, dest);
+	p_image->create(width, height, false, format, image_data);
 }
 
-Ref<Image> image_create_from_pix(PIX *p_pix) {
+Ref<Image> image_create_from_pix(PIX *p_pix, bool p_include_alpha) {
 	Ref<Image> image;
 	image.instance();
-	_image_from_pix(image, p_pix);
+	_image_from_pix(image, p_pix, p_include_alpha);
 	return image;
 }
 
-void image_copy_from_pix(Ref<Image> p_image, PIX *p_pix) {
-	_image_from_pix(p_image, p_pix);
+void image_copy_from_pix(Ref<Image> p_image, PIX *p_pix, bool p_include_alpha) {
+	_image_from_pix(p_image, p_pix, p_include_alpha);
 }

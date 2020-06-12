@@ -28,7 +28,19 @@ void _GoostImage::rotate_180(Ref<Image> p_image) {
 }
 
 void _GoostImage::binarize(Ref<Image> p_image, real_t p_threshold, bool p_invert) {
-	return GoostImage::binarize(p_image, p_threshold, p_invert);
+	GoostImage::binarize(p_image, p_threshold, p_invert);
+}
+
+void _GoostImage::dilate(Ref<Image> p_image, int p_kernel_size) {
+	GoostImage::dilate(p_image, p_kernel_size);
+}
+
+void _GoostImage::erode(Ref<Image> p_image, int p_kernel_size) {
+	GoostImage::erode(p_image, p_kernel_size);
+}
+
+void _GoostImage::morph(Ref<Image> p_image, MorphOperation p_op, const Vector2 &p_kernel_size) {
+	GoostImage::morph(p_image, GoostImage::MorphOperation(p_op), p_kernel_size);
 }
 
 Vector2 _GoostImage::get_centroid(const Ref<Image> &p_image) {
@@ -64,10 +76,16 @@ void _GoostImage::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("replace_color", "image", "color", "with_color"), &_GoostImage::replace_color);
 	ClassDB::bind_method(D_METHOD("bucket_fill", "image", "at", "fill_color", "fill_image", "connectivity"), &_GoostImage::bucket_fill, DEFVAL(true), DEFVAL(FOUR_CONNECTED));
 	ClassDB::bind_method(D_METHOD("resize_hqx", "image", "scale"), &_GoostImage::resize_hqx, DEFVAL(2));
+
 	ClassDB::bind_method(D_METHOD("rotate", "image", "angle", "expand"), &_GoostImage::rotate, DEFVAL(true));
 	ClassDB::bind_method(D_METHOD("rotate_90", "image", "direction"), &_GoostImage::rotate_90);
 	ClassDB::bind_method(D_METHOD("rotate_180", "image"), &_GoostImage::rotate_180);
+
 	ClassDB::bind_method(D_METHOD("binarize", "image", "threshold", "invert"), &_GoostImage::binarize, DEFVAL(-1), DEFVAL(false));
+
+	ClassDB::bind_method(D_METHOD("dilate", "image", "kernel_size"), &_GoostImage::dilate, DEFVAL(3));
+	ClassDB::bind_method(D_METHOD("erode", "image", "kernel_size"), &_GoostImage::erode, DEFVAL(3));
+	ClassDB::bind_method(D_METHOD("morph", "image", "operation", "kernel_size"), &_GoostImage::morph, DEFVAL(Vector2(3, 3)));
 
 	ClassDB::bind_method(D_METHOD("get_centroid", "image"), &_GoostImage::get_centroid);
 
@@ -80,6 +98,11 @@ void _GoostImage::_bind_methods() {
 
 	BIND_ENUM_CONSTANT(FOUR_CONNECTED);
 	BIND_ENUM_CONSTANT(EIGHT_CONNECTED);
+
+	BIND_ENUM_CONSTANT(MORPH_DILATE);
+	BIND_ENUM_CONSTANT(MORPH_ERODE);
+	BIND_ENUM_CONSTANT(MORPH_OPEN);
+	BIND_ENUM_CONSTANT(MORPH_CLOSE);
 
 	BIND_ENUM_CONSTANT(CW);
 	BIND_ENUM_CONSTANT(CCW);

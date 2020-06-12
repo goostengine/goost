@@ -20,6 +20,12 @@ public:
 		FOUR_CONNECTED,
 		EIGHT_CONNECTED,
 	};
+	enum MorphOperation {
+		MORPH_DILATE,
+		MORPH_ERODE,
+		MORPH_OPEN,
+		MORPH_CLOSE,
+	};
 	enum Direction {
 		CW = 1,
 		CCW = -1,
@@ -29,10 +35,16 @@ public:
 	void replace_color(Ref<Image> p_image, const Color &p_color, const Color &p_with_color);
 	Ref<Image> bucket_fill(Ref<Image> p_image, const Point2 &p_at, const Color &p_fill_color, bool p_fill_image = true, Connectivity p_con = FOUR_CONNECTED);
 	void resize_hqx(Ref<Image> p_image, int p_scale);
+
 	void rotate(Ref<Image> p_image, real_t p_angle, bool p_expand);
 	void rotate_90(Ref<Image> p_image, Direction p_direction);
 	void rotate_180(Ref<Image> p_image);
+
 	void binarize(Ref<Image> p_image, real_t p_threshold = -1, bool p_invert = false);
+
+	void dilate(Ref<Image> p_image, int p_kernel_size = 3);
+	void erode(Ref<Image> p_image, int p_kernel_size = 3);
+	void morph(Ref<Image> p_image, MorphOperation p_op, const Vector2 &p_kernel_size = Size2i(3, 3));
 
 	Vector2 get_centroid(const Ref<Image> &p_image);
 
@@ -47,6 +59,7 @@ public:
 };
 
 VARIANT_ENUM_CAST(_GoostImage::Connectivity);
+VARIANT_ENUM_CAST(_GoostImage::MorphOperation);
 VARIANT_ENUM_CAST(_GoostImage::Direction);
 
 #endif
