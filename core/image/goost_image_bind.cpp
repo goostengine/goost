@@ -72,6 +72,10 @@ Variant _GoostImage::get_pixelv_or_null(Ref<Image> p_image, const Vector2 &p_pos
 	return _GoostImage::get_pixel_or_null(p_image, p_pos.x, p_pos.y);
 }
 
+Color _GoostImage::get_pixel_average(const Ref<Image> &p_image, const Rect2 &p_rect, const Ref<Image> &p_mask) {
+	return GoostImage::get_pixel_average(p_image, p_rect, p_mask);
+}
+
 void _GoostImage::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("replace_color", "image", "color", "with_color"), &_GoostImage::replace_color);
 	ClassDB::bind_method(D_METHOD("bucket_fill", "image", "at", "fill_color", "fill_image", "connectivity"), &_GoostImage::bucket_fill, DEFVAL(true), DEFVAL(FOUR_CONNECTED));
@@ -95,6 +99,8 @@ void _GoostImage::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_pixelv_or_null", "image", "pos"), &_GoostImage::get_pixelv_or_null);
 	ClassDB::bind_method(D_METHOD("has_pixel", "image", "x", "y"), &_GoostImage::has_pixel);
 	ClassDB::bind_method(D_METHOD("has_pixelv", "image", "pos"), &_GoostImage::has_pixelv);
+
+	ClassDB::bind_method(D_METHOD("get_pixel_average", "image", "rect", "mask"), &_GoostImage::get_pixel_average, DEFVAL(Rect2()), DEFVAL(Variant()));
 
 	BIND_ENUM_CONSTANT(FOUR_CONNECTED);
 	BIND_ENUM_CONSTANT(EIGHT_CONNECTED);

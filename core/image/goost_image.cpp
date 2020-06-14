@@ -249,6 +249,56 @@ Point2 GoostImage::get_centroid(const Ref<Image> &p_image) {
 	return Point2(static_cast<real_t>(x), static_cast<real_t>(y));
 }
 
+Color GoostImage::get_pixel_average(const Ref<Image> &p_image, const Rect2 &p_rect, const Ref<Image> &p_mask) {
+	bool using_rect = !p_rect.has_no_area();
+	bool using_mask = p_mask.is_valid();
+	if (using_mask) {
+		ERR_FAIL_COND_V(p_mask->empty(), Color());
+	}
+#ifdef DEBUG_ENABLED
+	if (using_mask) {
+		ERR_FAIL_COND_V(p_mask->is_invisible(), Color());
+	}
+#endif
+	PIX *pix = pix_create_from_image(p_image);
+	PIX *pix_mask = nullptr;
+	if (using_mask) {
+		PIX *pix_tmp = pix_create_from_image(p_mask);
+		pix_mask = pixConvertTo1(pix_tmp, 0);
+		pixDestroy(&pix_tmp);
+	}
+	BOX *box = nullptr;
+	if (using_rect) {
+		box = memnew(Box);
+		box->x = p_rect.position.x;
+		box->y = p_rect.position.y;
+		box->w = p_rect.size.x;
+		box->h = p_rect.size.y;
+	}
+	l_uint32 pixel_rgb = 0;
+	Color average;
+	l_ok ret = 0;
+
+	if (pix->d == 8) {
+		l_float32 c = 0;
+		l_int32 max = 255;
+		ret = pixAverageInRect(pix, pix_mask, box, 0, max, 1, &c);
+		average = Color(c, c, c) / max;
+		average.a = 1.0f;
+	} else if (pix->d == 32) {
+		ret = pixAverageInRectRGB(pix, pix_mask, box, 1, &pixel_rgb);
+		average = Color::hex(pixel_rgb);
+		average.a = 1.0f;
+	}
+	pixDestroy(&pix);
+
+	ERR_FAIL_COND_V_MSG(ret == 1, Color(), "Invalid input data.");
+	// If this happens, it's an internal bug (should be handled above).
+	ERR_FAIL_COND_V_MSG(ret == 2, Color(), "All pixels are filtered out.");
+
+	return average;
+}
+
 Ref<Image> GoostImage::render_polygon(Vector<Point2> p_polygon, bool p_fill, const Color &p_color, const Color &p_bg_color) {
 	ERR_FAIL_COND_V_MSG(p_polygon.size() < 3, Variant(), "Bad polygon!")
 

@@ -55,6 +55,8 @@ public:
 	Variant get_pixel_or_null(Ref<Image> p_image, int x, int y);
 	Variant get_pixelv_or_null(Ref<Image> p_image, const Vector2 &p_pos);
 
+	Color get_pixel_average(const Ref<Image> &p_image, const Rect2 &p_rect = Rect2(), const Ref<Image> &p_mask = nullptr);
+
 	_GoostImage();
 };
 

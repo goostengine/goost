@@ -45,8 +45,10 @@ public:
 	// Pixel methods.
 	static bool has_pixel(Ref<Image> p_image, int x, int y);
 	static bool has_pixelv(Ref<Image> p_image, const Vector2 &p_pos);
-	static bool get_pixel_or_null(Ref<Image> p_image, int x, int y, Color *r_pixel = NULL);
-	static bool get_pixelv_or_null(Ref<Image> p_image, const Vector2 &p_pos, Color *r_pixel = NULL);
+	static bool get_pixel_or_null(Ref<Image> p_image, int x, int y, Color *r_pixel = nullptr);
+	static bool get_pixelv_or_null(Ref<Image> p_image, const Vector2 &p_pos, Color *r_pixel = nullptr);
+
+	static Color get_pixel_average(const Ref<Image> &p_image, const Rect2 &p_rect = Rect2(), const Ref<Image> &p_mask = nullptr);
 };
 
 #endif

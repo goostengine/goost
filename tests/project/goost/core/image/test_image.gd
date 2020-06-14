@@ -229,3 +229,116 @@ func test_image_morph_close():
 	assert_eq(output.get_pixel(34, 53), Color.white)
 	assert_eq(output.get_pixel(20, 53), Color.white)
 	output.unlock()
+
+
+func debug_color(color):
+	var pixel_debug = Image.new()
+	pixel_debug.create(64, 64, false, Image.FORMAT_RGBA8)
+	pixel_debug.fill(color)
+	output = pixel_debug
+
+
+func test_image_get_pixel_average():
+	output = Goost.image_load_no_warning("res://goost/core/image/samples/icon.png")
+	var color = GoostImage.get_pixel_average(output)
+	output.lock()
+	assert_almost_eq(color.r, 0.2, 0.001)
+	assert_almost_eq(color.g, 0.4, 0.001)
+	assert_almost_eq(color.b, 0.501, 0.001)
+	assert_eq(color.a, 1.0)
+	output.unlock()
+	debug_color(color)
+
+
+func test_image_get_pixel_average_grayscale():
+	output = Goost.image_load_no_warning("res://goost/core/image/samples/icon_binary.png")
+	var color = GoostImage.get_pixel_average(output)
+	output.lock()
+	assert_almost_eq(color.r, 0.452, 0.001)
+	assert_almost_eq(color.g, 0.452, 0.001)
+	assert_almost_eq(color.b, 0.452, 0.001)
+	assert_eq(color.a, 1.0)
+	output.unlock()
+	debug_color(color)
+
+
+func test_image_get_pixel_average_rect_full():
+	output = Goost.image_load_no_warning("res://goost/core/image/samples/rect_rgba.png")
+	var s = output.get_size()
+	var rect = Rect2(0, 0, s.x, s.y) # Full rect.
+	var color = GoostImage.get_pixel_average(output, rect)
+	output.lock()
+	assert_almost_eq(color.r, 0.247, 0.001)
+	assert_almost_eq(color.g, 0.247, 0.001)
+	assert_almost_eq(color.b, 0.247, 0.001)
+	output.unlock()
+	debug_color(color)
+
+
+func test_image_get_pixel_average_rect_top_left():
+	output = Goost.image_load_no_warning("res://goost/core/image/samples/rect_rgba.png")
+	var s = output.get_size()
+	var rect = Rect2(0, 0, s.x / 2, s.y / 2) # Top-left rect.
+	var color = GoostImage.get_pixel_average(output, rect)
+	output.lock()
+	assert_eq(color.r, 1.0)
+	assert_eq(color.g, 0.0)
+	assert_eq(color.b, 0.0)
+	output.unlock()
+	debug_color(color)
+
+
+func test_image_get_pixel_average_rect_bottom_right():
+	output = Goost.image_load_no_warning("res://goost/core/image/samples/rect_rgba.png")
+	var s = output.get_size()
+	var rect = Rect2(s.x / 2, s.y / 2, s.x / 2, s.y / 2) # Bottom-right rect.
+	var color = GoostImage.get_pixel_average(output, rect)
+	output.lock()
+	assert_eq(color.r, 0.0)
+	assert_eq(color.g, 0.0)
+	assert_eq(color.b, 1.0)
+	output.unlock()
+	debug_color(color)
+
+
+func test_image_get_pixel_average_rect_mixed():
+	output = Goost.image_load_no_warning("res://goost/core/image/samples/rect_rgba.png")
+	var s = output.get_size()
+	var rect = Rect2(0, 0, s.x / 2, s.y) # Between R and G.
+	var color = GoostImage.get_pixel_average(output, rect)
+	output.lock()
+	assert_almost_eq(color.r, 0.5, 0.01)
+	assert_almost_eq(color.g, 0.5, 0.01)
+	assert_eq(color.b, 0.0)
+	output.unlock()
+	debug_color(color)
+
+
+func test_image_get_pixel_average_mask_full():
+	output = Goost.image_load_no_warning("res://goost/core/image/samples/rect_rgba.png")
+	var s = output.get_size()
+	var mask = Image.new()
+	mask.create(s.x, s.y, false, Image.FORMAT_L8)
+	mask.fill(Color.white)
+	var color = GoostImage.get_pixel_average(output, Rect2(), mask)
+	output.lock()
+	assert_almost_eq(color.r, 0.247, 0.001)
+	assert_almost_eq(color.g, 0.247, 0.001)
+	assert_almost_eq(color.b, 0.247, 0.001)
+	output.unlock()
+	debug_color(color)
+
+
+func test_image_get_pixel_average_mask_top_left():
+	output = Goost.image_load_no_warning("res://goost/core/image/samples/rect_rgba.png")
+	var s = output.get_size()
+	var mask = Image.new()
+	mask.create(s.x / 2.0, s.y / 2.0, false, Image.FORMAT_L8)
+	mask.fill(Color.white)
+	var color = GoostImage.get_pixel_average(output, Rect2(), mask)
+	output.lock()
+	assert_eq(color.r, 1.0)
+	assert_eq(color.g, 0.0)
+	assert_eq(color.b, 0.0)
+	output.unlock()
+	debug_color(color)
