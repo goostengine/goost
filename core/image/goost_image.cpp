@@ -290,6 +290,12 @@ Color GoostImage::get_pixel_average(const Ref<Image> &p_image, const Rect2 &p_re
 		average = Color::hex(pixel_rgb);
 		average.a = 1.0f;
 	}
+	if (pix_mask) {
+		pixDestroy(&pix_mask);
+	}
+	if (box) {
+		memdelete(box);
+	}
 	pixDestroy(&pix);
 
 	ERR_FAIL_COND_V_MSG(ret == 1, Color(), "Invalid input data.");
