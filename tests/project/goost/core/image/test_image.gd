@@ -144,17 +144,17 @@ func test_image_binarize_adaptive():
 	output.lock()
 	assert_eq(output.get_pixel(8, 9), Color.white)
 	output.unlock()
-	output.convert(Image.FORMAT_RGB8) # For debugging purposes.
+	assert_eq(output.get_format(), Image.FORMAT_L8)
 
 
 func test_image_binarize_threshold():
 	output = Goost.image_load_no_warning("res://goost/core/image/samples/icon.png")
 	GoostImage.binarize(output, 0.85)
 	output.lock()
-	assert_eq(output.get_pixel(8, 9), Color(0,0,0,0))
+	assert_eq(output.get_pixel(8, 9), Color.black)
 	assert_eq(output.get_pixel(32, 24), Color.white)
 	output.unlock()
-	output.convert(Image.FORMAT_RGB8) # For debugging purposes.
+	assert_eq(output.get_format(), Image.FORMAT_L8)
 
 
 func test_image_binarize_threshold_invert():
@@ -162,9 +162,9 @@ func test_image_binarize_threshold_invert():
 	GoostImage.binarize(output, 0.85, true)
 	output.lock()
 	assert_eq(output.get_pixel(8, 9), Color.white)
-	assert_eq(output.get_pixel(32, 24), Color(0,0,0,0))
+	assert_eq(output.get_pixel(32, 24), Color.black)
 	output.unlock()
-	output.convert(Image.FORMAT_RGB8) # For debugging purposes.
+	assert_eq(output.get_format(), Image.FORMAT_L8)
 
 
 func test_image_centroid():

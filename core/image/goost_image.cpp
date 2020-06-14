@@ -189,11 +189,12 @@ void GoostImage::binarize(Ref<Image> p_image, real_t p_threshold, bool p_invert)
 	}
 	const l_uint32 val0 = p_invert ? 0 : 0xffffffff;
 	const l_uint32 val1 = p_invert ? 0xffffffff : 0;
-	PIX *pix_color = pixConvert1To32(nullptr, pix_bin, val0, val1);
+
+	PIX *pix_grayscale = pixConvert1To8(nullptr, pix_bin, val0, val1);
 	pixDestroy(&pix_bin);
 
-	image_copy_from_pix(p_image, pix_color);
-	pixDestroy(&pix_color);
+	image_copy_from_pix(p_image, pix_grayscale);
+	pixDestroy(&pix_grayscale);
 }
 
 void GoostImage::dilate(Ref<Image> p_image, int p_kernel_size) {
@@ -326,15 +327,15 @@ PIX *pix_create_from_image(Ref<Image> p_image) {
 	const int ds = Image::get_image_data_size(w, h, format);
 	const int ps = Image::get_format_pixel_size(format);
 	const uint8_t d = ps * 8;
-	
+
 	PIX *pix = pixCreateNoInit(w, h, d);
 	l_uint32 *pix_data = pixGetData(pix);
 	l_int32 wpl = pixGetWpl(pix);
 	l_uint32 *line = nullptr;
 	size_t index = 0;
 
-	switch (ps) {
-		case 1: {
+	switch (d) {
+		case 8: {
 			for (int i = 0; i < h; i++) {
 				line = pix_data + i * wpl;
 				for (int j = 0; j < w; j++) {
@@ -342,10 +343,10 @@ PIX *pix_create_from_image(Ref<Image> p_image) {
 				}
 			}
 		} break;
-		case 4: {
+		case 32: {
 			for (int i = 0; i < ds; ++i) {
 				SET_DATA_BYTE(pix_data, i, r[i]);
-			}	
+			}
 		} break;
 		default: {
 			ERR_FAIL_V_MSG(nullptr, "Unsupported image format.");
@@ -359,7 +360,7 @@ void _image_from_pix(Ref<Image> p_image, PIX *p_pix, bool p_include_alpha) {
 
 	const int width = pixGetWidth(p_pix);
 	const int height = pixGetHeight(p_pix);
-	
+
 	PIX *pix = p_pix;
 
 	Image::Format format;
@@ -391,8 +392,8 @@ void _image_from_pix(Ref<Image> p_image, PIX *p_pix, bool p_include_alpha) {
 		l_int32 wpl = pixGetWpl(pix);
 		l_uint32 *line = nullptr;
 
-		switch (pixel_size) {
-			case 1: {
+		switch (pix->d) {
+			case 8: {
 				for (int i = 0; i < height; i++) {
 					line = pix_data + i * wpl;
 					for (int j = 0; j < width; j++) {
@@ -400,7 +401,7 @@ void _image_from_pix(Ref<Image> p_image, PIX *p_pix, bool p_include_alpha) {
 					}
 				}
 			} break;
-			case 4: {
+			case 32: {
 				if (p_include_alpha) {
 					for (int i = 0; i < pixel_count; ++i) {
 						val = pix_data[i];
