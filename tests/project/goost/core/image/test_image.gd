@@ -1,5 +1,13 @@
 extends "res://addons/gut/test.gd"
 
+const SAMPLES = {
+	icon = "res://goost/core/image/samples/icon.png",
+	icon_binary = "res://goost/core/image/samples/icon_binary.png",
+	grayscale = "res://goost/core/image/samples/rect_grayscale.png",
+	rect_rgb = "res://goost/core/image/samples/rect_rgb.png",
+	rect_rgba = "res://goost/core/image/samples/rect_rgba.png",
+	stroke = "res://goost/core/image/samples/stroke.png",
+}
 var output
 
 
@@ -7,24 +15,24 @@ func after_each():
 	output.save_png("res://out/%s.png" % [gut._current_test.name])
 
 
-func test_image_resize_hqx2_rgb():
-	var input = Goost.image_load_no_warning("res://goost/core/image/samples/rect_rgb.png")
+func test_resize_hqx2_rgb():
+	var input = Goost.image_load(SAMPLES.rect_rgb)
 	var input_size = input.get_size()
 	output = input
 	GoostImage.resize_hqx(output, 2)
 	assert_eq(output.get_size(), input_size * 2)
 
 
-func test_image_resize_hqx3_rgba():
-	var input = Goost.image_load_no_warning("res://goost/core/image/samples/rect_rgba.png")
+func test_resize_hqx3_rgba():
+	var input = Goost.image_load(SAMPLES.rect_rgba)
 	var input_size = input.get_size()
 	output = input
 	GoostImage.resize_hqx(output, 3)
 	assert_eq(output.get_size(), input_size * 3)
 
 
-func test_image_rotate_rgba():
-	var input = Goost.image_load_no_warning("res://goost/core/image/samples/rect_rgba.png")
+func test_rotate_rgba():
+	var input = Goost.image_load(SAMPLES.rect_rgba)
 	var input_size = input.get_size()
 	output = input
 	GoostImage.rotate(output, deg2rad(45))
@@ -35,8 +43,8 @@ func test_image_rotate_rgba():
 	output.unlock()
 
 
-func test_image_rotate_rgb():
-	var input = Goost.image_load_no_warning("res://goost/core/image/samples/rect_rgb.png")
+func test_rotate_rgb():
+	var input = Goost.image_load(SAMPLES.rect_rgb)
 	assert_eq(input.get_format(), Image.FORMAT_RGB8)
 	var input_size = input.get_size()
 	output = input
@@ -50,8 +58,8 @@ func test_image_rotate_rgb():
 	output.unlock()
 
 
-func test_image_rotate_grayscale():
-	var input = Goost.image_load_no_warning("res://goost/core/image/samples/rect_grayscale.png")
+func test_rotate_grayscale():
+	var input = Goost.image_load(SAMPLES.rect_grayscale)
 	var input_size = input.get_size()
 	output = input
 	GoostImage.rotate(output, deg2rad(45), true)
@@ -62,8 +70,8 @@ func test_image_rotate_grayscale():
 	output.unlock()
 
 
-func test_image_rotate_no_expand():
-	var input = Goost.image_load_no_warning("res://goost/core/image/samples/rect_rgba.png")
+func test_rotate_no_expand():
+	var input = Goost.image_load(SAMPLES.rect_rgba)
 	var input_size = input.get_size()
 	output = input
 	GoostImage.rotate(output, deg2rad(45), false)
@@ -74,8 +82,8 @@ func test_image_rotate_no_expand():
 	output.unlock()
 
 
-func test_image_rotate_90_cw():
-	var input = Goost.image_load_no_warning("res://goost/core/image/samples/rect_rgba.png")
+func test_rotate_90_cw():
+	var input = Goost.image_load(SAMPLES.rect_rgba)
 	var input_size = input.get_size()
 	output = input
 	GoostImage.rotate_90(output, GoostImage.CW)
@@ -85,8 +93,8 @@ func test_image_rotate_90_cw():
 	output.unlock()
 
 
-func test_image_rotate_90_ccw():
-	var input = Goost.image_load_no_warning("res://goost/core/image/samples/rect_rgba.png")
+func test_rotate_90_ccw():
+	var input = Goost.image_load(SAMPLES.rect_rgba)
 	var input_size = input.get_size()
 	output = input
 	GoostImage.rotate_90(output, GoostImage.CCW)
@@ -96,8 +104,8 @@ func test_image_rotate_90_ccw():
 	output.unlock()
 
 
-func test_image_rotate_180_grayscale():
-	var input = Goost.image_load_no_warning("res://goost/core/image/samples/rect_grayscale.png")
+func test_rotate_180_grayscale():
+	var input = Goost.image_load(SAMPLES.rect_grayscale)
 	var input_size = input.get_size()
 	output = input
 	GoostImage.rotate_180(output)
@@ -107,7 +115,7 @@ func test_image_rotate_180_grayscale():
 	output.unlock()
 
 
-func test_image_render_polygon_non_filled():
+func test_render_polygon_non_filled():
 	var polygon = [Vector2(124, 44), Vector2(101, 115), Vector2(26, 115), Vector2(0, 44), Vector2(64, 0)]
 	output = GoostImage.render_polygon(polygon, false)
 	output.convert(Image.FORMAT_RGB8) # So it's visible on image preview.
@@ -118,7 +126,7 @@ func test_image_render_polygon_non_filled():
 	output.unlock()
 
 
-func test_image_render_polygon_filled():
+func test_render_polygon_filled():
 	var polygon = [Vector2(124, 44), Vector2(101, 115), Vector2(26, 115), Vector2(0, 44), Vector2(64, 0)]
 	output = GoostImage.render_polygon(polygon, true)
 	output.lock()
@@ -127,7 +135,7 @@ func test_image_render_polygon_filled():
 	output.unlock()
 
 
-func test_image_render_polygon_filled_color():
+func test_render_polygon_filled_color():
 	var polygon = [Vector2(124, 44), Vector2(101, 115), Vector2(26, 115), Vector2(0, 44), Vector2(64, 0)]
 	output = GoostImage.render_polygon(polygon, true, Color.green, Color.blue)
 	output.lock()
@@ -138,8 +146,8 @@ func test_image_render_polygon_filled_color():
 	output.unlock()
 
 
-func test_image_binarize_adaptive():
-	output = Goost.image_load_no_warning("res://goost/core/image/samples/icon.png")
+func test_binarize_adaptive():
+	output = Goost.image_load(SAMPLES.icon)
 	GoostImage.binarize(output)
 	output.lock()
 	assert_eq(output.get_pixel(8, 9), Color.white)
@@ -147,8 +155,8 @@ func test_image_binarize_adaptive():
 	assert_eq(output.get_format(), Image.FORMAT_L8)
 
 
-func test_image_binarize_threshold():
-	output = Goost.image_load_no_warning("res://goost/core/image/samples/icon.png")
+func test_binarize_threshold():
+	output = Goost.image_load(SAMPLES.icon)
 	GoostImage.binarize(output, 0.85)
 	output.lock()
 	assert_eq(output.get_pixel(8, 9), Color.black)
@@ -157,8 +165,8 @@ func test_image_binarize_threshold():
 	assert_eq(output.get_format(), Image.FORMAT_L8)
 
 
-func test_image_binarize_threshold_invert():
-	output = Goost.image_load_no_warning("res://goost/core/image/samples/icon.png")
+func test_binarize_threshold_invert():
+	output = Goost.image_load(SAMPLES.icon)
 	GoostImage.binarize(output, 0.85, true)
 	output.lock()
 	assert_eq(output.get_pixel(8, 9), Color.white)
@@ -167,8 +175,8 @@ func test_image_binarize_threshold_invert():
 	assert_eq(output.get_format(), Image.FORMAT_L8)
 
 
-func test_image_centroid():
-	output = Goost.image_load_no_warning("res://goost/core/image/samples/stroke.png")
+func test_centroid():
+	output = Goost.image_load(SAMPLES.stroke)
 	var centroid = GoostImage.get_centroid(output)
 	assert_almost_eq(centroid, Vector2(37, 38), Vector2(0.5, 0.5))
 	output.lock()
@@ -176,16 +184,16 @@ func test_image_centroid():
 	output.unlock()
 
 
-func test_image_morph_type_dilate():
-	output = Goost.image_load_no_warning("res://goost/core/image/samples/stroke.png")
+func test_morph_type_dilate():
+	output = Goost.image_load(SAMPLES.stroke)
 	GoostImage.morph(output, GoostImage.MORPH_DILATE)
 	output.lock()
 	assert_eq(output.get_pixel(50, 35), Color.white)
 	output.unlock()
 
 
-func test_image_morph_type_erode():
-	output = Goost.image_load_no_warning("res://goost/core/image/samples/stroke.png")
+func test_morph_type_erode():
+	output = Goost.image_load(SAMPLES.stroke)
 	GoostImage.morph(output, GoostImage.MORPH_ERODE)
 	output.lock()
 	assert_eq(output.get_pixel(16, 33), Color.black)
@@ -193,24 +201,24 @@ func test_image_morph_type_erode():
 	output.unlock()
 
 
-func test_image_dilate_5px():
-	output = Goost.image_load_no_warning("res://goost/core/image/samples/stroke.png")
+func test_dilate_5px():
+	output = Goost.image_load(SAMPLES.stroke)
 	GoostImage.dilate(output, 5)
 	output.lock()
 	assert_ne(output.get_pixel(11, 38), Color.black)
 	output.unlock()
 
 
-func test_image_erode_5px():
-	output = Goost.image_load_no_warning("res://goost/core/image/samples/stroke.png")
+func test_erode_5px():
+	output = Goost.image_load(SAMPLES.stroke)
 	GoostImage.erode(output, 5)
 	output.lock()
 	assert_eq(output.get_pixel(50, 32), Color.black)
 	output.unlock()
 
 
-func test_image_morph_open():
-	output = Goost.image_load_no_warning("res://goost/core/image/samples/stroke.png")
+func test_morph_open():
+	output = Goost.image_load(SAMPLES.stroke)
 	GoostImage.morph(output, GoostImage.MORPH_OPEN)
 	output.lock()
 	assert_eq(output.get_pixel(38, 6), Color.white)
@@ -220,8 +228,8 @@ func test_image_morph_open():
 	output.unlock()
 
 
-func test_image_morph_close():
-	output = Goost.image_load_no_warning("res://goost/core/image/samples/stroke.png")
+func test_morph_close():
+	output = Goost.image_load(SAMPLES.stroke)
 	GoostImage.morph(output, GoostImage.MORPH_CLOSE)
 	output.lock()
 	assert_eq(output.get_pixel(55, 16), Color.white)
@@ -238,8 +246,8 @@ func debug_color(color):
 	output = pixel_debug
 
 
-func test_image_get_pixel_average():
-	output = Goost.image_load_no_warning("res://goost/core/image/samples/icon.png")
+func test_get_pixel_average():
+	output = Goost.image_load(SAMPLES.icon)
 	var color = GoostImage.get_pixel_average(output)
 	output.lock()
 	assert_almost_eq(color.r, 0.2, 0.001)
@@ -250,8 +258,8 @@ func test_image_get_pixel_average():
 	debug_color(color)
 
 
-func test_image_get_pixel_average_grayscale():
-	output = Goost.image_load_no_warning("res://goost/core/image/samples/icon_binary.png")
+func test_get_pixel_average_grayscale():
+	output = Goost.image_load(SAMPLES.icon_binary)
 	var color = GoostImage.get_pixel_average(output)
 	output.lock()
 	assert_almost_eq(color.r, 0.452, 0.001)
@@ -262,8 +270,8 @@ func test_image_get_pixel_average_grayscale():
 	debug_color(color)
 
 
-func test_image_get_pixel_average_rect_full():
-	output = Goost.image_load_no_warning("res://goost/core/image/samples/rect_rgba.png")
+func test_get_pixel_average_rect_full():
+	output = Goost.image_load(SAMPLES.rect_rgba)
 	var s = output.get_size()
 	var rect = Rect2(0, 0, s.x, s.y) # Full rect.
 	var color = GoostImage.get_pixel_average(output, rect)
@@ -275,8 +283,8 @@ func test_image_get_pixel_average_rect_full():
 	debug_color(color)
 
 
-func test_image_get_pixel_average_rect_top_left():
-	output = Goost.image_load_no_warning("res://goost/core/image/samples/rect_rgba.png")
+func test_get_pixel_average_rect_top_left():
+	output = Goost.image_load(SAMPLES.rect_rgba)
 	var s = output.get_size()
 	var rect = Rect2(0, 0, s.x / 2, s.y / 2) # Top-left rect.
 	var color = GoostImage.get_pixel_average(output, rect)
@@ -288,8 +296,8 @@ func test_image_get_pixel_average_rect_top_left():
 	debug_color(color)
 
 
-func test_image_get_pixel_average_rect_bottom_right():
-	output = Goost.image_load_no_warning("res://goost/core/image/samples/rect_rgba.png")
+func test_get_pixel_average_rect_bottom_right():
+	output = Goost.image_load(SAMPLES.rect_rgba)
 	var s = output.get_size()
 	var rect = Rect2(s.x / 2, s.y / 2, s.x / 2, s.y / 2) # Bottom-right rect.
 	var color = GoostImage.get_pixel_average(output, rect)
@@ -301,8 +309,8 @@ func test_image_get_pixel_average_rect_bottom_right():
 	debug_color(color)
 
 
-func test_image_get_pixel_average_rect_mixed():
-	output = Goost.image_load_no_warning("res://goost/core/image/samples/rect_rgba.png")
+func test_get_pixel_average_rect_mixed():
+	output = Goost.image_load(SAMPLES.rect_rgba)
 	var s = output.get_size()
 	var rect = Rect2(0, 0, s.x / 2, s.y) # Between R and G.
 	var color = GoostImage.get_pixel_average(output, rect)
@@ -314,8 +322,8 @@ func test_image_get_pixel_average_rect_mixed():
 	debug_color(color)
 
 
-func test_image_get_pixel_average_mask_full():
-	output = Goost.image_load_no_warning("res://goost/core/image/samples/rect_rgba.png")
+func test_get_pixel_average_mask_full():
+	output = Goost.image_load(SAMPLES.rect_rgba)
 	var s = output.get_size()
 	var mask = Image.new()
 	mask.create(s.x, s.y, false, Image.FORMAT_L8)
@@ -329,8 +337,8 @@ func test_image_get_pixel_average_mask_full():
 	debug_color(color)
 
 
-func test_image_get_pixel_average_mask_top_left():
-	output = Goost.image_load_no_warning("res://goost/core/image/samples/rect_rgba.png")
+func test_get_pixel_average_mask_top_left():
+	output = Goost.image_load(SAMPLES.rect_rgba)
 	var s = output.get_size()
 	var mask = Image.new()
 	mask.create(s.x / 2.0, s.y / 2.0, false, Image.FORMAT_L8)
