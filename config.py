@@ -41,16 +41,16 @@ def configure(env):
 
 def get_doc_classes():
     return [
-        "GoostGeometry2D"
-        "PolyBooleanParameters2D"
-        "PolyDecompParameters2D"
-        "PolyOffsetParameters2D"
-        "PolyNode2D"
-        "GoostImage"
-        "ImageBlender"
-        "ImageIndexed"
-        "ImageIndexed"
-        "ShapeCast2D"
+        "GoostGeometry2D",
+        "PolyBooleanParameters2D",
+        "PolyDecompParameters2D",
+        "PolyOffsetParameters2D",
+        "PolyNode2D",
+        "GoostImage",
+        "ImageBlender",
+        "ImageIndexed",
+        "ImageIndexed",
+        "ShapeCast2D",
     ]
 
 
