@@ -30,6 +30,12 @@ public:
 		CW = 1,
 		CCW = -1,
 	};
+	enum WrapMode {
+		TILE,
+		TILE_FLIP_X,
+		TILE_FLIP_Y,
+		TILE_FLIP_XY,
+	};
 
 public:
 	void replace_color(Ref<Image> p_image, const Color &p_color, const Color &p_with_color);
@@ -45,6 +51,9 @@ public:
 	void dilate(Ref<Image> p_image, int p_kernel_size = 3);
 	void erode(Ref<Image> p_image, int p_kernel_size = 3);
 	void morph(Ref<Image> p_image, MorphOperation p_op, const Vector2 &p_kernel_size = Size2i(3, 3));
+
+	Ref<Image> tile(const Ref<Image> &p_image, const Vector2 &p_size, WrapMode p_mode);
+	Ref<Image> repeat(const Ref<Image> &p_image, const Vector2 &p_count, WrapMode p_mode, const Vector2 &p_max_size);
 
 	Vector2 get_centroid(const Ref<Image> &p_image);
 
@@ -63,5 +72,6 @@ public:
 VARIANT_ENUM_CAST(_GoostImage::Connectivity);
 VARIANT_ENUM_CAST(_GoostImage::MorphOperation);
 VARIANT_ENUM_CAST(_GoostImage::Direction);
+VARIANT_ENUM_CAST(_GoostImage::WrapMode);
 
 #endif

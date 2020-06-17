@@ -19,6 +19,12 @@ public:
 		CW = 1,
 		CCW = -1,
 	};
+	enum WrapMode {
+		TILE,
+		TILE_FLIP_X,
+		TILE_FLIP_Y,
+		TILE_FLIP_XY,
+	};
 
 public:
 	// Image processing methods.
@@ -35,6 +41,9 @@ public:
 	static void dilate(Ref<Image> p_image, int p_kernel_size = 3);
 	static void erode(Ref<Image> p_image, int p_kernel_size = 3);
 	static void morph(Ref<Image> p_image, MorphOperation p_op, Size2i p_kernel_size = Size2i(3, 3));
+
+	static Ref<Image> tile(const Ref<Image> &p_image, const Size2i &p_size, WrapMode p_mode);
+	static Ref<Image> repeat(const Ref<Image> &p_image, const Size2i &p_count, WrapMode p_mode, const Size2i &p_max_size);
 
 	// Image analysis methods.
 	static Point2 get_centroid(const Ref<Image> &p_image);

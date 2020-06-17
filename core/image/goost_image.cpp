@@ -240,6 +240,102 @@ void GoostImage::morph(Ref<Image> p_image, MorphOperation p_op, Size2i p_kernel_
 	pixDestroy(&pix_morph);
 }
 
+Ref<Image> GoostImage::tile(const Ref<Image> &p_image, const Size2i &p_size, WrapMode p_mode) {
+	ERR_FAIL_COND_V(p_image.is_null(), Variant());
+	ERR_FAIL_COND_V(p_image->empty(), Variant());
+
+	const int sw = p_image->get_width();
+	const int sh = p_image->get_height();
+	const int dw = p_size.x;
+	const int dh = p_size.y;
+
+	ERR_FAIL_COND_V(dw <= 0, Variant());
+	ERR_FAIL_COND_V(dh <= 0, Variant());
+
+	const int cols = (dw + sw - 1) / sw;
+	const int rows = (dh + sh - 1) / sh;
+
+	return repeat(p_image, Size2i(cols, rows), p_mode, p_size);
+}
+
+Ref<Image> GoostImage::repeat(const Ref<Image> &p_image, const Size2i &p_count, WrapMode p_mode, const Size2i &p_max_size) {
+	ERR_FAIL_COND_V(p_image.is_null(), Variant());
+	ERR_FAIL_COND_V(p_image->empty(), Variant());
+
+	const int cols = p_count.x;
+	const int rows = p_count.y;
+
+	ERR_FAIL_COND_V(cols <= 0, Variant());
+	ERR_FAIL_COND_V(rows <= 0, Variant());
+
+	Ref<Image> src = p_image;
+	Ref<Image> src_fx;
+	Ref<Image> src_fy;
+	Ref<Image> src_fxy;
+
+	Rect2i src_rect = Rect2i(Size2i(0, 0), src->get_size());
+	const int w = src->get_width();
+	const int h = src->get_height();
+
+	if (p_mode == TILE_FLIP_XY || p_mode == TILE_FLIP_X) {
+		src_fx.instance();
+		src_fx->copy_internals_from(src);
+		src_fx->flip_x();
+	}
+	if (p_mode == TILE_FLIP_XY || p_mode == TILE_FLIP_Y) {
+		src_fy.instance();
+		src_fy->copy_internals_from(src);
+		src_fy->flip_y();
+	}
+	if (p_mode == TILE_FLIP_XY) {
+		src_fxy.instance();
+		src_fxy->copy_internals_from(src_fx);
+		src_fxy->flip_y();
+	}
+	Ref<Image> dest;
+	dest.instance();
+
+	int dw = CLAMP(w * cols, 0, p_max_size.x);
+	int dh = CLAMP(h * rows, 0, p_max_size.y);
+
+	if (cols == 1 && p_max_size.x < src->get_size().x) {
+		dw = p_max_size.x;
+	}
+	if (rows == 1 && p_max_size.y < src->get_size().y) {
+		dh = p_max_size.y;
+	}
+	dest->create(dw, dh, false, src->get_format());
+
+	for (int i = 0; i < rows; ++i) {
+		for (int j = 0; j < cols; ++j) {
+			src = p_image;
+			switch (p_mode) {
+				case TILE_FLIP_Y: {
+					if (i & 1) {
+						src = src_fy;
+					}
+				} break;
+				case TILE_FLIP_X: {
+					if (j & 1) {
+						src = src_fx;
+					}
+				} break;
+				case TILE_FLIP_XY: {
+					if ((i & 1) && !(j & 1)) {
+						src = src_fy;
+					} else if (!(i & 1) && (j & 1)) {
+						src = src_fx;
+					} else if ((i & 1) && (j & 1)) {
+						src = src_fxy;
+					}
+				} break;
+			}
+			dest->blit_rect(src, src_rect, Size2i(j * w, i * h));
+		}
+	}
+	return dest;
+}
+
 Point2 GoostImage::get_centroid(const Ref<Image> &p_image) {
 	PIX *pix_in = pix_create_from_image(p_image);
 	PIX *pix_bin = pixConvertTo8(pix_in, 0);

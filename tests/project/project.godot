@@ -20,7 +20,7 @@ _global_script_class_icons={
 
 [application]
 
-config/name="Goost"
+config/name="Goost Tests"
 config/description="Goost Test Project"
 run/main_scene="res://test.tscn"
 boot_splash/image="res://icon.png"

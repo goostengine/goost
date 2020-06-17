@@ -43,6 +43,14 @@ void _GoostImage::morph(Ref<Image> p_image, MorphOperation p_op, const Vector2 &
 	GoostImage::morph(p_image, GoostImage::MorphOperation(p_op), p_kernel_size);
 }
 
+Ref<Image> _GoostImage::repeat(const Ref<Image> &p_image, const Vector2 &p_count, WrapMode p_mode, const Vector2 &p_max_size) {
+	return GoostImage::repeat(p_image, p_count, GoostImage::WrapMode(p_mode), p_max_size);
+}
+
+Ref<Image> _GoostImage::tile(const Ref<Image> &p_image, const Vector2 &p_size, WrapMode p_mode) {
+	return GoostImage::tile(p_image, p_size, GoostImage::WrapMode(p_mode));
+}
+
 Vector2 _GoostImage::get_centroid(const Ref<Image> &p_image) {
 	return GoostImage::get_centroid(p_image);
 }
@@ -91,6 +99,9 @@ void _GoostImage::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("erode", "image", "kernel_size"), &_GoostImage::erode, DEFVAL(3));
 	ClassDB::bind_method(D_METHOD("morph", "image", "operation", "kernel_size"), &_GoostImage::morph, DEFVAL(Vector2(3, 3)));
 
+	ClassDB::bind_method(D_METHOD("tile", "image", "size", "wrap_mode"), &_GoostImage::tile, DEFVAL(TILE));
+	ClassDB::bind_method(D_METHOD("repeat", "image", "count", "wrap_mode", "max_size"), &_GoostImage::repeat, DEFVAL(TILE), DEFVAL(Vector2(Image::MAX_WIDTH, Image::MAX_HEIGHT)));
+
 	ClassDB::bind_method(D_METHOD("get_centroid", "image"), &_GoostImage::get_centroid);
 
 	ClassDB::bind_method(D_METHOD("render_polygon", "polygon", "fill", "foreground_color", "background_color"), &_GoostImage::render_polygon, DEFVAL(false), DEFVAL(Color(1, 1, 1, 1)), DEFVAL(Color(0, 0, 0, 0)));
@@ -112,6 +123,11 @@ void _GoostImage::_bind_methods() {
 
 	BIND_ENUM_CONSTANT(CW);
 	BIND_ENUM_CONSTANT(CCW);
+
+	BIND_ENUM_CONSTANT(TILE);
+	BIND_ENUM_CONSTANT(TILE_FLIP_X);
+	BIND_ENUM_CONSTANT(TILE_FLIP_Y);
+	BIND_ENUM_CONSTANT(TILE_FLIP_XY);
 }
 
 _GoostImage::_GoostImage() {

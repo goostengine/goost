@@ -3,7 +3,7 @@ extends "res://addons/gut/test.gd"
 const SAMPLES = {
 	icon = "res://goost/core/image/samples/icon.png",
 	icon_binary = "res://goost/core/image/samples/icon_binary.png",
-	grayscale = "res://goost/core/image/samples/rect_grayscale.png",
+	rect_grayscale = "res://goost/core/image/samples/rect_grayscale.png",
 	rect_rgb = "res://goost/core/image/samples/rect_rgb.png",
 	rect_rgba = "res://goost/core/image/samples/rect_rgba.png",
 	stroke = "res://goost/core/image/samples/stroke.png",
@@ -350,3 +350,55 @@ func test_get_pixel_average_mask_top_left():
 	assert_eq(color.b, 0.0)
 	output.unlock()
 	debug_color(color)
+
+
+func test_repeat():
+	var input = Goost.image_load(SAMPLES.rect_rgba)
+	var input_size = input.get_size()
+	output = GoostImage.repeat(input, Vector2(3, 4), GoostImage.TILE)
+	assert_eq(output.get_size(), Vector2(input_size.x * 3, input_size.y * 4))
+
+
+func test_repeat_flip_x():
+	var input = Goost.image_load(SAMPLES.rect_rgba)
+	var input_size = input.get_size()
+	output = GoostImage.repeat(input, Vector2(4, 3), GoostImage.TILE_FLIP_X)
+	assert_eq(output.get_size(), Vector2(input_size.x * 4, input_size.y * 3))
+
+
+func test_repeat_flip_y():
+	var input = Goost.image_load(SAMPLES.rect_rgba)
+	var input_size = input.get_size()
+	output = GoostImage.repeat(input, Vector2(3, 4), GoostImage.TILE_FLIP_Y)
+	assert_eq(output.get_size(), Vector2(input_size.x * 3, input_size.y * 4))
+
+
+func test_repeat_flip_xy():
+	var input = Goost.image_load(SAMPLES.rect_rgba)
+	var input_size = input.get_size()
+	output = GoostImage.repeat(input, Vector2(4, 4), GoostImage.TILE_FLIP_XY)
+	assert_eq(output.get_size(), Vector2(input_size.x * 4, input_size.y * 4))
+
+
+func test_tile_arbitrary_size():
+	var input = Goost.image_load(SAMPLES.rect_rgba)
+	output = GoostImage.tile(input, Vector2(300, 400))
+	assert_eq(output.get_size(), Vector2(300, 400))
+
+
+func test_tile_dest_smaller_than_tile():
+	var input = Goost.image_load(SAMPLES.rect_rgba)
+	output = GoostImage.tile(input, Vector2(16, 8))
+	assert_eq(output.get_size(), Vector2(16, 8))
+	output.lock()
+	assert_eq(output.get_pixel(15, 7), Color.red)
+	output.unlock()
+
+
+func test_tile_thin_slice():
+	var input = Goost.image_load(SAMPLES.rect_rgba)
+	output = GoostImage.tile(input, Vector2(16, 100))
+	assert_eq(output.get_size(), Vector2(16, 100))
+	output.lock()
+	assert_eq(output.get_pixel(15, 99), Color.green)
+	output.unlock()
