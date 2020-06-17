@@ -1,5 +1,6 @@
 MIT License
 
+Copyright (c) 2020 Andrii Doroshenko.
 Copyright (c) 2020 Goost contributors (cf. AUTHORS.md).
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
