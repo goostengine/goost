@@ -59,7 +59,7 @@
 				Generates an optimal color palette for this image and maps it to indices. The maximum palette color size that can be generated is 256. Dithering can be applied to improve the overall look of the image with low number of colors, see [enum DitherMode].
 				If [code]with_alpha[/code] is [code]true[/code], the alpha channel will be included for quantization algorithm, set this to false if the image is already premultiplied by alpha or if you don't want the alpha values to affect palette generation.
 				If [code]high_quality[/code] is [code]true[/code], the quantization algorithm will go through additional iteration, potentially improving color mapping quality in expense of performance.
-				The image must be converted to [member Image.FORMAT_RGBA8] before generating palette.
+				The image must be converted to [constant Image.FORMAT_RGBA8] before generating palette.
 				Note that this method overwrites previously created or generated palette and index data.
 			</description>
 		</method>
@@ -103,7 +103,7 @@
 			<argument index="0" name="path" type="String">
 			</argument>
 			<description>
-				Loads indexed PNG image from disk at specified path. If PNG image is not indexed, it will load the image normally without color palette, see [method Image.load]. If loaded image is indexed, the color palette and index data will be accessible from within this image. If this image is duplicated, the color palette and index data will not be copied, use [method get_index_data], [method get_palette_data] and [method create_indexed_from_data] to manually duplicate palette and index data.
+				Loads indexed PNG image from disk at specified path. If PNG image is not indexed, it will load the image normally without color palette, see [method Image.load]. If loaded image is indexed, the color palette and index data will be accessible from within this image. If this image is duplicated, the color palette and index data will not be copied, use [member index_data], [member palette_data] and [method create_indexed_from_data] to manually duplicate palette and index data.
 			</description>
 		</method>
 		<method name="lock_indexed">
@@ -156,8 +156,14 @@
 	</methods>
 	<members>
 		<member name="data" type="Dictionary" setter="_set_data" getter="_get_data" override="true" default="{&quot;data&quot;: PoolByteArray(  ),&quot;format&quot;: &quot;Lum8&quot;,&quot;height&quot;: 0,&quot;mipmaps&quot;: false,&quot;width&quot;: 0}" />
+		<member name="index_data" type="PoolByteArray" setter="" getter="get_index_data">
+			The internal data representing the indices pointing to palette entries of this image. Cannot be set directly, use [method create_indexed_from_data].
+		</member>
 		<member name="palette" type="PoolColorArray" setter="set_palette" getter="get_palette">
 			Represents the color palette of this image. The palette can be replaced if the image already has a palette with the same size. In order to change the number of palette entries, use [method create_indexed], [method generate_palette], or [method clear_palette]. Note that changing the palette size invalidates existing index data and has to be cleared, which is done automatically.
+		</member>
+		<member name="palette_data" type="PoolByteArray" setter="" getter="get_palette_data">
+			The internal data representing the palette of this image. Cannot be set directly, use [member palette].
 		</member>
 	</members>
 	<constants>

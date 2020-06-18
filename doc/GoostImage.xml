@@ -199,7 +199,7 @@
 			</argument>
 			<description>
 				Expands the image using HQ2X algorithm with the [code]scale[/code] set to [code]2[/code] or the HQ3X algorithm with the [code]scale[/code] set to [code]3[/code].
-				See also [method Image.expand_2x_hq2x].
+				See also [method Image.expand_x2_hq2x].
 			</description>
 		</method>
 		<method name="rotate">

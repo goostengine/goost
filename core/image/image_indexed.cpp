@@ -465,6 +465,12 @@ void ImageIndexed::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_palette"), &ImageIndexed::get_palette);
 	ADD_PROPERTY(PropertyInfo(Variant::POOL_COLOR_ARRAY, "palette", PROPERTY_HINT_NONE, "", 0), "set_palette", "get_palette");
 
+	ClassDB::bind_method(D_METHOD("get_palette_data"), &ImageIndexed::get_palette_data);
+	ADD_PROPERTY(PropertyInfo(Variant::POOL_BYTE_ARRAY, "palette_data", PROPERTY_HINT_NONE, "", 0), "", "get_palette_data");
+
+	ClassDB::bind_method(D_METHOD("get_index_data"), &ImageIndexed::get_index_data);
+	ADD_PROPERTY(PropertyInfo(Variant::POOL_BYTE_ARRAY, "index_data", PROPERTY_HINT_NONE, "", 0), "", "get_index_data");
+
 	ClassDB::bind_method(D_METHOD("set_palette_color", "index", "color"), &ImageIndexed::set_palette_color);
 	ClassDB::bind_method(D_METHOD("get_palette_color", "index"), &ImageIndexed::get_palette_color);
 
