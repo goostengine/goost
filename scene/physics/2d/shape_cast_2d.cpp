@@ -427,17 +427,3 @@ void ShapeCast2D::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "collide_with_areas", PROPERTY_HINT_LAYERS_3D_PHYSICS), "set_collide_with_areas", "is_collide_with_areas_enabled");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "collide_with_bodies", PROPERTY_HINT_LAYERS_3D_PHYSICS), "set_collide_with_bodies", "is_collide_with_bodies_enabled");
 }
-
-ShapeCast2D::ShapeCast2D() {
-	enabled = true;
-	collided = false;
-	margin = 0.0;
-	collision_safe_distance = 1.0;
-	collision_unsafe_distance = 1.0;
-	max_results = 32;
-	collision_mask = 1;
-	cast_to = Vector2(0, 50);
-	exclude_parent_body = true;
-	collide_with_bodies = true;
-	collide_with_areas = false;
-}

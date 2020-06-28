@@ -7,25 +7,25 @@
 class ShapeCast2D : public Node2D {
 	GDCLASS(ShapeCast2D, Node2D);
 
-	bool enabled;
+	bool enabled = true;
 
 	Ref<Shape2D> shape;
 	RID shape_rid;
-	Vector2 cast_to;
+	Vector2 cast_to = Vector2(0, 50);
 
 	Set<RID> exclude;
-	real_t margin;
-	uint32_t collision_mask;
-	bool exclude_parent_body;
-	bool collide_with_areas;
-	bool collide_with_bodies;
+	real_t margin = 0.0;
+	uint32_t collision_mask = 1;
+	bool exclude_parent_body = true;
+	bool collide_with_areas = false;
+	bool collide_with_bodies = true;
 
 	// Result
-	int max_results;
+	int max_results = 32;
 	Vector<Physics2DDirectSpaceState::ShapeRestInfo> result;
-	bool collided;
-	real_t collision_safe_distance;
-	real_t collision_unsafe_distance;
+	bool collided = false;
+	real_t collision_safe_distance = 1.0;
+	real_t collision_unsafe_distance = 1.0;
 
 	Array _get_collision_result() const;
 
@@ -89,7 +89,7 @@ public:
 
 	String get_configuration_warning() const;
 
-	ShapeCast2D();
+	ShapeCast2D() {};
 };
 
 #endif // GOOST_SHAPE_CAST_2D_H
