@@ -14,10 +14,11 @@ void VisualShape2D::set_shape(const Ref<Shape2D> &p_shape) {
 		shape->disconnect(CoreStringNames::get_singleton()->changed, this, "update");
 	}
 	shape = p_shape;
-	if (p_shape.is_valid()) {
+	if (shape.is_valid()) {
 		shape->connect(CoreStringNames::get_singleton()->changed, this, "update");
 	}
 	update();
+
 	if (shape_changed) {
 		emit_signal("shape_changed");
 	}
@@ -25,6 +26,51 @@ void VisualShape2D::set_shape(const Ref<Shape2D> &p_shape) {
 
 Ref<Shape2D> VisualShape2D::get_shape() const {
 	return shape;
+}
+
+void VisualShape2D::set_use_parent_shape(bool p_use_parent_shape) {
+	use_parent_shape = p_use_parent_shape;
+	_update_parent_shape();
+	update();
+}
+
+bool VisualShape2D::is_using_parent_shape() const {
+	return use_parent_shape;
+}
+
+void VisualShape2D::_update_parent_shape() {
+	bool valid = true;
+
+	if (!is_inside_tree()) {
+		valid = false;
+	}
+	Node *parent = get_parent();
+	if (!parent) {
+		valid = false;
+	}
+	if (parent_shape.is_valid()) {
+		parent_shape->disconnect(CoreStringNames::get_singleton()->changed, this, "update");
+	}
+	if (!valid) {
+		parent_shape = Ref<Shape2D>();
+		return;
+	}
+	parent_shape = parent->get("shape");
+	if (parent_shape.is_null()) {
+		const Vector<Vector2> &poly = parent->get("polygon", &valid);
+		if (valid) {
+			// This might be `CollisionPolygon2D` etc.
+			Ref<ConvexPolygonShape2D> convex;
+			convex.instance();
+			convex->set_points(poly);
+			parent_shape = convex;
+		}
+	}
+	if (parent_shape.is_valid()) {
+		if (!parent_shape->is_connected(CoreStringNames::get_singleton()->changed, this, "update")) {
+			parent_shape->connect(CoreStringNames::get_singleton()->changed, this, "update");
+		}
+	}
 }
 
 void VisualShape2D::set_color(const Color &p_color) {
@@ -56,8 +102,20 @@ bool VisualShape2D::is_debug_sync_visible_collision_shapes() const {
 
 void VisualShape2D::_notification(int p_what) {
 	switch (p_what) {
+		case NOTIFICATION_PARENTED:
+		case NOTIFICATION_PATH_CHANGED: {
+			_update_parent_shape();
+			update();
+		} break;
+		case NOTIFICATION_UNPARENTED: {
+		} break;
 		case NOTIFICATION_DRAW: {
-			if (shape.is_null()) {
+			Ref<Shape2D> draw_shape = shape;
+			if (use_parent_shape) {
+				_update_parent_shape();
+				draw_shape = parent_shape;
+			}
+			if (draw_shape.is_null()) {
 				break;
 			}
 			Color draw_color = color;
@@ -75,6 +133,7 @@ void VisualShape2D::_notification(int p_what) {
 					break;
 				}
 			}
+			// Only relevant in debug builds!
 			if (debug_use_default_color) {
 				draw_color = get_tree()->get_debug_collisions_color();
 			}
@@ -84,7 +143,7 @@ void VisualShape2D::_notification(int p_what) {
 				}
 			}
 #endif
-			shape->draw(get_canvas_item(), draw_color);
+			draw_shape->draw(get_canvas_item(), draw_color);
 		} break;
 	}
 }
@@ -92,7 +151,7 @@ void VisualShape2D::_notification(int p_what) {
 String VisualShape2D::get_configuration_warning() const {
 	String warning = Node2D::get_configuration_warning();
 
-	if (shape.is_null()) {
+	if (shape.is_null() && parent_shape.is_null()) {
 		if (!warning.empty()) {
 			warning += "\n\n";
 		}
@@ -106,6 +165,9 @@ void VisualShape2D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_shape", "shape"), &VisualShape2D::set_shape);
 	ClassDB::bind_method(D_METHOD("get_shape"), &VisualShape2D::get_shape);
 
+	ClassDB::bind_method(D_METHOD("set_use_parent_shape", "use_parent_shape"), &VisualShape2D::set_use_parent_shape);
+	ClassDB::bind_method(D_METHOD("is_using_parent_shape"), &VisualShape2D::is_using_parent_shape);
+
 	ClassDB::bind_method(D_METHOD("set_color", "color"), &VisualShape2D::set_color);
 	ClassDB::bind_method(D_METHOD("get_color"), &VisualShape2D::get_color);
 
@@ -116,6 +178,7 @@ void VisualShape2D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("is_debug_sync_visible_collision_shapes"), &VisualShape2D::is_debug_sync_visible_collision_shapes);
 
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "shape", PROPERTY_HINT_RESOURCE_TYPE, "Shape2D"), "set_shape", "get_shape");
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "use_parent_shape"), "set_use_parent_shape", "is_using_parent_shape");
 	ADD_PROPERTY(PropertyInfo(Variant::COLOR, "color"), "set_color", "get_color");
 	ADD_GROUP("Debug", "debug_");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "debug_use_default_color"), "set_debug_use_default_color", "is_using_debug_default_color");

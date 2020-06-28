@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="VisualShape2D" inherits="Node2D" version="3.2">
 	<brief_description>
-		Draws any [Shape2D] resource. Useful for quick prototyping.
+		Draws any [Shape2D] resource. Useful for quick prototyping and debugging.
 	</brief_description>
 	<description>
-		This is a node with the entire purpose of rendering [Shape2D] resources just like drawing collision shapes in the editor, yet it's also possible to override the color per each node rather than globally with this class. While the class supports all existing shapes, it's currently not convenient to edit polygon-based shapes, so use [Polygon2D] node which is much more superior for editing and drawing of polygons (with textures).
+		This is a node with the entire purpose of rendering [Shape2D] resources just like collision shapes are drawn in the editor, yet it's also possible to override the color per each node rather than globally with this class. You may use Godot's [Polygon2D] node which is much more suitable for polygon editing and drawing with textures, as any shape can be represented with it.
 	</description>
 	<tutorials>
 	</tutorials>
@@ -23,7 +23,17 @@
 		<member name="shape" type="Shape2D" setter="set_shape" getter="get_shape">
 			The shape resource used as a reference to draw. The drawing method is specific for each shape and the properties must be configured per shape.
 		</member>
+		<member name="use_parent_shape" type="bool" setter="set_use_parent_shape" getter="is_using_parent_shape" default="false">
+			If [code]true[/code], the shape is fetched from the parent node to draw instead of its own [member shape]. The parent node must have either [code]shape[/code] [Shape2D] property or [code]polygon[/code] [PoolVector2Array] property defined, else nothing is drawn.
+		</member>
 	</members>
+	<signals>
+		<signal name="shape_changed">
+			<description>
+				Emitted when the [member shape] is changed (or cleared).
+			</description>
+		</signal>
+	</signals>
 	<constants>
 	</constants>
 </class>
