@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="VisualShape2D" inherits="Node2D" version="3.2">
+	<brief_description>
+		Draws any [Shape2D] resource. Useful for quick prototyping.
+	</brief_description>
+	<description>
+		This is a node with the entire purpose of rendering [Shape2D] resources just like drawing collision shapes in the editor, yet it's also possible to override the color per each node rather than globally with this class. While the class supports all existing shapes, it's currently not convenient to edit polygon-based shapes, so use [Polygon2D] node which is much more superior for editing and drawing of polygons (with textures).
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+	</methods>
+	<members>
+		<member name="color" type="Color" setter="set_color" getter="get_color" default="Color( 1, 1, 1, 1 )">
+			The fill color used to draw the [member shape].
+		</member>
+		<member name="debug_sync_visible_collision_shapes" type="bool" setter="set_debug_sync_visible_collision_shapes" getter="is_debug_sync_visible_collision_shapes" default="false">
+			If [code]true[/code], respects the "Visible Collision Shapes" option so that the shape is only drawn when the option is enabled while the game is running.
+		</member>
+		<member name="debug_use_default_color" type="bool" setter="set_debug_use_default_color" getter="is_using_debug_default_color" default="false">
+			If [code]true[/code], this overrides the [member color] with the color used to draw the collision shapes.
+		</member>
+		<member name="shape" type="Shape2D" setter="set_shape" getter="get_shape">
+			The shape resource used as a reference to draw. The drawing method is specific for each shape and the properties must be configured per shape.
+		</member>
+	</members>
+	<constants>
+	</constants>
+</class>
