@@ -10,6 +10,9 @@ void VisualShape2D::set_shape(const Ref<Shape2D> &p_shape) {
 	if (shape != p_shape) {
 		shape_changed = true;
 	}
+	if (shape.is_valid()) {
+		shape->disconnect(CoreStringNames::get_singleton()->changed, this, "update");
+	}
 	shape = p_shape;
 	if (p_shape.is_valid()) {
 		shape->connect(CoreStringNames::get_singleton()->changed, this, "update");
