@@ -9,6 +9,8 @@ class VisualShape2DEditor : public AbstractPolygon2DEditor {
 
 	VisualShape2D *node;
 
+	void _update_editing();
+
 protected:
 	virtual Node2D *_get_node() const;
 	virtual void _set_node(Node *p_node);

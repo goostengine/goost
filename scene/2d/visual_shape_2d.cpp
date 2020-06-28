@@ -2,13 +2,22 @@
 
 #include "core/core_string_names.h"
 #include "core/engine.h"
+#include "scene/resources/concave_polygon_shape_2d.h"
+#include "scene/resources/convex_polygon_shape_2d.h"
 
 void VisualShape2D::set_shape(const Ref<Shape2D> &p_shape) {
+	bool shape_changed = false;
+	if (shape != p_shape) {
+		shape_changed = true;
+	}
 	shape = p_shape;
 	if (p_shape.is_valid()) {
 		shape->connect(CoreStringNames::get_singleton()->changed, this, "update");
 	}
 	update();
+	if (shape_changed) {
+		emit_signal("shape_changed");
+	}
 }
 
 Ref<Shape2D> VisualShape2D::get_shape() const {
@@ -49,7 +58,20 @@ void VisualShape2D::_notification(int p_what) {
 				break;
 			}
 			Color draw_color = color;
-#ifdef TOOLS_ENABLED
+#ifdef DEBUG_ENABLED
+			// Avoid error messages, only in debug to save performance in release.
+			Ref<ConvexPolygonShape2D> convex = shape;
+			if (convex.is_valid()) {
+				if (convex->get_points().size() < 3) {
+					break;
+				}
+			}
+			Ref<ConcavePolygonShape2D> concave = shape;
+			if (concave.is_valid()) {
+				if (concave->get_segments().size() % 2) {
+					break;
+				}
+			}
 			if (debug_use_default_color) {
 				draw_color = get_tree()->get_debug_collisions_color();
 			}
@@ -95,4 +117,6 @@ void VisualShape2D::_bind_methods() {
 	ADD_GROUP("Debug", "debug_");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "debug_use_default_color"), "set_debug_use_default_color", "is_using_debug_default_color");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "debug_sync_visible_collision_shapes"), "set_debug_sync_visible_collision_shapes", "is_debug_sync_visible_collision_shapes");
+
+	ADD_SIGNAL(MethodInfo("shape_changed"));
 }
