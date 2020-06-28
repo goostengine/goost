@@ -9,6 +9,7 @@ components = [
     "core/image",
     "core/math",
     "scene/physics",
+    "editor",
 ]
 
 def get_components():

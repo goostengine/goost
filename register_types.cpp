@@ -2,6 +2,7 @@
 
 #include "core/register_core_types.h"
 #include "scene/register_scene_types.h"
+#include "editor/register_editor_types.h"
 
 void register_goost_types() {
 #ifdef GOOST_CORE_ENABLED
@@ -9,6 +10,9 @@ void register_goost_types() {
 #endif
 #ifdef GOOST_SCENE_ENABLED
 	goost::register_scene_types();
+#endif
+#ifdef GOOST_EDITOR_ENABLED
+	goost::register_editor_types();
 #endif
 }
 
