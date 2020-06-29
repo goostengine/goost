@@ -2,20 +2,25 @@
 #define GOOST_VISUAL_SHAPE_2D_H
 
 #include "scene/2d/node_2d.h"
+#include "scene/resources/concave_polygon_shape_2d.h"
+#include "scene/resources/convex_polygon_shape_2d.h"
 #include "scene/resources/shape_2d.h"
 
 class VisualShape2D : public Node2D {
 	GDCLASS(VisualShape2D, Node2D);
 
 	Ref<Shape2D> shape;
+
 	Ref<Shape2D> parent_shape;
 	bool use_parent_shape = false;
+
+	// Cache polygon-based parent geometry with this instance.
+	Ref<ConvexPolygonShape2D> polygon_shape;
+
 	Color color = Color(1, 1, 1, 1);
 
 	bool debug_use_default_color = false;
 	bool debug_sync_visible_collision_shapes = false;
-	
-	bool _parent_shape_changed = false;
 
 protected:
 	void _notification(int p_what);

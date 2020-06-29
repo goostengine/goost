@@ -2,8 +2,6 @@
 
 #include "core/core_string_names.h"
 #include "core/engine.h"
-#include "scene/resources/concave_polygon_shape_2d.h"
-#include "scene/resources/convex_polygon_shape_2d.h"
 
 void VisualShape2D::set_shape(const Ref<Shape2D> &p_shape) {
 	bool shape_changed = false;
@@ -42,6 +40,7 @@ bool VisualShape2D::is_using_parent_shape() const {
 
 bool VisualShape2D::update_parent_shape() {
 	bool valid = use_parent_shape;
+	bool got_polygon_shape = false;
 
 	if (!is_inside_tree()) {
 		valid = false;
@@ -60,19 +59,33 @@ bool VisualShape2D::update_parent_shape() {
 		return parent_shape != previous;
 	}
 	parent_shape = parent->get("shape");
+	Vector<Vector2> points;
 	if (parent_shape.is_null()) {
-		const Vector<Vector2> &poly = parent->get("polygon", &valid);
+		points = parent->get("points", &valid);
+		if (!valid) {
+			points = parent->get("polygon", &valid);
+		}
 		if (valid) {
 			// This might be `CollisionPolygon2D` etc.
-			Ref<ConvexPolygonShape2D> convex;
-			convex.instance();
-			convex->set_points(poly);
-			parent_shape = convex;
+			got_polygon_shape = true;
+			if (polygon_shape.is_null()) {
+				polygon_shape.instance();
+			}
+			parent_shape = polygon_shape;
 		}
 	}
 	if (parent_shape.is_valid()) {
 		if (!parent_shape->is_connected(CoreStringNames::get_singleton()->changed, this, "update")) {
 			parent_shape->connect(CoreStringNames::get_singleton()->changed, this, "update");
+		}
+		// This needs to be set after the shape `changed` signal is connected,
+		// so that the polygon shape can be drawn even if `_process` is disabled.
+		if (got_polygon_shape) {
+			if (points.size() >= 3) {
+				polygon_shape->set_points(points);
+			} else {
+				parent_shape = Ref<Shape2D>();
+			}
 		}
 	}
 	return parent_shape != previous;

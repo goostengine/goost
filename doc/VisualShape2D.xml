@@ -33,7 +33,7 @@
 			The shape resource used as a reference to draw. The drawing method is specific for each shape and the properties must be configured per shape.
 		</member>
 		<member name="use_parent_shape" type="bool" setter="set_use_parent_shape" getter="is_using_parent_shape" default="false">
-			If [code]true[/code], the shape is fetched from the parent node to draw instead of its own [member shape]. The parent node must have either [code]shape[/code] [Shape2D] property or [code]polygon[/code] [PoolVector2Array] property defined, else nothing is drawn.
+			If [code]true[/code], the shape is fetched from the parent node to draw instead of its own [member shape]. The parent node must have either [code]shape[/code] as [Shape2D] property or [code]points[/code], [code]polygon[/code] as [PoolVector2Array] property defined, else nothing is drawn.
 		</member>
 	</members>
 	<signals>
