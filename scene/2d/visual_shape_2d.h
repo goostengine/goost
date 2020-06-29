@@ -14,8 +14,8 @@ class VisualShape2D : public Node2D {
 
 	bool debug_use_default_color = false;
 	bool debug_sync_visible_collision_shapes = false;
-
-	void _update_parent_shape();
+	
+	bool _parent_shape_changed = false;
 
 protected:
 	void _notification(int p_what);
@@ -27,6 +27,8 @@ public:
 
 	void set_use_parent_shape(bool p_use_parent_shape);
 	bool is_using_parent_shape() const;
+	// Returns `true` if parent shape is changed.
+	bool update_parent_shape();
 
 	void set_color(const Color &p_color);
 	Color get_color() const;

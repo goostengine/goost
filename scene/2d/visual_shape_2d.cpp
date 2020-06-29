@@ -31,7 +31,7 @@ Ref<Shape2D> VisualShape2D::get_shape() const {
 
 void VisualShape2D::set_use_parent_shape(bool p_use_parent_shape) {
 	use_parent_shape = p_use_parent_shape;
-	_update_parent_shape();
+	update_parent_shape();
 	update_configuration_warning();
 	update();
 }
@@ -40,7 +40,7 @@ bool VisualShape2D::is_using_parent_shape() const {
 	return use_parent_shape;
 }
 
-void VisualShape2D::_update_parent_shape() {
+bool VisualShape2D::update_parent_shape() {
 	bool valid = use_parent_shape;
 
 	if (!is_inside_tree()) {
@@ -53,9 +53,11 @@ void VisualShape2D::_update_parent_shape() {
 	if (parent_shape.is_valid()) {
 		parent_shape->disconnect(CoreStringNames::get_singleton()->changed, this, "update");
 	}
+	Ref<Shape2D> previous = parent_shape;
+
 	if (!valid) {
 		parent_shape = Ref<Shape2D>();
-		return;
+		return parent_shape != previous;
 	}
 	parent_shape = parent->get("shape");
 	if (parent_shape.is_null()) {
@@ -73,6 +75,7 @@ void VisualShape2D::_update_parent_shape() {
 			parent_shape->connect(CoreStringNames::get_singleton()->changed, this, "update");
 		}
 	}
+	return parent_shape != previous;
 }
 
 void VisualShape2D::set_color(const Color &p_color) {
@@ -104,17 +107,22 @@ bool VisualShape2D::is_debug_sync_visible_collision_shapes() const {
 
 void VisualShape2D::_notification(int p_what) {
 	switch (p_what) {
+		case NOTIFICATION_ENTER_TREE: {
+			set_process(true);
+		} break;
+		case NOTIFICATION_EXIT_TREE: {
+			set_process(false);
+		} break;
 		case NOTIFICATION_PARENTED:
 		case NOTIFICATION_PATH_CHANGED: {
-			_update_parent_shape();
+			update_parent_shape();
 			update();
-		} break;
-		case NOTIFICATION_UNPARENTED: {
 		} break;
 		case NOTIFICATION_DRAW: {
 			Ref<Shape2D> draw_shape = shape;
 			if (use_parent_shape) {
-				_update_parent_shape();
+				// May still need to update the shape if _process() is disabled.
+				update_parent_shape();
 				draw_shape = parent_shape;
 			}
 			if (draw_shape.is_null()) {
@@ -147,6 +155,13 @@ void VisualShape2D::_notification(int p_what) {
 #endif
 			draw_shape->draw(get_canvas_item(), draw_color);
 		} break;
+		case NOTIFICATION_PROCESS: {
+			if (use_parent_shape) {
+				if (update_parent_shape()) {
+					update();
+				}
+			}
+		} break;
 	}
 }
 
@@ -169,6 +184,7 @@ void VisualShape2D::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("set_use_parent_shape", "use_parent_shape"), &VisualShape2D::set_use_parent_shape);
 	ClassDB::bind_method(D_METHOD("is_using_parent_shape"), &VisualShape2D::is_using_parent_shape);
+	ClassDB::bind_method(D_METHOD("update_parent_shape"), &VisualShape2D::update_parent_shape);
 
 	ClassDB::bind_method(D_METHOD("set_color", "color"), &VisualShape2D::set_color);
 	ClassDB::bind_method(D_METHOD("get_color"), &VisualShape2D::get_color);

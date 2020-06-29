@@ -9,6 +9,13 @@
 	<tutorials>
 	</tutorials>
 	<methods>
+		<method name="update_parent_shape">
+			<return type="bool">
+			</return>
+			<description>
+				Forces to update the shape from parent node. This is called automatically each [b]idle frame[/b] if [member use_parent_shape] is enabled. Updating the shape each frame may be costly, so you can disable this behavior with [code]set_process(false)[/code] on this node, and update the shape manually with this method when needed.
+			</description>
+		</method>
 	</methods>
 	<members>
 		<member name="color" type="Color" setter="set_color" getter="get_color" default="Color( 1, 1, 1, 1 )">
@@ -16,9 +23,11 @@
 		</member>
 		<member name="debug_sync_visible_collision_shapes" type="bool" setter="set_debug_sync_visible_collision_shapes" getter="is_debug_sync_visible_collision_shapes" default="false">
 			If [code]true[/code], respects the "Visible Collision Shapes" option so that the shape is only drawn when the option is enabled while the game is running.
+			[b]Note:[/b] available in debug builds only.
 		</member>
 		<member name="debug_use_default_color" type="bool" setter="set_debug_use_default_color" getter="is_using_debug_default_color" default="false">
 			If [code]true[/code], this overrides the [member color] with the color used to draw the collision shapes.
+			[b]Note:[/b] available in debug builds only.
 		</member>
 		<member name="shape" type="Shape2D" setter="set_shape" getter="get_shape">
 			The shape resource used as a reference to draw. The drawing method is specific for each shape and the properties must be configured per shape.
