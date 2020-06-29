@@ -1,6 +1,6 @@
 #include "register_editor_types.h"
 
-#include "editor/2d/visual_shape_2d_editor_plugin.h"
+#include "2d/visual_shape_2d_editor_plugin.h"
 
 namespace goost {
 
