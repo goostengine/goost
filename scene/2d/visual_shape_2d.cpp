@@ -22,6 +22,7 @@ void VisualShape2D::set_shape(const Ref<Shape2D> &p_shape) {
 	if (shape_changed) {
 		emit_signal("shape_changed");
 	}
+	update_configuration_warning();
 }
 
 Ref<Shape2D> VisualShape2D::get_shape() const {
@@ -31,6 +32,7 @@ Ref<Shape2D> VisualShape2D::get_shape() const {
 void VisualShape2D::set_use_parent_shape(bool p_use_parent_shape) {
 	use_parent_shape = p_use_parent_shape;
 	_update_parent_shape();
+	update_configuration_warning();
 	update();
 }
 
@@ -39,7 +41,7 @@ bool VisualShape2D::is_using_parent_shape() const {
 }
 
 void VisualShape2D::_update_parent_shape() {
-	bool valid = true;
+	bool valid = use_parent_shape;
 
 	if (!is_inside_tree()) {
 		valid = false;
