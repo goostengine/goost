@@ -2,6 +2,6 @@
 
 This directory contains icons for classes provided by Goost.
 
-See official
+See official Godot Engine's
 [Editor icons](https://docs.godotengine.org/en/latest/development/editor/creating_icons.html)
 documentation page on how to create them.
