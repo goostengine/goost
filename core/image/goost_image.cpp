@@ -450,7 +450,7 @@ Ref<Image> GoostImage::render_svg(const String &p_svg, real_t p_scale) {
 	const char *svg_data = p_svg.utf8().get_data();
 	ImageLoaderSVG::create_image_from_string(image, svg_data, p_scale, false, false);
 #else
-	WARN_PRINT_ONCE("Cannot render, the SVG module is disabled.").
+	WARN_PRINT_ONCE("Cannot render, the SVG module is disabled.");
 #endif
 	return image;
 }
