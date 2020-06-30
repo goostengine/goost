@@ -2,6 +2,7 @@ extends "res://addons/gut/test.gd"
 
 const SAMPLES = {
 	icon = "res://goost/core/image/samples/icon.png",
+	icon_svg = "res://goost/core/image/samples/icon.svg",
 	icon_binary = "res://goost/core/image/samples/icon_binary.png",
 	rect_grayscale = "res://goost/core/image/samples/rect_grayscale.png",
 	rect_rgb = "res://goost/core/image/samples/rect_rgb.png",
@@ -402,3 +403,17 @@ func test_tile_thin_slice():
 	output.lock()
 	assert_eq(output.get_pixel(15, 99), Color.green)
 	output.unlock()
+
+
+func test_render_svg():
+	var file = File.new()
+	file.open(SAMPLES.icon_svg, File.READ)
+	var svg_document = file.get_as_text()
+	output = GoostImage.render_svg(svg_document, 2.0)
+	output.lock()
+	assert_eq(output.get_size(), Vector2(246, 246))
+	assert_eq(output.get_pixel(60, 50), Color("#36acd4"))
+	assert_eq(output.get_pixel(210, 143), Color("#303d5a"))
+	assert_eq(output.get_pixel(130, 100), Color("#ffffff"))
+	output.unlock()
+	file.close()

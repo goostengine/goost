@@ -1,5 +1,9 @@
 #include "goost_image.h"
 
+#ifdef SVG_ENABLED // MODULE_SVG_ENABLED in 4.0
+#include "modules/svg/image_loader_svg.h"
+#endif
+
 #include "goost/thirdparty/hqx/HQ2x.hh"
 #include "goost/thirdparty/hqx/HQ3x.hh"
 #include "goost/thirdparty/leptonica/allheaders.h"
@@ -434,6 +438,20 @@ Ref<Image> GoostImage::render_polygon(Vector<Point2> p_polygon, bool p_fill, con
 	Ref<Image> image = image_create_from_pix(pix_out);
 	pixDestroy(&pix_out);
 
+	return image;
+}
+
+Ref<Image> GoostImage::render_svg(const String &p_svg, real_t p_scale) {
+	Ref<Image> image;
+#ifdef SVG_ENABLED
+	ERR_FAIL_COND_V_MSG(p_svg.empty(), Ref<Image>(), "Empty SVG document.");
+	ERR_FAIL_COND_V_MSG(p_scale <= 0, Ref<Image>(), "Scale must be positive.");
+	image.instance();
+	const char *svg_data = p_svg.utf8().get_data();
+	ImageLoaderSVG::create_image_from_string(image, svg_data, p_scale, false, false);
+#else
+	WARN_PRINT_ONCE("Cannot render, the SVG module is disabled.").
+#endif
 	return image;
 }
 

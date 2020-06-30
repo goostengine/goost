@@ -162,6 +162,28 @@
 				Renders a binary representation of the polygon as a new image. If [code]fill[/code] is [code]true[/code], fills the interior of the polygon with [code]foreground_color[/code] (white by default), else just renders the polygon's outline alone with the same color. The boundary pixels are always [constant FOUR_CONNECTED]. The image [code]background_color[/code] can also be overridden (transparent by default).
 			</description>
 		</method>
+		<method name="render_svg">
+			<return type="Image">
+			</return>
+			<argument index="0" name="svg_document" type="String">
+			</argument>
+			<argument index="1" name="scale" type="float" default="1.0">
+			</argument>
+			<description>
+				Rasterizes a SVG document as a new image. Any positive scale can be set, as long as the resulting image does not exceed maximum image size determined by [constant Image.MAX_WIDTH] and [constant Image.MAX_HEIGHT] constants. Returns [code]null[/code] if SVG is corrupt.
+				In order to render a SVG from a [File]:
+				[codeblock]
+				var file = File.new()
+				file.open("res://icon.svg", File.READ)
+				var svg = file.get_as_text()
+				var image = GoostImage.render_svg(svg)
+				file.close()
+				[/codeblock]
+				[b]Known limitations:[/b]
+				This method reuses [b]nanosvg[/b] implementation bundled with Godot for rendering editor icons and importing simple SVG images, so the functionality may be limited for more complex images.
+				[b]Note:[/b] this method is not available in Godot builds with SVG module disabled (enabled by default).
+			</description>
+		</method>
 		<method name="repeat">
 			<return type="Image">
 			</return>

@@ -58,6 +58,7 @@ public:
 	Vector2 get_centroid(const Ref<Image> &p_image);
 
 	Ref<Image> render_polygon(Vector<Point2> p_polygon, bool p_fill, const Color &p_color, const Color &p_bg_color);
+	Ref<Image> render_svg(const String &p_svg, real_t p_scale = 1.0);
 
 	bool has_pixel(Ref<Image> p_image, int x, int y);
 	bool has_pixelv(Ref<Image> p_image, const Vector2 &p_pos);

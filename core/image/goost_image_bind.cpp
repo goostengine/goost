@@ -59,6 +59,10 @@ Ref<Image> _GoostImage::render_polygon(Vector<Point2> p_polygon, bool p_fill, co
 	return GoostImage::render_polygon(p_polygon, p_fill, p_color, p_bg_color);
 }
 
+Ref<Image> _GoostImage::render_svg(const String &p_svg, real_t p_scale) {
+	return GoostImage::render_svg(p_svg, p_scale);
+}
+
 bool _GoostImage::has_pixel(Ref<Image> p_image, int x, int y) {
 	return GoostImage::has_pixel(p_image, x, y);
 }
@@ -105,6 +109,9 @@ void _GoostImage::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_centroid", "image"), &_GoostImage::get_centroid);
 
 	ClassDB::bind_method(D_METHOD("render_polygon", "polygon", "fill", "foreground_color", "background_color"), &_GoostImage::render_polygon, DEFVAL(false), DEFVAL(Color(1, 1, 1, 1)), DEFVAL(Color(0, 0, 0, 0)));
+#ifdef SVG_ENABLED
+	ClassDB::bind_method(D_METHOD("render_svg", "svg_document", "scale"), &_GoostImage::render_svg, DEFVAL(1.0));
+#endif
 
 	ClassDB::bind_method(D_METHOD("get_pixel_or_null", "image", "x", "y"), &_GoostImage::get_pixel_or_null);
 	ClassDB::bind_method(D_METHOD("get_pixelv_or_null", "image", "pos"), &_GoostImage::get_pixelv_or_null);

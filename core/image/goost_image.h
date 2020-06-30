@@ -50,6 +50,7 @@ public:
 
 	// Image generation methods.
 	static Ref<Image> render_polygon(Vector<Point2> p_polygon, bool p_fill = false, const Color &p_color = Color(1, 1, 1, 1), const Color &p_bg_color = Color(0, 0, 0, 0));
+	static Ref<Image> render_svg(const String &p_svg, real_t p_scale = 1.0);
 
 	// Pixel methods.
 	static bool has_pixel(Ref<Image> p_image, int x, int y);
