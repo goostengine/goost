@@ -29,8 +29,19 @@ void VisualShape2DEditor::_set_polygon(int p_idx, const Variant &p_polygon) cons
 
 	if (convex.is_valid()) {
 		convex->set("points", p_polygon);
+
 	} else if (concave.is_valid()) {
-		concave->set("segments", p_polygon);
+		const Vector<Vector2> &polygon = p_polygon;
+
+		Vector<Vector2> segments;
+		segments.resize(polygon.size() * 2);
+		Vector2 *w = segments.ptrw();
+
+		for (int i = 0; i < polygon.size(); ++i) {
+			w[(i << 1) + 0] = polygon[i];
+			w[(i << 1) + 1] = polygon[(i + 1) % polygon.size()];
+		}
+		concave->set("segments", segments);
 	}
 }
 
@@ -43,8 +54,16 @@ Variant VisualShape2DEditor::_get_polygon(int p_idx) const {
 
 	if (convex.is_valid()) {
 		return convex->get("points");
+
 	} else if (concave.is_valid()) {
-		return concave->get("segments");
+		Vector<Vector2> polygon;
+		const Vector<Vector2> &segments = concave->get("segments");
+		const Vector2 *r = segments.ptr();
+
+		for (int i = 0; i < segments.size(); i += 2) {
+			polygon.push_back(r[i]);
+		}
+		return polygon;
 	}
 	return Variant();
 }
