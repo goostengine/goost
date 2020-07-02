@@ -138,7 +138,7 @@ void ImageBlender::stamp_rect(const Ref<Image> p_src, const Rect2 &p_src_rect, R
 	float delta_x = end_point.x - start_point.x;
 	float delta_y = end_point.y - start_point.y;
 
-	float distance = sqrt(delta_x * delta_x + delta_y * delta_y);
+	float distance = Math::sqrt(delta_x * delta_x + delta_y * delta_y);
 
 	float step_x = 0.0;
 	float step_y = 0.0;
