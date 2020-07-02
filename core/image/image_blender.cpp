@@ -128,8 +128,42 @@ void ImageBlender::blend_rect(const Ref<Image> p_src, const Rect2 &p_src_rect, R
 	p_dst->unlock();
 }
 
+void ImageBlender::stamp_rect(const Ref<Image> p_src, const Rect2 &p_src_rect, Ref<Image> p_dst, const Point2 &p_dst_init_pos, const Point2 &p_dst_end_pos, float p_spacing) const {
+	float semi_width = p_src_rect.get_size().width / 2;
+	float semi_height = p_src_rect.get_size().height / 2;
+
+	Point2 start_point(p_dst_init_pos.x - semi_width, p_dst_init_pos.y - semi_height);
+	Point2 end_point(p_dst_end_pos.x - semi_width, p_dst_end_pos.y - semi_height);
+
+	float delta_x = end_point.x - start_point.x;
+	float delta_y = end_point.y - start_point.y;
+
+	float distance = sqrt(delta_x * delta_x + delta_y * delta_y);
+
+	float step_x = 0.0;
+	float step_y = 0.0;
+	if (distance > 0.0) {
+		float invert_distance = 1.0 / distance;
+		step_x = delta_x * invert_distance;
+		step_y = delta_y * invert_distance;
+	}
+
+	float offset_x = 0.0;
+	float offset_y = 0.0;
+
+	do {
+		blend_rect(p_src, p_src_rect, p_dst, Point2(start_point.x + offset_x, start_point.y + offset_y));
+
+		offset_x += step_x * p_spacing;
+		offset_y += step_y * p_spacing;
+
+		distance -= p_spacing;
+	} while (distance >= p_spacing);
+}
+
 void ImageBlender::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("blend_rect", "src", "src_rect", "dst", "dst_pos"), &ImageBlender::blend_rect);
+	ClassDB::bind_method(D_METHOD("stamp_rect", "src", "src_rect", "dst", "dst_init_pos", "dst_end_pos", "spacing"), &ImageBlender::stamp_rect);
 
 	ClassDB::bind_method(D_METHOD("set_rgb_equation", "equation"), &ImageBlender::set_rgb_equation);
 	ClassDB::bind_method(D_METHOD("get_rgb_equation"), &ImageBlender::get_rgb_equation);

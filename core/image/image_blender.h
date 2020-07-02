@@ -2,6 +2,7 @@
 #define GOOST_IMAGE_BLENDER_H
 
 #include "core/image.h"
+#include "core/method_bind_ext.gen.inc"
 
 class ImageBlender : public Reference {
 	GDCLASS(ImageBlender, Reference);
@@ -52,6 +53,7 @@ private:
 
 public:
 	void blend_rect(const Ref<Image> p_src, const Rect2 &p_src_rect, Ref<Image> p_dst, const Point2 &p_dst_pos) const;
+	void stamp_rect(const Ref<Image> p_src, const Rect2 &p_src_rect, Ref<Image> p_dst, const Point2 &p_dst_init_pos, const Point2 &p_dst_end_pos, float p_spacing) const;
 
 	void set_rgb_equation(BlendEquation p_equation) { rgb_equation = p_equation; };
 	void set_alpha_equation(BlendEquation p_equation) { alpha_equation = p_equation; };
