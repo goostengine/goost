@@ -49,7 +49,6 @@ def get_doc_classes():
         "GoostImage",
         "ImageBlender",
         "ImageIndexed",
-        "ImageIndexed",
         "ShapeCast2D",
         "VisualShape2D",
     ]
