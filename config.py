@@ -51,6 +51,7 @@ def get_doc_classes():
         "ImageIndexed",
         "ImageIndexed",
         "ShapeCast2D",
+        "VisualShape2D",
     ]
 
 
