@@ -39,3 +39,22 @@ def get_child_components(parent):
             comp_list.append(p)
     
     return comp_list
+#
+# Complete list of all classes currently implemented in the extension,
+# excluding any classes provided from within `modules/` directory.
+# 
+# This is used by config.py::get_doc_classes(), and potentially allow to disable
+# each of the class in the future.
+#
+classes = [
+    "GoostGeometry2D",
+    "GoostImage",
+    "ImageBlender",
+    "ImageIndexed",
+    "PolyBooleanParameters2D",
+    "PolyDecompParameters2D",
+    "PolyOffsetParameters2D",
+    "PolyNode2D",
+    "ShapeCast2D",
+    "VisualShape2D",
+]

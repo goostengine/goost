@@ -1,3 +1,5 @@
+import goost
+
 
 def can_build(env, platform):
     return True
@@ -5,7 +7,6 @@ def can_build(env, platform):
 
 def configure(env):
     from SCons.Script import Variables, BoolVariable, Help, Exit
-    import goost
 
     opts = Variables()
     for name in goost.get_components():
@@ -40,18 +41,8 @@ def configure(env):
 
 
 def get_doc_classes():
-    return [
-        "GoostGeometry2D",
-        "PolyBooleanParameters2D",
-        "PolyDecompParameters2D",
-        "PolyOffsetParameters2D",
-        "PolyNode2D",
-        "GoostImage",
-        "ImageBlender",
-        "ImageIndexed",
-        "ShapeCast2D",
-        "VisualShape2D",
-    ]
+    # No error if a particular class is missing anyway, so return all classes.
+    return goost.classes
 
 
 def get_doc_path():
