@@ -58,3 +58,10 @@ classes = [
     "ShapeCast2D",
     "VisualShape2D",
 ]
+classes_dependencies = {
+    # ClassA : Depends on ClassB.
+    "GoostGeometry2D" : "PolyBooleanParameters2D",
+    "GoostGeometry2D" : "PolyDecompParameters2D",
+    "GoostGeometry2D" : "PolyOffsetParameters2D",
+    "GoostGeometry2D" : "PolyNode2D",
+}
