@@ -4,11 +4,15 @@
 #include "register_scene_types.h"
 
 #include "2d/visual_shape_2d.h"
+#include "2d/editor/visual_shape_2d_editor_plugin.h"
 
 namespace goost {
 
 void register_scene_types() {
 	ClassDB::register_class<VisualShape2D>();
+#if defined(TOOLS_ENABLED) && defined(GOOST_EDITOR_ENABLED)
+	EditorPlugins::add_by_type<VisualShape2DEditorPlugin>();
+#endif
 #ifdef GOOST_PHYSICS_ENABLED
 	register_physics_types();
 #endif

@@ -2,7 +2,7 @@
 Import("env")
 Import("env_goost")
 
-if env_goost["goost_editor_enabled"]:
+if env["tools"] and env_goost["goost_editor_enabled"]:
     SConscript("2d/SCsub", exports="env_goost")
 
     if not env["disable_3d"]:

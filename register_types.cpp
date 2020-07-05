@@ -11,7 +11,7 @@ void register_goost_types() {
 #ifdef GOOST_SCENE_ENABLED
 	goost::register_scene_types();
 #endif
-#ifdef GOOST_EDITOR_ENABLED
+#if defined(TOOLS_ENABLED) && defined(GOOST_EDITOR_ENABLED)
 	goost::register_editor_types();
 #endif
 }
