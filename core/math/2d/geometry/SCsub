@@ -1,8 +1,9 @@
 #!/usr/bin/env python
-Import('env_goost')
+Import("env")
+Import("env_goost")
 
-env_goost.add_source_files(env_goost.modules_sources, '*.cpp')
+env_goost.add_source_files(env.modules_sources, "*.cpp")
 
-Export('env_goost')
+Export("env_goost")
 
-SConscript('poly/SCsub')
+SConscript("poly/SCsub")

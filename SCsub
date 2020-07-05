@@ -17,7 +17,7 @@ for name in goost.get_components():
     if env_goost[opt]:
         env_goost.Prepend(CPPDEFINES=[opt.upper()])
 
-env_goost.Prepend(CPPDEFINES={"SCALE_FACTOR" : env_goost["goost_scale_factor"]})
+env_goost.Prepend(CPPDEFINES={"SCALE_FACTOR" : env["goost_scale_factor"]})
 
 # Build subdirs, the build order is dependent on the link order.
 subdirs = [

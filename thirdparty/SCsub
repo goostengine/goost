@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import os
 
+Import("env")
 Import("env_goost")
 
 env_thirdparty = env_goost.Clone()
@@ -8,9 +9,10 @@ env_thirdparty = env_goost.Clone()
 env_thirdparty.Prepend(CPPPATH=[os.path.realpath(".")])
 env_goost.Prepend(CPPPATH=[os.path.realpath(".")])
 
-if env_goost["goost_math_enabled"]:
-    env_thirdparty.add_source_files(env_goost.modules_sources, "clipper/*.cpp")
-if env_goost["goost_image_enabled"]:
+if env["goost_math_enabled"]:
+    env_thirdparty.add_source_files(env.modules_sources, "clipper/*.cpp")
+if env["goost_image_enabled"]:
+    # Leptonica
     env_leptonica = env_thirdparty.Clone()
     """
     Function prototypes may need to be re-generated manually with:
@@ -32,19 +34,17 @@ if env_goost["goost_image_enabled"]:
         leptonica_sources = f.read().splitlines()
 
     leptonica_sources = [Glob("leptonica/" + f) for f in leptonica_sources]
-    env_leptonica.add_source_files(env_goost.modules_sources, leptonica_sources)
+    env_leptonica.add_source_files(env.modules_sources, leptonica_sources)
     
     if env_goost["target"] in ["debug", "release_debug"]:
         env_leptonica.Prepend(CPPDEFINES=["DEBUG"])
     if env_goost["target"] != "debug":
         env_leptonica.Prepend(CPPDEFINES=["NO_CONSOLE_IO"])
-    # TODO: likely need to configure endianess properly on some platforms.
-
     env_leptonica.disable_warnings()
-
-    # TODO: replace by Leptonica's quantization functions (?)
-    env_thirdparty.add_source_files(env_goost.modules_sources, "exoquant/*.c")
     
-    env_thirdparty.add_source_files(env_goost.modules_sources, "hqx/*.cc")
+    # Exoquant
+    env_thirdparty.add_source_files(env.modules_sources, "exoquant/*.c")
+    # HQX
+    env_thirdparty.add_source_files(env.modules_sources, "hqx/*.cc")
 
 env_thirdparty.disable_warnings()
