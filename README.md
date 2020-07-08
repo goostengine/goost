@@ -18,7 +18,7 @@ implemented components.
 ## Compiling
 
 ```sh
-git clone https://github.com/GoostGD/goost.git
+git clone https://github.com/goostengine/goost.git
 scons custom_modules="/path/to/directory/containing/goost"
 ```
 
@@ -54,8 +54,8 @@ There are separate branches which are targeted for specific Godot Engine's major
 version.
 
 Regarding latest extension development version, switch to
-* [`gd3`](https://github.com/GoostGD/goost/tree/gd3) branch for Godot 3.2+
-* [`gd4`](https://github.com/GoostGD/goost/tree/gd4) branch for Godot 4.x (does not exist yet).
+* [`gd3`](https://github.com/goostengine/goost/tree/gd3) branch for Godot 3.2+
+* [`gd4`](https://github.com/goostengine/goost/tree/gd4) branch for Godot 4.x (does not exist yet).
 
 Similarly, you may use any of the stable branches with a similar branch
 encoding, such as `1.0-gd3` or `1.0-gd4`, if available.

@@ -1,5 +1,5 @@
 blank_issues_enabled: false
 
   - name: Goost documentation repository
-    url: https://github.com/GoostGD/goost-docs
+    url: https://github.com/goostengine/goost-docs
     about: Please report issues with documentation on the Goost documentation repository, not here.
