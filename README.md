@@ -67,7 +67,7 @@ Engine's *stable* version, which may be optionally ported to the latest engine's
 ## License
 
 Unless otherwise specified, the extension is released under the
-[MIT license](LICENSE.md).
+[MIT license](LICENSE.txt).
 
 See the full list of third-party libraries with their licenses used by this
 extension at [thirdparty/README.md](thirdparty/README.md) (MIT compatible).
