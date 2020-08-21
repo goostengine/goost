@@ -7,6 +7,7 @@
 		A singleton which handles various [Image] processing and analysis tasks. Most methods accept an image as an input.
 	</description>
 	<tutorials>
+		<link>https://goost.readthedocs.io/en/gd3/components/image_processing/index.html</link>
 	</tutorials>
 	<methods>
 		<method name="binarize">

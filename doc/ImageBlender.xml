@@ -45,14 +45,11 @@
 		</method>
 	</methods>
 	<members>
-		<member name="rgb_equation" type="int" setter="set_rgb_equation" getter="get_rgb_equation" enum="ImageBlender.BlendEquation" default="0">
-			Determines the equation that blends the RGB values.
+		<member name="alpha_dst_factor" type="int" setter="set_alpha_dst_factor" getter="get_alpha_dst_factor" enum="ImageBlender.BlendFactor" default="7">
+			Determines the value that multiply the [code]dst[/code] alpha value on those equations that require it.
 		</member>
 		<member name="alpha_equation" type="int" setter="set_alpha_equation" getter="get_alpha_equation" enum="ImageBlender.BlendEquation" default="0">
 			Determines the equation that blends the alpha values.
-		</member>
-		<member name="rgb_src_factor" type="int" setter="set_rgb_src_factor" getter="get_rgb_src_factor" enum="ImageBlender.BlendFactor" default="6">
-			Determines the values that multiply the [code]src[/code] RGB values on those equations that require it.
 		</member>
 		<member name="alpha_src_factor" type="int" setter="set_alpha_src_factor" getter="get_alpha_src_factor" enum="ImageBlender.BlendFactor" default="1">
 			Determines the value that multiply the [code]src[/code] alpha value on those equations that require it.
@@ -60,8 +57,11 @@
 		<member name="rgb_dst_factor" type="int" setter="set_rgb_dst_factor" getter="get_rgb_dst_factor" enum="ImageBlender.BlendFactor" default="10">
 			Determines the values that multiply the [code]dst[/code] RGB values on those equations that require it.
 		</member>
-		<member name="alpha_dst_factor" type="int" setter="set_alpha_dst_factor" getter="get_alpha_dst_factor" enum="ImageBlender.BlendFactor" default="7">
-			Determines the value that multiply the [code]dst[/code] alpha value on those equations that require it.
+		<member name="rgb_equation" type="int" setter="set_rgb_equation" getter="get_rgb_equation" enum="ImageBlender.BlendEquation" default="0">
+			Determines the equation that blends the RGB values.
+		</member>
+		<member name="rgb_src_factor" type="int" setter="set_rgb_src_factor" getter="get_rgb_src_factor" enum="ImageBlender.BlendFactor" default="6">
+			Determines the values that multiply the [code]src[/code] RGB values on those equations that require it.
 		</member>
 	</members>
 	<constants>

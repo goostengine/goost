@@ -7,6 +7,7 @@
 		Performs polygon clipping, offsetting and decomposition, and other geometry utility operations mostly revolving around polygons and polylines.
 	</description>
 	<tutorials>
+		<link>https://goost.readthedocs.io/en/gd3/components/geometry.html</link>
 	</tutorials>
 	<methods>
 		<method name="circle" qualifiers="const">

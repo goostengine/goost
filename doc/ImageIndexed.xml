@@ -7,6 +7,7 @@
 		The class adds support for indexed images with a color palette and provides common operations to create, generate and operate on color palette and index data. This does not actually add a [code]FORMAT_INDEXED[/code] image format as modern GPUs don't actually support it, yet index data is stored internally alongside regular pixels if an image has a palette. This allows to interchange (swap, extend) index data to pixel data via [method apply_palette], allowing for things like simple palette swapping without using shaders, finding average/dominant colors in an image as the class provides a way to generate color palette with specified number of colors which involves color quantization.
 	</description>
 	<tutorials>
+		<link>https://goost.readthedocs.io/en/gd3/components/image_processing/image_indexed.html</link>
 	</tutorials>
 	<methods>
 		<method name="apply_palette">
