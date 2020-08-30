@@ -28,6 +28,13 @@ The following lists C/C++ libraries which are bundled and used by Goost.
   `xtractprotos` utility to allow building only the necessary sources while also
   reducing binary size.
 
+## giflib
+- Upstream: http://sourceforge.net/projects/giflib
+- Version: 5.2.1
+- License: MIT
+- See [modules/gif/thirdparty/README.md](../modules/gif/thirdparty/README.md)
+  for more details.
+
 ## Clipper
 - Upstream: https://sourceforge.net/projects/polyclipping/
 - Version: 10.0.0 r539 (sandbox)
