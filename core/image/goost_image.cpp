@@ -333,6 +333,9 @@ Ref<Image> GoostImage::repeat(const Ref<Image> &p_image, const Size2i &p_count, 
 						src = src_fxy;
 					}
 				} break;
+				default: {
+					ERR_FAIL_V_MSG(Variant(), "Invalid tile type, bug!");
+				}
 			}
 			dest->blit_rect(src, src_rect, Size2i(j * w, i * h));
 		}
