@@ -4,8 +4,6 @@ on: [push, pull_request]
 # Global Cache Settings
 env:
   GODOT_BASE_BRANCH: "3.2"
-  GODOT_REPO_URL: "https://github.com/godotengine/godot"
-  GODOT_SOURCE_PATH: ${{github.workspace}}/godot
   SCONS_CACHE_LIMIT: 4096
 
 jobs:
@@ -15,11 +13,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-
-      # Checkout Godot.
-      - name: Clone Godot Engine repository
-        run: |
-          git clone --depth=1 "$GODOT_REPO_URL" -b 3.2 --single-branch
 
       # Azure repositories are not reliable, we need to prevent azure giving us packages.
       - name: Make apt sources.list use the default Ubuntu repositories
@@ -71,7 +64,7 @@ jobs:
         run: |
           scons -j2 verbose=yes warnings=all werror=yes platform=linuxbsd tools=yes tests=yes target=release_debug module_mono_enabled=yes mono_glue=no
 
-      # # Execute unit tests for the editor
+      # # Execute unit tests for the editor 
       # - name: Unit Tests
       #   run: |
       #     ./bin/godot.linuxbsd.opt.tools.64.mono --test

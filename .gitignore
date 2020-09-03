@@ -47,3 +47,6 @@ __pycache__/
 /tests/project/out/*
 # Prevent Godot editor to reimport image test output
 !/tests/project/out/.gdignore
+
+# Godot repository
+/godot

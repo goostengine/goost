@@ -27,22 +27,33 @@ import version
 SConsignFile(".sconsign{0}.dblite".format(pickle.HIGHEST_PROTOCOL))
 
 # Find a path to Godot source to build with this module.
-# Try relative path first.
-godot_path = Dir("../godot")
-if not godot_path.exists():
-    # Try environment variable.
-    godot_path = Dir(os.getenv("GODOT_SOURCE_PATH"))
-    if not godot_path.exists():
-        print("No path found to Godot Engine source.")
-        print("Make sure to specify GODOT_SOURCE_PATH environment variable.")
-        Exit()
+godot_search_dirs = [
+    Dir(os.getenv("GODOT_SOURCE_PATH")), # Try environment variable first.
+    Dir("godot"), # The engine might already be checked out.
+    Dir("../godot"), # Try relative path last.
+]
+godot_dir = Dir("godot")
 
-def run_command(args):
+for path in godot_search_dirs:
+    if not path.exists():
+        continue
+    godot_dir = path
+    break
+
+def run_command(args, dir="."):
     if sys.platform == "win32":
-        subprocess.run(args, check=True, shell=True, cwd=godot_path.abspath)
+        subprocess.run(args, check=True, shell=True, cwd=dir)
     elif sys.platform == "linux":
         # This may not actually work on Linux systems, but works on WSL.
-        subprocess.run(args, check=True, cwd=godot_path.abspath)
+        subprocess.run(args, check=True, cwd=dir)
+
+if godot_dir == Dir("godot"):
+    if not godot_dir.exists():
+        run_command(["git", "clone", "--depth=1", version.godot_url, 
+                "-b", version.godot_version, "--single-branch"])
+    else:
+        run_command(["git", "reset", "--hard", version.godot_version],
+                godot_dir.abspath)
 
 # Setup base SCons arguments (just copy all from the command line).
 build_args = ["scons"]
@@ -70,4 +81,4 @@ if os.getenv("BUILD_NAME"):
 os.environ["BUILD_NAME"] = build_name
 
 print("Building Godot with Goost ...")
-run_command(build_args)
+run_command(build_args, godot_dir.abspath)
