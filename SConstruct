@@ -64,9 +64,9 @@ build_args.append("custom_modules=%s" % ",".join(modules))
 build_args.append("extra_suffix=%s" % version.short_name)
 
 # Extend build name to the module name, preserving any custom build names.
-build_name = os.environ["BUILD_NAME"]
-if build_name:
-    build_name = version.short_name.capitalize() + "." + build_name
+build_name = version.short_name.capitalize()
+if os.getenv("BUILD_NAME"):
+    build_name += "." + os.getenv("BUILD_NAME")
 os.environ["BUILD_NAME"] = build_name
 
 print("Building Godot with Goost ...")
