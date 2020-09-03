@@ -42,6 +42,7 @@ __pycache__/
 .sconf_temp
 .sconsign*.dblite
 *.pyc
+.scons_cache
 
 # Test-related output files
 /tests/project/out/*

@@ -80,5 +80,11 @@ if os.getenv("BUILD_NAME"):
     build_name += "." + os.getenv("BUILD_NAME")
 os.environ["BUILD_NAME"] = build_name
 
+# Enable cache if required, this is reused by Godot.
+scons_cache_path = os.environ.get("SCONS_CACHE")
+if scons_cache_path != None:
+    CacheDir(scons_cache_path)
+    print("SCons cache enabled... (path: '" + scons_cache_path + "')")
+
 print("Building Godot with Goost ...")
 run_command(build_args, godot_dir.abspath)
