@@ -10,7 +10,8 @@
 # - GODOT_SOURCE_PATH env var is defined pointing to Godot repository.
 #
 # Caveats/Limitations:
-# - You have to switch to the relevant git branch in Godot repository yourself.
+# - You have to switch to the relevant git branch in Godot repository yourself
+#   if you use GODOT_SOURCE_PATH or relative path, else done automatically.
 # - The `custom_modules` option is overridden to build Goost and accompanying
 #   modules, so you cannot use this option to build other modules (currently).
 # - The `extra_suffix` option is also overridden.
@@ -41,14 +42,14 @@ for path in godot_search_dirs:
     break
 
 def run_command(args, dir="."):
-    if sys.platform == "win32":
+    if sys.platform.startswith("win32"):
         subprocess.run(args, check=True, shell=True, cwd=dir)
-    elif sys.platform == "linux":
-        # This may not actually work on Linux systems, but works on WSL.
+    else:
         subprocess.run(args, check=True, cwd=dir)
 
 if godot_dir == Dir("godot"):
     if not godot_dir.exists():
+        # Checkout the engine directly into Goost.
         run_command(["git", "clone", "--depth=1", version.godot_url, 
                 "-b", version.godot_version, "--single-branch"])
     else:
