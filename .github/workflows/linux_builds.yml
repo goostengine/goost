@@ -125,9 +125,10 @@ jobs:
           scons -j2 verbose=yes warnings=all werror=yes platform=server tools=yes tests=yes target=debug use_asan=yes use_ubsan=yes
 
       # Execute unit tests with GUT
+      # The `goosts` suffix is correct: `s` stands for sanitizer...
       - name: Run GUT Tests
         run: |
-          tests/run.sh ${{github.workspace}}/godot/bin/godot_server.x11.tools.64.goost.mono
+          tests/run.sh ${{github.workspace}}/godot/bin/godot_server.x11.tools.64.goosts
 
       # # Execute unit tests for the editor (TODO: Godot 4.0)
       # - name: Unit Tests
