@@ -449,8 +449,9 @@ Ref<Image> GoostImage::render_svg(const String &p_svg, real_t p_scale) {
 	ERR_FAIL_COND_V_MSG(p_svg.empty(), Ref<Image>(), "Empty SVG document.");
 	ERR_FAIL_COND_V_MSG(p_scale <= 0, Ref<Image>(), "Scale must be positive.");
 	image.instance();
-	const char *svg_data = p_svg.utf8().get_data();
-	ImageLoaderSVG::create_image_from_string(image, svg_data, p_scale, false, false);
+	CharString svg = p_svg.utf8();
+	const char *svg_str = svg.get_data();
+	ImageLoaderSVG::create_image_from_string(image, svg_str, p_scale, false, false);
 #else
 	WARN_PRINT_ONCE("Cannot render, the SVG module is disabled.");
 #endif

@@ -3,8 +3,8 @@
 # Upstream: https://github.com/goostengine/goost
 # License: MIT
 #
-# This is a convenience/compatibility SConstruct which allows to build this 
-# module in the same way as building Godot Engine (3.2+).
+# This is a convenience/compatibility SConstruct which allows to build any 
+# C++ module in the same way as building Godot Engine (3.2+).
 #
 # Installation:
 #
