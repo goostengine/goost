@@ -128,6 +128,9 @@ jobs:
       # Execute unit tests with GUT.
       # The `goosts` suffix is correct: `s` stands for sanitizer...
       - name: Run GUT Tests
+        env:
+          # TODO: Bug in Clipper triangulation unit.
+          ASAN_OPTIONS: "new-delete-type-mismatch=0"
         run: |
           tests/run.sh ${{github.workspace}}/godot/bin/godot_server.x11.tools.64.goosts
 
