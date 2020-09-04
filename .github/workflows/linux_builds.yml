@@ -63,19 +63,14 @@ jobs:
         run: |
           scons -j2 verbose=yes warnings=all werror=yes platform=linuxbsd tools=yes tests=yes target=release_debug module_mono_enabled=yes mono_glue=no
 
-      # Execute unit tests with GUT
-      - name: Run GUT Tests
-        run: |
-          tests/run.sh ${{github.workspace}}/godot/bin/godot.x11.opt.tools.64.goost.mono
-
       # # Execute unit tests for the editor (TODO: Godot 4.0)
       # - name: Unit Tests
       #   run: |
       #     ./bin/godot.x11.opt.tools.64.goost.mono --test
 
-  linux-editor-sanitizers:
+  linux-server-sanitizers:
     runs-on: "ubuntu-20.04"
-    name: Editor with sanitizers (target=debug, tools=yes, tests=yes, use_asan=yes, use_ubsan=yes)
+    name: Server with sanitizers (target=debug, tools=yes, tests=yes, use_asan=yes, use_ubsan=yes)
 
     steps:
       - uses: actions/checkout@v2
@@ -127,7 +122,12 @@ jobs:
         env:
           SCONS_CACHE: ${{github.workspace}}/.scons_cache/
         run: |
-          scons -j2 verbose=yes warnings=all werror=yes platform=linuxbsd tools=yes tests=yes target=debug use_asan=yes use_ubsan=yes
+          scons -j2 verbose=yes warnings=all werror=yes platform=server tools=yes tests=yes target=debug use_asan=yes use_ubsan=yes
+
+      # Execute unit tests with GUT
+      - name: Run GUT Tests
+        run: |
+          tests/run.sh ${{github.workspace}}/godot/bin/godot_server.x11.tools.64.goost.mono
 
       # # Execute unit tests for the editor (TODO: Godot 4.0)
       # - name: Unit Tests
