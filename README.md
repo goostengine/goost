@@ -2,8 +2,12 @@
 
 # Goost: Godot Engine Extension
 
-[![Build Status](https://travis-ci.com/goostengine/goost.svg?branch=gd3)](https://travis-ci.com/goostengine/goost)
-[![Build status](https://ci.appveyor.com/api/projects/status/github/goostengine/goost?branch=gd3&svg=true)](https://ci.appveyor.com/project/Xrayez/goost/branch/gd3)
+![🐧 Linux Builds](https://github.com/goostengine/goost/workflows/%F0%9F%90%A7%20Linux%20Builds/badge.svg)
+![🍎 macOS Builds](https://github.com/goostengine/goost/workflows/%F0%9F%8D%8E%20macOS%20Builds/badge.svg)
+![🎨 Windows Builds](https://github.com/goostengine/goost/workflows/%F0%9F%8E%A8%20Windows%20Builds/badge.svg)
+![🤖 Android Builds](https://github.com/goostengine/goost/workflows/%F0%9F%A4%96%20Android%20Builds/badge.svg)
+![🍏 iOS Builds](https://github.com/goostengine/goost/workflows/%F0%9F%8D%8F%20iOS%20Builds/badge.svg)
+![🌐 JavaScript Builds](https://github.com/goostengine/goost/workflows/%F0%9F%8C%90%20JavaScript%20Builds/badge.svg)
 
 This is a [Godot Engine](https://github.com/godotengine/godot) extension
 implemented as a C++ module.

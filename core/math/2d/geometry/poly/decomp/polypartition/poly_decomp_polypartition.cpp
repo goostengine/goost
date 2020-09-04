@@ -25,8 +25,8 @@ List<TriangulatorPoly> configure(PolyDecomp2DPolyPartition::DecompType p_type, c
 		TriangulatorPoly inp_outer;
 		const Vector<Point2> &polygon_outer = p_polygons[outer_indices[i]];
 		inp_outer.Init(polygon_outer.size());
-		for (int i = 0; i < polygon_outer.size(); i++) {
-			inp_outer.GetPoint(i) = polygon_outer[i];
+		for (int j = 0; j < polygon_outer.size(); j++) {
+			inp_outer.GetPoint(j) = polygon_outer[j];
 		}
 		in_poly.push_back(inp_outer);
 	}

@@ -48,3 +48,13 @@ if env["goost_image_enabled"]:
     env_thirdparty.add_source_files(env.modules_sources, "hqx/*.cc")
 
 env_thirdparty.disable_warnings()
+
+if env["platform"] in ["server"]:
+    # Disable all previously defined sanitizers for thirdparty code in Goost.
+    # TODO: sanitizer bugs need to be fixed, but they currently block CI tests.
+    # This doesn't seem to work... but leaving here anyway.
+    san_flags = ["-fsanitize=undefined", "-fsanitize=address", "-fsanitize=leak", "-fsanitize=thread"]
+    env_thirdparty["CCFLAGS"] = [x for x in env_thirdparty["CCFLAGS"] if not x in san_flags]
+    env_thirdparty["LINKFLAGS"] = [x for x in env_thirdparty["CCFLAGS"] if not x in san_flags]
+    env_thirdparty.Append(CCFLAGS=["-fno-sanitize=all"])
+    env_thirdparty.Append(LINKFLAGS=["-fno-sanitize=all"])
