@@ -69,9 +69,9 @@ jobs:
       #   run: |
       #     ./bin/godot.x11.opt.tools.64.goost.mono --test
 
-  linux-server-sanitizers:
+  linux-server:
     runs-on: "ubuntu-20.04"
-    name: Server with sanitizers (target=debug, tools=yes, tests=yes, use_asan=yes, use_ubsan=yes)
+    name: Server (target=debug, tools=yes, tests=yes)
 
     steps:
       - uses: actions/checkout@v2
@@ -123,16 +123,13 @@ jobs:
         env:
           SCONS_CACHE: ${{github.workspace}}/.scons_cache/
         run: |
-          scons -j2 verbose=yes warnings=all werror=yes platform=server tools=yes tests=yes target=debug use_asan=yes use_ubsan=yes
+          scons -j2 verbose=yes warnings=all werror=yes platform=server tools=yes tests=yes target=debug
 
       # Execute unit tests with GUT.
       # The `goosts` suffix is correct: `s` stands for sanitizer...
       - name: Run GUT Tests
-        env:
-          # TODO: Bug in Clipper triangulation unit.
-          ASAN_OPTIONS: "new-delete-type-mismatch=0"
         run: |
-          tests/run.sh ${{github.workspace}}/godot/bin/godot_server.x11.tools.64.goosts
+          tests/run.sh ${{github.workspace}}/godot/bin/godot_server.x11.tools.64.goost
 
       # # Execute unit tests for the editor (TODO: Godot 4.0)
       # - name: Unit Tests
