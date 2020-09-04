@@ -63,10 +63,15 @@ jobs:
         run: |
           scons -j2 verbose=yes warnings=all werror=yes platform=linuxbsd tools=yes tests=yes target=release_debug module_mono_enabled=yes mono_glue=no
 
+      # Execute unit tests with GUT
+      - name: Run GUT Tests
+        run: |
+          tests/run.sh ${{github.workspace}}/godot/bin/godot.x11.opt.tools.64.goost.mono
+
       # # Execute unit tests for the editor (TODO: Godot 4.0)
       # - name: Unit Tests
       #   run: |
-      #     ./bin/godot.linuxbsd.opt.tools.64.mono --test
+      #     ./bin/godot.x11.opt.tools.64.goost.mono --test
 
   linux-editor-sanitizers:
     runs-on: "ubuntu-20.04"
