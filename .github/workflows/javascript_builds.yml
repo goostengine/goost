@@ -4,6 +4,7 @@ on: [push, pull_request]
 # Global Cache Settings
 env:
   GODOT_BASE_BRANCH: master
+  GODOT_BUILTIN_MODULES: disabled
   SCONS_CACHE_LIMIT: 4096
   EM_VERSION: 1.39.20
   EM_CACHE_FOLDER: 'emsdk-cache'

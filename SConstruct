@@ -86,6 +86,15 @@ except AttributeError:
 
 build_args.append("custom_modules=%s" % ",".join(modules))
 
+# Optionally disable non-essential modules, if possible.
+if os.getenv("GODOT_BUILTIN_MODULES", "enabled") == "disabled":
+    try:
+        import modules_disabled
+        build_args.append("profile=%s" % 
+                os.path.join(Dir(".").abspath, "modules_disabled.py"))
+    except ImportError:
+        pass
+
 # Append extra suffix to distinguish between other Godot builds.
 build_args.append("extra_suffix=%s" % module_name)
 
