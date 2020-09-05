@@ -2,12 +2,12 @@
 
 # Goost: Godot Engine Extension
 
-![🐧 Linux Builds](https://github.com/goostengine/goost/workflows/%F0%9F%90%A7%20Linux%20Builds/badge.svg)
-![🍎 macOS Builds](https://github.com/goostengine/goost/workflows/%F0%9F%8D%8E%20macOS%20Builds/badge.svg)
-![🎨 Windows Builds](https://github.com/goostengine/goost/workflows/%F0%9F%8E%A8%20Windows%20Builds/badge.svg)
-![🤖 Android Builds](https://github.com/goostengine/goost/workflows/%F0%9F%A4%96%20Android%20Builds/badge.svg)
-![🍏 iOS Builds](https://github.com/goostengine/goost/workflows/%F0%9F%8D%8F%20iOS%20Builds/badge.svg)
-![🌐 JavaScript Builds](https://github.com/goostengine/goost/workflows/%F0%9F%8C%90%20JavaScript%20Builds/badge.svg)
+![🐧 Linux](https://github.com/goostengine/goost/workflows/%F0%9F%90%A7%20Linux/badge.svg)
+![🍎 macOS](https://github.com/goostengine/goost/workflows/%F0%9F%8D%8E%20macOS/badge.svg)
+![🎨 Windows](https://github.com/goostengine/goost/workflows/%F0%9F%8E%A8%20Windows/badge.svg)
+![🤖 Android](https://github.com/goostengine/goost/workflows/%F0%9F%A4%96%20Android/badge.svg)
+![🍏 iOS](https://github.com/goostengine/goost/workflows/%F0%9F%8D%8F%20iOS/badge.svg)
+![🌐 JavaScript](https://github.com/goostengine/goost/workflows/%F0%9F%8C%90%20JavaScript/badge.svg)
 
 This is a [Godot Engine](https://github.com/godotengine/godot) extension
 implemented as a C++ module.
