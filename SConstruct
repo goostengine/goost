@@ -41,8 +41,8 @@ module_name = os.path.basename(Dir(".").abspath)
 # Find a path to Godot source to build with this module.
 godot_search_dirs = [
     Dir(os.getenv("GODOT_SOURCE_PATH")), # Try environment variable first.
-    Dir("godot"), # The engine might already be checked out.
-    Dir("../godot"), # Try relative path last.
+    Dir("../godot"), # Try relative path.
+    Dir("godot"), # Clone or use already checked out engine last.
 ]
 godot_dir = Dir("godot")
 
