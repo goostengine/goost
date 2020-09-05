@@ -8,7 +8,7 @@ on:
       - 'gd3'
 
 env:
-  GODOT_BASE_BRANCH: master
+  GOOST_BASE_BRANCH: gd3
   GODOT_BUILTIN_MODULES: disabled
   SCONS_CACHE_LIMIT: 4096
   EM_VERSION: 1.39.20
@@ -34,11 +34,11 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ${{github.workspace}}/.scons_cache/
-          key: ${{github.job}}-${{env.GODOT_BASE_BRANCH}}-${{github.ref}}-${{github.sha}}
+          key: ${{github.job}}-${{env.GOOST_BASE_BRANCH}}-${{github.ref}}-${{github.sha}}
           restore-keys: |
-            ${{github.job}}-${{env.GODOT_BASE_BRANCH}}-${{github.ref}}-${{github.sha}}
-            ${{github.job}}-${{env.GODOT_BASE_BRANCH}}-${{github.ref}}
-            ${{github.job}}-${{env.GODOT_BASE_BRANCH}}
+            ${{github.job}}-${{env.GOOST_BASE_BRANCH}}-${{github.ref}}-${{github.sha}}
+            ${{github.job}}-${{env.GOOST_BASE_BRANCH}}-${{github.ref}}
+            ${{github.job}}-${{env.GOOST_BASE_BRANCH}}
 
       - name: Load Emscripten cache
         id: javascript-template-emscripten-cache
