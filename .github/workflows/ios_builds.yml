@@ -1,5 +1,11 @@
 name: 🍏 iOS
-on: [push, pull_request]
+on: 
+  pull_request:
+    branches:
+      - '*'
+  push:
+    branches:
+      - 'gd3'
 
 env:
   GODOT_BASE_BRANCH: master
