@@ -1,7 +1,6 @@
-name: 🤖 Android Builds
+name: 🤖 Android
 on: [push, pull_request]
 
-# Global Cache Settings
 env:
   GODOT_BASE_BRANCH: master
   GODOT_BUILTIN_MODULES: disabled
@@ -16,14 +15,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      # Azure repositories are not reliable, we need to prevent azure giving us packages.
+      # Azure repositories are not reliable, prevent azure giving packages.
       - name: Make apt sources.list use the default Ubuntu repositories
         run: |
           sudo rm -f /etc/apt/sources.list.d/*
           sudo cp -f misc/ci/sources.list /etc/apt/sources.list
           sudo apt-get update
 
-      # Install all packages (except scons)
       - name: Configure dependencies
         run: |
          sudo apt-get install openjdk-8-jdk
@@ -38,7 +36,6 @@ jobs:
           misc/ci/android-tools-linux.sh
           source ~/.bashrc
 
-      # Upload cache on completion and check it out now
       - name: Load .scons_cache directory
         id: android-template-cache
         uses: actions/cache@v2
@@ -50,16 +47,12 @@ jobs:
             ${{github.job}}-${{env.GODOT_BASE_BRANCH}}-${{github.ref}}
             ${{github.job}}-${{env.GODOT_BASE_BRANCH}}
 
-      # Use python 3.x release (works cross platform)
       - name: Set up Python 3.x
         uses: actions/setup-python@v2
         with:
-          # Semantic version range syntax or exact version of a Python version
           python-version: '3.x'
-          # Optional - x64 or x86 architecture, defaults to x64
           architecture: 'x64'
 
-      # You can test your matrix by printing the current Python version
       - name: Configuring Python packages
         run: |
           python -c "import sys; print(sys.version)"
