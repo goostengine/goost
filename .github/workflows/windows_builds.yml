@@ -1,5 +1,12 @@
 name: 🎨 Windows
-on: [push, pull_request]
+
+on:
+  pull_request:
+    branches-ignore:
+      - gd3
+  push:
+    branches:
+      - gd3
 
 env:
   GODOT_BASE_BRANCH: master
