@@ -180,7 +180,7 @@ RES ResourceFormatLoaderAnimatedTexture::load(const String &p_path, const String
 	uint32_t width = f->get_32();
 	uint32_t height = f->get_32();
 
-	for (int i = 0; i < frame_count; ++i) {
+	for (size_t i = 0; i < frame_count; ++i) {
 		Ref<ImageTexture> frame;
 		frame.instance();
 		// Frame image data.
