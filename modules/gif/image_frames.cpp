@@ -1,6 +1,6 @@
 #include "image_frames.h"
 
-LoadImageFramesFunction ImageFrames::_load_gif = NULL;
+LoadImageFramesFunction ImageFrames::_load_gif = nullptr;
 
 Error ImageFrames::load(const String &p_path, int max_frames) {
 	clear();

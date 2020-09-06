@@ -13,7 +13,7 @@ public:
 	virtual bool recognize(String p_extension);
 	virtual RES load(const String &p_path, const String &p_original_path = "", Error *r_error = NULL) const = 0;
 
-	virtual ~ImageFramesFormatLoader();
+	virtual ~ImageFramesFormatLoader() {}
 };
 
 class ResourceFormatLoaderImageFrames : public ResourceFormatLoader {

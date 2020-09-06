@@ -1,8 +1,5 @@
 #include "image_frames_loader.h"
 
-ImageFramesFormatLoader::~ImageFramesFormatLoader() {
-}
-
 Vector<ImageFramesFormatLoader *> ResourceFormatLoaderImageFrames::loaders;
 
 void ResourceFormatLoaderImageFrames::add_image_frames_format_loader(ImageFramesFormatLoader *p_loader) {

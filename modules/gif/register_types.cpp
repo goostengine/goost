@@ -8,7 +8,7 @@
 
 #include "gif.h"
 
-static ImageFramesLoaderGIF *image_frames_loader_gif = NULL;
+static ImageFramesLoaderGIF *image_frames_loader_gif = nullptr;
 static Ref<ResourceFormatLoaderImageFrames> resource_format_image_frames;
 
 void register_gif_types() {
@@ -29,5 +29,9 @@ void register_gif_types() {
 
 void unregister_gif_types() {
 	ResourceFormatLoaderImageFrames::remove_image_frames_format_loader(image_frames_loader_gif);
-	memdelete(image_frames_loader_gif);
+	if (image_frames_loader_gif) {
+		memdelete(image_frames_loader_gif);
+	}
+	ResourceLoader::remove_resource_format_loader(resource_format_image_frames);
+	resource_format_image_frames.unref();
 }
