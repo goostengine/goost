@@ -10,13 +10,17 @@
 
 static ImageFramesLoaderGIF *image_frames_loader_gif = nullptr;
 static Ref<ResourceFormatLoaderImageFrames> resource_format_image_frames;
+static Ref<ResourceFormatLoaderAnimatedTexture> resource_format_animated_texture;
 
 void register_gif_types() {
 	image_frames_loader_gif = memnew(ImageFramesLoaderGIF);
-	ResourceFormatLoaderImageFrames::add_image_frames_format_loader(image_frames_loader_gif);
+	ImageFramesLoader::add_image_frames_format_loader(image_frames_loader_gif);
 
 	resource_format_image_frames.instance();
 	ResourceLoader::add_resource_format_loader(resource_format_image_frames);
+
+	resource_format_animated_texture.instance();
+	ResourceLoader::add_resource_format_loader(resource_format_animated_texture);
 
 	ClassDB::register_class<ImageFrames>();
 
@@ -28,10 +32,13 @@ void register_gif_types() {
 }
 
 void unregister_gif_types() {
-	ResourceFormatLoaderImageFrames::remove_image_frames_format_loader(image_frames_loader_gif);
+	ImageFramesLoader::remove_image_frames_format_loader(image_frames_loader_gif);
 	if (image_frames_loader_gif) {
 		memdelete(image_frames_loader_gif);
 	}
 	ResourceLoader::remove_resource_format_loader(resource_format_image_frames);
 	resource_format_image_frames.unref();
+
+	ResourceLoader::remove_resource_format_loader(resource_format_animated_texture);
+	resource_format_animated_texture.unref();
 }

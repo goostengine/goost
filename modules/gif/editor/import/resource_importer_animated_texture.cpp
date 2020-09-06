@@ -1,5 +1,8 @@
 #include "resource_importer_animated_texture.h"
 
+#include "image_frames.h"
+#include "image_frames_loader.h"
+
 #include "core/os/file_access.h"
 #include "scene/resources/texture.h"
 
@@ -16,7 +19,7 @@ String ResourceImporterAnimatedTexture::get_visible_name() const {
 }
 
 void ResourceImporterAnimatedTexture::get_recognized_extensions(List<String> *p_extensions) const {
-	p_extensions->push_back("gif");
+	ImageFramesLoader::get_recognized_extensions(p_extensions);
 }
 
 String ResourceImporterAnimatedTexture::get_save_extension() const {
@@ -45,12 +48,12 @@ void ResourceImporterAnimatedTexture::get_import_options(List<ImportOption> *r_o
 }
 
 Error ResourceImporterAnimatedTexture::import(const String &p_source_file, const String &p_save_path, const Map<StringName, Variant> &p_options, List<String> *r_platform_variants, List<String> *r_gen_files, Variant *r_metadata) {
+	int max_frames = p_options["max_frames"];
 	int repeat = p_options["flags/repeat"];
 	bool filter = p_options["flags/filter"];
 	bool mipmaps = p_options["flags/mipmaps"];
 	bool anisotropic = p_options["flags/anisotropic"];
 	int srgb = p_options["flags/srgb"];
-	int max_frames = p_options["max_frames"];
 
 	int tex_flags = 0;
 	if (repeat > 0)
@@ -66,24 +69,40 @@ Error ResourceImporterAnimatedTexture::import(const String &p_source_file, const
 	if (srgb == 1)
 		tex_flags |= Texture::FLAG_CONVERT_TO_LINEAR;
 
-	FileAccess *f = FileAccess::open(p_source_file, FileAccess::READ);
+	Ref<ImageFrames> image_frames;
+	image_frames.instance();
+	Error err = ImageFramesLoader::load_image_frames(p_source_file, image_frames, nullptr, max_frames);
+	if (err != OK) {
+		return err;
+	}
+	if (max_frames <= 0 || max_frames > 256) {
+		max_frames = 256;
+	}
+	const int frame_count = MIN(image_frames->get_frame_count(), max_frames);
+
+	FileAccess *f = FileAccess::open(p_save_path + ".atex", FileAccess::WRITE);
 	ERR_FAIL_COND_V(!f, ERR_CANT_OPEN);
-	size_t len = f->get_len();
 
-	Vector<uint8_t> data;
-	data.resize(len);
-	f->get_buffer(data.ptrw(), len);
-	f->close();
-	memdelete(f);
-
-	f = FileAccess::open(p_save_path + ".atex", FileAccess::WRITE);
-	ERR_FAIL_COND_V(!f, ERR_CANT_OPEN);
-
-	const uint8_t header[6] = { 'G', 'D', 'A', 'T', 'E', 'X' };
-	f->store_buffer(header, 6);
+	const uint8_t header[4] = { 'G', 'D', 'A', 'T' };
+	f->store_buffer(header, 4); // Godot Animated Texture.
 	f->store_32(tex_flags);
-	f->store_32(max_frames);
-	f->store_buffer(data.ptr(), len);
+	f->store_32(frame_count);
+
+	// We already assume image frames already contains at least one frame,
+	// and that all frames have the same size.
+	f->store_32(image_frames->get_image(0)->get_width());
+	f->store_32(image_frames->get_image(0)->get_height());
+
+	for (int i = 0; i < frame_count; ++i) {
+		// Frame image data.
+		PoolVector<uint8_t> data = image_frames->get_image(i)->get_data();
+		PoolVector<uint8_t>::Read r = data.read();
+		f->store_32(data.size());
+		f->store_buffer(r.ptr(), data.size());
+		// Frame delay data.
+		const real_t delay = image_frames->get_delay(i);
+		f->store_real(delay);
+	}
 	f->close();
 	memdelete(f);
 

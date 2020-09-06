@@ -8,6 +8,7 @@ const SAMPLES = {
 	rect_rgb = "res://goost/core/image/samples/rect_rgb.png",
 	rect_rgba = "res://goost/core/image/samples/rect_rgba.png",
 	stroke = "res://goost/core/image/samples/stroke.png",
+	wip_gif = "res://goost/core/image/samples/wip.gif",
 }
 var output
 
@@ -417,3 +418,16 @@ func test_render_svg():
 	assert_eq(output.get_pixel(130, 100), Color("#ffffff"))
 	output.unlock()
 	file.close()
+
+
+func test_load_gif():
+	var image_frames = ImageFrames.new()
+	image_frames.load(SAMPLES.wip_gif)
+	assert_eq(image_frames.get_frame_count(), 3)
+	assert_almost_eq(image_frames.get_delay(0), 0.1, 0.01)
+	output = Image.new()
+	output.copy_from(image_frames.get_image(0))
+	output.lock()
+	assert_eq(output.get_pixel(0, 0), Color("#77b4c6"))
+	assert_eq(output.get_size(), Vector2(684, 37))
+	output.unlock()

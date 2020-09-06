@@ -16,6 +16,7 @@ thirdparty_sources = [
 thirdparty_sources = [thirdparty_dir + file for file in thirdparty_sources]
 
 env_gif.Prepend(CPPPATH=[thirdparty_dir])
+env_gif.Prepend(CPPPATH=["./"])
 
 env_thirdparty = env_gif.Clone()
 env_thirdparty.disable_warnings()
