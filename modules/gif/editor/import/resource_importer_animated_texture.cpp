@@ -44,7 +44,7 @@ void ResourceImporterAnimatedTexture::get_import_options(List<ImportOption> *r_o
 	r_options->push_back(ImportOption(PropertyInfo(Variant::BOOL, "flags/mipmaps"), false));
 	r_options->push_back(ImportOption(PropertyInfo(Variant::BOOL, "flags/anisotropic"), false));
 	r_options->push_back(ImportOption(PropertyInfo(Variant::INT, "flags/srgb", PROPERTY_HINT_ENUM, "Disable,Enable,Detect"), 0));
-	r_options->push_back(ImportOption(PropertyInfo(Variant::INT, "max_frames", PROPERTY_HINT_RANGE, "0, 256, 1"), 0));
+	r_options->push_back(ImportOption(PropertyInfo(Variant::INT, "max_frames", PROPERTY_HINT_RANGE, vformat("0, %d, 1", AnimatedTexture::MAX_FRAMES)), 0));
 }
 
 Error ResourceImporterAnimatedTexture::import(const String &p_source_file, const String &p_save_path, const Map<StringName, Variant> &p_options, List<String> *r_platform_variants, List<String> *r_gen_files, Variant *r_metadata) {
@@ -75,8 +75,8 @@ Error ResourceImporterAnimatedTexture::import(const String &p_source_file, const
 	if (err != OK) {
 		return err;
 	}
-	if (max_frames <= 0 || max_frames > 256) {
-		max_frames = 256;
+	if (max_frames <= 0 || max_frames > AnimatedTexture::MAX_FRAMES) {
+		max_frames = AnimatedTexture::MAX_FRAMES;
 	}
 	const int frame_count = MIN(image_frames->get_frame_count(), max_frames);
 
