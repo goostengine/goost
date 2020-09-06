@@ -11,7 +11,7 @@ public:
 	virtual Error load_image_frames(Ref<ImageFrames> &r_image_frames, FileAccess *f, int max_frames = 0) const = 0;
 	virtual void get_recognized_extensions(List<String> *p_extensions) const = 0;
 	virtual bool recognize(String p_extension);
-	virtual RES load(const String &p_path, const String &p_original_path = "", Error *r_error = NULL) const = 0;
+	virtual RES load(const String &p_path, const String &p_original_path = "", Error *r_error = nullptr) const = 0;
 
 	virtual ~ImageFramesFormatLoader() {}
 };
@@ -22,7 +22,7 @@ public:
 	static void add_image_frames_format_loader(ImageFramesFormatLoader *p_loader);
 	static void remove_image_frames_format_loader(ImageFramesFormatLoader *p_loader);
 
-	virtual RES load(const String &p_path, const String &p_original_path = "", Error *r_error = NULL);
+	virtual RES load(const String &p_path, const String &p_original_path = "", Error *r_error = nullptr);
 	virtual void get_recognized_extensions(List<String> *p_extensions) const;
 	virtual bool handles_type(const String &p_type) const;
 	virtual String get_resource_type(const String &p_path) const;

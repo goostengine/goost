@@ -47,7 +47,7 @@ Error Gif::gif_error(int err) {
 }
 
 Error Gif::_open(void *source, SourceType source_type) {
-	ERR_FAIL_COND_V(gif != NULL, FAILED);
+	ERR_FAIL_COND_V(gif != nullptr, FAILED);
 	int err = 0;
 	gif = DGifOpen(source, source_type == SourceType::FILE ? readFromFile : readFromBuffer, &err); // Loads the headers of the GIF.
 	if (!gif) {
@@ -65,7 +65,7 @@ Error Gif::_open(void *source, SourceType source_type) {
 #define RGBA 4
 
 Error Gif::_load_frames(Ref<ImageFrames> &r_image_frames, int max_frames) {
-	ERR_FAIL_COND_V(gif == NULL, FAILED);
+	ERR_FAIL_COND_V(gif == nullptr, FAILED);
 
 	int image_size = gif->SWidth * gif->SHeight * RGBA;
 	uint8_t *screen = memnew_arr(uint8_t, image_size); // Each frame of the GIF is drawn on this buffer.
@@ -92,7 +92,7 @@ Error Gif::_load_frames(Ref<ImageFrames> &r_image_frames, int max_frames) {
 				if (DGifGetExtension(gif, &extFunction, &extData) == GIF_ERROR) {
 					RETURN_ERROR;
 				}
-				if (extData == NULL) {
+				if (extData == nullptr) {
 					break;
 				} else if (extFunction == GRAPHICS_EXT_FUNC_CODE) {
 					if (DGifExtensionToGCB(extData[0], &extData[1], &gcb) == GIF_ERROR) {
@@ -103,7 +103,7 @@ Error Gif::_load_frames(Ref<ImageFrames> &r_image_frames, int max_frames) {
 					if (DGifGetExtensionNext(gif, &extData) == GIF_ERROR) {
 						RETURN_ERROR;
 					}
-					if (extData == NULL) {
+					if (extData == nullptr) {
 						break;
 					} else if (extFunction == GRAPHICS_EXT_FUNC_CODE) {
 						if (DGifExtensionToGCB(extData[0], &extData[1], &gcb) == GIF_ERROR) {
@@ -239,7 +239,7 @@ Error Gif::_close() {
 	if (!DGifCloseFile(gif, &err)) {
 		return gif_error(err);
 	}
-	gif = NULL;
+	gif = nullptr;
 	return OK;
 }
 
@@ -281,4 +281,4 @@ Error Gif::load_from_buffer(Ref<ImageFrames> &r_image_frames, const PoolByteArra
 }
 
 Gif::Gif() :
-		gif(NULL) {}
+		gif(nullptr) {}
