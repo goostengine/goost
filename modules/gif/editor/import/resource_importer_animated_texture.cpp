@@ -90,17 +90,17 @@ Error ResourceImporterAnimatedTexture::import(const String &p_source_file, const
 
 	// We already assume image frames already contains at least one frame,
 	// and that all frames have the same size.
-	f->store_32(image_frames->get_image(0)->get_width());
-	f->store_32(image_frames->get_image(0)->get_height());
+	f->store_32(image_frames->get_frame_image(0)->get_width());
+	f->store_32(image_frames->get_frame_image(0)->get_height());
 
 	for (int i = 0; i < frame_count; ++i) {
 		// Frame image data.
-		PoolVector<uint8_t> data = image_frames->get_image(i)->get_data();
+		PoolVector<uint8_t> data = image_frames->get_frame_image(i)->get_data();
 		PoolVector<uint8_t>::Read r = data.read();
 		f->store_32(data.size());
 		f->store_buffer(r.ptr(), data.size());
 		// Frame delay data.
-		const real_t delay = image_frames->get_delay(i);
+		const real_t delay = image_frames->get_frame_delay(i);
 		f->store_real(delay);
 	}
 	f->close();

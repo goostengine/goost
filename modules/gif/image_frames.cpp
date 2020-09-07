@@ -44,25 +44,25 @@ void ImageFrames::remove_frame(int p_idx) {
 	frames.remove(p_idx);
 }
 
-void ImageFrames::set_image(int p_idx, const Ref<Image> &p_image) {
+void ImageFrames::set_frame_image(int p_idx, const Ref<Image> &p_image) {
 	ERR_FAIL_COND(p_idx < 0);
 	ERR_FAIL_COND(p_idx > get_frame_count() - 1);
 	frames.write[p_idx].image = p_image;
 }
 
-Ref<Image> ImageFrames::get_image(int p_idx) const {
+Ref<Image> ImageFrames::get_frame_image(int p_idx) const {
 	ERR_FAIL_COND_V(p_idx < 0, Ref<Image>());
 	ERR_FAIL_COND_V(p_idx > get_frame_count() - 1, Ref<Image>());
 	return frames[p_idx].image;
 }
 
-void ImageFrames::set_delay(int p_idx, float p_delay) {
+void ImageFrames::set_frame_delay(int p_idx, float p_delay) {
 	ERR_FAIL_COND(p_idx < 0);
 	ERR_FAIL_COND(p_idx > get_frame_count() - 1);
 	frames.write[p_idx].delay = p_delay;
 }
 
-float ImageFrames::get_delay(int p_idx) const {
+float ImageFrames::get_frame_delay(int p_idx) const {
 	ERR_FAIL_COND_V(p_idx < 0, 0);
 	ERR_FAIL_COND_V(p_idx > get_frame_count() - 1, 0);
 	return frames[p_idx].delay;
@@ -83,11 +83,11 @@ void ImageFrames::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("add_frame", "image", "delay", "idx"), &ImageFrames::add_frame, DEFVAL(-1));
 	ClassDB::bind_method(D_METHOD("remove_frame", "idx"), &ImageFrames::remove_frame);
 
-	ClassDB::bind_method(D_METHOD("set_image", "idx", "image"), &ImageFrames::set_image);
-	ClassDB::bind_method(D_METHOD("get_image", "idx"), &ImageFrames::get_image);
+	ClassDB::bind_method(D_METHOD("set_frame_image", "idx", "image"), &ImageFrames::set_frame_image);
+	ClassDB::bind_method(D_METHOD("get_frame_image", "idx"), &ImageFrames::get_frame_image);
 
-	ClassDB::bind_method(D_METHOD("set_delay", "idx", "delay"), &ImageFrames::set_delay);
-	ClassDB::bind_method(D_METHOD("get_delay", "idx"), &ImageFrames::get_delay);
+	ClassDB::bind_method(D_METHOD("set_frame_delay", "idx", "delay"), &ImageFrames::set_frame_delay);
+	ClassDB::bind_method(D_METHOD("get_frame_delay", "idx"), &ImageFrames::get_frame_delay);
 
 	ClassDB::bind_method(D_METHOD("get_frame_count"), &ImageFrames::get_frame_count);
 

@@ -1,36 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="ImageFrames" inherits="Reference" category="Core" version="3.2">
+<class name="ImageFrames" inherits="Resource" version="3.2">
 	<brief_description>
 		A container for [Image] frames.
 	</brief_description>
 	<description>
-		A class which can be used to load and arrange image frames. Allows to load animated image formats externally (only GIF is supported currently). Each frame can specify a delay for animated images. The data can then be used to generate an [AnimatedTexture] or a [SpriteFrames] via script.
+		A class used to load and arrange a sequence of image frames. Allows to load animated image formats externally (only GIF is supported currently). Each frame can specify a delay for animated images. The data can then be used to generate an [AnimatedTexture] or a [SpriteFrames] via script.
 	</description>
 	<tutorials>
 	</tutorials>
 	<methods>
-		<method name="load">
-			<return type="Array">
-			</return>
-			<argument index="0" name="path" type="String">
-			</argument>
-			<argument index="1" name="max_frames" type="int" default="0">
-			</argument>
-			<description>
-				Loads the data from a file located at [code]path[/code]. Recognizes the following file extensions: [code]gif[/code]. [code]max_frames[/code] limits the number of loaded frames.
-			</description>
-		</method>
-		<method name="load_gif_from_buffer">
-			<return type="Array">
-			</return>
-			<argument index="0" name="data" type="PoolByteArray">
-			</argument>
-			<argument index="1" name="max_frames" type="int" default="0">
-			</argument>
-			<description>
-				Loads the data from a [PoolByteArray] GIF buffer. [code]max_frames[/code] limits the number of loaded frames.
-			</description>
-		</method>
 		<method name="add_frame">
 			<return type="void">
 			</return>
@@ -44,6 +22,60 @@
 				Adds a new frame.
 			</description>
 		</method>
+		<method name="clear">
+			<return type="void">
+			</return>
+			<description>
+				Removes all frames.
+			</description>
+		</method>
+		<method name="get_frame_count" qualifiers="const">
+			<return type="int">
+			</return>
+			<description>
+				Returns the total number of frames.
+			</description>
+		</method>
+		<method name="get_frame_delay" qualifiers="const">
+			<return type="float">
+			</return>
+			<argument index="0" name="idx" type="int">
+			</argument>
+			<description>
+				Returns the delay of frame [code]idx[/code].
+			</description>
+		</method>
+		<method name="get_frame_image" qualifiers="const">
+			<return type="Image">
+			</return>
+			<argument index="0" name="idx" type="int">
+			</argument>
+			<description>
+				Returns the [Image] of frame [code]idx[/code].
+			</description>
+		</method>
+		<method name="load">
+			<return type="int" enum="Error">
+			</return>
+			<argument index="0" name="path" type="String">
+			</argument>
+			<argument index="1" name="max_frames" type="int" default="0">
+			</argument>
+			<description>
+				Loads the data from a file located at [code]path[/code]. Recognizes the following file extensions: [code]gif[/code]. The [code]max_frames[/code] parameter limits the number of frames which can be loaded.
+			</description>
+		</method>
+		<method name="load_gif_from_buffer">
+			<return type="int" enum="Error">
+			</return>
+			<argument index="0" name="data" type="PoolByteArray">
+			</argument>
+			<argument index="1" name="max_frames" type="int" default="0">
+			</argument>
+			<description>
+				Loads the data from a [PoolByteArray] GIF buffer. The [code]max_frames[/code] parameter limits the number of frames which can be loaded.
+			</description>
+		</method>
 		<method name="remove_frame">
 			<return type="void">
 			</return>
@@ -53,27 +85,7 @@
 				Removes the frame [code]idx[/code].
 			</description>
 		</method>
-		<method name="set_image">
-			<return type="void">
-			</return>
-			<argument index="0" name="idx" type="int">
-			</argument>
-			<argument index="1" name="image" type="Image">
-			</argument>
-			<description>
-				Sets the [Image] of frame [code]idx[/code].
-			</description>
-		</method>
-		<method name="get_image">
-			<return type="Image">
-			</return>
-			<argument index="0" name="idx" type="int">
-			</argument>
-			<description>
-				Returns the [Image] of frame [code]idx[/code].
-			</description>
-		</method>
-		<method name="set_delay">
+		<method name="set_frame_delay">
 			<return type="void">
 			</return>
 			<argument index="0" name="idx" type="int">
@@ -84,27 +96,15 @@
 				Sets the delay in seconds of frame [code]idx[/code].
 			</description>
 		</method>
-		<method name="get_delay">
-			<return type="float">
+		<method name="set_frame_image">
+			<return type="void">
 			</return>
 			<argument index="0" name="idx" type="int">
 			</argument>
+			<argument index="1" name="image" type="Image">
+			</argument>
 			<description>
-				Returns the delay of frame [code]idx[/code].
-			</description>
-		</method>
-		<method name="get_frame_count">
-			<return type="int">
-			</return>
-			<description>
-				Returns the total number of frames.
-			</description>
-		</method>
-		<method name="clear">
-			<return type="void">
-			</return>
-			<description>
-				Removes all frames.
+				Sets the [Image] of frame [code]idx[/code].
 			</description>
 		</method>
 	</methods>

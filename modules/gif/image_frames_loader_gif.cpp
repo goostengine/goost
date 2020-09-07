@@ -231,7 +231,7 @@ Error GifLoader::_load_frames(Ref<ImageFrames> &r_image_frames, int max_frames) 
 								memset(&screen[write_index], 0, row_size);
 							}
 						} else {
-							PoolByteArray last_frame_data = r_image_frames->get_image(last_undisposed_frame)->get_data();
+							PoolByteArray last_frame_data = r_image_frames->get_frame_image(last_undisposed_frame)->get_data();
 							PoolByteArray::Read last_frame_read = last_frame_data.read();
 							for (int y = 0; y < imageDesc.Height; y++) {
 								int write_y = y + imageDesc.Top;

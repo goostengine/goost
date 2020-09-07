@@ -28,11 +28,11 @@ public:
 	void add_frame(const Ref<Image> &p_image, float p_delay, int p_idx = -1);
 	void remove_frame(int p_idx);
 
-	void set_image(int p_idx, const Ref<Image> &p_image);
-	Ref<Image> get_image(int p_idx) const;
+	void set_frame_image(int p_idx, const Ref<Image> &p_image);
+	Ref<Image> get_frame_image(int p_idx) const;
 
-	void set_delay(int p_idx, float p_delay);
-	float get_delay(int p_idx) const;
+	void set_frame_delay(int p_idx, float p_delay);
+	float get_frame_delay(int p_idx) const;
 
 	int get_frame_count() const;
 
