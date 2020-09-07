@@ -5,7 +5,7 @@
 #include "thirdparty/giflib/gif_lib.h"
 
 static Error _load_gif(Ref<ImageFrames> &r_image_frames, const Variant &source, int max_frames) {
-	Gif gif;
+	GifLoader gif;
 	if (source.get_type() == Variant::STRING) {
 		Error err;
 		FileAccess *f = FileAccess::open(source, FileAccess::READ, &err);
@@ -23,7 +23,7 @@ static Error _load_gif(Ref<ImageFrames> &r_image_frames, const Variant &source, 
 }
 
 Error ImageFramesLoaderGIF::load_image_frames(Ref<ImageFrames> &r_image_frames, FileAccess *f, int max_frames) const {
-	Gif gif;
+	GifLoader gif;
 	return gif.load_from_file_access(r_image_frames, f, max_frames);
 }
 
@@ -32,7 +32,7 @@ void ImageFramesLoaderGIF::get_recognized_extensions(List<String> *p_extensions)
 }
 
 ImageFramesLoaderGIF::ImageFramesLoaderGIF() {
-	ImageFrames::_load_gif = _load_gif;
+	ImageFrames::load_gif_func = _load_gif;
 }
 
 // Custom function to read the GIF data from a file.
@@ -69,17 +69,17 @@ int readFromBuffer(GifFileType *gif, GifByteType *data, int length) {
 	return length;
 }
 
-Error Gif::parse_error(Error err, const String &message) {
+Error GifLoader::parse_error(Error err, const String &message) {
 	ERR_PRINTS(message);
 	return err;
 }
 
-Error Gif::gif_error(int err) {
+Error GifLoader::gif_error(int err) {
 	ERR_PRINT(GifErrorString(err));
 	return FAILED;
 }
 
-Error Gif::_open(void *source, SourceType source_type) {
+Error GifLoader::_open(void *source, SourceType source_type) {
 	ERR_FAIL_COND_V(gif != nullptr, FAILED);
 	int err = 0;
 	gif = DGifOpen(source, source_type == SourceType::FILE ? readFromFile : readFromBuffer, &err); // Loads the headers of the GIF.
@@ -97,7 +97,7 @@ Error Gif::_open(void *source, SourceType source_type) {
 
 #define RGBA 4
 
-Error Gif::_load_frames(Ref<ImageFrames> &r_image_frames, int max_frames) {
+Error GifLoader::_load_frames(Ref<ImageFrames> &r_image_frames, int max_frames) {
 	ERR_FAIL_COND_V(gif == nullptr, FAILED);
 
 	int image_size = gif->SWidth * gif->SHeight * RGBA;
@@ -267,7 +267,7 @@ Error Gif::_load_frames(Ref<ImageFrames> &r_image_frames, int max_frames) {
 	return OK;
 }
 
-Error Gif::_close() {
+Error GifLoader::_close() {
 	int err = 0;
 	if (!DGifCloseFile(gif, &err)) {
 		return gif_error(err);
@@ -276,7 +276,7 @@ Error Gif::_close() {
 	return OK;
 }
 
-Error Gif::load_from_file_access(Ref<ImageFrames> &r_image_frames, FileAccess *f, int max_frames) {
+Error GifLoader::load_from_file_access(Ref<ImageFrames> &r_image_frames, FileAccess *f, int max_frames) {
 	Error err;
 	err = _open(f, SourceType::FILE);
 	if (err != OK) {
@@ -294,7 +294,7 @@ Error Gif::load_from_file_access(Ref<ImageFrames> &r_image_frames, FileAccess *f
 	return OK;
 }
 
-Error Gif::load_from_buffer(Ref<ImageFrames> &r_image_frames, const PoolByteArray &p_data, int max_frames) {
+Error GifLoader::load_from_buffer(Ref<ImageFrames> &r_image_frames, const PoolByteArray &p_data, int max_frames) {
 	GIFBuffer f = GIFBuffer(p_data);
 	Error err;
 	err = _open(&f, SourceType::BUFFER);

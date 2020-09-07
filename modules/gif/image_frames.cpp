@@ -1,13 +1,13 @@
 #include "image_frames.h"
 
-LoadImageFramesFunction ImageFrames::_load_gif = nullptr;
+LoadImageFramesFunction ImageFrames::load_gif_func = nullptr;
 
 Error ImageFrames::load(const String &p_path, int max_frames) {
 	clear();
 	String ext = p_path.get_extension().to_lower();
 	if (ext == "gif") {
 		Ref<ImageFrames> image_frames = Ref<ImageFrames>(this);
-		return _load_gif(image_frames, p_path, max_frames);
+		return load_gif_func(image_frames, p_path, max_frames);
 	} else {
 		ERR_PRINTS("Unrecognized image: " + p_path);
 		return ERR_FILE_UNRECOGNIZED;
@@ -18,7 +18,7 @@ Error ImageFrames::load_gif_from_buffer(const PoolByteArray &p_data, int max_fra
 	clear();
 	if (p_data[0] == 'G') {
 		Ref<ImageFrames> image_frames = Ref<ImageFrames>(this);
-		return _load_gif(image_frames, p_data, max_frames);
+		return load_gif_func(image_frames, p_data, max_frames);
 	} else {
 		ERR_PRINTS("Unrecognized image.");
 		return ERR_FILE_UNRECOGNIZED;

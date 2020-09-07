@@ -13,7 +13,7 @@ public:
 
 struct GifFileType;
 
-class Gif {
+class GifLoader {
 	GifFileType *gif = nullptr;
 
 	enum SourceType {

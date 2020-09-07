@@ -20,7 +20,7 @@ protected:
 	static void _bind_methods();
 
 public:
-	static LoadImageFramesFunction _load_gif;
+	static LoadImageFramesFunction load_gif_func;
 
 	Error load(const String &p_path, int max_frames = 0);
 	Error load_gif_from_buffer(const PoolByteArray &p_data, int max_frames = 0);
