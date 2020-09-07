@@ -1,5 +1,6 @@
 #include "image_frames_loader.h"
 #include "scene/resources/texture.h"
+#include "scene/2d/animated_sprite.h"
 
 Vector<ImageFramesFormatLoader *> ImageFramesLoader::loader;
 
@@ -85,7 +86,7 @@ void ImageFramesLoader::cleanup() {
 	}
 }
 
-/////////////////
+// ImageFrames
 
 RES ResourceFormatLoaderImageFrames::load(const String &p_path, const String &p_original_path, Error *r_error) {
 	FileAccess *f = FileAccess::open(p_path, FileAccess::READ);
@@ -152,6 +153,8 @@ String ResourceFormatLoaderImageFrames::get_resource_type(const String &p_path) 
 	return p_path.get_extension().to_lower() == "imageframes" ? "ImageFrames" : String();
 }
 
+// AnimatedTexture
+
 RES ResourceFormatLoaderAnimatedTexture::load(const String &p_path, const String &p_original_path, Error *r_error) {
 	FileAccess *f = FileAccess::open(p_path, FileAccess::READ);
 	if (!f) {
@@ -217,4 +220,70 @@ bool ResourceFormatLoaderAnimatedTexture::handles_type(const String &p_type) con
 
 String ResourceFormatLoaderAnimatedTexture::get_resource_type(const String &p_path) const {
 	return p_path.get_extension().to_lower() == "atex" ? "AnimatedTexture" : String();
+}
+
+// SpriteFrames
+
+RES ResourceFormatLoaderSpriteFrames::load(const String &p_path, const String &p_original_path, Error *r_error) {
+	FileAccess *f = FileAccess::open(p_path, FileAccess::READ);
+	if (!f) {
+		if (r_error) {
+			*r_error = ERR_CANT_OPEN;
+		}
+		return RES();
+	}
+	uint8_t header[4] = { 0, 0, 0, 0 };
+	f->get_buffer(header, 4);
+
+	bool unrecognized = header[0] != 'G' || header[1] != 'D' || header[2] != 'S' || header[3] != 'F';
+	if (unrecognized) {
+		memdelete(f);
+		if (r_error) {
+			*r_error = ERR_FILE_UNRECOGNIZED;
+		}
+		ERR_FAIL_V(RES());
+	}
+	Ref<SpriteFrames> sframes;
+	sframes.instance();
+
+	uint32_t tex_flags = f->get_32();
+	uint32_t frame_count = f->get_32();
+
+	uint32_t width = f->get_32();
+	uint32_t height = f->get_32();
+
+	for (size_t i = 0; i < frame_count; ++i) {
+		Ref<ImageTexture> frame;
+		frame.instance();
+		// Frame image data.
+		PoolVector<uint8_t> data;
+		uint32_t len = f->get_32();
+		data.resize(len);
+		PoolVector<uint8_t>::Write w = data.write();
+		f->get_buffer(w.ptr(), len);
+
+		Ref<Image> image;
+		image.instance();
+		image->create(width, height, false, Image::FORMAT_RGBA8, data);
+		frame->create_from_image(image, tex_flags);
+		sframes->add_frame("default", frame);
+	}
+	sframes->set_animation_speed("default", f->get_real());
+
+	f->close();
+	memdelete(f);
+
+	return sframes;
+}
+
+void ResourceFormatLoaderSpriteFrames::get_recognized_extensions(List<String> *p_extensions) const {
+	p_extensions->push_back("sframes");
+}
+
+bool ResourceFormatLoaderSpriteFrames::handles_type(const String &p_type) const {
+	return p_type == "SpriteFrames";
+}
+
+String ResourceFormatLoaderSpriteFrames::get_resource_type(const String &p_path) const {
+	return p_path.get_extension().to_lower() == "sframes" ? "SpriteFrames" : String();
 }
