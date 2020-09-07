@@ -19,6 +19,19 @@ See [Goost official documentation](https://goost.readthedocs.io/en/gd3/) for
 detailed instructions on how to use the module, and the list of currently
 implemented components.
 
+For a complete list of currently implemented classes, refer to
+[Goost API](https://goost.readthedocs.io/en/gd3/classes/index.html).
+
+---
+
+### Community channels
+
+Join [#goost](https://discord.gg/w6jBZnG) Discord channel at the
+[GEL](https://github.com/godot-extended-libraries) Discord server for discussion
+and development updates.
+
+---
+
 ## Compiling
 
 ```sh
