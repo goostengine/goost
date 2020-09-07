@@ -6,8 +6,6 @@
 
 #include "editor/import/resource_importer_animated_texture.h"
 
-#include "gif.h"
-
 static ImageFramesLoaderGIF *image_frames_loader_gif = nullptr;
 static Ref<ResourceFormatLoaderImageFrames> resource_format_image_frames;
 static Ref<ResourceFormatLoaderAnimatedTexture> resource_format_animated_texture;
