@@ -16,7 +16,6 @@ module_gridmap_enabled = "no"
 module_hdr_enabled = "no"
 module_jpg_enabled = "no"
 module_jsonrpc_enabled = "no"
-module_mbedtls_enabled = "no" # AssetLib will not be available.
 module_mobile_vr_enabled = "no"
 module_mono_enabled = "no"
 module_ogg_enabled = "no"
