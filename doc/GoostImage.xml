@@ -194,7 +194,7 @@
 			</argument>
 			<argument index="2" name="wrap_mode" type="int" enum="GoostImage.WrapMode" default="0">
 			</argument>
-			<argument index="3" name="max_size" type="Vector2" default="Vector2( 65536, 65536 )">
+			<argument index="3" name="max_size" type="Vector2" default="Vector2( 16384, 16384 )">
 			</argument>
 			<description>
 				Repeats an image in both horizontal and vertical directions several times as determined by the X and Y components of [code]count[/code] respectively. The [code]wrap_mode[/code] specifies how the image is tiled. The [code]max_size[/code] can be overridden to prevent the resulting image from exceeding some size, and the default maximum size is determined by [constant Image.MAX_WIDTH] and [constant Image.MAX_HEIGHT]. See also [method tile].
