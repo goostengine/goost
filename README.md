@@ -10,7 +10,8 @@
 ![🌐 JavaScript](https://github.com/goostengine/goost/workflows/%F0%9F%8C%90%20JavaScript/badge.svg)
 
 This is a [Godot Engine](https://github.com/godotengine/godot) 3.2+ extension
-implemented as a C++ module.
+implemented as a
+[C++ module](https://docs.godotengine.org/en/latest/development/cpp/custom_modules_in_cpp.html).
 
 The extension is comprised of functional components and other modules, most of
 which should be optional to build.
@@ -21,6 +22,30 @@ implemented components.
 
 For a complete list of currently implemented classes, refer to
 [Goost API](https://goost.readthedocs.io/en/gd3/classes/index.html).
+
+---
+
+### Goals
+- ***complement*** the engine by implementing missing or not-yet-implemented
+  functionality as seen useful by the Godot community, which also helps to
+  prevent further engine bloat;
+- provide additional core data structures, classes and methods to optimize
+  performance-critical code in a general-purpose way for when GDScript or other
+  languages are too slow, or when better integration is desired with existing
+  libraries;
+- expose, reuse, and build upon the engine's hidden built-in functionality
+  typically unavailable to scripting;
+- overcome engine limitations which may be difficult to do via script,
+  especially when those limitations can be mitigated on the module level without
+  having to maintain a custom version of the engine.
+
+### Non-goals
+- solving domain-specific problems. Consider contributing to a project such as
+  [Godot Node Extensions](https://github.com/godot-extended-libraries/godot-next)
+  instead.
+- collecting arbitrary community C++ modules for the sake of it, unless a module
+  provides common enough functionality which would be useful to a good chunk of
+  users.
 
 ---
 
