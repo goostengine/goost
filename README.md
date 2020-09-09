@@ -1,4 +1,12 @@
-![Goost](logo.png)
+<p align="center">
+  <a href="https://github.com/goostengine">
+    <img src="logo.svg" width="400" alt="Goost Logo">
+  </a>
+</p>
+
+<p align="right">
+  <i>If something should be in Godot, let it be in Godot.</i>
+</p>
 
 # Goost: Godot Engine Extension
 
