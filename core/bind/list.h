@@ -8,76 +8,76 @@
 #include "core/object.h"
 #include "core/sort_array.h"
 
-class VariantListElement;
+class ListElement;
 
-struct VariantListData {
-	VariantListElement *first = nullptr;
-	VariantListElement *last = nullptr;
+struct ListData {
+	ListElement *first = nullptr;
+	ListElement *last = nullptr;
 	int size_cache = 0;
-	bool erase(VariantListElement *p_I);
+	bool erase(ListElement *p_I);
 };
 
-class VariantListElement : public Object {
-	GDCLASS(VariantListElement, Object);
+class ListElement : public Object {
+	GDCLASS(ListElement, Object);
 
 protected:
 	static void _bind_methods();
 
 private:
-	friend class VariantList;
-	friend struct VariantListData;
+	friend class LinkedList;
+	friend struct ListData;
 
 	Variant value;
-	VariantListElement *next_ptr = nullptr;
-	VariantListElement *prev_ptr = nullptr;
-	VariantListData *data = nullptr;
+	ListElement *next_ptr = nullptr;
+	ListElement *prev_ptr = nullptr;
+	ListData *data = nullptr;
 
 public:
-	VariantListElement *next();
-	VariantListElement *prev();
+	ListElement *next();
+	ListElement *prev();
 	Variant get_value() { return value; }
 	void set_value(const Variant &p_value) { value = p_value; }
 	void erase() { data->erase(this); }
 
-	VariantListElement() {}
+	ListElement() {}
 };
 
-class VariantList : public Object {
-	GDCLASS(VariantList, Object);
+class LinkedList : public Object {
+	GDCLASS(LinkedList, Object);
 
 protected:
 	static void _bind_methods();
 
 private:
-	VariantListData *_data = nullptr;
+	ListData *_data = nullptr;
 
 public:
-	VariantListElement *front();
-	VariantListElement *back();
-	VariantListElement *push_back(const Variant &value);
+	ListElement *front();
+	ListElement *back();
+	ListElement *push_back(const Variant &value);
 	void pop_back();
-	VariantListElement *push_front(const Variant &value);
+	ListElement *push_front(const Variant &value);
 	void pop_front();
 
-	VariantListElement *insert_after(VariantListElement *p_element, const Variant &p_value);
-	VariantListElement *insert_before(VariantListElement *p_element, const Variant &p_value);
+	ListElement *insert_after(ListElement *p_element, const Variant &p_value);
+	ListElement *insert_before(ListElement *p_element, const Variant &p_value);
 
-	VariantListElement *find(const Variant &p_val);
+	ListElement *find(const Variant &p_val);
 
-	bool erase(VariantListElement *p_I);
+	bool erase(ListElement *p_I);
 	// bool erase(const Variant &value); // TODO: rename to erase_first_found?
 	bool empty() const;
 	void clear();
 	int size() const;
 
-	void swap(VariantListElement *p_A, VariantListElement *p_B);
+	void swap(ListElement *p_A, ListElement *p_B);
 
-	void move_to_back(VariantListElement *p_I);
+	void move_to_back(ListElement *p_I);
 
 	void invert();
 
-	void move_to_front(VariantListElement *p_I);
-	void move_before(VariantListElement *value, VariantListElement *where);
+	void move_to_front(ListElement *p_I);
+	void move_before(ListElement *value, ListElement *where);
 
 	void sort() {
 		sort_custom<Comparator<Variant>>();
@@ -88,18 +88,18 @@ public:
 		if (size() < 2)
 			return;
 
-		VariantListElement *from = front();
-		VariantListElement *current = from;
-		VariantListElement *to = from;
+		ListElement *from = front();
+		ListElement *current = from;
+		ListElement *to = from;
 
 		while (current) {
-			VariantListElement *next = current->next_ptr;
+			ListElement *next = current->next_ptr;
 
 			if (from != current) {
 				current->prev_ptr = nullptr;
 				current->next_ptr = from;
 
-				VariantListElement *find = from;
+				ListElement *find = from;
 				C less;
 				while (find && less(find->value, current->value)) {
 					current->prev_ptr = find;
@@ -130,7 +130,7 @@ public:
 	template <class C>
 	struct AuxiliaryComparator {
 		C compare;
-		bool operator()(const VariantListElement *a, const VariantListElement *b) const {
+		bool operator()(const ListElement *a, const ListElement *b) const {
 			return compare(a->value, b->value);
 		}
 	};
@@ -141,15 +141,15 @@ public:
 		if (s < 2)
 			return;
 
-		VariantListElement **aux_buffer = memnew_arr(VariantListElement *, s);
+		ListElement **aux_buffer = memnew_arr(ListElement *, s);
 
 		int idx = 0;
-		for (VariantListElement *E = front(); E; E = E->next_ptr) {
+		for (ListElement *E = front(); E; E = E->next_ptr) {
 			aux_buffer[idx] = E;
 			idx++;
 		}
 
-		SortArray<VariantListElement *, AuxiliaryComparator<C>> sort;
+		SortArray<ListElement *, AuxiliaryComparator<C>> sort;
 		sort.sort(aux_buffer, s);
 
 		_data->first = aux_buffer[0];
@@ -168,13 +168,13 @@ public:
 		memdelete_arr(aux_buffer);
 	}
 	// VariantList(const VariantList &p_list);
-	VariantList() {}
+	LinkedList() {}
 };
 
 template <>
-struct VariantCaster<VariantListElement*> {
-	static _FORCE_INLINE_ VariantListElement* cast(const Variant &p_variant) {
-		return (VariantListElement*)p_variant.operator Object*();
+struct VariantCaster<ListElement *> {
+	static _FORCE_INLINE_ ListElement *cast(const Variant &p_variant) {
+		return (ListElement *)p_variant.operator Object *();
 	}
 };
 

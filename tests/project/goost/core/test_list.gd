@@ -2,10 +2,10 @@ extends "res://addons/gut/test.gd"
 
 
 func test_push_pop_back():
-	var list = VariantList.new()
+	var list = LinkedList.new()
 
 	# Push back
-	var n: VariantListElement
+	var n: ListElement
 	n = list.push_back("Goost")
 	assert_eq(n.value, "Goost")
 	n = list.push_back(37)
