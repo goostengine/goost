@@ -28,5 +28,5 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 if [[ "$GODOT_CMD" ]]; then
     "$GODOT_BIN" "$GODOT_CMD" --path "$TEST_PATH" -s "$TEST_FRAMEWORK"
 else
-    "$GODOT_BIN" --path "$TEST_PATH" -s "$TEST_FRAMEWORK"
+    "$GODOT_BIN" --path "$TEST_PATH" -s "$TEST_FRAMEWORK" -d
 fi
