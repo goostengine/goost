@@ -59,7 +59,7 @@ ListElement *LinkedList::push_back(const Variant &value) {
 
 void LinkedList::pop_back() {
 	if (_data && _data->last) {
-		erase(_data->last);
+		remove(_data->last);
 	}
 }
 
@@ -91,11 +91,11 @@ ListElement *LinkedList::push_front(const Variant &value) {
 
 void LinkedList::pop_front() {
 	if (_data && _data->first) {
-		erase(_data->first);
+		remove(_data->first);
 	}
 }
 
-bool LinkedList::erase(ListElement *p_I) {
+bool LinkedList::remove(ListElement *p_I) {
 	if (_data) {
 		bool ret = _data->erase(p_I);
 		if (_data->size_cache == 0) {
@@ -107,6 +107,22 @@ bool LinkedList::erase(ListElement *p_I) {
 	return false;
 };
 
+ListElement *LinkedList::find(const Variant &p_value) {
+	ListElement *it = front();
+	while (it) {
+		if (it->value == p_value) {
+			return it;
+		}
+		it = it->next();
+	}
+	return nullptr;
+}
+
+bool LinkedList::erase(const Variant &p_value) {
+	ListElement *I = find(p_value);
+	return remove(I);
+}
+
 void LinkedList::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("front"), &LinkedList::front);
 	ClassDB::bind_method(D_METHOD("back"), &LinkedList::back);
@@ -114,18 +130,30 @@ void LinkedList::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("pop_back"), &LinkedList::pop_back);
 	ClassDB::bind_method(D_METHOD("push_front", "value"), &LinkedList::push_front);
 	ClassDB::bind_method(D_METHOD("pop_front"), &LinkedList::pop_front);
-	ClassDB::bind_method(D_METHOD("erase", "element"), &LinkedList::erase);
+
+	ClassDB::bind_method(D_METHOD("find", "value"), &LinkedList::find);
+	ClassDB::bind_method(D_METHOD("erase", "value"), &LinkedList::erase);
+	ClassDB::bind_method(D_METHOD("remove", "element"), &LinkedList::remove);
+
+	ClassDB::bind_method(D_METHOD("empty"), &LinkedList::empty);
+	ClassDB::bind_method(D_METHOD("clear"), &LinkedList::clear);
+	ClassDB::bind_method(D_METHOD("size"), &LinkedList::size);
 }
 
 void LinkedList::clear() {
 	while (front()) {
-		erase(front());
+		remove(front());
 	}
 }
 
 void ListElement::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("next"), &ListElement::next);
+	ClassDB::bind_method(D_METHOD("prev"), &ListElement::prev);
+
 	ClassDB::bind_method(D_METHOD("set_value", "value"), &ListElement::set_value);
 	ClassDB::bind_method(D_METHOD("get_value"), &ListElement::get_value);
+
+	ClassDB::bind_method(D_METHOD("erase"), &ListElement::erase);
 
 	ADD_PROPERTY(PropertyInfo(Variant::NIL, "value", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NIL_IS_VARIANT), "set_value", "get_value");
 }

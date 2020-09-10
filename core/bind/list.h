@@ -33,10 +33,12 @@ private:
 	ListData *data = nullptr;
 
 public:
-	ListElement *next();
-	ListElement *prev();
+	ListElement *next() { return next_ptr; }
+	ListElement *prev() { return prev_ptr; }
+
 	Variant get_value() { return value; }
 	void set_value(const Variant &p_value) { value = p_value; }
+
 	void erase() { data->erase(this); }
 
 	ListElement() {}
@@ -62,13 +64,13 @@ public:
 	ListElement *insert_after(ListElement *p_element, const Variant &p_value);
 	ListElement *insert_before(ListElement *p_element, const Variant &p_value);
 
-	ListElement *find(const Variant &p_val);
+	ListElement *find(const Variant &p_value);
 
-	bool erase(ListElement *p_I);
-	// bool erase(const Variant &value); // TODO: rename to erase_first_found?
-	bool empty() const;
+	bool remove(ListElement *p_I);
+	bool erase(const Variant &value);
+	bool empty() const { return !_data || !_data->size_cache; }
 	void clear();
-	int size() const;
+	int size() const { return _data ? _data->size_cache : 0; }
 
 	void swap(ListElement *p_A, ListElement *p_B);
 
