@@ -27,3 +27,12 @@ func test_push_pop_back():
 
 	assert_null(list.back())
 	assert_null(list.front())
+
+
+func test_cleanup():
+	var list = LinkedList.new()
+	var n = list.push_back("Goost")
+	assert_not_null(n)
+	list.unreference()
+	list = null
+	assert_null(n)

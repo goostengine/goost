@@ -117,9 +117,23 @@ void LinkedList::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("erase", "element"), &LinkedList::erase);
 }
 
+void LinkedList::clear() {
+	while (front()) {
+		erase(front());
+	}
+}
+
 void ListElement::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_value", "value"), &ListElement::set_value);
 	ClassDB::bind_method(D_METHOD("get_value"), &ListElement::get_value);
 
 	ADD_PROPERTY(PropertyInfo(Variant::NIL, "value", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NIL_IS_VARIANT), "set_value", "get_value");
+}
+
+LinkedList::~LinkedList() {
+	clear();
+	if (_data) {
+		ERR_FAIL_COND(_data->size_cache);
+		memdelete_allocator<ListData, DefaultAllocator>(_data);
+	}
 }

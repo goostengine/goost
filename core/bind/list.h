@@ -5,7 +5,7 @@
 // an instantiation of the `List<Variant>` template class for performance,
 // which also allows to register relevant classes to scripting.
 
-#include "core/object.h"
+#include "core/reference.h"
 #include "core/sort_array.h"
 
 class ListElement;
@@ -42,8 +42,8 @@ public:
 	ListElement() {}
 };
 
-class LinkedList : public Object {
-	GDCLASS(LinkedList, Object);
+class LinkedList : public Reference {
+	GDCLASS(LinkedList, Reference);
 
 protected:
 	static void _bind_methods();
@@ -167,8 +167,8 @@ public:
 
 		memdelete_arr(aux_buffer);
 	}
-	// VariantList(const VariantList &p_list);
 	LinkedList() {}
+	~LinkedList();
 };
 
 template <>
