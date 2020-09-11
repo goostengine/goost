@@ -73,13 +73,11 @@ public:
 	int size() const { return _data ? _data->size_cache : 0; }
 
 	void swap(ListElement *p_A, ListElement *p_B);
-
-	void move_to_back(ListElement *p_I);
-
 	void invert();
 
+	void move_to_back(ListElement *p_I);
 	void move_to_front(ListElement *p_I);
-	void move_before(ListElement *value, ListElement *where);
+	void move_before(ListElement *p_A, ListElement *p_B);
 
 	void sort() {
 		sort_custom<Comparator<Variant>>();

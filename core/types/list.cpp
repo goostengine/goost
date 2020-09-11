@@ -115,6 +115,77 @@ bool LinkedList::erase(const Variant &p_value) {
 	return remove(I);
 }
 
+void LinkedList::move_to_back(ListElement *p_I) {
+	ERR_FAIL_COND(p_I->data != _data);
+	if (!p_I->next_ptr) {
+		return;
+	}
+	if (_data->first == p_I) {
+		_data->first = p_I->next_ptr;
+	}
+	if (_data->last == p_I) {
+		_data->last = p_I->prev_ptr;
+	}
+	if (p_I->prev_ptr) {
+		p_I->prev_ptr->next_ptr = p_I->next_ptr;
+	}
+	p_I->next_ptr->prev_ptr = p_I->prev_ptr;
+
+	_data->last->next_ptr = p_I;
+	p_I->prev_ptr = _data->last;
+	p_I->next_ptr = nullptr;
+	_data->last = p_I;
+}
+
+void LinkedList::move_to_front(ListElement *p_I) {
+	ERR_FAIL_COND(p_I->data != _data);
+	if (!p_I->prev_ptr) {
+		return;
+	}
+	if (_data->first == p_I) {
+		_data->first = p_I->next_ptr;
+	}
+	if (_data->last == p_I) {
+		_data->last = p_I->prev_ptr;
+	}
+	p_I->prev_ptr->next_ptr = p_I->next_ptr;
+
+	if (p_I->next_ptr) {
+		p_I->next_ptr->prev_ptr = p_I->prev_ptr;
+	}
+	_data->first->prev_ptr = p_I;
+	p_I->next_ptr = _data->first;
+	p_I->prev_ptr = nullptr;
+	_data->first = p_I;
+}
+
+void LinkedList::move_before(ListElement *p_A, ListElement *p_B) {
+	if (p_A->prev_ptr) {
+		p_A->prev_ptr->next_ptr = p_A->next_ptr;
+	} else {
+		_data->first = p_A->next_ptr;
+	}
+	if (p_A->next_ptr) {
+		p_A->next_ptr->prev_ptr = p_A->prev_ptr;
+	} else {
+		_data->last = p_A->prev_ptr;
+	}
+	p_A->next_ptr = p_B;
+	if (!p_B) {
+		p_A->prev_ptr = _data->last;
+		_data->last = p_A;
+		return;
+	}
+	p_A->prev_ptr = p_B->prev_ptr;
+
+	if (p_B->prev_ptr) {
+		p_B->prev_ptr->next_ptr = p_A;
+	} else {
+		_data->first = p_A;
+	}
+	p_B->prev_ptr = p_A;
+}
+
 void LinkedList::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("back"), &LinkedList::back);
 	ClassDB::bind_method(D_METHOD("front"), &LinkedList::front);
@@ -130,6 +201,10 @@ void LinkedList::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("empty"), &LinkedList::empty);
 	ClassDB::bind_method(D_METHOD("clear"), &LinkedList::clear);
 	ClassDB::bind_method(D_METHOD("size"), &LinkedList::size);
+
+	ClassDB::bind_method(D_METHOD("move_to_front"), &LinkedList::move_to_front);
+	ClassDB::bind_method(D_METHOD("move_to_back"), &LinkedList::move_to_back);
+	ClassDB::bind_method(D_METHOD("move_before"), &LinkedList::move_before);
 }
 
 void LinkedList::clear() {

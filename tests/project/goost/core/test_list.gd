@@ -8,9 +8,12 @@ func before_each():
 	
 	
 func populate_test_data(list: LinkedList):
-	list.push_back("Goost")
-	list.push_back(37)
-	list.push_back(Color.blue)
+	var elements = []
+	elements.append(list.push_back("Goost"))
+	elements.append(list.push_back(37))
+	elements.append(list.push_back(Vector2.ONE))
+	elements.append(list.push_back(Color.blue))
+	return elements
 
 
 func test_push_pop_back():
@@ -66,8 +69,9 @@ func test_push_pop_front():
 
 
 func test_size():
-	populate_test_data(list)
-	assert_eq(list.size(), 3)
+	var elements = populate_test_data(list)
+	var original_size = elements.size()
+	assert_eq(list.size(), original_size)
 
 
 func test_front():
@@ -86,20 +90,22 @@ func test_find():
 
 
 func test_erase():
-	populate_test_data(list)
+	var elements = populate_test_data(list)
+	var original_size = elements.size()
 	var erased = list.erase(Color.blue)
 	assert_true(erased)
-	assert_eq(list.size(), 2)
+	assert_eq(list.size(), original_size - 1)
 	erased = list.erase("does not exist")
 	assert_false(erased)
 	
 
 func test_remove():
-	populate_test_data(list)
+	var elements = populate_test_data(list)
+	var original_size = elements.size()
 	list.remove(list.find("Goost"))
-	assert_eq(list.size(), 2)
+	assert_eq(list.size(), original_size - 1)
 	assert_null(list.find("Goost"))
-	
+
 
 func test_empty():
 	populate_test_data(list)
@@ -132,7 +138,26 @@ func test_prev():
 	var n = list.back()
 	assert_eq(n.value, Color.blue)
 	n = n.prev()
-	assert_eq(n.value, 37)
+	assert_eq(n.value, Vector2.ONE)
+
+
+func test_move_to_front():
+	var elements = populate_test_data(list)
+	list.move_to_front(elements[2])
+	assert_eq(list.front().value, Vector2.ONE)
+
+
+func test_move_to_back():
+	var elements = populate_test_data(list)
+	list.move_to_back(elements[0])
+	assert_eq(list.back().value, "Goost")
+
+
+func test_move_before():
+	var elements = populate_test_data(list)
+	assert_eq(elements[3].value, Color.blue)
+	list.move_before(elements[3], elements[1])
+	assert_eq(list.front().next().value, elements[3].value)
 
 
 func test_cleanup():
