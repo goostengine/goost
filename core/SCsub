@@ -9,4 +9,4 @@ if env["goost_math_enabled"]:
     SConscript("math/SCsub", exports="env_goost")
 
 env_goost.add_source_files(env.modules_sources, "*.cpp")
-env_goost.add_source_files(env.modules_sources, "bind/*.cpp")
+env_goost.add_source_files(env.modules_sources, "types/*.cpp")

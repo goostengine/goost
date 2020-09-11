@@ -1,7 +1,6 @@
 #include "register_core_types.h"
 
-#include "core/bind/list.h"
-
+#include "types/list.h"
 #include "image/register_image_types.h"
 #include "math/register_math_types.h"
 
