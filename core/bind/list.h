@@ -54,8 +54,8 @@ private:
 	ListData *_data = nullptr;
 
 public:
-	ListElement *front();
-	ListElement *back();
+	ListElement *back() { return _data ? _data->last : 0; }
+	ListElement *front() { return _data ? _data->first : 0; }
 	ListElement *push_back(const Variant &value);
 	void pop_back();
 	ListElement *push_front(const Variant &value);

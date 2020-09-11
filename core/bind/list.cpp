@@ -22,14 +22,6 @@ bool ListData::erase(ListElement *p_I) {
 	return true;
 }
 
-ListElement *LinkedList::front() {
-	return _data ? _data->first : 0;
-}
-
-ListElement *LinkedList::back() {
-	return _data ? _data->last : 0;
-}
-
 ListElement *LinkedList::push_back(const Variant &value) {
 	if (!_data) {
 		_data = memnew_allocator(ListData, DefaultAllocator);
@@ -124,8 +116,8 @@ bool LinkedList::erase(const Variant &p_value) {
 }
 
 void LinkedList::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("front"), &LinkedList::front);
 	ClassDB::bind_method(D_METHOD("back"), &LinkedList::back);
+	ClassDB::bind_method(D_METHOD("front"), &LinkedList::front);
 	ClassDB::bind_method(D_METHOD("push_back", "value"), &LinkedList::push_back);
 	ClassDB::bind_method(D_METHOD("pop_back"), &LinkedList::pop_back);
 	ClassDB::bind_method(D_METHOD("push_front", "value"), &LinkedList::push_front);
