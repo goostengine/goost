@@ -2,7 +2,7 @@
 name: Bug report
 about: Report a bug in Goost
 title: ''
-labels: 'bug'
+labels: bug
 assignees: ''
 
 ---
