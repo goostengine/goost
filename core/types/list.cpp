@@ -304,12 +304,12 @@ void LinkedList::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("clear"), &LinkedList::clear);
 	ClassDB::bind_method(D_METHOD("size"), &LinkedList::size);
 
-	ClassDB::bind_method(D_METHOD("swap"), &LinkedList::swap);
+	ClassDB::bind_method(D_METHOD("swap", "element_A", "element_B"), &LinkedList::swap);
 	ClassDB::bind_method(D_METHOD("invert"), &LinkedList::invert);
 
-	ClassDB::bind_method(D_METHOD("move_to_front"), &LinkedList::move_to_front);
-	ClassDB::bind_method(D_METHOD("move_to_back"), &LinkedList::move_to_back);
-	ClassDB::bind_method(D_METHOD("move_before"), &LinkedList::move_before);
+	ClassDB::bind_method(D_METHOD("move_to_front", "element"), &LinkedList::move_to_front);
+	ClassDB::bind_method(D_METHOD("move_to_back", "element"), &LinkedList::move_to_back);
+	ClassDB::bind_method(D_METHOD("move_before", "element", "before_element"), &LinkedList::move_before);
 
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "front"), "", "get_front");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "back"), "", "get_back");
