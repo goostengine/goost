@@ -24,7 +24,7 @@ bool ListData::erase(ListElement *p_I) {
 
 ListElement *LinkedList::push_back(const Variant &value) {
 	if (!_data) {
-		_data = memnew_allocator(ListData, DefaultAllocator);
+		_data = memnew(ListData);
 		_data->first = nullptr;
 		_data->last = nullptr;
 		_data->size_cache = 0;
@@ -57,12 +57,12 @@ void LinkedList::pop_back() {
 
 ListElement *LinkedList::push_front(const Variant &value) {
 	if (!_data) {
-		_data = memnew_allocator(ListData, DefaultAllocator);
+		_data = memnew(ListData);
 		_data->first = nullptr;
 		_data->last = nullptr;
 		_data->size_cache = 0;
 	}
-	ListElement *n = memnew_allocator(ListElement, DefaultAllocator);
+	ListElement *n = memnew(ListElement);
 	n->value = value;
 	n->prev_ptr = 0;
 	n->next_ptr = _data->first;
@@ -91,7 +91,7 @@ bool LinkedList::remove(ListElement *p_I) {
 	if (_data) {
 		bool ret = _data->erase(p_I);
 		if (_data->size_cache == 0) {
-			memdelete_allocator<ListData, DefaultAllocator>(_data);
+			memdelete(_data);
 			_data = nullptr;
 		}
 		return ret;
@@ -113,6 +113,56 @@ ListElement *LinkedList::find(const Variant &p_value) {
 bool LinkedList::erase(const Variant &p_value) {
 	ListElement *I = find(p_value);
 	return remove(I);
+}
+
+void LinkedList::swap(ListElement *p_A, ListElement *p_B) {
+	ERR_FAIL_COND(!p_A || !p_B);
+	ERR_FAIL_COND(p_A->data != _data);
+	ERR_FAIL_COND(p_B->data != _data);
+
+	if (p_A == p_B) {
+		return;
+	}
+	ListElement *A_prev = p_A->prev_ptr;
+	ListElement *A_next = p_A->next_ptr;
+	ListElement *B_prev = p_B->prev_ptr;
+	ListElement *B_next = p_B->next_ptr;
+
+	if (A_prev) {
+		A_prev->next_ptr = p_B;
+	} else {
+		_data->first = p_B;
+	}
+	if (B_prev) {
+		B_prev->next_ptr = p_A;
+	} else {
+		_data->first = p_A;
+	}
+	if (A_next) {
+		A_next->prev_ptr = p_B;
+	} else {
+		_data->last = p_B;
+	}
+	if (B_next) {
+		B_next->prev_ptr = p_A;
+	} else {
+		_data->last = p_A;
+	}
+	p_A->prev_ptr = A_next == p_B ? p_B : B_prev;
+	p_A->next_ptr = B_next == p_A ? p_B : B_next;
+	p_B->prev_ptr = B_next == p_A ? p_A : A_prev;
+	p_B->next_ptr = A_next == p_B ? p_A : A_next;
+}
+
+void LinkedList::invert() {
+	int s = size() / 2;
+	ListElement *F = front();
+	ListElement *B = back();
+	for (int i = 0; i < s; i++) {
+		SWAP(F->value, B->value);
+		F = F->next();
+		B = B->prev();
+	}
 }
 
 void LinkedList::move_to_back(ListElement *p_I) {
@@ -202,6 +252,9 @@ void LinkedList::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("clear"), &LinkedList::clear);
 	ClassDB::bind_method(D_METHOD("size"), &LinkedList::size);
 
+	ClassDB::bind_method(D_METHOD("swap"), &LinkedList::swap);
+	ClassDB::bind_method(D_METHOD("invert"), &LinkedList::invert);
+
 	ClassDB::bind_method(D_METHOD("move_to_front"), &LinkedList::move_to_front);
 	ClassDB::bind_method(D_METHOD("move_to_back"), &LinkedList::move_to_back);
 	ClassDB::bind_method(D_METHOD("move_before"), &LinkedList::move_before);
@@ -229,6 +282,6 @@ LinkedList::~LinkedList() {
 	clear();
 	if (_data) {
 		ERR_FAIL_COND(_data->size_cache);
-		memdelete_allocator<ListData, DefaultAllocator>(_data);
+		memdelete(_data);
 	}
 }
