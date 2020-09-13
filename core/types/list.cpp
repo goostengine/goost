@@ -87,6 +87,54 @@ void LinkedList::pop_front() {
 	}
 }
 
+ListElement *LinkedList::insert_after(ListElement *p_element, const Variant &p_value) {
+	CRASH_COND(p_element && (!_data || p_element->data != _data));
+
+	if (!p_element) {
+		return push_back(p_value);
+	}
+	ListElement *n = memnew(ListElement);
+	n->value = p_value;
+	n->prev_ptr = p_element;
+	n->next_ptr = p_element->next_ptr;
+	n->data = _data;
+
+	if (!p_element->next_ptr) {
+		_data->last = n;
+	} else {
+		p_element->next_ptr->prev_ptr = n;
+	}
+	p_element->next_ptr = n;
+
+	_data->size_cache++;
+
+	return n;
+}
+
+ListElement *LinkedList::insert_before(ListElement *p_element, const Variant &p_value) {
+	CRASH_COND(p_element && (!_data || p_element->data != _data));
+
+	if (!p_element) {
+		return push_back(p_value);
+	}
+	ListElement *n = memnew(ListElement);
+	n->value = p_value;
+	n->prev_ptr = p_element->prev_ptr;
+	n->next_ptr = p_element;
+	n->data = _data;
+
+	if (!p_element->prev_ptr) {
+		_data->first = n;
+	} else {
+		p_element->prev_ptr->next_ptr = n;
+	}
+	p_element->prev_ptr = n;
+
+	_data->size_cache++;
+
+	return n;
+}
+
 bool LinkedList::remove(ListElement *p_I) {
 	if (_data && p_I) {
 		bool ret = _data->erase(p_I);
@@ -244,6 +292,9 @@ void LinkedList::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("pop_back"), &LinkedList::pop_back);
 	ClassDB::bind_method(D_METHOD("push_front", "value"), &LinkedList::push_front);
 	ClassDB::bind_method(D_METHOD("pop_front"), &LinkedList::pop_front);
+
+	ClassDB::bind_method(D_METHOD("insert_after", "element", "value"), &LinkedList::insert_after);
+	ClassDB::bind_method(D_METHOD("insert_before", "element", "value"), &LinkedList::insert_before);
 
 	ClassDB::bind_method(D_METHOD("find", "value"), &LinkedList::find);
 	ClassDB::bind_method(D_METHOD("erase", "value"), &LinkedList::erase);

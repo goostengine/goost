@@ -75,6 +75,32 @@ func test_push_pop_front():
 	assert_null(list.front)
 
 
+func test_insert_before():
+	var elements = populate_test_data(list)
+	list.insert_before(elements[2], "Godot")
+	assert_eq(list.front.next.next.value, "Godot")
+	assert_eq(list.back.prev.prev.value, "Godot")
+
+
+func test_insert_before_front():
+	var elements = populate_test_data(list)
+	list.insert_before(list.front, "Godot")
+	assert_eq(list.front.value, "Godot")
+
+
+func test_insert_after():
+	var elements = populate_test_data(list)
+	list.insert_after(elements[2], "Godot")
+	assert_eq(list.front.next.next.next.value, "Godot")
+	assert_eq(list.back.prev.value, "Godot")
+
+
+func test_insert_after_back():
+	var elements = populate_test_data(list)
+	list.insert_after(list.back, "Godot")
+	assert_eq(list.back.value, "Godot")
+
+
 func test_size():
 	var elements = populate_test_data(list)
 	var original_size = elements.size()
