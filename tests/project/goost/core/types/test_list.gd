@@ -402,6 +402,12 @@ func test_move_before():
 	assert_eq(list.front.next.value, elements[3].value)
 
 
+func test_custom_iterators():
+	populate_test_data(list)
+	for element in list:
+		gut.p(element)
+
+
 func test_cleanup():
 	assert_eq(list.size(), 0)
 	var n = list.push_back("Goost")

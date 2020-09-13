@@ -53,6 +53,13 @@ protected:
 private:
 	ListData *_data = nullptr;
 
+protected:
+	// Custom iterator for scripting.
+	ListElement *_iter_current = nullptr;
+	Variant _iter_init(const Array &p_iter);
+	Variant _iter_next(const Array &p_iter);
+	Variant _iter_get(const Variant &p_iter);
+
 public:
 	ListElement *get_front() { return _data ? _data->first : 0; }
 	ListElement *get_back() { return _data ? _data->last : 0; }

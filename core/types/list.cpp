@@ -313,6 +313,24 @@ void LinkedList::_bind_methods() {
 
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "front"), "", "get_front");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "back"), "", "get_back");
+	
+	ClassDB::bind_method(D_METHOD("_iter_init"), &LinkedList::_iter_init);
+	ClassDB::bind_method(D_METHOD("_iter_get"), &LinkedList::_iter_get);
+	ClassDB::bind_method(D_METHOD("_iter_next"), &LinkedList::_iter_next);
+}
+
+Variant LinkedList::_iter_init(const Array &p_iter) {
+	_iter_current = get_front();
+	return _iter_current != nullptr;
+}
+
+Variant LinkedList::_iter_next(const Array &p_iter) {
+	_iter_current = _iter_current->get_next();
+	return _iter_current != nullptr;
+}
+
+Variant LinkedList::_iter_get(const Variant &p_iter) {
+	return _iter_current->get_value();
 }
 
 void LinkedList::clear() {
