@@ -88,7 +88,7 @@ void LinkedList::pop_front() {
 }
 
 bool LinkedList::remove(ListElement *p_I) {
-	if (_data) {
+	if (_data && p_I) {
 		bool ret = _data->erase(p_I);
 		if (_data->size_cache == 0) {
 			memdelete(_data);
