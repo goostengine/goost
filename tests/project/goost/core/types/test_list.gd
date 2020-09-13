@@ -35,18 +35,18 @@ func test_push_pop_back():
 
 	# Pop back
 	var v = null
-	v = list.back().value
+	v = list.back.value
 	list.pop_back()
 	assert_eq(v, Color.blue)
-	v = list.back().value
+	v = list.back.value
 	list.pop_back()
 	assert_eq(v, 37)
-	v = list.back().value
+	v = list.back.value
 	list.pop_back()
 	assert_eq(v, "Goost")
 
-	assert_null(list.back())
-	assert_null(list.front())
+	assert_null(list.back)
+	assert_null(list.front)
 
 
 func test_push_pop_front():
@@ -61,18 +61,18 @@ func test_push_pop_front():
 
 	# Pop front
 	var v = null
-	v = list.front().value
+	v = list.front.value
 	list.pop_front()
 	assert_eq(v, Color.blue)
-	v = list.front().value
+	v = list.front.value
 	list.pop_front()
 	assert_eq(v, 37)
-	v = list.front().value
+	v = list.front.value
 	list.pop_front()
 	assert_eq(v, "Goost")
 
-	assert_null(list.back())
-	assert_null(list.front())
+	assert_null(list.back)
+	assert_null(list.front)
 
 
 func test_size():
@@ -83,12 +83,12 @@ func test_size():
 
 func test_front():
 	populate_test_data(list)
-	assert_eq(list.front().value, "Goost")
+	assert_eq(list.front.value, "Goost")
 
 
 func test_back():
 	populate_test_data(list)
-	assert_eq(list.back().value, Color.blue)
+	assert_eq(list.back.value, Color.blue)
 
 
 func test_find():
@@ -117,11 +117,11 @@ func test_remove():
 
 func test_empty():
 	populate_test_data(list)
-	var n: ListElement = list.front()
+	var n: ListElement = list.front
 	while n:
 		var removed = list.remove(n)
 		assert_true(removed)
-		n = list.front()
+		n = list.front
 	assert_eq(list.size(), 0)
 
 
@@ -136,17 +136,17 @@ func test_clear():
 
 func test_next():
 	populate_test_data(list)
-	var n = list.front()
+	var n = list.front
 	assert_eq(n.value, "Goost")
-	n = n.next()
+	n = n.next
 	assert_eq(n.value, 37)
 
 
 func test_prev():
 	populate_test_data(list)
-	var n = list.back()
+	var n = list.back
 	assert_eq(n.value, Color.blue)
-	n = n.prev()
+	n = n.prev
 	assert_eq(n.value, Vector2.ONE)
 
 
@@ -154,109 +154,109 @@ func test_swap_adjacent_front_and_back():
 	var nodes = populate_test_data_integers(list, 2)
 	list.swap(nodes[0], nodes[1])
 
-	assert_null(list.front().prev())
-	assert_ne(list.front(), list.front().next())
+	assert_null(list.front.prev)
+	assert_ne(list.front, list.front.next)
 
-	assert_eq(list.front(), nodes[1])
-	assert_eq(list.back(), nodes[0])
+	assert_eq(list.front, nodes[1])
+	assert_eq(list.back, nodes[0])
 
-	assert_null(list.back().next())
-	assert_ne(list.back(), list.back().prev())
+	assert_null(list.back.next)
+	assert_ne(list.back, list.back.prev)
 
 
 func test_swap_0_1__first_adjacent_pair():
 	var nodes = populate_test_data_integers(list, 4)
 	list.swap(nodes[0], nodes[1])
 
-	assert_null(list.front().prev())
-	assert_ne(list.front(), list.front().next())
+	assert_null(list.front.prev)
+	assert_ne(list.front, list.front.next)
 
-	assert_eq(list.front(), nodes[1])
-	assert_eq(list.front().next(), nodes[0])
-	assert_eq(list.back().prev(), nodes[2])
-	assert_eq(list.back(), nodes[3])
+	assert_eq(list.front, nodes[1])
+	assert_eq(list.front.next, nodes[0])
+	assert_eq(list.back.prev, nodes[2])
+	assert_eq(list.back, nodes[3])
 
-	assert_null(list.back().next())
-	assert_ne(list.back(), list.back().prev())
+	assert_null(list.back.next)
+	assert_ne(list.back, list.back.prev)
 
 
 func test_swap_1_2__middle_adjacent_pair():
 	var nodes = populate_test_data_integers(list, 4)
 	list.swap(nodes[1], nodes[2])
 
-	assert_null(list.front().prev())
+	assert_null(list.front.prev)
 
-	assert_eq(list.front(), nodes[0])
-	assert_eq(list.front().next(), nodes[2])
-	assert_eq(list.back().prev(), nodes[1])
-	assert_eq(list.back(), nodes[3])
+	assert_eq(list.front, nodes[0])
+	assert_eq(list.front.next, nodes[2])
+	assert_eq(list.back.prev, nodes[1])
+	assert_eq(list.back, nodes[3])
 
-	assert_null(list.back().next())
+	assert_null(list.back.next)
 
 
 func test_swap_2_3__last_adjacent_pair():
 	var nodes = populate_test_data_integers(list, 4)
 	list.swap(nodes[2], nodes[3])
 
-	assert_null(list.front().prev())
+	assert_null(list.front.prev)
 
-	assert_eq(list.front(), nodes[0])
-	assert_eq(list.front().next(), nodes[1])
-	assert_eq(list.back().prev(), nodes[3])
-	assert_eq(list.back(), nodes[2])
+	assert_eq(list.front, nodes[0])
+	assert_eq(list.front.next, nodes[1])
+	assert_eq(list.back.prev, nodes[3])
+	assert_eq(list.back, nodes[2])
 
-	assert_null(list.back().next())
+	assert_null(list.back.next)
 
 
 func test_swap_0_2__first_cross_pair():
 	var nodes = populate_test_data_integers(list, 4)
 	list.swap(nodes[0], nodes[2])
 
-	assert_null(list.front().prev())
+	assert_null(list.front.prev)
 
-	assert_eq(list.front(), nodes[2])
-	assert_eq(list.front().next(), nodes[1])
-	assert_eq(list.back().prev(), nodes[0])
-	assert_eq(list.back(), nodes[3])
+	assert_eq(list.front, nodes[2])
+	assert_eq(list.front.next, nodes[1])
+	assert_eq(list.back.prev, nodes[0])
+	assert_eq(list.back, nodes[3])
 
-	assert_null(list.back().next())
+	assert_null(list.back.next)
 
 
 func test_swap_1_3__last_cross_pair():
 	var nodes = populate_test_data_integers(list, 4)
 	list.swap(nodes[1], nodes[3])
 
-	assert_null(list.front().prev())
+	assert_null(list.front.prev)
 
-	assert_eq(list.front(), nodes[0])
-	assert_eq(list.front().next(), nodes[3])
-	assert_eq(list.back().prev(), nodes[2])
-	assert_eq(list.back(), nodes[1])
+	assert_eq(list.front, nodes[0])
+	assert_eq(list.front.next, nodes[3])
+	assert_eq(list.back.prev, nodes[2])
+	assert_eq(list.back, nodes[1])
 
-	assert_null(list.back().next())
+	assert_null(list.back.next)
 
 
 func test_swap_0_3__front_and_back():
 	var nodes = populate_test_data_integers(list, 4)
 	list.swap(nodes[0], nodes[3])
 
-	assert_null(list.front().prev())
+	assert_null(list.front.prev)
 
-	assert_eq(list.front(), nodes[3])
-	assert_eq(list.front().next(), nodes[1])
-	assert_eq(list.back().prev(), nodes[2])
-	assert_eq(list.back(), nodes[0])
+	assert_eq(list.front, nodes[3])
+	assert_eq(list.front.next, nodes[1])
+	assert_eq(list.back.prev, nodes[2])
+	assert_eq(list.back, nodes[0])
 
-	assert_null(list.back().next())
+	assert_null(list.back.next)
 
 
 func test_swap_adjacent_front_back_reverse():
 	var nodes = populate_test_data_integers(list, 2)
 	list.swap(nodes[1], nodes[0])
-	var it = list.front()
+	var it = list.front
 	while it:
 		var prev_it = it
-		it = it.next()
+		it = it.next
 		if it == prev_it:
 			assert_true(false, "Infinite loop detected.")
 			break
@@ -265,10 +265,10 @@ func test_swap_adjacent_front_back_reverse():
 func test_swap_adjacent_middle_reverse():
 	var nodes = populate_test_data_integers(list, 10)
 	list.swap(nodes[5], nodes[4])
-	var it = list.front()
+	var it = list.front
 	while it:
 		var prev_it = it
-		it = it.next()
+		it = it.next
 		if it == prev_it:
 			assert_true(false, "Infinite loop detected.")
 			break
@@ -289,16 +289,16 @@ func test_swap_random():
 		var num_elements = 0
 
 		# Fully traversable after swap?
-		var it = list.front()
+		var it = list.front
 		while it:
 			num_elements += 1
 			var prev_it = it
-			it = it.next()
+			it = it.next
 			if it == prev_it:
 				assert_true(false, "Infinite loop detected.")
 				break
 
-		# Even if traversed, 
+		# Even if traversed,
 		# we should not lose anything in the process.
 		if num_elements != size:
 			assert_true(false, "Element count mismatch.")
@@ -314,8 +314,8 @@ func test_swap_front_and_back_2_elements():
 
 	list.swap(a, b)
 
-	assert_eq(list.front().value, Color.blue)
-	assert_eq(list.back().value, "Goost")
+	assert_eq(list.front.value, Color.blue)
+	assert_eq(list.back.value, "Goost")
 
 
 func test_swap_front_and_back_3_elements():
@@ -325,8 +325,8 @@ func test_swap_front_and_back_3_elements():
 
 	list.swap(a, c)
 
-	assert_eq(list.front().value, Vector2.ONE)
-	assert_eq(list.back().value, "Goost")
+	assert_eq(list.front.value, Vector2.ONE)
+	assert_eq(list.back.value, "Goost")
 
 
 func test_swap_front_and_back_4_elements():
@@ -337,43 +337,43 @@ func test_swap_front_and_back_4_elements():
 
 	list.swap(a, d)
 
-	assert_eq(list.front().value, Color.blue)
-	assert_eq(list.back().value, "Goost")
+	assert_eq(list.front.value, Color.blue)
+	assert_eq(list.back.value, "Goost")
 
 
 func test_swap_self():
 	var a = list.push_back("Goost")
 	list.swap(a, a)
-	assert_eq(list.front().value, "Goost")
-	assert_eq(list.back().value, "Goost")
+	assert_eq(list.front.value, "Goost")
+	assert_eq(list.back.value, "Goost")
 
 
 func test_invert():
 	populate_test_data(list)
 	list.invert()
-	assert_eq(list.front().value, Color.blue)
-	assert_eq(list.front().next().value, Vector2.ONE)
-	assert_eq(list.back().prev().value, 37)
-	assert_eq(list.back().value, "Goost")
+	assert_eq(list.front.value, Color.blue)
+	assert_eq(list.front.next.value, Vector2.ONE)
+	assert_eq(list.back.prev.value, 37)
+	assert_eq(list.back.value, "Goost")
 
 
 func test_move_to_front():
 	var elements = populate_test_data(list)
 	list.move_to_front(elements[2])
-	assert_eq(list.front().value, Vector2.ONE)
+	assert_eq(list.front.value, Vector2.ONE)
 
 
 func test_move_to_back():
 	var elements = populate_test_data(list)
 	list.move_to_back(elements[0])
-	assert_eq(list.back().value, "Goost")
+	assert_eq(list.back.value, "Goost")
 
 
 func test_move_before():
 	var elements = populate_test_data(list)
 	assert_eq(elements[3].value, Color.blue)
 	list.move_before(elements[3], elements[1])
-	assert_eq(list.front().next().value, elements[3].value)
+	assert_eq(list.front.next.value, elements[3].value)
 
 
 func test_cleanup():

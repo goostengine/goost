@@ -33,8 +33,8 @@ private:
 	ListData *data = nullptr;
 
 public:
-	ListElement *next() { return next_ptr; }
-	ListElement *prev() { return prev_ptr; }
+	ListElement *get_next() { return next_ptr; }
+	ListElement *get_prev() { return prev_ptr; }
 
 	Variant get_value() { return value; }
 	void set_value(const Variant &p_value) { value = p_value; }
@@ -54,8 +54,9 @@ private:
 	ListData *_data = nullptr;
 
 public:
-	ListElement *back() { return _data ? _data->last : 0; }
-	ListElement *front() { return _data ? _data->first : 0; }
+	ListElement *get_front() { return _data ? _data->first : 0; }
+	ListElement *get_back() { return _data ? _data->last : 0; }
+
 	ListElement *push_back(const Variant &value);
 	void pop_back();
 	ListElement *push_front(const Variant &value);
@@ -144,7 +145,7 @@ public:
 		ListElement **aux_buffer = memnew_arr(ListElement *, s);
 
 		int idx = 0;
-		for (ListElement *E = front(); E; E = E->next_ptr) {
+		for (ListElement *E = get_front(); E; E = E->next_ptr) {
 			aux_buffer[idx] = E;
 			idx++;
 		}
