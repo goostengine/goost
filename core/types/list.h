@@ -89,7 +89,7 @@ public:
 		if (size() < 2)
 			return;
 
-		ListElement *from = front();
+		ListElement *from = get_front();
 		ListElement *current = from;
 		ListElement *to = from;
 
