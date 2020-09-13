@@ -1,5 +1,9 @@
 blank_issues_enabled: false
 
+contact_links:
   - name: Goost documentation repository
     url: https://github.com/goostengine/goost-docs
     about: Please report issues with documentation on the Goost documentation repository, not here.
+
+  - name: Goost Discord channel
+    url: https://discord.gg/w6jBZnG
