@@ -69,6 +69,8 @@ public:
 	ListElement *push_front(const Variant &value);
 	void pop_front();
 
+	Array get_elements();
+
 	ListElement *insert_after(ListElement *p_element, const Variant &p_value);
 	ListElement *insert_before(ListElement *p_element, const Variant &p_value);
 

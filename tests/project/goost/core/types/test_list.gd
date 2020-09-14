@@ -75,6 +75,17 @@ func test_push_pop_front():
 	assert_null(list.front)
 
 
+func test_get_elements():
+	var test_elements = populate_test_data(list)
+	for element in list.get_elements():
+		gut.p(element)
+	var elements = list.get_elements()
+	assert_eq(elements[0], test_elements[0])
+	assert_eq(elements[1], test_elements[1])
+	assert_eq(elements[2], test_elements[2])
+	assert_eq(elements[3], test_elements[3])
+
+
 func test_insert_before():
 	var elements = populate_test_data(list)
 	list.insert_before(elements[2], "Godot")

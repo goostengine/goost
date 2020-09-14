@@ -87,6 +87,16 @@ void LinkedList::pop_front() {
 	}
 }
 
+Array LinkedList::get_elements() {
+	Array elements;
+	ListElement *it = get_front();
+	while (it) {
+		elements.push_back(it);
+		it = it->get_next();
+	}
+	return elements;
+}
+
 ListElement *LinkedList::insert_after(ListElement *p_element, const Variant &p_value) {
 	CRASH_COND(p_element && (!_data || p_element->data != _data));
 
@@ -292,6 +302,8 @@ void LinkedList::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("pop_back"), &LinkedList::pop_back);
 	ClassDB::bind_method(D_METHOD("push_front", "value"), &LinkedList::push_front);
 	ClassDB::bind_method(D_METHOD("pop_front"), &LinkedList::pop_front);
+
+	ClassDB::bind_method(D_METHOD("get_elements"), &LinkedList::get_elements);
 
 	ClassDB::bind_method(D_METHOD("insert_after", "element", "value"), &LinkedList::insert_after);
 	ClassDB::bind_method(D_METHOD("insert_before", "element", "value"), &LinkedList::insert_before);
