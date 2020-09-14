@@ -435,6 +435,32 @@ func test_custom_iterators():
 		gut.p(node)
 
 
+func tets_sort():
+	var n: ListNode
+	n = list.push_back("B")
+	assert_eq(n.value, "B")
+	n = list.push_back("D")
+	assert_eq(n.value, "D")
+	n = list.push_back("A")
+	assert_eq(n.value, "A")
+	n = list.push_back("C")
+	assert_eq(n.value, "C")
+
+	list.sort()
+
+	assert_eq(list.front.value, "A")
+	assert_eq(list.front.next.value, "B")
+	assert_eq(list.back.prev.value, "C")
+	assert_eq(list.back.value, "D")
+
+	var abcd = ["A", "B", "C", "D"]
+	var abcd_list = list.get_nodes()
+
+	for i in 4:
+		gut.p(abcd_list[i])
+		assert_eq(abcd[i], abcd_list[i])
+
+
 func test_cleanup():
 	assert_eq(list.size(), 0)
 	var n = list.push_back("Goost")

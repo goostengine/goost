@@ -96,9 +96,9 @@ public:
 
 	template <class C>
 	void sort_custom_inplace() {
-		if (size() < 2)
+		if (size() < 2) {
 			return;
-
+		}
 		ListNode *from = get_front();
 		ListNode *current = from;
 		ListNode *to = from;
@@ -117,21 +117,20 @@ public:
 					current->next_ptr = find->next_ptr;
 					find = find->next_ptr;
 				}
-
-				if (current->prev_ptr)
+				if (current->prev_ptr) {
 					current->prev_ptr->next_ptr = current;
-				else
+				} else {
 					from = current;
-
-				if (current->next_ptr)
+				}
+				if (current->next_ptr) {
 					current->next_ptr->prev_ptr = current;
-				else
+				} else {
 					to = current;
+				}
 			} else {
 				current->prev_ptr = nullptr;
 				current->next_ptr = nullptr;
 			}
-
 			current = next;
 		}
 		_data->first = from;
@@ -149,9 +148,9 @@ public:
 	template <class C>
 	void sort_custom() {
 		int s = size();
-		if (s < 2)
+		if (s < 2) {
 			return;
-
+		}
 		ListNode **aux_buffer = memnew_arr(ListNode *, s);
 
 		int idx = 0;
@@ -159,7 +158,6 @@ public:
 			aux_buffer[idx] = E;
 			idx++;
 		}
-
 		SortArray<ListNode *, AuxiliaryComparator<C>> sort;
 		sort.sort(aux_buffer, s);
 
@@ -175,7 +173,6 @@ public:
 			aux_buffer[i]->prev_ptr = aux_buffer[i - 1];
 			aux_buffer[i]->next_ptr = aux_buffer[i + 1];
 		}
-
 		memdelete_arr(aux_buffer);
 	}
 	LinkedList() {}

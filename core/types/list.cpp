@@ -328,6 +328,8 @@ void LinkedList::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("move_to_back", "node"), &LinkedList::move_to_back);
 	ClassDB::bind_method(D_METHOD("move_before", "node", "before_node"), &LinkedList::move_before);
 
+	ClassDB::bind_method(D_METHOD("sort"), &LinkedList::sort);
+
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "front"), "", "get_front");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "back"), "", "get_back");
 	
