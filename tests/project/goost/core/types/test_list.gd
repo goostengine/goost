@@ -8,24 +8,24 @@ func before_each():
 
 
 func populate_test_data(p_list: LinkedList):
-	var elements = []
-	elements.append(p_list.push_back("Goost"))
-	elements.append(p_list.push_back(37))
-	elements.append(p_list.push_back(Vector2.ONE))
-	elements.append(p_list.push_back(Color.blue))
-	return elements
+	var nodes = []
+	nodes.append(p_list.push_back("Goost"))
+	nodes.append(p_list.push_back(37))
+	nodes.append(p_list.push_back(Vector2.ONE))
+	nodes.append(p_list.push_back(Color.blue))
+	return nodes
 
 
-func populate_test_data_integers(p_list: LinkedList, p_num_elements: int):
-	var elements = []
-	for i in p_num_elements:
-		elements.append(p_list.push_back(i))
-	return elements
+func populate_test_data_integers(p_list: LinkedList, p_num_nodes: int):
+	var nodes = []
+	for i in p_num_nodes:
+		nodes.append(p_list.push_back(i))
+	return nodes
 
 
 func test_push_pop_back():
 	# Push back
-	var n: ListElement
+	var n: ListNode
 	n = list.push_back("Goost")
 	assert_eq(n.value, "Goost")
 	n = list.push_back(37)
@@ -51,7 +51,7 @@ func test_push_pop_back():
 
 func test_push_pop_front():
 	# Push front
-	var n: ListElement
+	var n: ListNode
 	n = list.push_front("Goost")
 	assert_eq(n.value, "Goost")
 	n = list.push_front(37)
@@ -75,50 +75,62 @@ func test_push_pop_front():
 	assert_null(list.front)
 
 
+func test_get_nodes():
+	var test_nodes = populate_test_data(list)
+	for node in list.get_nodes():
+		gut.p(node)
+	var nodes = list.get_nodes()
+	assert_eq(nodes[0], test_nodes[0])
+	assert_eq(nodes[1], test_nodes[1])
+	assert_eq(nodes[2], test_nodes[2])
+	assert_eq(nodes[3], test_nodes[3])
+
+
 func test_get_elements():
-	var test_elements = populate_test_data(list)
-	for element in list.get_elements():
-		gut.p(element)
-	var elements = list.get_elements()
-	assert_eq(elements[0], test_elements[0])
-	assert_eq(elements[1], test_elements[1])
-	assert_eq(elements[2], test_elements[2])
-	assert_eq(elements[3], test_elements[3])
+	# Alias for `get_nodes`.
+	var test_nodes = populate_test_data(list)
+	for node in list.get_elements():
+		gut.p(node)
+	var nodes = list.get_elements()
+	assert_eq(nodes[0], test_nodes[0])
+	assert_eq(nodes[1], test_nodes[1])
+	assert_eq(nodes[2], test_nodes[2])
+	assert_eq(nodes[3], test_nodes[3])
 
 
 func test_insert_before():
-	var elements = populate_test_data(list)
-	var n = list.insert_before(elements[2], "Godot")
+	var nodes = populate_test_data(list)
+	var n = list.insert_before(nodes[2], "Godot")
 	assert_eq(n.value, "Godot")
 	assert_eq(list.front.next.next.value, "Godot")
 	assert_eq(list.back.prev.prev.value, "Godot")
 
 
 func test_insert_before_front():
-	var _elements = populate_test_data(list)
+	var _nodes = populate_test_data(list)
 	var n = list.insert_before(list.front, "Godot")
 	assert_eq(n.value, "Godot")
 	assert_eq(list.front.value, "Godot")
 
 
 func test_insert_after():
-	var elements = populate_test_data(list)
-	var n = list.insert_after(elements[2], "Godot")
+	var nodes = populate_test_data(list)
+	var n = list.insert_after(nodes[2], "Godot")
 	assert_eq(n.value, "Godot")
 	assert_eq(list.front.next.next.next.value, "Godot")
 	assert_eq(list.back.prev.value, "Godot")
 
 
 func test_insert_after_back():
-	var _elements = populate_test_data(list)
+	var _nodes = populate_test_data(list)
 	var n = list.insert_after(list.back, "Godot")
 	assert_eq(n.value, "Godot")
 	assert_eq(list.back.value, "Godot")
 
 
 func test_size():
-	var elements = populate_test_data(list)
-	var original_size = elements.size()
+	var nodes = populate_test_data(list)
+	var original_size = nodes.size()
 	assert_eq(list.size(), original_size)
 
 
@@ -138,8 +150,8 @@ func test_find():
 
 
 func test_erase():
-	var elements = populate_test_data(list)
-	var original_size = elements.size()
+	var nodes = populate_test_data(list)
+	var original_size = nodes.size()
 	var erased = list.erase(Color.blue)
 	assert_true(erased)
 	assert_eq(list.size(), original_size - 1)
@@ -148,8 +160,8 @@ func test_erase():
 
 
 func test_remove():
-	var elements = populate_test_data(list)
-	var original_size = elements.size()
+	var nodes = populate_test_data(list)
+	var original_size = nodes.size()
 	var removed = list.remove(list.find("Goost"))
 	assert_true(removed)
 	assert_eq(list.size(), original_size - 1)
@@ -158,7 +170,7 @@ func test_remove():
 
 func test_empty():
 	populate_test_data(list)
-	var n: ListElement = list.front
+	var n: ListNode = list.front
 	while n:
 		var removed = list.remove(n)
 		assert_true(removed)
@@ -327,12 +339,12 @@ func test_swap_random():
 		var vb = b.value
 		list.swap(a, b)
 
-		var num_elements = 0
+		var num_nodes = 0
 
 		# Fully traversable after swap?
 		var it = list.front
 		while it:
-			num_elements += 1
+			num_nodes += 1
 			var prev_it = it
 			it = it.next
 			if it == prev_it:
@@ -341,15 +353,15 @@ func test_swap_random():
 
 		# Even if traversed,
 		# we should not lose anything in the process.
-		if num_elements != size:
-			assert_true(false, "Element count mismatch.")
+		if num_nodes != size:
+			assert_true(false, "Node count mismatch.")
 			break
 
 		assert_eq(va, a.value)
 		assert_eq(vb, b.value)
 
 
-func test_swap_front_and_back_2_elements():
+func test_swap_front_and_back_2_nodes():
 	var a = list.push_back("Goost")
 	var b = list.push_back(Color.blue)
 
@@ -359,7 +371,7 @@ func test_swap_front_and_back_2_elements():
 	assert_eq(list.back.value, "Goost")
 
 
-func test_swap_front_and_back_3_elements():
+func test_swap_front_and_back_3_nodes():
 	var a = list.push_back("Goost")
 	var _b = list.push_back(37)
 	var c = list.push_back(Vector2.ONE)
@@ -370,7 +382,7 @@ func test_swap_front_and_back_3_elements():
 	assert_eq(list.back.value, "Goost")
 
 
-func test_swap_front_and_back_4_elements():
+func test_swap_front_and_back_4_nodes():
 	var a = list.push_back("Goost")
 	var _b = list.push_back(37)
 	var _c = list.push_back(Vector2.ONE)
@@ -399,28 +411,28 @@ func test_invert():
 
 
 func test_move_to_front():
-	var elements = populate_test_data(list)
-	list.move_to_front(elements[2])
+	var nodes = populate_test_data(list)
+	list.move_to_front(nodes[2])
 	assert_eq(list.front.value, Vector2.ONE)
 
 
 func test_move_to_back():
-	var elements = populate_test_data(list)
-	list.move_to_back(elements[0])
+	var nodes = populate_test_data(list)
+	list.move_to_back(nodes[0])
 	assert_eq(list.back.value, "Goost")
 
 
 func test_move_before():
-	var elements = populate_test_data(list)
-	assert_eq(elements[3].value, Color.blue)
-	list.move_before(elements[3], elements[1])
-	assert_eq(list.front.next.value, elements[3].value)
+	var nodes = populate_test_data(list)
+	assert_eq(nodes[3].value, Color.blue)
+	list.move_before(nodes[3], nodes[1])
+	assert_eq(list.front.next.value, nodes[3].value)
 
 
 func test_custom_iterators():
 	populate_test_data(list)
-	for element in list:
-		gut.p(element)
+	for node in list:
+		gut.p(node)
 
 
 func test_cleanup():

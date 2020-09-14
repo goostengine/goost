@@ -1,6 +1,6 @@
 #include "list.h"
 
-bool ListData::erase(ListElement *p_I) {
+bool ListData::erase(ListNode *p_I) {
 	ERR_FAIL_COND_V(!p_I, false);
 	ERR_FAIL_COND_V(p_I->data != this, false);
 
@@ -22,14 +22,14 @@ bool ListData::erase(ListElement *p_I) {
 	return true;
 }
 
-ListElement *LinkedList::push_back(const Variant &value) {
+ListNode *LinkedList::push_back(const Variant &value) {
 	if (!_data) {
 		_data = memnew(ListData);
 		_data->first = nullptr;
 		_data->last = nullptr;
 		_data->size_cache = 0;
 	}
-	ListElement *n = memnew(ListElement);
+	ListNode *n = memnew(ListNode);
 	n->value = value;
 
 	n->prev_ptr = _data->last;
@@ -55,14 +55,14 @@ void LinkedList::pop_back() {
 	}
 }
 
-ListElement *LinkedList::push_front(const Variant &value) {
+ListNode *LinkedList::push_front(const Variant &value) {
 	if (!_data) {
 		_data = memnew(ListData);
 		_data->first = nullptr;
 		_data->last = nullptr;
 		_data->size_cache = 0;
 	}
-	ListElement *n = memnew(ListElement);
+	ListNode *n = memnew(ListNode);
 	n->value = value;
 	n->prev_ptr = 0;
 	n->next_ptr = _data->first;
@@ -87,65 +87,69 @@ void LinkedList::pop_front() {
 	}
 }
 
-Array LinkedList::get_elements() {
-	Array elements;
-	ListElement *it = get_front();
+Array LinkedList::get_nodes() {
+	Array nodes;
+	ListNode *it = get_front();
 	while (it) {
-		elements.push_back(it);
+		nodes.push_back(it);
 		it = it->get_next();
 	}
-	return elements;
+	return nodes;
 }
 
-ListElement *LinkedList::insert_after(ListElement *p_element, const Variant &p_value) {
-	CRASH_COND(p_element && (!_data || p_element->data != _data));
+Array LinkedList::get_elements() {
+	return get_nodes();
+}
 
-	if (!p_element) {
+ListNode *LinkedList::insert_after(ListNode *p_node, const Variant &p_value) {
+	CRASH_COND(p_node && (!_data || p_node->data != _data));
+
+	if (!p_node) {
 		return push_back(p_value);
 	}
-	ListElement *n = memnew(ListElement);
+	ListNode *n = memnew(ListNode);
 	n->value = p_value;
-	n->prev_ptr = p_element;
-	n->next_ptr = p_element->next_ptr;
+	n->prev_ptr = p_node;
+	n->next_ptr = p_node->next_ptr;
 	n->data = _data;
 
-	if (!p_element->next_ptr) {
+	if (!p_node->next_ptr) {
 		_data->last = n;
 	} else {
-		p_element->next_ptr->prev_ptr = n;
+		p_node->next_ptr->prev_ptr = n;
 	}
-	p_element->next_ptr = n;
+	p_node->next_ptr = n;
 
 	_data->size_cache++;
 
 	return n;
 }
 
-ListElement *LinkedList::insert_before(ListElement *p_element, const Variant &p_value) {
-	CRASH_COND(p_element && (!_data || p_element->data != _data));
+ListNode *LinkedList::insert_before(ListNode *p_node, const Variant &p_value) {
+	CRASH_COND(p_node && (!_data || p_node->data != _data));
 
-	if (!p_element) {
+	if (!p_node) {
 		return push_back(p_value);
 	}
-	ListElement *n = memnew(ListElement);
+	ListNode *n = memnew(ListNode);
 	n->value = p_value;
-	n->prev_ptr = p_element->prev_ptr;
-	n->next_ptr = p_element;
+	n->prev_ptr = p_node->prev_ptr;
+	n->next_ptr = p_node;
 	n->data = _data;
 
-	if (!p_element->prev_ptr) {
+	if (!p_node->prev_ptr) {
 		_data->first = n;
 	} else {
-		p_element->prev_ptr->next_ptr = n;
+		p_node->prev_ptr->next_ptr = n;
 	}
-	p_element->prev_ptr = n;
+	p_node->prev_ptr = n;
 
 	_data->size_cache++;
 
 	return n;
 }
 
-bool LinkedList::remove(ListElement *p_I) {
+bool LinkedList::remove(ListNode *p_I) {
 	if (_data && p_I) {
 		bool ret = _data->erase(p_I);
 		if (_data->size_cache == 0) {
@@ -157,8 +161,8 @@ bool LinkedList::remove(ListElement *p_I) {
 	return false;
 };
 
-ListElement *LinkedList::find(const Variant &p_value) {
-	ListElement *it = get_front();
+ListNode *LinkedList::find(const Variant &p_value) {
+	ListNode *it = get_front();
 	while (it) {
 		if (it->value == p_value) {
 			return it;
@@ -169,11 +173,11 @@ ListElement *LinkedList::find(const Variant &p_value) {
 }
 
 bool LinkedList::erase(const Variant &p_value) {
-	ListElement *I = find(p_value);
+	ListNode *I = find(p_value);
 	return remove(I);
 }
 
-void LinkedList::swap(ListElement *p_A, ListElement *p_B) {
+void LinkedList::swap(ListNode *p_A, ListNode *p_B) {
 	ERR_FAIL_COND(!p_A || !p_B);
 	ERR_FAIL_COND(p_A->data != _data);
 	ERR_FAIL_COND(p_B->data != _data);
@@ -181,10 +185,10 @@ void LinkedList::swap(ListElement *p_A, ListElement *p_B) {
 	if (p_A == p_B) {
 		return;
 	}
-	ListElement *A_prev = p_A->prev_ptr;
-	ListElement *A_next = p_A->next_ptr;
-	ListElement *B_prev = p_B->prev_ptr;
-	ListElement *B_next = p_B->next_ptr;
+	ListNode *A_prev = p_A->prev_ptr;
+	ListNode *A_next = p_A->next_ptr;
+	ListNode *B_prev = p_B->prev_ptr;
+	ListNode *B_next = p_B->next_ptr;
 
 	if (A_prev) {
 		A_prev->next_ptr = p_B;
@@ -214,8 +218,8 @@ void LinkedList::swap(ListElement *p_A, ListElement *p_B) {
 
 void LinkedList::invert() {
 	int s = size() / 2;
-	ListElement *F = get_front();
-	ListElement *B = get_back();
+	ListNode *F = get_front();
+	ListNode *B = get_back();
 	for (int i = 0; i < s; i++) {
 		SWAP(F->value, B->value);
 		F = F->get_next();
@@ -223,7 +227,7 @@ void LinkedList::invert() {
 	}
 }
 
-void LinkedList::move_to_back(ListElement *p_I) {
+void LinkedList::move_to_back(ListNode *p_I) {
 	ERR_FAIL_COND(p_I->data != _data);
 	if (!p_I->next_ptr) {
 		return;
@@ -245,7 +249,7 @@ void LinkedList::move_to_back(ListElement *p_I) {
 	_data->last = p_I;
 }
 
-void LinkedList::move_to_front(ListElement *p_I) {
+void LinkedList::move_to_front(ListNode *p_I) {
 	ERR_FAIL_COND(p_I->data != _data);
 	if (!p_I->prev_ptr) {
 		return;
@@ -267,7 +271,7 @@ void LinkedList::move_to_front(ListElement *p_I) {
 	_data->first = p_I;
 }
 
-void LinkedList::move_before(ListElement *p_A, ListElement *p_B) {
+void LinkedList::move_before(ListNode *p_A, ListNode *p_B) {
 	if (p_A->prev_ptr) {
 		p_A->prev_ptr->next_ptr = p_A->next_ptr;
 	} else {
@@ -303,25 +307,26 @@ void LinkedList::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("push_front", "value"), &LinkedList::push_front);
 	ClassDB::bind_method(D_METHOD("pop_front"), &LinkedList::pop_front);
 
+	ClassDB::bind_method(D_METHOD("get_nodes"), &LinkedList::get_nodes);
 	ClassDB::bind_method(D_METHOD("get_elements"), &LinkedList::get_elements);
 
-	ClassDB::bind_method(D_METHOD("insert_after", "element", "value"), &LinkedList::insert_after);
-	ClassDB::bind_method(D_METHOD("insert_before", "element", "value"), &LinkedList::insert_before);
+	ClassDB::bind_method(D_METHOD("insert_after", "node", "value"), &LinkedList::insert_after);
+	ClassDB::bind_method(D_METHOD("insert_before", "node", "value"), &LinkedList::insert_before);
 
 	ClassDB::bind_method(D_METHOD("find", "value"), &LinkedList::find);
 	ClassDB::bind_method(D_METHOD("erase", "value"), &LinkedList::erase);
-	ClassDB::bind_method(D_METHOD("remove", "element"), &LinkedList::remove);
+	ClassDB::bind_method(D_METHOD("remove", "node"), &LinkedList::remove);
 
 	ClassDB::bind_method(D_METHOD("empty"), &LinkedList::empty);
 	ClassDB::bind_method(D_METHOD("clear"), &LinkedList::clear);
 	ClassDB::bind_method(D_METHOD("size"), &LinkedList::size);
 
-	ClassDB::bind_method(D_METHOD("swap", "element_A", "element_B"), &LinkedList::swap);
+	ClassDB::bind_method(D_METHOD("swap", "node_A", "node_B"), &LinkedList::swap);
 	ClassDB::bind_method(D_METHOD("invert"), &LinkedList::invert);
 
-	ClassDB::bind_method(D_METHOD("move_to_front", "element"), &LinkedList::move_to_front);
-	ClassDB::bind_method(D_METHOD("move_to_back", "element"), &LinkedList::move_to_back);
-	ClassDB::bind_method(D_METHOD("move_before", "element", "before_element"), &LinkedList::move_before);
+	ClassDB::bind_method(D_METHOD("move_to_front", "node"), &LinkedList::move_to_front);
+	ClassDB::bind_method(D_METHOD("move_to_back", "node"), &LinkedList::move_to_back);
+	ClassDB::bind_method(D_METHOD("move_before", "node", "before_node"), &LinkedList::move_before);
 
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "front"), "", "get_front");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "back"), "", "get_back");
@@ -351,14 +356,14 @@ void LinkedList::clear() {
 	}
 }
 
-void ListElement::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("get_next"), &ListElement::get_next);
-	ClassDB::bind_method(D_METHOD("get_prev"), &ListElement::get_prev);
+void ListNode::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("get_next"), &ListNode::get_next);
+	ClassDB::bind_method(D_METHOD("get_prev"), &ListNode::get_prev);
 
-	ClassDB::bind_method(D_METHOD("set_value", "value"), &ListElement::set_value);
-	ClassDB::bind_method(D_METHOD("get_value"), &ListElement::get_value);
+	ClassDB::bind_method(D_METHOD("set_value", "value"), &ListNode::set_value);
+	ClassDB::bind_method(D_METHOD("get_value"), &ListNode::get_value);
 
-	ClassDB::bind_method(D_METHOD("erase"), &ListElement::erase);
+	ClassDB::bind_method(D_METHOD("erase"), &ListNode::erase);
 
 	ADD_PROPERTY(PropertyInfo(Variant::NIL, "value", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NIL_IS_VARIANT), "set_value", "get_value");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "next"), "", "get_next");

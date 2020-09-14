@@ -8,17 +8,17 @@
 #include "core/reference.h"
 #include "core/sort_array.h"
 
-class ListElement;
+class ListNode;
 
 struct ListData {
-	ListElement *first = nullptr;
-	ListElement *last = nullptr;
+	ListNode *first = nullptr;
+	ListNode *last = nullptr;
 	int size_cache = 0;
-	bool erase(ListElement *p_I);
+	bool erase(ListNode *p_node);
 };
 
-class ListElement : public Object {
-	GDCLASS(ListElement, Object);
+class ListNode : public Object {
+	GDCLASS(ListNode, Object);
 
 protected:
 	static void _bind_methods();
@@ -28,20 +28,20 @@ private:
 	friend struct ListData;
 
 	Variant value;
-	ListElement *next_ptr = nullptr;
-	ListElement *prev_ptr = nullptr;
+	ListNode *next_ptr = nullptr;
+	ListNode *prev_ptr = nullptr;
 	ListData *data = nullptr;
 
 public:
-	ListElement *get_next() { return next_ptr; }
-	ListElement *get_prev() { return prev_ptr; }
+	ListNode *get_next() { return next_ptr; }
+	ListNode *get_prev() { return prev_ptr; }
 
 	Variant get_value() { return value; }
 	void set_value(const Variant &p_value) { value = p_value; }
 
 	void erase() { data->erase(this); }
 
-	ListElement() {}
+	ListNode() {}
 };
 
 class LinkedList : public Reference {
@@ -55,39 +55,40 @@ private:
 
 protected:
 	// Custom iterator for scripting.
-	ListElement *_iter_current = nullptr;
+	ListNode *_iter_current = nullptr;
 	Variant _iter_init(const Array &p_iter);
 	Variant _iter_next(const Array &p_iter);
 	Variant _iter_get(const Variant &p_iter);
 
 public:
-	ListElement *get_front() { return _data ? _data->first : 0; }
-	ListElement *get_back() { return _data ? _data->last : 0; }
+	ListNode *get_front() { return _data ? _data->first : 0; }
+	ListNode *get_back() { return _data ? _data->last : 0; }
 
-	ListElement *push_back(const Variant &value);
+	ListNode *push_back(const Variant &value);
 	void pop_back();
-	ListElement *push_front(const Variant &value);
+	ListNode *push_front(const Variant &value);
 	void pop_front();
 
-	Array get_elements();
+	Array get_nodes();
+	Array get_elements(); // Alias for `get_nodes`.
 
-	ListElement *insert_after(ListElement *p_element, const Variant &p_value);
-	ListElement *insert_before(ListElement *p_element, const Variant &p_value);
+	ListNode *insert_after(ListNode *p_node, const Variant &p_value);
+	ListNode *insert_before(ListNode *p_node, const Variant &p_value);
 
-	ListElement *find(const Variant &p_value);
+	ListNode *find(const Variant &p_value);
 
-	bool remove(ListElement *p_I);
+	bool remove(ListNode *p_node);
 	bool erase(const Variant &value);
 	bool empty() const { return !_data || !_data->size_cache; }
 	void clear();
 	int size() const { return _data ? _data->size_cache : 0; }
 
-	void swap(ListElement *p_A, ListElement *p_B);
+	void swap(ListNode *p_node_A, ListNode *p_node_B);
 	void invert();
 
-	void move_to_back(ListElement *p_I);
-	void move_to_front(ListElement *p_I);
-	void move_before(ListElement *p_A, ListElement *p_B);
+	void move_to_back(ListNode *p_node);
+	void move_to_front(ListNode *p_node);
+	void move_before(ListNode *p_node_A, ListNode *p_node_B);
 
 	void sort() {
 		sort_custom<Comparator<Variant>>();
@@ -98,18 +99,18 @@ public:
 		if (size() < 2)
 			return;
 
-		ListElement *from = get_front();
-		ListElement *current = from;
-		ListElement *to = from;
+		ListNode *from = get_front();
+		ListNode *current = from;
+		ListNode *to = from;
 
 		while (current) {
-			ListElement *next = current->next_ptr;
+			ListNode *next = current->next_ptr;
 
 			if (from != current) {
 				current->prev_ptr = nullptr;
 				current->next_ptr = from;
 
-				ListElement *find = from;
+				ListNode *find = from;
 				C less;
 				while (find && less(find->value, current->value)) {
 					current->prev_ptr = find;
@@ -140,7 +141,7 @@ public:
 	template <class C>
 	struct AuxiliaryComparator {
 		C compare;
-		bool operator()(const ListElement *a, const ListElement *b) const {
+		bool operator()(const ListNode *a, const ListNode *b) const {
 			return compare(a->value, b->value);
 		}
 	};
@@ -151,15 +152,15 @@ public:
 		if (s < 2)
 			return;
 
-		ListElement **aux_buffer = memnew_arr(ListElement *, s);
+		ListNode **aux_buffer = memnew_arr(ListNode *, s);
 
 		int idx = 0;
-		for (ListElement *E = get_front(); E; E = E->next_ptr) {
+		for (ListNode *E = get_front(); E; E = E->next_ptr) {
 			aux_buffer[idx] = E;
 			idx++;
 		}
 
-		SortArray<ListElement *, AuxiliaryComparator<C>> sort;
+		SortArray<ListNode *, AuxiliaryComparator<C>> sort;
 		sort.sort(aux_buffer, s);
 
 		_data->first = aux_buffer[0];
@@ -182,9 +183,9 @@ public:
 };
 
 template <>
-struct VariantCaster<ListElement *> {
-	static _FORCE_INLINE_ ListElement *cast(const Variant &p_variant) {
-		return (ListElement *)p_variant.operator Object *();
+struct VariantCaster<ListNode *> {
+	static _FORCE_INLINE_ ListNode *cast(const Variant &p_variant) {
+		return (ListNode *)p_variant.operator Object *();
 	}
 };
 

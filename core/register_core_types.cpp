@@ -7,8 +7,8 @@
 namespace goost {
 
 void register_core_types() {
+	ClassDB::register_class<ListNode>();
 	ClassDB::register_class<LinkedList>();
-	ClassDB::register_class<ListElement>();
 #ifdef GOOST_IMAGE_ENABLED
 	register_image_types();
 #endif
