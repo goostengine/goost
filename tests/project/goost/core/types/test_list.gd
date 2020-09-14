@@ -88,27 +88,31 @@ func test_get_elements():
 
 func test_insert_before():
 	var elements = populate_test_data(list)
-	list.insert_before(elements[2], "Godot")
+	var n = list.insert_before(elements[2], "Godot")
+	assert_eq(n.value, "Godot")
 	assert_eq(list.front.next.next.value, "Godot")
 	assert_eq(list.back.prev.prev.value, "Godot")
 
 
 func test_insert_before_front():
-	var elements = populate_test_data(list)
-	list.insert_before(list.front, "Godot")
+	var _elements = populate_test_data(list)
+	var n = list.insert_before(list.front, "Godot")
+	assert_eq(n.value, "Godot")
 	assert_eq(list.front.value, "Godot")
 
 
 func test_insert_after():
 	var elements = populate_test_data(list)
-	list.insert_after(elements[2], "Godot")
+	var n = list.insert_after(elements[2], "Godot")
+	assert_eq(n.value, "Godot")
 	assert_eq(list.front.next.next.next.value, "Godot")
 	assert_eq(list.back.prev.value, "Godot")
 
 
 func test_insert_after_back():
-	var elements = populate_test_data(list)
-	list.insert_after(list.back, "Godot")
+	var _elements = populate_test_data(list)
+	var n = list.insert_after(list.back, "Godot")
+	assert_eq(n.value, "Godot")
 	assert_eq(list.back.value, "Godot")
 
 
