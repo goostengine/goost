@@ -6,13 +6,21 @@ var list: LinkedList
 func before_each():
 	list = LinkedList.new()
 
+	
+func get_test_data():
+	var data = [
+		"Goost",
+		37,
+		Vector2.ONE,
+		Color.blue,
+	]
+	return data
+
 
 func populate_test_data(p_list: LinkedList):
 	var nodes = []
-	nodes.append(p_list.push_back("Goost"))
-	nodes.append(p_list.push_back(37))
-	nodes.append(p_list.push_back(Vector2.ONE))
-	nodes.append(p_list.push_back(Color.blue))
+	for v in get_test_data():
+		nodes.append(p_list.push_back(v))
 	return nodes
 
 
@@ -469,6 +477,53 @@ func test_print_list_node():
 func test_print_list():
 	populate_test_data(list)
 	gut.p(list)
+
+
+func test_create_from_null():
+	list.create_from(null)
+	assert_null(list.front)
+	assert_null(list.back)
+	assert_true(list.empty())
+	assert_eq(list.size(), 0)
+
+
+func test_create_from_array():
+	var array = get_test_data()
+	list.create_from(array)
+	assert_eq(list.front.value, "Goost")
+	assert_eq(list.front.next.value, 37)
+	assert_eq(list.back.prev.value, Vector2.ONE)
+	assert_eq(list.back.value, Color.blue)
+	
+	
+func test_create_from_pool_array():
+	var pool_array = PoolIntArray([0, 1, 2, 3])
+	list.create_from(pool_array)
+	assert_eq(list.front.value, 0)
+	assert_eq(list.front.next.value, 1)
+	assert_eq(list.back.prev.value, 2)
+	assert_eq(list.back.value, 3)
+
+
+func test_create_from_dictionary():
+	var array = get_test_data()
+	var dictionary = {}
+	for v in array:
+		dictionary[v] = v
+
+	list.create_from(dictionary)
+
+	assert_eq(list.front.value, "Goost")
+	assert_eq(list.front.get_meta("value"), "Goost")
+
+	assert_eq(list.front.next.value, 37)
+	assert_eq(list.front.next.get_meta("value"), 37)
+
+	assert_eq(list.back.prev.value, Vector2.ONE)
+	assert_eq(list.back.prev.get_meta("value"), Vector2.ONE)
+
+	assert_eq(list.back.value, Color.blue)
+	assert_eq(list.back.get_meta("value"), Color.blue)
 
 
 func test_cleanup():

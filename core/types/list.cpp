@@ -22,6 +22,40 @@ bool ListData::erase(ListNode *p_I) {
 	return true;
 }
 
+void LinkedList::create_from(const Variant &p_value) {
+	clear();
+	switch (p_value.get_type()) {
+		case Variant::NIL: {
+			// Do nothing.
+		} break;
+		case Variant::DICTIONARY: {
+			List<Variant> keys;
+			Dictionary dict = p_value;
+			dict.get_key_list(&keys);
+			for (List<Variant>::Element *E = keys.front(); E; E = E->next()) {
+				ListNode *n = push_back(E->get()); // Key.
+				n->set_meta("value", dict[E->get()]); // Value.
+			}
+		} break;
+		case Variant::ARRAY:
+		case Variant::POOL_BYTE_ARRAY:
+		case Variant::POOL_INT_ARRAY:
+		case Variant::POOL_REAL_ARRAY:
+		case Variant::POOL_STRING_ARRAY:
+		case Variant::POOL_VECTOR2_ARRAY:
+		case Variant::POOL_VECTOR3_ARRAY:
+		case Variant::POOL_COLOR_ARRAY: {
+			Array arr = p_value;
+			for (int i = 0; i < arr.size(); ++i) {
+				push_back(arr[i]);
+			}
+		} break;
+		default: {
+			push_back(p_value);
+		}
+	}
+}
+
 ListNode *LinkedList::push_back(const Variant &value) {
 	if (!_data) {
 		_data = memnew(ListData);
@@ -299,6 +333,8 @@ void LinkedList::move_before(ListNode *p_A, ListNode *p_B) {
 }
 
 void LinkedList::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("create_from", "value"), &LinkedList::create_from);
+
 	ClassDB::bind_method(D_METHOD("get_front"), &LinkedList::get_front);
 	ClassDB::bind_method(D_METHOD("get_back"), &LinkedList::get_back);
 

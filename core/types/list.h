@@ -63,6 +63,8 @@ protected:
 	Variant _iter_get(const Variant &p_iter);
 
 public:
+	void create_from(const Variant &p_value);
+
 	ListNode *get_front() { return _data ? _data->first : 0; }
 	ListNode *get_back() { return _data ? _data->last : 0; }
 
