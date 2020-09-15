@@ -41,6 +41,8 @@ public:
 
 	void erase() { data->erase(this); }
 
+	virtual String to_string() { return String(value); }
+
 	ListNode() {}
 };
 
@@ -93,6 +95,8 @@ public:
 	void sort() {
 		sort_custom<Comparator<Variant>>();
 	}
+
+	virtual String to_string();
 
 	template <class C>
 	void sort_custom_inplace() {

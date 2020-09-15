@@ -332,7 +332,7 @@ void LinkedList::_bind_methods() {
 
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "front"), "", "get_front");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "back"), "", "get_back");
-	
+
 	ClassDB::bind_method(D_METHOD("_iter_init"), &LinkedList::_iter_init);
 	ClassDB::bind_method(D_METHOD("_iter_get"), &LinkedList::_iter_get);
 	ClassDB::bind_method(D_METHOD("_iter_next"), &LinkedList::_iter_next);
@@ -356,6 +356,20 @@ void LinkedList::clear() {
 	while (get_front()) {
 		remove(get_front());
 	}
+}
+
+String LinkedList::to_string() {
+	String str("[");
+	ListNode *it = get_front();
+	while (it) {
+		if (it != get_front()) {
+			str += ", ";
+		}
+		str += String(it->get_value());
+		it = it->get_next();
+	}
+	str += "]";
+	return str;
 }
 
 void ListNode::_bind_methods() {

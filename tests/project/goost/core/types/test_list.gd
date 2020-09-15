@@ -461,6 +461,16 @@ func tets_sort():
 		assert_eq(abcd[i], abcd_list[i])
 
 
+func test_print_list_node():
+	var node = list.push_back("Goost")
+	gut.p(node)
+
+
+func test_print_list():
+	populate_test_data(list)
+	gut.p(list)
+
+
 func test_cleanup():
 	assert_eq(list.size(), 0)
 	var n = list.push_back("Goost")
