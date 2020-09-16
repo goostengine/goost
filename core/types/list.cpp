@@ -408,6 +408,14 @@ String LinkedList::to_string() {
 	return str;
 }
 
+void ListNode::erase() {
+	if (data) {
+		data->erase(this);
+	} else {
+		memdelete(this);
+	}
+}
+
 void ListNode::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_next"), &ListNode::get_next);
 	ClassDB::bind_method(D_METHOD("get_prev"), &ListNode::get_prev);

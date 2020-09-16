@@ -39,7 +39,7 @@ public:
 	Variant get_value() { return value; }
 	void set_value(const Variant &p_value) { value = p_value; }
 
-	void erase() { data ? data->erase(this) : memdelete(this); }
+	void erase();
 
 	virtual String to_string() { return String(value); }
 
