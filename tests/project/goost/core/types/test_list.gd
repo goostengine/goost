@@ -6,7 +6,7 @@ var list: LinkedList
 func before_each():
 	list = LinkedList.new()
 
-	
+
 func get_test_data():
 	var data = [
 		"Goost",
@@ -494,8 +494,8 @@ func test_create_from_array():
 	assert_eq(list.front.next.value, 37)
 	assert_eq(list.back.prev.value, Vector2.ONE)
 	assert_eq(list.back.value, Color.blue)
-	
-	
+
+
 func test_create_from_pool_array():
 	var pool_array = PoolIntArray([0, 1, 2, 3])
 	list.create_from(pool_array)
@@ -524,6 +524,74 @@ func test_create_from_dictionary():
 
 	assert_eq(list.back.value, Color.blue)
 	assert_eq(list.back.get_meta("value"), Color.blue)
+
+
+func test_list_node_erase():
+	var nodes = populate_test_data(list)
+	assert_not_null(nodes[0])
+	assert_not_null(list.find("Goost"))
+	nodes[0].erase()
+	assert_null(nodes[0])
+	assert_null(list.find("Goost"))
+
+
+func test_list_node_erase_orphan():
+	var n = ListNode.new()
+	n.value = "Goost"
+	n.erase() # Should not crash.
+	assert_null(n)
+
+
+# Sorry, this doesn't work, use `ListNode.erase()` instead.
+# There seems to be no way to override `free()` or prevent
+# such calls from being made as in `Reference.free()`, but
+# that's also enforced by GDScript itself rather than core.
+#
+# func test_list_node_free():
+# 	var nodes = populate_test_data(list)
+# 	assert_not_null(nodes[0])
+# 	assert_not_null(list.find("Goost"))
+# 	nodes[0].free()
+# 	nodes[0] = null
+# 	assert_null(nodes[0])
+# 	assert_null(list.find("Goost"))
+
+
+func test_list_inside_list_node__via_manual_value_set():
+	var nodes = populate_test_data(list)
+	assert_not_null(list.find("Goost"))
+	var new_list = LinkedList.new()
+	var new_node = new_list.push_back("Godot")
+	assert_eq(new_node.value, "Godot")
+	assert_not_null(list.front)
+
+	# This works.
+	var n = list.front
+	n.value = new_list
+
+	# FIXME: the following doesn't work, throws an error:
+	# 'Invalid set index 'front' (on base: 'LinkedList') with value of type 'ListNode'.'
+	# Despite the fact that `new_list` is NOT a `ListNode`,
+	# and the referenced `front` property is incorrect (the above works).
+	#
+	# list.front.value = new_list
+
+	assert_eq(list.front.value.front.value, "Godot")
+
+
+func test_list_inside_list_node_nested__via_push_back():
+	var new_list = LinkedList.new()
+	var new_node = new_list.push_back("Godot")
+	assert_eq(new_node.value, "Godot")
+	list.push_back(new_list)
+	assert_eq(list.front.value.front.value, "Godot")
+
+
+func test_list_node_set_value():
+	var n = ListNode.new()
+	n.value = "Goost"
+	assert_eq(n.value, "Goost")
+	n.free()
 
 
 func test_cleanup():

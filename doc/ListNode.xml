@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="ListNode" inherits="Object" version="3.2">
+	<brief_description>
+		A single element in the [LinkedList].
+	</brief_description>
+	<description>
+		The list node is an elemental building block which represent the entire structure of [LinkedList]s. It has [member next] and [member prev] properties which are assigned whenever a new element is inserted into the list, such as using [method LinkedList.push_back].
+		[b]Warning:[/b] do not use [method Object.free] to remove this node from the list it belongs to (unless it is instantiated manually with [code]ListNode.new()[/code]), call [method erase] instead which allows the list to update neighbor node references as well.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="erase">
+			<return type="void">
+			</return>
+			<description>
+				Erases this node from the [LinkedList] it originates from.
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="next" type="ListNode" setter="" getter="get_next">
+			The next node this node points to in the [LinkedList]. If [code]null[/code], then this node is the last element in the list, which is equivalent to [member LinkedList.back].
+		</member>
+		<member name="prev" type="ListNode" setter="" getter="get_prev">
+			The previous node this node points to in the [LinkedList]. If [code]null[/code], then this node is the first element in the list, which is equivalent to [member LinkedList.front].
+		</member>
+		<member name="value" type="Variant" setter="set_value" getter="get_value">
+			The data this node holds, usually initialized with the list methods such as [method LinkedList.push_back]. Can be anything, including other [LinkedList]s.
+		</member>
+	</members>
+	<constants>
+	</constants>
+</class>

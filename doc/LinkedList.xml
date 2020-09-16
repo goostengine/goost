@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="LinkedList" inherits="Reference" version="3.2">
+	<brief_description>
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="clear">
+			<return type="void">
+			</return>
+			<description>
+			</description>
+		</method>
+		<method name="create_from">
+			<return type="void">
+			</return>
+			<argument index="0" name="value" type="Variant">
+			</argument>
+			<description>
+			</description>
+		</method>
+		<method name="empty" qualifiers="const">
+			<return type="bool">
+			</return>
+			<description>
+			</description>
+		</method>
+		<method name="erase">
+			<return type="bool">
+			</return>
+			<argument index="0" name="value" type="Variant">
+			</argument>
+			<description>
+			</description>
+		</method>
+		<method name="find">
+			<return type="ListNode">
+			</return>
+			<argument index="0" name="value" type="Variant">
+			</argument>
+			<description>
+			</description>
+		</method>
+		<method name="get_elements">
+			<return type="Array">
+			</return>
+			<description>
+			</description>
+		</method>
+		<method name="get_nodes">
+			<return type="Array">
+			</return>
+			<description>
+			</description>
+		</method>
+		<method name="insert_after">
+			<return type="ListNode">
+			</return>
+			<argument index="0" name="node" type="ListNode">
+			</argument>
+			<argument index="1" name="value" type="Variant">
+			</argument>
+			<description>
+			</description>
+		</method>
+		<method name="insert_before">
+			<return type="ListNode">
+			</return>
+			<argument index="0" name="node" type="ListNode">
+			</argument>
+			<argument index="1" name="value" type="Variant">
+			</argument>
+			<description>
+			</description>
+		</method>
+		<method name="invert">
+			<return type="void">
+			</return>
+			<description>
+			</description>
+		</method>
+		<method name="move_before">
+			<return type="void">
+			</return>
+			<argument index="0" name="node" type="ListNode">
+			</argument>
+			<argument index="1" name="before_node" type="ListNode">
+			</argument>
+			<description>
+			</description>
+		</method>
+		<method name="move_to_back">
+			<return type="void">
+			</return>
+			<argument index="0" name="node" type="ListNode">
+			</argument>
+			<description>
+			</description>
+		</method>
+		<method name="move_to_front">
+			<return type="void">
+			</return>
+			<argument index="0" name="node" type="ListNode">
+			</argument>
+			<description>
+			</description>
+		</method>
+		<method name="pop_back">
+			<return type="void">
+			</return>
+			<description>
+			</description>
+		</method>
+		<method name="pop_front">
+			<return type="void">
+			</return>
+			<description>
+			</description>
+		</method>
+		<method name="push_back">
+			<return type="ListNode">
+			</return>
+			<argument index="0" name="value" type="Variant">
+			</argument>
+			<description>
+			</description>
+		</method>
+		<method name="push_front">
+			<return type="ListNode">
+			</return>
+			<argument index="0" name="value" type="Variant">
+			</argument>
+			<description>
+			</description>
+		</method>
+		<method name="remove">
+			<return type="bool">
+			</return>
+			<argument index="0" name="node" type="ListNode">
+			</argument>
+			<description>
+			</description>
+		</method>
+		<method name="size" qualifiers="const">
+			<return type="int">
+			</return>
+			<description>
+			</description>
+		</method>
+		<method name="sort">
+			<return type="void">
+			</return>
+			<description>
+			</description>
+		</method>
+		<method name="swap">
+			<return type="void">
+			</return>
+			<argument index="0" name="node_A" type="ListNode">
+			</argument>
+			<argument index="1" name="node_B" type="ListNode">
+			</argument>
+			<description>
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="back" type="ListNode" setter="" getter="get_back">
+		</member>
+		<member name="front" type="ListNode" setter="" getter="get_front">
+		</member>
+	</members>
+	<constants>
+	</constants>
+</class>
