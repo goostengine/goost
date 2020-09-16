@@ -136,6 +136,21 @@ func test_insert_after_back():
 	assert_eq(list.back.value, "Godot")
 
 
+func test_insert_after_null():
+	populate_test_data(list)
+	list.insert_after(null, "Godot")
+	assert_eq(list.back.value, "Godot")
+
+
+func test_insert_before_null():
+	populate_test_data(list)
+	list.insert_before(null, "Godot")
+	# Not sure about this, see issue upstream from which this was ported:
+	# https://github.com/godotengine/godot/issues/42116
+	# But consistency with builtin List<Variant> is more important currently.
+	assert_eq(list.back.value, "Godot")
+
+
 func test_size():
 	var nodes = populate_test_data(list)
 	var original_size = nodes.size()
@@ -443,7 +458,7 @@ func test_custom_iterators():
 		gut.p(node)
 
 
-func tets_sort():
+func tets_sort_strings():
 	var n: ListNode
 	n = list.push_back("B")
 	assert_eq(n.value, "B")
@@ -467,6 +482,28 @@ func tets_sort():
 	for i in 4:
 		gut.p(abcd_list[i])
 		assert_eq(abcd[i], abcd_list[i])
+
+
+func test_sort_variants():
+	list.push_back("Goost")
+	list.push_back(Color.blue)
+	list.push_back(37)
+	list.push_back(Vector2.ONE)
+	list.push_back(true)
+	list.push_back(null)
+	list.push_back(100.0)
+
+	list.sort()
+
+	var nodes = list.get_nodes()
+
+	assert_eq(nodes[0].value, null)
+	assert_eq(nodes[1].value, true)
+	assert_eq(nodes[2].value, 37)
+	assert_eq(nodes[3].value, 100.0)
+	assert_eq(nodes[4].value, "Goost")
+	assert_eq(nodes[5].value, Vector2.ONE)
+	assert_eq(nodes[6].value, Color.blue)
 
 
 func test_print_list_node():
