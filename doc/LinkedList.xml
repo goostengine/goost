@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="LinkedList" inherits="Reference" version="3.2">
+	<brief_description>
+		A doubly linked list data structure.
+	</brief_description>
+	<description>
+		A data structure which consists of a set of sequentially linked elements called nodes. Uses [ListNode] as a basic building block. Each node contains a reference to the previous node, the next node, and the data associated with the node. Insertion and deletion operations are faster [code]O(1)[/code] compared to [Array], but performs worse for random access [code]O(n)[/code].
+		[ListNode]s are constructed by inserting values to the list, and are not meant to be instantiated directly:
+		[codeblock]
+		var list = LinkedList.new()
+		var node = list.push_back("Goost")
+		var same_node = list.find("Goost")
+		[/codeblock]
+		Traversing a list can be done using a [code]for[/code] loop:
+		[codeblock]
+		for node in list:
+		    print(node)
+		[/codeblock]
+		or by manually walking the list using the nodes themselves:
+		[codeblock]
+		# Forward!
+		var node = list.front
+		while node:
+		    print(node)
+		    node = node.next
+
+		# Backward!
+		var node = list.back
+		while node:
+		    print(node)
+		    node = node.prev
+		[/codeblock]
+		Nodes can be passed around throughout the code, and values can be changed dynamically for nodes which are already inserted into the list.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="clear">
+			<return type="void">
+			</return>
+			<description>
+				Erases all nodes from the list.
+			</description>
+		</method>
+		<method name="create_from">
+			<return type="void">
+			</return>
+			<argument index="0" name="value" type="Variant">
+			</argument>
+			<description>
+				Initializes the list from a [Variant] compatible type. Clears all nodes before copying.
+				If [code]value[/code] is [code]null[/code], just clears the contents of the list.
+				If [code]value[/code] is [Array], each element in the array is converted to a [ListNode]. Pool*Arrays are converted similarly to [Array].
+				If [code]value[/code] is [Dictionary], each key in the dictionary is converted to a [ListNode], and the values are encoded as [ListNode] meta variables using [method Object.set_meta]. Values can be retrieved later with [code]node.get_meta("value")[/code] for each node.
+				Any other type is simply pushed back to the list.
+			</description>
+		</method>
+		<method name="empty" qualifiers="const">
+			<return type="bool">
+			</return>
+			<description>
+				Returns [code]true[/code] if the list doesn't contain any nodes.
+			</description>
+		</method>
+		<method name="erase">
+			<return type="bool">
+			</return>
+			<argument index="0" name="value" type="Variant">
+			</argument>
+			<description>
+				Erases (deletes) the first found node with a matching value in the list.
+			</description>
+		</method>
+		<method name="find">
+			<return type="ListNode">
+			</return>
+			<argument index="0" name="value" type="Variant">
+			</argument>
+			<description>
+				Returns a node if a list contains a node with specified value, otherwise returns [code]null[/code].
+			</description>
+		</method>
+		<method name="get_elements">
+			<return type="Array">
+			</return>
+			<description>
+				An alias for [method get_nodes].
+			</description>
+		</method>
+		<method name="get_nodes">
+			<return type="Array">
+			</return>
+			<description>
+				Returns all nodes as an [Array], preserving front-to-back order.
+			</description>
+		</method>
+		<method name="insert_after">
+			<return type="ListNode">
+			</return>
+			<argument index="0" name="node" type="ListNode">
+			</argument>
+			<argument index="1" name="value" type="Variant">
+			</argument>
+			<description>
+				Constructs a new [ListNode] and places it [i]after[/i] existing node in the list. If [code]node[/code] is [code]null[/code], then the value is pushed at the end of the list, making the behavior equivalent to [method push_back].
+			</description>
+		</method>
+		<method name="insert_before">
+			<return type="ListNode">
+			</return>
+			<argument index="0" name="node" type="ListNode">
+			</argument>
+			<argument index="1" name="value" type="Variant">
+			</argument>
+			<description>
+				Constructs a new [ListNode] and places it [i]before[/i] existing node in the list. If [code]node[/code] is [code]null[/code], then the value is pushed at the end of the list, making the behavior equivalent to [method push_back].
+			</description>
+		</method>
+		<method name="invert">
+			<return type="void">
+			</return>
+			<description>
+				Inverts the order of nodes in the list.
+			</description>
+		</method>
+		<method name="move_before">
+			<return type="void">
+			</return>
+			<argument index="0" name="node" type="ListNode">
+			</argument>
+			<argument index="1" name="before_node" type="ListNode">
+			</argument>
+			<description>
+				Moves a node [i]before[/i] the other one within the list.
+			</description>
+		</method>
+		<method name="move_to_back">
+			<return type="void">
+			</return>
+			<argument index="0" name="node" type="ListNode">
+			</argument>
+			<description>
+				Moves a node to the back of the list ([member back] node will point to [code]node[/code]).
+			</description>
+		</method>
+		<method name="move_to_front">
+			<return type="void">
+			</return>
+			<argument index="0" name="node" type="ListNode">
+			</argument>
+			<description>
+				Moves a node to the front of the list (the [member front] node will point to [code]node[/code]).
+			</description>
+		</method>
+		<method name="pop_back">
+			<return type="void">
+			</return>
+			<description>
+				Erases the last node of the list. Make sure to preserve the [member ListNode.value] if you're interested in the data associated with the node:
+				[codeblock]
+				var value = list.back.value
+				list.pop_back()
+				[/codeblock]
+			</description>
+		</method>
+		<method name="pop_front">
+			<return type="void">
+			</return>
+			<description>
+				Erases the first node of the list. Make sure to preserve the [member ListNode.value] if you're interested in the data associated with the node:
+				[codeblock]
+				var value = list.front.value
+				list.pop_front()
+				[/codeblock]
+			</description>
+		</method>
+		<method name="push_back">
+			<return type="ListNode">
+			</return>
+			<argument index="0" name="value" type="Variant">
+			</argument>
+			<description>
+				Constructs a new [ListNode] and pushes it at the [i]end[/i] of the list.
+			</description>
+		</method>
+		<method name="push_front">
+			<return type="ListNode">
+			</return>
+			<argument index="0" name="value" type="Variant">
+			</argument>
+			<description>
+				Constructs a new [ListNode] and pushes it at the [i]beginning[/i] of the list.
+			</description>
+		</method>
+		<method name="remove">
+			<return type="bool">
+			</return>
+			<argument index="0" name="node" type="ListNode">
+			</argument>
+			<description>
+				Removes (and deletes) an existing node from the list.
+			</description>
+		</method>
+		<method name="size" qualifiers="const">
+			<return type="int">
+			</return>
+			<description>
+				Returns the total number of nodes in the list.
+			</description>
+		</method>
+		<method name="sort">
+			<return type="void">
+			</return>
+			<description>
+				Sorts the list in alphabetical order if the list contains [String]s. If the list contains nodes with different types of values, these are sorted according to the order of [enum @GlobalScope.Variant.Type].
+			</description>
+		</method>
+		<method name="swap">
+			<return type="void">
+			</return>
+			<argument index="0" name="node_A" type="ListNode">
+			</argument>
+			<argument index="1" name="node_B" type="ListNode">
+			</argument>
+			<description>
+				Moves [code]node_A[/code] to the position of [code]node_B[/code], and moves [code]node_B[/code] to the original position of [code]node_A[/code]. If [code]node_A == node_B[/code], does nothing.
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="back" type="ListNode" setter="" getter="get_back">
+			The last node in the list. Can be [code]null[/code] if the list is [method empty].
+		</member>
+		<member name="front" type="ListNode" setter="" getter="get_front">
+			The first node in the list. Can be [code]null[/code] if the list is [method empty].
+		</member>
+	</members>
+	<constants>
+	</constants>
+</class>
