@@ -52,6 +52,11 @@ jobs:
       run: |
         scons -j2 verbose=yes warnings=all werror=yes platform=windows tools=yes target=release_debug
 
+    - uses: actions/upload-artifact@v2
+      with:
+        name: godot.windows.opt.tools.64.goost
+        path: godot/bin/godot.windows.opt.tools.64.goost.exe
+
   windows-template:
     runs-on: "windows-latest"
     name: Template (target=release, tools=no)
