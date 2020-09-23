@@ -65,7 +65,16 @@ and development updates.
 
 ---
 
-## Compiling
+## Building
+
+For testing purposes, build artifacts are uploaded for Linux, macOS, and Windows
+editor builds and can be downloaded manually for each recently built commit:
+
+- [🐧 Linux](https://github.com/goostengine/goost/actions?query=workflow%3A%22%F0%9F%90%A7+Linux%22+branch%3Agd3)
+- [🍎 macOS](https://github.com/goostengine/goost/actions?query=workflow%3A%22%F0%9F%8D%8E+macOS%22+branch%3Agd3)
+- [🎨 Windows](https://github.com/goostengine/goost/actions?query=workflow%3A%22%F0%9F%8E%A8+Windows%22+branch%3Agd3)
+
+### Compiling
 
 ```sh
 git clone https://github.com/goostengine/goost
