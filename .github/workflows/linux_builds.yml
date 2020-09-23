@@ -63,6 +63,11 @@ jobs:
         run: |
           scons -j2 verbose=yes warnings=all werror=yes platform=linuxbsd tools=yes target=release_debug module_mono_enabled=yes mono_glue=no
 
+      - uses: actions/upload-artifact@v2
+        with:
+          name: godot.x11.opt.tools.64.goost.mono
+          path: godot/bin/godot.x11.opt.tools.64.goost.mono
+
   linux-server:
     runs-on: "ubuntu-20.04"
     name: Server (target=debug, tools=yes, tests=yes)
