@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 #
-# Upstream: https://github.com/goostengine/goost
+# Upstream: https://github.com/goostengine/goost (see `SConstruct` file)
+# Version: 1.0
 # License: MIT
 #
 # This is a convenience/compatibility SConstruct which allows to build any 
@@ -73,8 +74,6 @@ for arg in ARGLIST:
 
 # Link this module as a custom module.
 modules = []
-# We cannot link to a single module. As a byproduct, this may compile other 
-# modules which reside in the same location as this module.
 modules.append(Dir("..").abspath)
 
 # This module may provide built-in and community modules, just like this one.
@@ -86,7 +85,26 @@ except AttributeError:
 
 build_args.append("custom_modules=%s" % ",".join(modules))
 
-# Optionally disable non-essential modules, if possible.
+# We cannot link to a single module using the `custom_modules` build option,
+# so this may compile other modules which reside in the same location as this 
+# module. To prevent this, we disable all modules there, excluding this one.
+if os.getenv("GOOST_PARENT_MODULES", "disabled") == "enabled":
+    DIRNAMES = 1
+    dirs = next(os.walk(Dir("..").abspath))[DIRNAMES]
+    parent_modules = []
+
+    for d in dirs:
+        if d == module_name:
+            continue
+        if os.path.exists(os.path.join(Dir("..").abspath, d, "SCsub")):
+            parent_modules.append(d)
+
+    for m in parent_modules:
+        build_args.append("module_%s_enabled=no" % m)
+
+# Optionally disable Godot's built-in modules which are non-essential in order
+# to test out this module in the engine. For more details, refer to Godot docs:
+# https://docs.godotengine.org/en/latest/development/compiling/optimizing_for_size.html
 if os.getenv("GODOT_BUILTIN_MODULES", "enabled") == "disabled":
     try:
         import modules_disabled
