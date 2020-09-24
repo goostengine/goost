@@ -21,8 +21,8 @@ This is a [Godot Engine](https://github.com/godotengine/godot) 3.2+ extension
 implemented as a
 [C++ module](https://docs.godotengine.org/en/latest/development/cpp/custom_modules_in_cpp.html).
 
-The extension is comprised of functional components and other modules, most of
-which should be optional to build.
+The extension consists of functional components and other modules, most of which
+should be optional to build.
 
 See [Goost official documentation](https://goost.readthedocs.io/en/gd3/) for
 detailed instructions on how to use the module, and the list of currently
@@ -33,12 +33,12 @@ For a complete list of currently implemented classes, refer to
 
 ---
 
-### Goals
+### Goals 🎯
 - ***complement*** the engine by implementing missing or not-yet-implemented
-  functionality as seen useful by the Godot community, which also helps to
-  prevent further engine bloat;
+  functionality as seen useful by the Godot community, helping to prevent
+  further engine bloat to a reasonable extent;
 - provide additional core data structures, classes and methods to optimize
-  performance-critical code in a general-purpose way for when GDScript or other
+  performance-critical tasks in a general-purpose way for when GDScript or other
   languages are too slow, or when better integration is desired with existing
   libraries;
 - expose, reuse, and build upon the engine's hidden built-in functionality
@@ -47,17 +47,16 @@ For a complete list of currently implemented classes, refer to
   especially when those limitations can be mitigated on the module level without
   having to maintain a custom version of the engine.
 
-### Non-goals
-- solving domain-specific problems. Consider contributing to a project such as
+### Non-goals 🌒
+- solving project-specific problems, consider alternative projects such as
   [Godot Node Extensions](https://github.com/godot-extended-libraries/godot-next)
   instead.
 - collecting arbitrary community C++ modules for the sake of it, unless a module
-  provides common enough functionality which would be useful to a good chunk of
-  users.
+  provides common enough functionality useful to a good chunk of users.
 
 ---
 
-### Community channels
+### Community channels 🎭
 
 Join [#goost](https://discord.gg/w6jBZnG) Discord channel at the
 [GEL](https://github.com/godot-extended-libraries) Discord server for discussion
@@ -65,7 +64,7 @@ and development updates.
 
 ---
 
-## Building
+## Building 🏗
 
 For testing purposes, build artifacts are uploaded for Linux, macOS, and Windows
 editor builds and can be downloaded manually for each recently built commit:
@@ -90,7 +89,7 @@ For more advanced compilation options, refer to
 [Goost Installation](https://goost.readthedocs.io/en/gd3/usage/installation.html)
 documentation pages.
 
-## Development
+## Development 🧱
 
 See [Contributing](CONTRIBUTING.md) if you are interested in development and to
 find out what kind of features are accepted.
@@ -126,7 +125,7 @@ Any new features are encouraged to be developed against the latest Godot
 Engine's *stable* version, which may be optionally ported to the latest engine's
 *development* version (independently or in sync, depending on priorities).
 
-## License
+## License 📝
 
 Unless otherwise specified, the extension is released under the
 [MIT license](LICENSE.txt).
