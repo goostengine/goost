@@ -88,7 +88,8 @@ build_args.append("custom_modules=%s" % ",".join(modules))
 # We cannot link to a single module using the `custom_modules` build option,
 # so this may compile other modules which reside in the same location as this 
 # module. To prevent this, we disable all modules there, excluding this one.
-if os.getenv("GOOST_PARENT_MODULES", "disabled") == "enabled":
+parent_modules_config = os.getenv("GOOST_PARENT_MODULES", "disabled")
+if parent_modules_config == "enabled":
     DIRNAMES = 1
     dirs = next(os.walk(Dir("..").abspath))[DIRNAMES]
     parent_modules = []
@@ -105,7 +106,8 @@ if os.getenv("GOOST_PARENT_MODULES", "disabled") == "enabled":
 # Optionally disable Godot's built-in modules which are non-essential in order
 # to test out this module in the engine. For more details, refer to Godot docs:
 # https://docs.godotengine.org/en/latest/development/compiling/optimizing_for_size.html
-if os.getenv("GODOT_BUILTIN_MODULES", "enabled") == "disabled":
+builtin_modules_config = os.getenv("GODOT_BUILTIN_MODULES", "enabled")
+if builtin_modules_config == "disabled":
     try:
         import modules_disabled
         build_args.append("profile=%s" % 
@@ -130,6 +132,39 @@ scons_cache_path = os.environ.get("SCONS_CACHE")
 if scons_cache_path != None:
     CacheDir(scons_cache_path)
     print("SCons cache enabled... (path: '" + scons_cache_path + "')")
+
+# Pass commonly used SCons options.
+if GetOption("help"):
+    help_msg = """
+    Goost environment variables (see Goost build options above as well):
+
+    GODOT_VERSION: such as 3.2, 3.2-stable, master, commit hash etc.
+        Current: {version}
+    GODOT_REPO_URL: URL from which the engine source code is fetched.
+        Current: {url}
+    GODOT_SOURCE_PATH: a directory path to the existing Godot source code.
+        Current: {path}
+    GODOT_BUILTIN_MODULES: build all Godot builtin modules.
+        Current: {builtin_modules}
+    GOOST_PARENT_MODULES: build all modules which reside in the same directory.
+        Current: {parent_modules}
+    """.format(
+        version = godot_version,
+        url = godot_url,
+        path = godot_dir,
+        builtin_modules = builtin_modules_config,
+        parent_modules = parent_modules_config,
+    )
+    Help(help_msg)
+    build_args.append("--help")
+
+if GetOption("clean"):
+    build_args.append("--clean")
+
+# The following can be overridden using the `SCONSFLAGS` environment variable,
+# but for convenience, we just copy those options here.
+if GetOption("num_jobs") > 1:
+    build_args.append("--jobs=%s" % GetOption("num_jobs"))
 
 # Build the engine with the module.
 print("Building Godot with %s ..." % module_name.capitalize())
