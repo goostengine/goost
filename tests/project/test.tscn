@@ -1,9 +1,8 @@
 [gd_scene load_steps=2 format=2]
 
-[ext_resource path="res://addons/gut/gut.gd" type="Script" id=1]
+[ext_resource path="res://addons/gut/plugin_control.gd" type="Script" id=1]
 
 [node name="Gut" type="Control"]
-self_modulate = Color( 1, 1, 1, 0 )
 margin_right = 740.0
 margin_bottom = 250.0
 rect_min_size = Vector2( 740, 250 )
@@ -11,14 +10,20 @@ script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
+_font_name = "AnonymousPro"
+_font_size = 20
+_font_color = Color( 0.8, 0.8, 0.8, 1 )
+_background_color = Color( 0.15, 0.15, 0.15, 1 )
+_color_output = true
 _select_script = ""
 _tests_like = ""
 _inner_class_name = ""
 _run_on_load = false
 _should_maximize = true
 _should_print_to_console = true
+_show_orphans = true
 _log_level = 1
-_yield_between_tests = false
+_yield_between_tests = true
 _disable_strict_datatype_checks = false
 _test_prefix = "test_"
 _file_prefix = "test_"
@@ -36,4 +41,3 @@ _directory6 = ""
 _double_strategy = 1
 _pre_run_script = ""
 _post_run_script = ""
-_color_output = false

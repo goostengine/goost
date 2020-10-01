@@ -568,7 +568,7 @@ func test_list_node_erase():
 	assert_not_null(nodes[0])
 	assert_not_null(list.find("Goost"))
 	nodes[0].erase()
-	assert_null(nodes[0])
+	assert_freed(nodes[0], "List node")
 	assert_null(list.find("Goost"))
 
 
@@ -576,7 +576,7 @@ func test_list_node_erase_orphan():
 	var n = ListNode.new()
 	n.value = "Goost"
 	n.erase() # Should not crash.
-	assert_null(n)
+	assert_freed(n, "List node")
 
 
 # Sorry, this doesn't work, use `ListNode.erase()` instead.
@@ -637,4 +637,4 @@ func test_cleanup():
 	assert_eq(list.size(), 1)
 	assert_not_null(n)
 	list = null
-	assert_null(n)
+	assert_freed(list, "List")

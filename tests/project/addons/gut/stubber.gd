@@ -9,11 +9,9 @@
 # 	}
 # }
 var returns = {}
-var _utils = load('res://addons/gut/utils.gd').new()
+var _utils = load('res://addons/gut/utils.gd').get_instance()
 var _lgr = _utils.get_logger()
-
-func _is_instance(obj):
-	return typeof(obj) == TYPE_OBJECT and !obj.has_method('new')
+var _strutils = _utils.Strutils.new()
 
 func _make_key_from_metadata(doubled):
 	var to_return = doubled.__gut_metadata_.path
@@ -34,7 +32,7 @@ func _make_key_from_variant(obj, subpath=null):
 			if(subpath != null and subpath != ''):
 				to_return += str('-', subpath)
 		TYPE_OBJECT:
-			if(_is_instance(obj)):
+			if(_utils.is_instance(obj)):
 				to_return = _make_key_from_metadata(obj)
 			elif(_utils.is_native_class(obj)):
 				to_return = _utils.get_native_class_name(obj)
@@ -44,7 +42,7 @@ func _make_key_from_variant(obj, subpath=null):
 
 func _add_obj_method(obj, method, subpath=null):
 	var key = _make_key_from_variant(obj, subpath)
-	if(_is_instance(obj)):
+	if(_utils.is_instance(obj)):
 		key = obj
 
 	if(!returns.has(key)):
@@ -68,8 +66,11 @@ func set_return(obj, method, value, parameters=null):
 	returns[key][method].append(sp)
 
 func add_stub(stub_params):
-	var key = _add_obj_method(stub_params.stub_target, stub_params.stub_method, stub_params.target_subpath)
-	returns[key][stub_params.stub_method].append(stub_params)
+	if(stub_params.stub_method == '_init'):
+		_lgr.error("You cannot stub _init.  Super's _init is ALWAYS called.")
+	else:
+		var key = _add_obj_method(stub_params.stub_target, stub_params.stub_method, stub_params.target_subpath)
+		returns[key][stub_params.stub_method].append(stub_params)
 
 # Searches returns for an entry that matches the instance or the class that
 # passed in obj is.
@@ -79,7 +80,7 @@ func _find_stub(obj, method, parameters=null):
 	var key = _make_key_from_variant(obj)
 	var to_return = null
 
-	if(_is_instance(obj)):
+	if(_utils.is_instance(obj)):
 		if(returns.has(obj) and returns[obj].has(method)):
 			key = obj
 		elif(obj.get('__gut_metadata_')):
@@ -138,7 +139,7 @@ func should_call_super(obj, method, parameters=null):
 		# this log message is here because of how the generated doubled scripts
 		# are structured.  With this log msg here, you will only see one
 		# "unstubbed" info instead of multiple.
-		_lgr.info('Unstubbed call to ' + method + '::' + str(obj))
+		_lgr.info('Unstubbed call to ' + method + '::' + _strutils.type2str(obj))
 		return false
 
 
