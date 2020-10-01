@@ -9,7 +9,7 @@ on:
 
 env:
   GOOST_BASE_BRANCH: gd3
-  GODOT_BUILTIN_MODULES: disabled
+  SCONSFLAGS: godot_modules_enabled=no --jobs=4
   SCONS_CACHE_MSVC_CONFIG: true
   SCONS_CACHE_LIMIT: 4096
 
@@ -50,7 +50,7 @@ jobs:
       env:
         SCONS_CACHE: /.scons_cache/
       run: |
-        scons -j2 verbose=yes warnings=all werror=yes platform=windows tools=yes target=release_debug
+        scons verbose=yes warnings=all werror=yes platform=windows tools=yes target=release_debug
 
     - uses: actions/upload-artifact@v2
       with:
@@ -94,4 +94,4 @@ jobs:
       env:
         SCONS_CACHE: /.scons_cache/
       run: |
-        scons -j2 verbose=yes warnings=all werror=yes platform=windows target=release tools=no
+        scons verbose=yes warnings=all werror=yes platform=windows target=release tools=no

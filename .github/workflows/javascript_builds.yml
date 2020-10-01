@@ -9,7 +9,7 @@ on:
 
 env:
   GOOST_BASE_BRANCH: gd3
-  GODOT_BUILTIN_MODULES: disabled
+  SCONSFLAGS: godot_modules_enabled=no --jobs=4
   SCONS_CACHE_LIMIT: 4096
   EM_VERSION: 1.39.20
   EM_CACHE_FOLDER: 'emsdk-cache'
@@ -74,4 +74,4 @@ jobs:
         env:
           SCONS_CACHE: ${{github.workspace}}/.scons_cache/
         run: |
-          scons -j2 verbose=yes warnings=all werror=yes platform=javascript target=release tools=no use_closure_compiler=yes
+          scons verbose=yes warnings=all werror=yes platform=javascript target=release tools=no use_closure_compiler=yes
