@@ -51,3 +51,4 @@ __pycache__/
 
 # Godot repository
 /godot
+/logs
