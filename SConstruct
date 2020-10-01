@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #
 # Upstream: https://github.com/goostengine/goost (see `SConstruct` file)
-# Version: 1.0
+# Version: 1.1
 # License: MIT
 #
 # This is a convenience/compatibility SConstruct which allows to build any 
@@ -20,9 +20,6 @@
 # environment variable is defined pointing to Godot source.
 #
 # Caveats/Limitations:
-#
-# - You have to switch to the relevant git branch in Godot repository yourself
-#   if you use parent directory or `GODOT_SOURCE_PATH`, else done automatically.
 # - The `custom_modules`, `extra_suffix`, `profile` build options are overridden
 #   to build this module, so you cannot use these from the command-line.
 #
@@ -33,26 +30,61 @@ import subprocess
 
 import config
 
-godot_version = os.getenv("GODOT_VERSION", "3.2") # A branch, commit, tag etc.
-godot_url = os.getenv("GODOT_REPO_URL", "https://github.com/godotengine/godot")
+env = Environment()
 
 # Module name is determined from directory name.
 module_name = os.path.basename(Dir(".").abspath)
+print("Configuring %s module ..." % module_name.capitalize())
+
+# Environment variables (can override default build options).
+godot_version = os.getenv("GODOT_VERSION", "3.2") # A branch, commit, tag etc.
 
 # Find a path to Godot source to build with this module.
+godot_dir = Dir("godot")
 godot_search_dirs = [
     Dir(os.getenv("GODOT_SOURCE_PATH")), # Try environment variable first.
     Dir("../godot"), # Try relative path.
     Dir("godot"), # Clone or use already checked out engine last.
 ]
-godot_dir = Dir("godot")
-
 for path in godot_search_dirs:
     if not path.exists():
         continue
     godot_dir = path
     break
 
+godot_url = os.getenv("GODOT_REPO_URL", "https://github.com/godotengine/godot")
+
+# Setup SCons command-line options.
+opts = Variables()
+opts.Add("godot_version", "Godot Engine version (branch, tags, commit hashes)", godot_version)
+opts.Add(BoolVariable("godot_sync", "Synchronize Godot Engine version from remote URL before building", False))
+opts.Add(BoolVariable("godot_modules_enabled", "Build all Godot builtin modules", True))
+opts.Add(BoolVariable("parent_modules_enabled", "Build all modules which may reside in the same parent directory", False))
+
+# Generate help text.
+Help("\n\n%s top-level build options:\n" % module_name.capitalize(), append=True)
+
+opts.Update(env)
+Help(opts.GenerateHelpText(env), append=True)
+
+help_msg = """
+{module} environment variables:
+
+GODOT_VERSION: such as 3.2, 3.2-stable, master, commit hash etc.
+    Current: {version}
+GODOT_SOURCE_PATH: a directory path to the existing Godot source code.
+    Current: {path}
+GODOT_REPO_URL: URL from which the engine source code is fetched.
+    Current: {url}
+""".format(
+    module = module_name.capitalize(),
+    version = godot_version,
+    path = godot_dir,
+    url = godot_url,
+)
+Help(help_msg, append=True)
+
+# Allow to build Godot in subprocess.
 def run_command(args, dir="."):
     if sys.platform.startswith("win32"):
         subprocess.run(args, check=True, shell=True, cwd=dir)
@@ -63,12 +95,17 @@ if godot_dir == Dir("godot"):
     if not godot_dir.exists():
         # Checkout Godot repository directly into this module.
         run_command(["git", "clone", godot_url, "-b", godot_version, "--single-branch"])
-    else:
+    elif env["godot_sync"]:
         run_command(["git", "reset", "--hard", godot_version], godot_dir.abspath)
+        run_command(["git", "checkout", godot_version], godot_dir.abspath)
+        run_command(["git", "pull"], godot_dir.abspath)
 
-# Setup base SCons arguments (just copy all from the command line).
+# Setup base SCons arguments to the engine build command.
+# Copy all from the command line, except for options in this SConstruct.
 build_args = ["scons"]
 for arg in ARGLIST:
+    if arg[0] in opts.keys():
+        continue
     opt = "%s=%s" % (arg[0], arg[1])
     build_args.append(opt)
 
@@ -88,8 +125,7 @@ build_args.append("custom_modules=%s" % ",".join(modules))
 # We cannot link to a single module using the `custom_modules` build option,
 # so this may compile other modules which reside in the same location as this 
 # module. To prevent this, we disable all modules there, excluding this one.
-parent_modules_config = os.getenv("GOOST_PARENT_MODULES", "disabled")
-if parent_modules_config == "enabled":
+if not env["parent_modules_enabled"]:
     DIRNAMES = 1
     dirs = next(os.walk(Dir("..").abspath))[DIRNAMES]
     parent_modules = []
@@ -106,8 +142,7 @@ if parent_modules_config == "enabled":
 # Optionally disable Godot's built-in modules which are non-essential in order
 # to test out this module in the engine. For more details, refer to Godot docs:
 # https://docs.godotengine.org/en/latest/development/compiling/optimizing_for_size.html
-builtin_modules_config = os.getenv("GODOT_BUILTIN_MODULES", "enabled")
-if builtin_modules_config == "disabled":
+if not env["godot_modules_enabled"]:
     try:
         import modules_disabled
         build_args.append("profile=%s" % 
@@ -135,27 +170,6 @@ if scons_cache_path != None:
 
 # Pass commonly used SCons options.
 if GetOption("help"):
-    help_msg = """
-    Goost environment variables (see Goost build options above as well):
-
-    GODOT_VERSION: such as 3.2, 3.2-stable, master, commit hash etc.
-        Current: {version}
-    GODOT_REPO_URL: URL from which the engine source code is fetched.
-        Current: {url}
-    GODOT_SOURCE_PATH: a directory path to the existing Godot source code.
-        Current: {path}
-    GODOT_BUILTIN_MODULES: build all Godot builtin modules.
-        Current: {builtin_modules}
-    GOOST_PARENT_MODULES: build all modules which reside in the same directory.
-        Current: {parent_modules}
-    """.format(
-        version = godot_version,
-        url = godot_url,
-        path = godot_dir,
-        builtin_modules = builtin_modules_config,
-        parent_modules = parent_modules_config,
-    )
-    Help(help_msg)
     build_args.append("--help")
 
 if GetOption("clean"):
@@ -167,5 +181,4 @@ if GetOption("num_jobs") > 1:
     build_args.append("--jobs=%s" % GetOption("num_jobs"))
 
 # Build the engine with the module.
-print("Building Godot with %s ..." % module_name.capitalize())
 run_command(build_args, godot_dir.abspath)
