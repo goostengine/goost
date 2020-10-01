@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #
 # Upstream: https://github.com/goostengine/goost (see `SConstruct` file)
-# Version: 1.1
+# Version: 1.2
 # License: MIT
 #
 # This is a convenience/compatibility SConstruct which allows to build any 
@@ -78,27 +78,53 @@ GODOT_REPO_URL: URL from which the engine source code is fetched.
     Current: {url}
 """.format(
     module = module_name.capitalize(),
-    version = godot_version,
+    version = env["godot_version"],
     path = godot_dir,
     url = godot_url,
 )
 Help(help_msg, append=True)
 
-# Allow to build Godot in subprocess.
-def run_command(args, dir="."):
+# A method which allows us to run `git`, `scons`, and other commands.
+def run(args, dir="."):
     if sys.platform.startswith("win32"):
-        subprocess.run(args, check=True, shell=True, cwd=dir)
+        return subprocess.run(args, check=True, shell=True, cwd=dir).returncode
     else:
-        subprocess.run(args, check=True, cwd=dir)
+        return subprocess.run(args, check=True, cwd=dir).returncode
+
+def godot_check_if_branch(ref):
+    try:
+        return run(["git", "show-ref", "--verify", "--quiet", 
+                "refs/heads/%s" % ref], godot_dir.abspath) == 0
+    except:
+        return False
+
+def godot_verify_min_version():
+    sys.path.insert(0, godot_dir.abspath)
+    import version
+    compatible = (version.major, version.minor, version.patch) >= (3, 2, 2)
+    if not compatible:
+        print("Cannot compile %s without `custom_modules` support." % module_name.capitalize())
+        print("The minimum required Godot version is 3.2.2 (current: %s)" % env["godot_version"])
+    sys.path.remove(godot_dir.abspath)
+    sys.modules.pop("version")
+    return compatible
 
 if godot_dir == Dir("godot"):
     if not godot_dir.exists():
         # Checkout Godot repository directly into this module.
-        run_command(["git", "clone", godot_url, "-b", godot_version, "--single-branch"])
+        run(["git", "clone", godot_url])
+        run(["git", "checkout", env["godot_version"], "--quiet"], godot_dir.abspath)
+        if not godot_verify_min_version():
+            Exit(255)
     elif env["godot_sync"]:
-        run_command(["git", "reset", "--hard", godot_version], godot_dir.abspath)
-        run_command(["git", "checkout", godot_version], godot_dir.abspath)
-        run_command(["git", "pull"], godot_dir.abspath)
+        # Reset the engine, checkout, and update with remote.
+        print("Synchronizing Godot version ...")
+        run(["git", "reset", "--hard", "HEAD", "--quiet"], godot_dir.abspath)
+        run(["git", "checkout", env["godot_version"], "--quiet"], godot_dir.abspath)
+        if not godot_verify_min_version():
+            Exit(255)
+        if godot_check_if_branch(env["godot_version"]):
+            run(["git", "pull"], godot_dir.abspath)
 
 # Setup base SCons arguments to the engine build command.
 # Copy all from the command line, except for options in this SConstruct.
@@ -181,4 +207,4 @@ if GetOption("num_jobs") > 1:
     build_args.append("--jobs=%s" % GetOption("num_jobs"))
 
 # Build the engine with the module.
-run_command(build_args, godot_dir.abspath)
+run(build_args, godot_dir.abspath)
