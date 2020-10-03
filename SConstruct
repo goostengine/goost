@@ -1,27 +1,22 @@
 #!/usr/bin/env python
 #
-# Upstream: https://github.com/goostengine/goost (see `SConstruct` file)
-# Version: 1.2
+# Upstream: https://github.com/goostengine/goost
+# Version: 1.3 (Godot Engine 3.2.2+)
 # License: MIT
 #
-# This is a convenience/compatibility SConstruct which allows to build any 
-# C++ module in the same way as building Godot Engine (3.2+).
+# `SConstruct` which allows to build any C++ module just like Godot Engine.
 #
-# Installation:
-#
-# 1. Copy this SConstruct to your module's source root.
+# Usage: 
+# 1. Copy this `SConstruct` to your module's source root.
 # 2. Compile the module with the same build command, for instance:
 #
-#     scons target=release_debug tools=yes bits=64
+#   scons target=release_debug tools=yes bits=64
 #
-# This will clone the Godot repository directly into this module and compile it
-# accordingly. Alternatively, this script will compile the engine externally if 
-# the source code can be found in the parent directory or `GODOT_SOURCE_PATH` 
-# environment variable is defined pointing to Godot source.
+# This will clone the Godot repository directly into this module and compile the
+# engine with the module automatically. `GODOT_SOURCE_PATH` environment variable
+# can be used instead pointing to the existing Godot source.
 #
-# Caveats/Limitations:
-# - The `custom_modules`, `extra_suffix`, `profile` build options are overridden
-#   to build this module, so you cannot use these from the command-line.
+# Run `scons --help` for other build options to configure the default behavior.
 #
 import os
 import sys
@@ -70,7 +65,7 @@ Help(opts.GenerateHelpText(env), append=True)
 help_msg = """
 {module} environment variables:
 
-GODOT_VERSION: such as 3.2, 3.2-stable, master, commit hash etc.
+GODOT_VERSION: such as 3.2, 3.2.2-stable, master, commit hash etc.
     Current: {version}
 GODOT_SOURCE_PATH: a directory path to the existing Godot source code.
     Current: {path}
@@ -139,12 +134,18 @@ for arg in ARGLIST:
 modules = []
 modules.append(Dir("..").abspath)
 
-# This module may provide built-in and community modules, just like this one.
+# This module may provide other nested modules, just like this one.
 try:
     modules_path = config.get_modules_path()
     modules.append(os.path.join(Dir(".").abspath, modules_path))
 except AttributeError:
     pass
+
+# We use the `custom_modules` build option to build this module, 
+# but allow to specify additional modules to build along this one.
+if "custom_modules" in ARGUMENTS:
+    custom_modules = ARGUMENTS.get("custom_modules").split(",")
+    modules.extend(custom_modules)
 
 build_args.append("custom_modules=%s" % ",".join(modules))
 
@@ -169,17 +170,25 @@ if not env["parent_modules_enabled"]:
 # to test out this module in the engine. For more details, refer to Godot docs:
 # https://docs.godotengine.org/en/latest/development/compiling/optimizing_for_size.html
 if not env["godot_modules_enabled"]:
-    try:
-        import modules_disabled
-        build_args.append("profile=%s" % 
-                os.path.join(Dir(".").abspath, "modules_disabled.py"))
-    except ImportError:
-        pass
+    if "profile" in ARGUMENTS:
+        build_args.append("profile=%s" % ARGUMENTS.get("profile"))
+    else:
+        try:
+            import modules_disabled
+            build_args.append("profile=%s" % 
+                    os.path.join(Dir(".").abspath, "modules_disabled.py"))
+        except ImportError:
+            pass
 
-# Append extra suffix to distinguish between other Godot builds.
-build_args.append("extra_suffix=%s" % module_name)
+# Append the default `extra_suffix` to distinguish between other builds.
+# Extend the suffix if `extra_suffix` is specified via the command line.
+module_suffix = module_name
+if "extra_suffix" in ARGUMENTS:
+    module_suffix += "." + ARGUMENTS.get("extra_suffix")
+build_args.append("extra_suffix=%s" % module_suffix)
 
-# Extend build name to the module name, preserving any custom build names.
+# Set custom build name from the module name.
+# Extend the build name if it's already overridden.
 build_name = module_name.capitalize()
 if os.getenv("BUILD_NAME"):
     build_name += "." + os.getenv("BUILD_NAME")
