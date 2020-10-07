@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #
 # Upstream: https://github.com/goostengine/goost
-# Version: 1.3.1 (Godot Engine 3.2.2+)
+# Version: 1.4 (Godot Engine 3.2.2+)
 # License: MIT
 #
 # `SConstruct` which allows to build any C++ module just like Godot Engine.
@@ -54,7 +54,7 @@ for path in godot_search_dirs:
 godot_url = os.getenv("GODOT_REPO_URL", "https://github.com/godotengine/godot")
 
 # Setup SCons command-line options.
-opts = Variables()
+opts = Variables("custom.py", ARGUMENTS)
 opts.Add("godot_version", "Godot Engine version (branch, tags, commit hashes)", godot_version)
 opts.Add(BoolVariable("godot_sync", "Synchronize Godot Engine version from remote URL before building", False))
 opts.Add(BoolVariable("godot_modules_enabled", "Build all Godot builtin modules", True))
