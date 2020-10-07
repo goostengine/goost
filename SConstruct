@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #
 # Upstream: https://github.com/goostengine/goost
-# Version: 1.3 (Godot Engine 3.2.2+)
+# Version: 1.3.1 (Godot Engine 3.2.2+)
 # License: MIT
 #
 # `SConstruct` which allows to build any C++ module just like Godot Engine.
@@ -37,9 +37,13 @@ godot_version = os.getenv("GODOT_VERSION", "3.2") # A branch, commit, tag etc.
 # Find a path to Godot source to build with this module.
 godot_dir = Dir("godot")
 godot_search_dirs = [
-    Dir(os.getenv("GODOT_SOURCE_PATH")), # Try environment variable first.
-    Dir("../godot"), # Try relative path.
-    Dir("godot"), # Clone or use already checked out engine last.
+    # Try environment variable pointing to the Godot source, should be first.
+    Dir(os.getenv("GODOT_SOURCE_PATH")),
+    # Search for the Godot source in the parent directory.
+    Dir("../godot"),
+    # Use the Godot source within the module, should be last.
+    # If not found, the source is fetched from the remote URL.
+    Dir("godot"),
 ]
 for path in godot_search_dirs:
     if not path.exists():
@@ -121,7 +125,7 @@ if godot_dir == Dir("godot"):
         if godot_check_if_branch(env["godot_version"]):
             run(["git", "pull"], godot_dir.abspath)
 
-# Setup base SCons arguments to the engine build command.
+# Setup base SCons arguments to the Godot build command.
 # Copy all from the command line, except for options in this SConstruct.
 build_args = ["scons"]
 for arg in ARGLIST:
@@ -203,17 +207,24 @@ if scons_cache_path != None:
     CacheDir(scons_cache_path)
     print("SCons cache enabled... (path: '" + scons_cache_path + "')")
 
-# Pass commonly used SCons options.
-if GetOption("help"):
-    build_args.append("--help")
+# Some SCons-specific options may not trigger an actual build.
+skip_build = False
 
-if GetOption("clean"):
-    build_args.append("--clean")
+# Pass commonly used SCons options to the Godot build.
+scons_options = ["help", "clean"]
+for opt in scons_options:
+    if not GetOption(opt):
+        continue
+    skip_build |= opt in ["help", "clean"]
+    build_args.append("--%s" % opt)
 
 # The following can be overridden using the `SCONSFLAGS` environment variable,
 # but for convenience, we just copy those options here.
 if GetOption("num_jobs") > 1:
     build_args.append("--jobs=%s" % GetOption("num_jobs"))
 
-# Build the engine with the module.
+if not skip_build:
+    print("Building Godot with %s ..." % module_name.capitalize())
+
+# Run SCons to build Godot with the module, check the build configuration etc.
 run(build_args, godot_dir.abspath)
