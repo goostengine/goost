@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #
 # Upstream: https://github.com/goostengine/goost
-# Version: 1.4 (Godot Engine 3.2.2+)
+# Version: 1.5 (Godot Engine 3.2.2+)
 # License: MIT
 #
 # `SConstruct` which allows to build any C++ module just like Godot Engine.
@@ -55,10 +55,12 @@ godot_url = os.getenv("GODOT_REPO_URL", "https://github.com/godotengine/godot")
 
 # Setup SCons command-line options.
 opts = Variables("custom.py", ARGUMENTS)
-opts.Add("godot_version", "Godot Engine version (branch, tags, commit hashes)", godot_version)
-opts.Add(BoolVariable("godot_sync", "Synchronize Godot Engine version from remote URL before building", False))
+opts.Add("godot_version", "Godot version (branch, tags, commit hashes)", godot_version)
+opts.Add(BoolVariable("godot_sync", "Synchronize Godot version from the remote URL before building", False))
 opts.Add(BoolVariable("godot_modules_enabled", "Build all Godot builtin modules", True))
 opts.Add(BoolVariable("parent_modules_enabled", "Build all modules which may reside in the same parent directory", False))
+opts.Add(BoolVariable("use_godot_patches", "Apply custom fixes and small enhancements to Godot source before building", False))
+opts.Add("godot_patches", "A directory path containing custom Godot patches", "misc/patches")
 
 # Generate help text.
 Help("\n\n%s top-level build options:\n" % module_name.capitalize(), append=True)
@@ -223,6 +225,37 @@ for opt in scons_options:
 if GetOption("num_jobs") > 1:
     build_args.append("--jobs=%s" % GetOption("num_jobs"))
 
+# Apply custom Godot patches before build.
+if env["use_godot_patches"] and godot_dir == Dir("godot") and not skip_build:
+    patches_dir = Dir(env["godot_patches"])
+    if not patches_dir.exists():
+        raise ValueError("Directory to Godot patches not found.")
+
+    # Ensure that the working directory is clean before applying patches anew.
+    run(["git", "reset", "--hard", "HEAD", "--quiet"], godot_dir.abspath)
+
+    # Collect patches.
+    from glob import glob
+    patches = []
+    for ext in ["*.patch", "*.diff"]:
+        patches += glob(os.path.join(patches_dir.abspath, ext))
+
+    print("Applying Godot patches ...")
+    for p in patches:
+        patch_filepath = os.path.join(patches_dir.abspath, p)
+        try:
+            patch_cmd = ["git", "apply"]
+            # The following options increase the likelyhood of patches being
+            # applied against different Godot versions.
+            patch_cmd.append("--3way")
+            patch_cmd.extend(["--ignore-whitespace", "--whitespace=nowarn"])
+            patch_cmd.append(patch_filepath)
+            run(patch_cmd, godot_dir.abspath)
+        except Exception as e:
+            print("Failed to apply Godot patch: " + p)
+            print(e)
+            Exit()
+ 
 if not skip_build:
     print("Building Godot with %s ..." % module_name.capitalize())
 
