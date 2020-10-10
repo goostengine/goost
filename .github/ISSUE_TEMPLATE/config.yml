@@ -1,8 +1,11 @@
 blank_issues_enabled: false
 contact_links:
-  - name: Goost documentation repository
+  - name: Documentation
     url: https://github.com/goostengine/goost-docs
-    about: Please report issues with documentation on the Goost documentation repository, not here.
-  - name: Goost Discord channel
+    about: Please report issues with documentation on the Goost Documentation repository, not here.
+  - name: Examples
+    url: https://github.com/goostengine/goost-examples
+    about: Request or propose usage examples on the Goost Examples repository, not here.
+  - name: Chat
     url: https://discord.gg/w6jBZnG
-    about: Goost discussion channel at "Godot Extended Libraries" Discord server.
+    about: Discuss and recieve development updates on the "Godot Extended Libraries" Discord server.

@@ -2,10 +2,10 @@
 
 Contributor checklist (all optional):
 
-- [ ] update `goost.py::classes` to list a new class
-- [ ] update `CHANGELOG.md`
-- [ ] write documentation for the new class
-- [ ] create a new or update the existing tests
-- [ ] update examples or plugins
+- [ ] Update `goost.py::classes` to list a new class.
+- [ ] Write or update documentation for classes.
+- [ ] Write or update the existing tests.
+- [ ] Update `CHANGELOG.md`.
+- [ ] Update examples or plugins.
 
 -->
