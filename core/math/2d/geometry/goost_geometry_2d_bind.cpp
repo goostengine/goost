@@ -360,6 +360,18 @@ Vector<Point2> _GoostGeometry2D::circle(real_t p_radius, real_t p_max_error) con
 	return GoostGeometry2D::circle(p_radius, p_max_error);
 }
 
+Vector2 _GoostGeometry2D::rand_point_in_circle(real_t p_radius) const {
+	return GoostGeometry2D::rand_point_in_circle(p_radius);
+}
+
+Vector2 _GoostGeometry2D::rand_point_on_circle(real_t p_radius) const {
+	return GoostGeometry2D::rand_point_on_circle(p_radius);
+}
+
+Vector2 _GoostGeometry2D::rand_point_in_ring(real_t p_min_radius, real_t p_max_radius) const {
+	return GoostGeometry2D::rand_point_in_ring(p_min_radius, p_max_radius);
+}
+
 void _GoostGeometry2D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("merge_polygons", "polygon_a", "polygon_b", "params"), &_GoostGeometry2D::merge_polygons, DEFVAL(Variant()));
 	ClassDB::bind_method(D_METHOD("clip_polygons", "polygon_a", "polygon_b", "params"), &_GoostGeometry2D::clip_polygons, DEFVAL(Variant()));
@@ -404,6 +416,10 @@ void _GoostGeometry2D::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("regular_polygon", "sides", "size"), &_GoostGeometry2D::regular_polygon, DEFVAL(64.0));
 	ClassDB::bind_method(D_METHOD("circle", "radius", "max_error"), &_GoostGeometry2D::circle, DEFVAL(0.25));
+
+	ClassDB::bind_method(D_METHOD("rand_point_in_circle", "radius"), &_GoostGeometry2D::rand_point_in_circle);
+	ClassDB::bind_method(D_METHOD("rand_point_on_circle", "radius"), &_GoostGeometry2D::rand_point_on_circle);
+	ClassDB::bind_method(D_METHOD("rand_point_in_ring", "min_radius", "max_radius"), &_GoostGeometry2D::rand_point_in_ring);
 
 	BIND_ENUM_CONSTANT(OPERATION_NONE);
 	BIND_ENUM_CONSTANT(OPERATION_UNION);
