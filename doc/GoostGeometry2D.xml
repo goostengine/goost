@@ -417,6 +417,45 @@
 				Returns the total length of the segments representing the polyline. See also [method polygon_perimeter].
 			</description>
 		</method>
+		<method name="rand_point_in_circle" qualifiers="const">
+			<return type="Vector2">
+			</return>
+			<argument index="0" name="radius" type="float">
+			</argument>
+			<description>
+				Returns a random point uniformly distributed within a circle, such that [method Geometry.is_point_in_circle] shall return [code]true[/code] given the same [code]radius[/code].
+				This method is faster than [method rand_point_in_ring] and equivalent to:
+				[codeblock]
+				GoostGeometry2D.rand_point_in_ring(0.0, radius)
+				[/codeblock]
+			</description>
+		</method>
+		<method name="rand_point_in_ring" qualifiers="const">
+			<return type="Vector2">
+			</return>
+			<argument index="0" name="min_radius" type="float">
+			</argument>
+			<argument index="1" name="max_radius" type="float">
+			</argument>
+			<description>
+				Returns a random point uniformly distributed within the ring's area confined by inner (hole) and outer (boundary) circles as specified with [code]min_radius[/code] and [code]max_radius[/code] respectively.
+				The method can be used to generate points distributed strictly on the circle's boundary if [code]min_radius == max_radius[/code] which is equivalent to [method rand_point_on_circle].
+			</description>
+		</method>
+		<method name="rand_point_on_circle" qualifiers="const">
+			<return type="Vector2">
+			</return>
+			<argument index="0" name="radius" type="float">
+			</argument>
+			<description>
+				Returns a random point uniformly distributed strictly [b]on[/b] the circle's boundary.
+				This method is faster than [method rand_point_in_ring] with the following equivalent code:
+				[codeblock]
+				GoostGeometry2D.rand_point_in_ring(radius, radius)
+				[/codeblock]
+				[b]Note[/b]: the point may slightly deviate from the actual circle's boundary due to floating point error accumulation.
+			</description>
+		</method>
 		<method name="regular_polygon" qualifiers="const">
 			<return type="PoolVector2Array">
 			</return>

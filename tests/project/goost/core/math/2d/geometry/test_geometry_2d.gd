@@ -303,3 +303,27 @@ func test_regular_polygon():
 func test_circle():
 	solution = GoostGeometry2D.circle(SIZE, 0.25)
 	assert_eq(solution.size(), 32)
+
+
+func test_rand_point_in_circle():
+	var max_radius = 10.0
+	for i in 100:
+		var point = GoostGeometry2D.rand_point_in_circle(max_radius)
+		assert_true(Geometry.is_point_in_circle(point, Vector2(), max_radius))
+		assert_lt(point.length(), max_radius)
+
+
+func test_rand_point_on_circle():
+	var max_radius = 50.0
+	for i in 100:
+		var point = GoostGeometry2D.rand_point_on_circle(max_radius)
+		assert_true(is_equal_approx(point.length(), max_radius))
+
+
+func test_rand_point_in_ring():
+	var min_radius = 10.0
+	var max_radius = 100.0
+	for i in 100:
+		var point = GoostGeometry2D.rand_point_in_ring(min_radius, max_radius)
+		assert_lt(point.length(), max_radius)
+		assert_gt(point.length(), min_radius)
