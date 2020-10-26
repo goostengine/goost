@@ -1,4 +1,4 @@
-class_name Goost
+class_name TestUtils
 
 # Note: do not rely on the import process to load assets, as it requires
 # a sophisticated approach of importing the assets from the command line,

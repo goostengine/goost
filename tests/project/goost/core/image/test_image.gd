@@ -18,7 +18,7 @@ func after_each():
 
 
 func test_resize_hqx2_rgb():
-	var input = Goost.image_load(SAMPLES.rect_rgb)
+	var input = TestUtils.image_load(SAMPLES.rect_rgb)
 	var input_size = input.get_size()
 	output = input
 	GoostImage.resize_hqx(output, 2)
@@ -26,7 +26,7 @@ func test_resize_hqx2_rgb():
 
 
 func test_resize_hqx3_rgba():
-	var input = Goost.image_load(SAMPLES.rect_rgba)
+	var input = TestUtils.image_load(SAMPLES.rect_rgba)
 	var input_size = input.get_size()
 	output = input
 	GoostImage.resize_hqx(output, 3)
@@ -34,7 +34,7 @@ func test_resize_hqx3_rgba():
 
 
 func test_rotate_rgba():
-	var input = Goost.image_load(SAMPLES.rect_rgba)
+	var input = TestUtils.image_load(SAMPLES.rect_rgba)
 	var input_size = input.get_size()
 	output = input
 	GoostImage.rotate(output, deg2rad(45))
@@ -46,7 +46,7 @@ func test_rotate_rgba():
 
 
 func test_rotate_rgb():
-	var input = Goost.image_load(SAMPLES.rect_rgb)
+	var input = TestUtils.image_load(SAMPLES.rect_rgb)
 	assert_eq(input.get_format(), Image.FORMAT_RGB8)
 	var input_size = input.get_size()
 	output = input
@@ -61,7 +61,7 @@ func test_rotate_rgb():
 
 
 func test_rotate_grayscale():
-	var input = Goost.image_load(SAMPLES.rect_grayscale)
+	var input = TestUtils.image_load(SAMPLES.rect_grayscale)
 	var input_size = input.get_size()
 	output = input
 	GoostImage.rotate(output, deg2rad(45), true)
@@ -73,7 +73,7 @@ func test_rotate_grayscale():
 
 
 func test_rotate_no_expand():
-	var input = Goost.image_load(SAMPLES.rect_rgba)
+	var input = TestUtils.image_load(SAMPLES.rect_rgba)
 	var input_size = input.get_size()
 	output = input
 	GoostImage.rotate(output, deg2rad(45), false)
@@ -85,7 +85,7 @@ func test_rotate_no_expand():
 
 
 func test_rotate_90_cw():
-	var input = Goost.image_load(SAMPLES.rect_rgba)
+	var input = TestUtils.image_load(SAMPLES.rect_rgba)
 	var input_size = input.get_size()
 	output = input
 	GoostImage.rotate_90(output, GoostImage.CW)
@@ -96,7 +96,7 @@ func test_rotate_90_cw():
 
 
 func test_rotate_90_ccw():
-	var input = Goost.image_load(SAMPLES.rect_rgba)
+	var input = TestUtils.image_load(SAMPLES.rect_rgba)
 	var input_size = input.get_size()
 	output = input
 	GoostImage.rotate_90(output, GoostImage.CCW)
@@ -107,7 +107,7 @@ func test_rotate_90_ccw():
 
 
 func test_rotate_180_grayscale():
-	var input = Goost.image_load(SAMPLES.rect_grayscale)
+	var input = TestUtils.image_load(SAMPLES.rect_grayscale)
 	var input_size = input.get_size()
 	output = input
 	GoostImage.rotate_180(output)
@@ -149,7 +149,7 @@ func test_render_polygon_filled_color():
 
 
 func test_binarize_adaptive():
-	output = Goost.image_load(SAMPLES.icon)
+	output = TestUtils.image_load(SAMPLES.icon)
 	GoostImage.binarize(output)
 	output.lock()
 	assert_eq(output.get_pixel(8, 9), Color.white)
@@ -158,7 +158,7 @@ func test_binarize_adaptive():
 
 
 func test_binarize_threshold():
-	output = Goost.image_load(SAMPLES.icon)
+	output = TestUtils.image_load(SAMPLES.icon)
 	GoostImage.binarize(output, 0.85)
 	output.lock()
 	assert_eq(output.get_pixel(8, 9), Color.black)
@@ -168,7 +168,7 @@ func test_binarize_threshold():
 
 
 func test_binarize_threshold_invert():
-	output = Goost.image_load(SAMPLES.icon)
+	output = TestUtils.image_load(SAMPLES.icon)
 	GoostImage.binarize(output, 0.85, true)
 	output.lock()
 	assert_eq(output.get_pixel(8, 9), Color.white)
@@ -178,7 +178,7 @@ func test_binarize_threshold_invert():
 
 
 func test_centroid():
-	output = Goost.image_load(SAMPLES.stroke)
+	output = TestUtils.image_load(SAMPLES.stroke)
 	var centroid = GoostImage.get_centroid(output)
 	assert_almost_eq(centroid, Vector2(37, 38), Vector2(0.5, 0.5))
 	output.lock()
@@ -187,7 +187,7 @@ func test_centroid():
 
 
 func test_morph_type_dilate():
-	output = Goost.image_load(SAMPLES.stroke)
+	output = TestUtils.image_load(SAMPLES.stroke)
 	GoostImage.morph(output, GoostImage.MORPH_DILATE)
 	output.lock()
 	assert_eq(output.get_pixel(50, 35), Color.white)
@@ -195,7 +195,7 @@ func test_morph_type_dilate():
 
 
 func test_morph_type_erode():
-	output = Goost.image_load(SAMPLES.stroke)
+	output = TestUtils.image_load(SAMPLES.stroke)
 	GoostImage.morph(output, GoostImage.MORPH_ERODE)
 	output.lock()
 	assert_eq(output.get_pixel(16, 33), Color.black)
@@ -204,7 +204,7 @@ func test_morph_type_erode():
 
 
 func test_dilate_5px():
-	output = Goost.image_load(SAMPLES.stroke)
+	output = TestUtils.image_load(SAMPLES.stroke)
 	GoostImage.dilate(output, 5)
 	output.lock()
 	assert_ne(output.get_pixel(11, 38), Color.black)
@@ -212,7 +212,7 @@ func test_dilate_5px():
 
 
 func test_erode_5px():
-	output = Goost.image_load(SAMPLES.stroke)
+	output = TestUtils.image_load(SAMPLES.stroke)
 	GoostImage.erode(output, 5)
 	output.lock()
 	assert_eq(output.get_pixel(50, 32), Color.black)
@@ -220,7 +220,7 @@ func test_erode_5px():
 
 
 func test_morph_open():
-	output = Goost.image_load(SAMPLES.stroke)
+	output = TestUtils.image_load(SAMPLES.stroke)
 	GoostImage.morph(output, GoostImage.MORPH_OPEN)
 	output.lock()
 	assert_eq(output.get_pixel(38, 6), Color.white)
@@ -231,7 +231,7 @@ func test_morph_open():
 
 
 func test_morph_close():
-	output = Goost.image_load(SAMPLES.stroke)
+	output = TestUtils.image_load(SAMPLES.stroke)
 	GoostImage.morph(output, GoostImage.MORPH_CLOSE)
 	output.lock()
 	assert_eq(output.get_pixel(55, 16), Color.white)
@@ -249,7 +249,7 @@ func debug_color(color):
 
 
 func test_get_pixel_average():
-	output = Goost.image_load(SAMPLES.icon)
+	output = TestUtils.image_load(SAMPLES.icon)
 	var color = GoostImage.get_pixel_average(output)
 	output.lock()
 	assert_almost_eq(color.r, 0.2, 0.001)
@@ -261,7 +261,7 @@ func test_get_pixel_average():
 
 
 func test_get_pixel_average_grayscale():
-	output = Goost.image_load(SAMPLES.icon_binary)
+	output = TestUtils.image_load(SAMPLES.icon_binary)
 	var color = GoostImage.get_pixel_average(output)
 	output.lock()
 	assert_almost_eq(color.r, 0.452, 0.001)
@@ -273,7 +273,7 @@ func test_get_pixel_average_grayscale():
 
 
 func test_get_pixel_average_rect_full():
-	output = Goost.image_load(SAMPLES.rect_rgba)
+	output = TestUtils.image_load(SAMPLES.rect_rgba)
 	var s = output.get_size()
 	var rect = Rect2(0, 0, s.x, s.y) # Full rect.
 	var color = GoostImage.get_pixel_average(output, rect)
@@ -286,7 +286,7 @@ func test_get_pixel_average_rect_full():
 
 
 func test_get_pixel_average_rect_top_left():
-	output = Goost.image_load(SAMPLES.rect_rgba)
+	output = TestUtils.image_load(SAMPLES.rect_rgba)
 	var s = output.get_size()
 	var rect = Rect2(0, 0, s.x / 2, s.y / 2) # Top-left rect.
 	var color = GoostImage.get_pixel_average(output, rect)
@@ -299,7 +299,7 @@ func test_get_pixel_average_rect_top_left():
 
 
 func test_get_pixel_average_rect_bottom_right():
-	output = Goost.image_load(SAMPLES.rect_rgba)
+	output = TestUtils.image_load(SAMPLES.rect_rgba)
 	var s = output.get_size()
 	var rect = Rect2(s.x / 2, s.y / 2, s.x / 2, s.y / 2) # Bottom-right rect.
 	var color = GoostImage.get_pixel_average(output, rect)
@@ -312,7 +312,7 @@ func test_get_pixel_average_rect_bottom_right():
 
 
 func test_get_pixel_average_rect_mixed():
-	output = Goost.image_load(SAMPLES.rect_rgba)
+	output = TestUtils.image_load(SAMPLES.rect_rgba)
 	var s = output.get_size()
 	var rect = Rect2(0, 0, s.x / 2, s.y) # Between R and G.
 	var color = GoostImage.get_pixel_average(output, rect)
@@ -325,7 +325,7 @@ func test_get_pixel_average_rect_mixed():
 
 
 func test_get_pixel_average_mask_full():
-	output = Goost.image_load(SAMPLES.rect_rgba)
+	output = TestUtils.image_load(SAMPLES.rect_rgba)
 	var s = output.get_size()
 	var mask = Image.new()
 	mask.create(s.x, s.y, false, Image.FORMAT_L8)
@@ -340,7 +340,7 @@ func test_get_pixel_average_mask_full():
 
 
 func test_get_pixel_average_mask_top_left():
-	output = Goost.image_load(SAMPLES.rect_rgba)
+	output = TestUtils.image_load(SAMPLES.rect_rgba)
 	var s = output.get_size()
 	var mask = Image.new()
 	mask.create(s.x / 2.0, s.y / 2.0, false, Image.FORMAT_L8)
@@ -355,41 +355,41 @@ func test_get_pixel_average_mask_top_left():
 
 
 func test_repeat():
-	var input = Goost.image_load(SAMPLES.rect_rgba)
+	var input = TestUtils.image_load(SAMPLES.rect_rgba)
 	var input_size = input.get_size()
 	output = GoostImage.repeat(input, Vector2(3, 4), GoostImage.TILE)
 	assert_eq(output.get_size(), Vector2(input_size.x * 3, input_size.y * 4))
 
 
 func test_repeat_flip_x():
-	var input = Goost.image_load(SAMPLES.rect_rgba)
+	var input = TestUtils.image_load(SAMPLES.rect_rgba)
 	var input_size = input.get_size()
 	output = GoostImage.repeat(input, Vector2(4, 3), GoostImage.TILE_FLIP_X)
 	assert_eq(output.get_size(), Vector2(input_size.x * 4, input_size.y * 3))
 
 
 func test_repeat_flip_y():
-	var input = Goost.image_load(SAMPLES.rect_rgba)
+	var input = TestUtils.image_load(SAMPLES.rect_rgba)
 	var input_size = input.get_size()
 	output = GoostImage.repeat(input, Vector2(3, 4), GoostImage.TILE_FLIP_Y)
 	assert_eq(output.get_size(), Vector2(input_size.x * 3, input_size.y * 4))
 
 
 func test_repeat_flip_xy():
-	var input = Goost.image_load(SAMPLES.rect_rgba)
+	var input = TestUtils.image_load(SAMPLES.rect_rgba)
 	var input_size = input.get_size()
 	output = GoostImage.repeat(input, Vector2(4, 4), GoostImage.TILE_FLIP_XY)
 	assert_eq(output.get_size(), Vector2(input_size.x * 4, input_size.y * 4))
 
 
 func test_tile_arbitrary_size():
-	var input = Goost.image_load(SAMPLES.rect_rgba)
+	var input = TestUtils.image_load(SAMPLES.rect_rgba)
 	output = GoostImage.tile(input, Vector2(300, 400))
 	assert_eq(output.get_size(), Vector2(300, 400))
 
 
 func test_tile_dest_smaller_than_tile():
-	var input = Goost.image_load(SAMPLES.rect_rgba)
+	var input = TestUtils.image_load(SAMPLES.rect_rgba)
 	output = GoostImage.tile(input, Vector2(16, 8))
 	assert_eq(output.get_size(), Vector2(16, 8))
 	output.lock()
@@ -398,7 +398,7 @@ func test_tile_dest_smaller_than_tile():
 
 
 func test_tile_thin_slice():
-	var input = Goost.image_load(SAMPLES.rect_rgba)
+	var input = TestUtils.image_load(SAMPLES.rect_rgba)
 	output = GoostImage.tile(input, Vector2(16, 100))
 	assert_eq(output.get_size(), Vector2(16, 100))
 	output.lock()
