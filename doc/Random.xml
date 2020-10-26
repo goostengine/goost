@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="Random" inherits="RandomNumberGenerator" version="3.2">
+	<brief_description>
+		An instance of [RandomNumberGenerator] available at [@GlobalScope].
+	</brief_description>
+	<description>
+		This is a singleton which allows to use [RandomNumberGenerator] methods without instantiating a dedicated object. This means that [Random] can be used via script with methods such as [method @GDScript.randi]:
+		[codeblock]
+		Random.randomize() # Time-based.
+		Random.seed = hash("Goost") # Manual.
+		var i = Random.randi() % 100
+		var f = Random.randf_range(-1.0, 1.0)
+		[/codeblock]
+		The class may implement other methods other than what [RandomNumberGenerator] already provides out of the box.
+		It's not possible to instantiate a new [Random] instance with [code]Random.new()[/code] in GDScript. If you'd like to instantiate a local instance of [Random], use [method new_instance] instead, or [code]ClassDB.instance("Random")[/code], see [method ClassDB.instance].
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="new_instance" qualifiers="const">
+			<return type="Random">
+			</return>
+			<description>
+				Instantiates a new local [Random] instance based on [RandomNumberGenerator]. Does not override the [Random] instance accessible at [@GlobalScope].
+			</description>
+		</method>
+	</methods>
+	<constants>
+	</constants>
+</class>
