@@ -4,12 +4,19 @@
 
 #include "2d/geometry/goost_geometry_2d.h"
 #include "2d/geometry/goost_geometry_2d_bind.h"
+#include "random.h"
 
+static Ref<Random> _random;
 static _GoostGeometry2D *_goost_geometry_2d = nullptr;
 
 namespace goost {
 
 void register_math_types() {
+	_random.instance();
+	ClassDB::register_class<Random>();
+	Object *random = Object::cast_to<Object>(Random::get_singleton());
+	Engine::get_singleton()->add_singleton(Engine::Singleton("Random", random));
+
 	_goost_geometry_2d = memnew(_GoostGeometry2D);
 	GoostGeometry2D::initialize();
 
@@ -24,6 +31,7 @@ void register_math_types() {
 }
 
 void unregister_math_types() {
+	_random.unref();
 	memdelete(_goost_geometry_2d);
 	GoostGeometry2D::finalize();
 }
