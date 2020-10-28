@@ -138,13 +138,13 @@ func test_insert_after_back():
 
 func test_insert_after_null():
 	populate_test_data(list)
-	list.insert_after(null, "Godot")
+	var _n = list.insert_after(null, "Godot")
 	assert_eq(list.back.value, "Godot")
 
 
 func test_insert_before_null():
 	populate_test_data(list)
-	list.insert_before(null, "Godot")
+	var _n = list.insert_before(null, "Godot")
 	# Not sure about this, see issue upstream from which this was ported:
 	# https://github.com/godotengine/godot/issues/42116
 	# But consistency with builtin List<Variant> is more important currently.
@@ -485,13 +485,14 @@ func tets_sort_strings():
 
 
 func test_sort_variants():
-	list.push_back("Goost")
-	list.push_back(Color.blue)
-	list.push_back(37)
-	list.push_back(Vector2.ONE)
-	list.push_back(true)
-	list.push_back(null)
-	list.push_back(100.0)
+	var _n: ListNode
+	_n = list.push_back("Goost")
+	_n = list.push_back(Color.blue)
+	_n = list.push_back(37)
+	_n = list.push_back(Vector2.ONE)
+	_n = list.push_back(true)
+	_n = list.push_back(null)
+	_n = list.push_back(100.0)
 
 	list.sort()
 
@@ -595,7 +596,7 @@ func test_list_node_erase_orphan():
 
 
 func test_list_inside_list_node__via_manual_value_set():
-	var nodes = populate_test_data(list)
+	populate_test_data(list)
 	assert_not_null(list.find("Goost"))
 	var new_list = LinkedList.new()
 	var new_node = new_list.push_back("Godot")
@@ -620,7 +621,7 @@ func test_list_inside_list_node_nested__via_push_back():
 	var new_list = LinkedList.new()
 	var new_node = new_list.push_back("Godot")
 	assert_eq(new_node.value, "Godot")
-	list.push_back(new_list)
+	var _n = list.push_back(new_list)
 	assert_eq(list.front.value.front.value, "Godot")
 
 
