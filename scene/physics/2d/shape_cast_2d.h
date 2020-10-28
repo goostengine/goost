@@ -47,6 +47,7 @@ public:
 	void set_shape(const Ref<Shape2D> &p_shape);
 	Ref<Shape2D> get_shape() const;
 
+	// TODO: rename to `target_position` in Godot 4.0.
 	void set_cast_to(const Vector2 &p_point);
 	Vector2 get_cast_to() const;
 

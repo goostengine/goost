@@ -34,10 +34,9 @@ void register_image_types() {
 
 void unregister_image_types() {
 	memdelete(_goost_image);
-
-	if (image_loader_indexed_png)
+	if (image_loader_indexed_png) {
 		memdelete(image_loader_indexed_png);
-
+	}
 	ResourceSaver::remove_resource_format_saver(resource_saver_indexed_png);
 	resource_saver_indexed_png.unref();
 }

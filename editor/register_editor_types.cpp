@@ -3,11 +3,11 @@
 namespace goost {
 
 void register_editor_types() {
-	// Nothing to do.
+	// Nothing to do yet.
 }
 
 void unregister_editor_types() {
-	// Nothing to do.
+	// Nothing to do yet.
 }
 
 } // namespace goost

@@ -56,18 +56,24 @@ Error ResourceImporterAnimatedTexture::import(const String &p_source_file, const
 	int srgb = p_options["flags/srgb"];
 
 	int tex_flags = 0;
-	if (repeat > 0)
+	if (repeat > 0) {
 		tex_flags |= Texture::FLAG_REPEAT;
-	if (repeat == 2)
+	}
+	if (repeat == 2) {
 		tex_flags |= Texture::FLAG_MIRRORED_REPEAT;
-	if (filter)
+	}
+	if (filter) {
 		tex_flags |= Texture::FLAG_FILTER;
-	if (mipmaps)
+	}
+	if (mipmaps) {
 		tex_flags |= Texture::FLAG_MIPMAPS;
-	if (anisotropic)
+	}
+	if (anisotropic) {
 		tex_flags |= Texture::FLAG_ANISOTROPIC_FILTER;
-	if (srgb == 1)
+	}
+	if (srgb == 1) {
 		tex_flags |= Texture::FLAG_CONVERT_TO_LINEAR;
+	}
 
 	Ref<ImageFrames> image_frames;
 	image_frames.instance();

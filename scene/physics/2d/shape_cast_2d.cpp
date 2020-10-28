@@ -9,8 +9,9 @@
 
 void ShapeCast2D::set_cast_to(const Vector2 &p_point) {
 	cast_to = p_point;
-	if (is_inside_tree() && (Engine::get_singleton()->is_editor_hint() || get_tree()->is_debugging_collisions_hint()))
+	if (is_inside_tree() && (Engine::get_singleton()->is_editor_hint() || get_tree()->is_debugging_collisions_hint())) {
 		update();
+	}
 }
 
 Vector2 ShapeCast2D::get_cast_to() const {
