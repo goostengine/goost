@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="VariantResource" inherits="Resource" version="3.2">
+	<brief_description>
+		A [Resource] which holds any [Variant] compatible type.
+	</brief_description>
+	<description>
+		This class allows to store any [Variant] compatible built-in types as a [Resource], such as [Vector2], [Dictionary], [Array], and even [VariantResource] itself. These can be edited in the inspector and saved to disk to be reused throughout the project, as resources are shared between instances by default.
+		[VariantResource] is normally edited via the editor inspector, but the [member type] and [code]value[/code] can be changed via code as well:
+		[codeblock]
+		var res = VariantResource.new()
+		res.value = Vector3(1, 2, 3) # The type is set automatically.
+		print(res.value)  # prints (1, 2, 3)
+		res.type = TYPE_VECTOR2 # The previous value is converted to a new type.
+		print(res.value)  # prints (1, 2)
+		[/codeblock]
+		The conversion logic is mostly equivalent to [method @GDScript.convert], except that the [constant @GlobalScope.TYPE_NIL] is never automatically converted to other types.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+	</methods>
+	<members>
+		<member name="type" type="int" setter="set_type" getter="get_type" default="0">
+			Sets the type of the [Variant], one of the [code]TYPE_*[/code] constants available at [@GlobalScope], such as [constant @GlobalScope.TYPE_INT].
+			Once the type is set, an implicit [Variant] [code]value[/code] property is constructed. The [code]value[/code] property can be changed dynamically anytime, and this emits the [signal changed] signal, which can be connected to other script or engine methods:
+			[codeblock]
+			extends Node2D
+			
+			export(VariantResource) res = VariantResource.new()
+			
+			func _ready():
+			    # Whenever the color is changed, redraw the canvas.
+			    res.connect("changed", self, "update")
+			    # This emits the "changed" signal above.
+			    res.value = Color.blue
+			
+			func _draw():
+			    if res.type == TYPE_COLOR:
+			        draw_circle(Vector2(), 100, res.value)
+			[/codeblock]
+		</member>
+	</members>
+	<constants>
+	</constants>
+</class>

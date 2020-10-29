@@ -59,6 +59,7 @@ classes = [
     "PolyNode2D",
     "Random",
     "ShapeCast2D",
+    "VariantResource",
     "VisualShape2D",
 ]
 classes_dependencies = {
