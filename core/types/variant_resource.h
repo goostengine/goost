@@ -15,16 +15,35 @@ protected:
 
 private:
 	Variant::Type type = Variant::NIL;
+	PropertyInfo pi;
 	Variant value;
 
 public:
 	void set_type(Variant::Type p_type);
 	int get_type() const { return type; }
 
+	void set_property_name(const String &p_property_name);
+	String get_property_name() const { return pi.name; };
+
+	void set_property_hint(PropertyHint p_property_hint);
+	PropertyHint get_property_hint() const { return pi.hint; };
+
+	void set_property_hint_string(const String &p_property_hint_string);
+	String get_property_hint_string() const { return pi.hint_string; };
+	
+	void set_property_usage(PropertyUsageFlags p_property_usage);
+	PropertyUsageFlags get_property_usage() const { return PropertyUsageFlags(pi.usage); };
+
 	static Variant create(const Variant::Type &p_type);
 	static Variant convert(const Variant &p_value, const Variant::Type &p_to_type);
+	static String get_type_hints();
 
 	virtual String to_string() { return String(value); }
+
+	VariantResource() {
+		// Default, but can be configured with `property_name` property.
+		pi.name = "value"; 
+	}
 };
 
 #endif // GOOST_VARIANT_RESOURCE_H

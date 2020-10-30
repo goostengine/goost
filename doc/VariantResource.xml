@@ -20,6 +20,18 @@
 	<methods>
 	</methods>
 	<members>
+		<member name="property_hint" type="int" setter="set_property_hint" getter="get_property_hint" enum="PropertyHint" default="0">
+			Specifies how the value is represented in the editor, one of [enum @GlobalScope.PropertyHint] values.
+		</member>
+		<member name="property_hint_string" type="String" setter="set_property_hint_string" getter="get_property_hint_string" default="&quot;&quot;">
+			Configures [member property_hint].
+		</member>
+		<member name="property_name" type="String" setter="set_property_name" getter="get_property_name" default="&quot;value&quot;">
+			Specifies the value's property name. By default, the data can be fetched via code by referencing the [code]value[/code] property, but this can be customized.
+		</member>
+		<member name="property_usage" type="int" setter="set_property_usage" getter="get_property_usage" enum="PropertyUsageFlags" default="7">
+			Specifies how the value should be used throughout the editor and code, a combination of [enum @GlobalScope.PropertyUsageFlags] values.
+		</member>
 		<member name="type" type="int" setter="set_type" getter="get_type" default="0">
 			Sets the type of the [Variant], one of the [code]TYPE_*[/code] constants available at [@GlobalScope], such as [constant @GlobalScope.TYPE_INT].
 			Once the type is set, an implicit [Variant] [code]value[/code] property is constructed. The [code]value[/code] property can be changed dynamically anytime, and this emits the [signal changed] signal, which can be connected to other script or engine methods:
