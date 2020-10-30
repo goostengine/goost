@@ -1,13 +1,21 @@
 #include "variant_resource.h"
 
 void VariantResource::set_type(Variant::Type p_type) {
+	const Variant::Type prev_type = type;
 	type = p_type;
 	// Convert previous value to a new type, if possible.
-	if (value.get_type() != Variant::NIL) {
+	if (prev_type != Variant::NIL) {
 		value = convert(value, type);
+	} else {
+		value = create(type);
 	}
 	emit_changed();
 	_change_notify();
+}
+
+Variant VariantResource::create(const Variant::Type &p_type) {
+	Variant::CallError error;
+	return Variant::construct(p_type, nullptr, 0, error);
 }
 
 Variant VariantResource::convert(const Variant &p_value, const Variant::Type &p_to_type) {

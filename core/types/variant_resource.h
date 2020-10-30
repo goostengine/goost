@@ -4,8 +4,6 @@
 #include "core/resource.h"
 #include "core/variant.h"
 
-class VariantResource;
-
 class VariantResource : public Resource {
 	GDCLASS(VariantResource, Resource);
 
@@ -23,11 +21,10 @@ public:
 	void set_type(Variant::Type p_type);
 	int get_type() const { return type; }
 
+	static Variant create(const Variant::Type &p_type);
 	static Variant convert(const Variant &p_value, const Variant::Type &p_to_type);
 
 	virtual String to_string() { return String(value); }
-
-	VariantResource() {}
 };
 
 #endif // GOOST_VARIANT_RESOURCE_H
