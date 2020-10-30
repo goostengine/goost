@@ -3,6 +3,7 @@
 
 module_arkit_enabled = "no"
 module_assimp_enabled = "no"
+module_fbx_enabled = "no"
 module_bmp_enabled = "no"
 module_bullet_enabled = "no"
 module_camera_enabled = "no"
