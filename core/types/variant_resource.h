@@ -13,10 +13,9 @@ protected:
 	void _get_property_list(List<PropertyInfo> *p_list) const;
 	static void _bind_methods();
 
-private:
+	Variant value;
 	Variant::Type type = Variant::NIL;
 	PropertyInfo pi;
-	Variant value;
 
 public:
 	void set_type(Variant::Type p_type);
@@ -36,7 +35,11 @@ public:
 
 	static Variant create(const Variant::Type &p_type);
 	static Variant convert(const Variant &p_value, const Variant::Type &p_to_type);
+
 	static String get_type_hints();
+	// This should be in Godot, just like `Variant::get_type_name()` method.
+	static String get_property_hint_name(const PropertyHint &p_hint);
+	static String get_property_hint_types();
 
 	virtual String to_string() { return String(value); }
 
