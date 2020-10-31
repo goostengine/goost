@@ -1,4 +1,5 @@
 #include "variant_resource_preview.h"
+#include "editor/editor_node.h"
 
 bool VariantResourcePreviewGenerator::handles(const String &p_type) const {
 	return p_type == "VariantResource";
@@ -10,20 +11,21 @@ Ref<Texture> VariantResourcePreviewGenerator::generate(const Ref<Resource> &p_fr
 
     const Variant &value = var->get_value();
 
-    if (value.get_type() == Variant::NIL) {
-        return Ref<Texture>();
-    }
 	Ref<Image> image;
 	image.instance();
 	image->create(p_size.x, p_size.y, false, Image::FORMAT_RGBA8);
 
     switch (value.get_type()) {
+        case Variant::NIL: {
+            return EditorNode::get_singleton()->get_class_icon("Variant");
+        } break;
         case Variant::COLOR: {
             Color color = value;
             image->fill(color);
         } break;
         default: {
-            return Ref<Texture>();
+            String name = Variant::get_type_name(value.get_type());
+            return EditorNode::get_singleton()->get_class_icon(name, "Resource");
         };
     }
 	Ref<ImageTexture> tex;

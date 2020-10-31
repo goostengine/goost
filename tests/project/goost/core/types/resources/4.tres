@@ -1,0 +1,6 @@
+[gd_resource type="VariantResource" format=2]
+
+[resource]
+type = 4
+property_hint = 18
+value = "Hello World!"
