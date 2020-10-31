@@ -19,6 +19,12 @@ Ref<Texture> VariantResourcePreviewGenerator::generate(const Ref<Resource> &p_fr
         case Variant::NIL: {
             return EditorNode::get_singleton()->get_class_icon("Variant");
         } break;
+        case Variant::BOOL: {
+            bool b = value;
+            String builtin_name = Variant::get_type_name(value.get_type());
+            String name = b ? "GuiChecked" : "GuiUnchecked";
+            return EditorNode::get_singleton()->get_class_icon(name, builtin_name);
+        } break;
         case Variant::COLOR: {
             Color color = value;
             image->fill(color);
