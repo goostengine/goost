@@ -8,7 +8,7 @@ Ref<Texture> VariantResourcePreviewGenerator::generate(const Ref<Resource> &p_fr
 	Ref<VariantResource> var = p_from;
 	ERR_FAIL_COND_V_MSG(var.is_null(), Ref<VariantResource>(), "Invalid reference to a VariantResource object.");
 
-    const Variant &value = var->get(var->get_property_name());
+    const Variant &value = var->get_value();
 
     if (value.get_type() == Variant::NIL) {
         return Ref<Texture>();

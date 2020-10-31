@@ -218,6 +218,9 @@ void VariantResource::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_type", "type"), &VariantResource::set_type);
 	ClassDB::bind_method(D_METHOD("get_type"), &VariantResource::get_type);
 
+	ClassDB::bind_method(D_METHOD("set_value", "value"), &VariantResource::set_value);
+	ClassDB::bind_method(D_METHOD("get_value"), &VariantResource::get_value);
+
 	ClassDB::bind_method(D_METHOD("set_property_name", "name"), &VariantResource::set_property_name);
 	ClassDB::bind_method(D_METHOD("get_property_name"), &VariantResource::get_property_name);
 
@@ -229,6 +232,8 @@ void VariantResource::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("set_property_usage", "usage"), &VariantResource::set_property_usage);
 	ClassDB::bind_method(D_METHOD("get_property_usage"), &VariantResource::get_property_usage);
+
+	// DO NOT expose `value` as a property here, this is handled by `_get_property_list()` instead.
 
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "type", PROPERTY_HINT_ENUM, get_type_hints()), "set_type", "get_type");
 

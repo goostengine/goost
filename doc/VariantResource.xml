@@ -18,6 +18,22 @@
 	<tutorials>
 	</tutorials>
 	<methods>
+		<method name="get_value" qualifiers="const">
+			<return type="Variant">
+			</return>
+			<description>
+				Returns [Variant] data associated with this resource. The method is recommended to use over [method Object.get] as the property's name may be customized with [member property_name].
+			</description>
+		</method>
+		<method name="set_value">
+			<return type="void">
+			</return>
+			<argument index="0" name="value" type="Variant">
+			</argument>
+			<description>
+				Modifies existing value of this resource. The value's type is updated automatically if types differ. The method is recommended to use over [method Object.set] as the property's name may be customized with [member property_name].
+			</description>
+		</method>
 	</methods>
 	<members>
 		<member name="property_hint" type="int" setter="set_property_hint" getter="get_property_hint" enum="PropertyHint" default="0">
@@ -27,7 +43,7 @@
 			Configures [member property_hint].
 		</member>
 		<member name="property_name" type="String" setter="set_property_name" getter="get_property_name" default="&quot;value&quot;">
-			Specifies the value's property name. By default, the data can be fetched via code by referencing the [code]value[/code] property, but this can be customized.
+			Specifies the value's property name. By default, the data can be fetched via code by referencing the [code]value[/code] property, but this can be customized. Prefer to use the implicit default [code]value[/code] property, unless you're not sure whether the property's name is customized.
 		</member>
 		<member name="property_usage" type="int" setter="set_property_usage" getter="get_property_usage" enum="PropertyUsageFlags" default="7">
 			Specifies how the value should be used throughout the editor and code, a combination of [enum @GlobalScope.PropertyUsageFlags] values.

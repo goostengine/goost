@@ -21,6 +21,9 @@ public:
 	void set_type(Variant::Type p_type);
 	int get_type() const { return type; }
 
+	void set_value(const Variant &p_value) { set(pi.name, p_value); }
+	Variant get_value() const { return get(pi.name); }
+
 	void set_property_name(const String &p_property_name);
 	String get_property_name() const { return pi.name; };
 
