@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="VariantResource" inherits="Resource" version="3.2">
+	<brief_description>
+		A [Resource] which holds any [Variant] compatible type.
+	</brief_description>
+	<description>
+		This class allows to store any [Variant] compatible built-in types as a [Resource], such as [Vector2], [Dictionary], [Array], and even nested[VariantResource]s themselves. These can be edited in the inspector and saved to disk to be reused throughout the project, as resources are shared between instances by default.
+		[VariantResource] is normally edited via the editor inspector, but the [member type] and [code]value[/code] can be changed via code as well:
+		[codeblock]
+		var res = VariantResource.new()
+		res.value = Vector3(1, 2, 3) # The type is set automatically.
+		print(res.value)  # prints (1, 2, 3)
+		res.type = TYPE_VECTOR2 # The previous value is converted to a new type.
+		print(res.value)  # prints (1, 2)
+		[/codeblock]
+		The conversion logic is mostly equivalent to [method @GDScript.convert], except that the [constant @GlobalScope.TYPE_NIL] is never automatically converted to other types, and a new empty [Variant] is constructed instead.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="get_value" qualifiers="const">
+			<return type="Variant">
+			</return>
+			<description>
+				Returns [Variant] data associated with this resource. The method is recommended to use over [method Object.get] as the property's name may be customized with [member property_name].
+			</description>
+		</method>
+		<method name="set_value">
+			<return type="void">
+			</return>
+			<argument index="0" name="value" type="Variant">
+			</argument>
+			<description>
+				Modifies existing value of this resource. The value's type is updated automatically if types differ. The method is recommended to use over [method Object.set] as the property's name may be customized with [member property_name].
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="property_hint" type="int" setter="set_property_hint" getter="get_property_hint" enum="PropertyHint" default="0">
+			Specifies how the value is represented in the editor, one of [enum @GlobalScope.PropertyHint] values.
+		</member>
+		<member name="property_hint_string" type="String" setter="set_property_hint_string" getter="get_property_hint_string" default="&quot;&quot;">
+			Configures [member property_hint].
+		</member>
+		<member name="property_name" type="String" setter="set_property_name" getter="get_property_name" default="&quot;value&quot;">
+			Specifies the value's property name. By default, the data can be fetched via code by referencing the [code]value[/code] property, but this can be customized. Prefer to use the implicit default [code]value[/code] property, unless you're not sure whether the property's name is customized.
+		</member>
+		<member name="property_usage" type="int" setter="set_property_usage" getter="get_property_usage" enum="PropertyUsageFlags" default="7">
+			Specifies how the value should be used throughout the editor and code, a combination of [enum @GlobalScope.PropertyUsageFlags] values.
+		</member>
+		<member name="type" type="int" setter="set_type" getter="get_type" default="0">
+			Sets the type of the [Variant], one of the [code]TYPE_*[/code] constants available at [@GlobalScope], such as [constant @GlobalScope.TYPE_INT].
+			Once the type is set, an implicit [Variant] [code]value[/code] property is constructed. The [code]value[/code] property can be changed dynamically anytime, and this emits the [signal changed] signal, which can be connected to other script or engine methods:
+			[codeblock]
+			extends Node2D
+			
+			export(VariantResource) var res = VariantResource.new()
+			
+			func _ready():
+			    # Whenever the color is changed, redraw the canvas.
+			    res.connect("changed", self, "update")
+			    # This emits the "changed" signal above.
+			    res.value = Color.blue
+			
+			func _draw():
+			    if res.type == TYPE_COLOR:
+			        draw_circle(Vector2(), 100, res.value)
+			[/codeblock]
+		</member>
+	</members>
+	<constants>
+	</constants>
+</class>
