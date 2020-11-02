@@ -11,12 +11,61 @@
 		var i = Random.randi() % 100
 		var f = Random.randf_range(-1.0, 1.0)
 		[/codeblock]
-		The class may implement other methods other than what [RandomNumberGenerator] already provides out of the box.
+		The class provides other useful and intuitive methods other than what [RandomNumberGenerator] already provides out of the box.
 		It's not possible to instantiate a new [Random] instance with [code]Random.new()[/code] in GDScript. If you'd like to instantiate a local instance of [Random], use [method new_instance] instead, or [code]ClassDB.instance("Random")[/code], see [method ClassDB.instance].
 	</description>
 	<tutorials>
 	</tutorials>
 	<methods>
+		<method name="circle_point">
+			<return type="Vector2">
+			</return>
+			<argument index="0" name="radius_min" type="float" default="1.0">
+			</argument>
+			<argument index="1" name="radius_max" type="float" default="1.0">
+			</argument>
+			<description>
+				Generates a random point uniformly distributed on the circle's boundary, within the circle's area, or the area confined by inner and outer circle ranges specified with [code]radius_min[/code] and [code]radius_max[/code] parameters.
+				By default, generates points [b]on[/b] unit circle with radius [code]1[/code], which produces normalized vectors.
+				If [code]radius_min == 0[/code], generates points inside a unit circle, such that [method Geometry2D.is_point_in_circle] shall return [code]true[/code] given the same radius.
+				If [code]radius_max != radius_min[/code], generates points within the ring's area, such that the inner area defined by [code]radius_min[/code] remains unaffected.
+				If [code]radius_min == radius_max[/code], generates points exactly [b]on[/b] the circle's boundary, but do note that a point may slightly deviate from the actual circle's boundary due to floating point error accumulation.
+				[codeblock]
+				var point: Vector2()
+				point = Random.circle_point() # Unit vector.
+				point = Random.circle_point(0.0, 1.0) # Inside a circle.
+				point = Random.circle_point(0.5, 1.0) # Within a ring.
+				[/codeblock]
+				The [code]radius_min[/code] and [code]radius_max[/code] are not restricted to unit length of [code]1.0[/code]. The generated unit vector can be multiplied by a scalar value as well:
+				[codeblock]
+				var radius = 64.0
+				var point = Random.circle_point() * radius
+				[/codeblock]
+			</description>
+		</method>
+		<method name="color_hsv">
+			<return type="Color">
+			</return>
+			<argument index="0" name="hue_min" type="float" default="0.0">
+			</argument>
+			<argument index="1" name="hue_max" type="float" default="1.0">
+			</argument>
+			<argument index="2" name="saturation_min" type="float" default="0.0">
+			</argument>
+			<argument index="3" name="saturation_max" type="float" default="1.0">
+			</argument>
+			<argument index="4" name="value_min" type="float" default="0.0">
+			</argument>
+			<argument index="5" name="value_max" type="float" default="1.0">
+			</argument>
+			<argument index="6" name="alpha_min" type="float" default="1.0">
+			</argument>
+			<argument index="7" name="alpha_max" type="float" default="1.0">
+			</argument>
+			<description>
+				Generates a random [Color] specified in HSV color model. See also [method Color.from_hsv].
+			</description>
+		</method>
 		<method name="new_instance" qualifiers="const">
 			<return type="Random">
 			</return>
@@ -24,7 +73,47 @@
 				Instantiates a new local [Random] instance based on [RandomNumberGenerator]. Does not override the [Random] instance accessible at [@GlobalScope].
 			</description>
 		</method>
+		<method name="range">
+			<return type="Variant">
+			</return>
+			<argument index="0" name="from" type="Variant">
+			</argument>
+			<argument index="1" name="to" type="Variant">
+			</argument>
+			<description>
+				Generates a singular value in a specified range depending on the type of [Variant]. The types of [code]from[/code] and [code]to[/code] must be the same.
+				For integer and float values, generates a random number in the range equivalently to [method RandomNumberGenerator.randi_range] and [method RandomNumberGenerator.randf_range] respectively.
+				For any other type, the value is linearly interpolated with a random weight of [code]0.0..1.0[/code].
+			</description>
+		</method>
 	</methods>
+	<members>
+		<member name="color" type="Color" setter="" getter="get_color" default="Color( 0.461085, 0.853845, 0.756011, 1 )">
+			Generates a random color in RGB color space. Equivalent to the following code:
+			[codeblock]
+			var color = Color(randf(), randf(), randf())
+			[/codeblock]
+			For more options, use [method color_hsv].
+		</member>
+		<member name="condition" type="bool" setter="" getter="get_condition" default="false">
+			Generates a random boolean value. Useful for randomizing [code]true[/code] and [code]false[/code] states, conditions, decisions etc. The outcome is equal for both values.
+			[codeblock]
+			if Random.condition:
+			    pass
+			[/codeblock]
+			Equivalent to the following code:
+			[codeblock]
+			if randf() &gt;= 0.5:
+			    pass
+			[/codeblock]
+		</member>
+		<member name="number" type="int" setter="" getter="get_number" default="3161026589">
+			Generates a random unsigned 32-bit integer. Equivalent to [method RandomNumberGenerator.randi].
+		</member>
+		<member name="value" type="float" setter="" getter="get_value" default="0.962688">
+			Generates a random real number in the range of [code]0.0..1.0[/code]. Equivalent to [method RandomNumberGenerator.randf].
+		</member>
+	</members>
 	<constants>
 	</constants>
 </class>
