@@ -17,6 +17,15 @@
 	<tutorials>
 	</tutorials>
 	<methods>
+		<method name="choice">
+			<return type="Variant">
+			</return>
+			<argument index="0" name="from_sequence" type="Variant">
+			</argument>
+			<description>
+				Returns a random element from indexable sequence-based types, such as [Array] or [String]. If the sequence is empty, prints an error and returns [code]null[/code].
+			</description>
+		</method>
 		<method name="circle_point">
 			<return type="Vector2">
 			</return>
@@ -28,7 +37,7 @@
 				Generates a random point uniformly distributed on the circle's boundary, within the circle's area, or the area confined by inner and outer circle ranges specified with [code]radius_min[/code] and [code]radius_max[/code] parameters.
 				By default, generates points [b]on[/b] unit circle with radius [code]1[/code], which produces normalized vectors.
 				If [code]radius_min == 0[/code], generates points inside a unit circle, such that [method Geometry2D.is_point_in_circle] shall return [code]true[/code] given the same radius.
-				If [code]radius_max != radius_min[/code], generates points within the ring's area, such that the inner area defined by [code]radius_min[/code] remains unaffected.
+				If [code]radius_min != radius_max[/code], generates points within the ring's area, such that the inner area defined by [code]radius_min[/code] remains unaffected.
 				If [code]radius_min == radius_max[/code], generates points exactly [b]on[/b] the circle's boundary, but do note that a point may slightly deviate from the actual circle's boundary due to floating point error accumulation.
 				[codeblock]
 				var point: Vector2()
@@ -36,7 +45,7 @@
 				point = Random.circle_point(0.0, 1.0) # Inside a circle.
 				point = Random.circle_point(0.5, 1.0) # Within a ring.
 				[/codeblock]
-				The [code]radius_min[/code] and [code]radius_max[/code] are not restricted to unit length of [code]1.0[/code]. The generated unit vector can be multiplied by a scalar value as well:
+				The parameters are not restricted to unit length of [code]1.0[/code]. The generated unit vector can be multiplied by a scalar value as well:
 				[codeblock]
 				var radius = 64.0
 				var point = Random.circle_point() * radius
@@ -64,6 +73,29 @@
 			</argument>
 			<description>
 				Generates a random [Color] specified in HSV color model. See also [method Color.from_hsv].
+			</description>
+		</method>
+		<method name="color_rgb">
+			<return type="Color">
+			</return>
+			<argument index="0" name="red_min" type="float" default="0.0">
+			</argument>
+			<argument index="1" name="red_max" type="float" default="1.0">
+			</argument>
+			<argument index="2" name="green_min" type="float" default="0.0">
+			</argument>
+			<argument index="3" name="green_max" type="float" default="1.0">
+			</argument>
+			<argument index="4" name="blue_min" type="float" default="0.0">
+			</argument>
+			<argument index="5" name="blue_max" type="float" default="1.0">
+			</argument>
+			<argument index="6" name="alpha_min" type="float" default="1.0">
+			</argument>
+			<argument index="7" name="alpha_max" type="float" default="1.0">
+			</argument>
+			<description>
+				Generates a random [Color] specified in RGB color model.
 			</description>
 		</method>
 		<method name="new_instance" qualifiers="const">
