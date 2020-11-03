@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="Random2D" inherits="Random" version="3.2">
+	<brief_description>
+		Randomization methods in 2D.
+	</brief_description>
+	<description>
+		This is a singleton which provides various randomization methods relating to 2D space and operations.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="point_in_circle">
+			<return type="Vector2">
+			</return>
+			<argument index="0" name="radius_min" type="float" default="0.0">
+			</argument>
+			<argument index="1" name="radius_max" type="float" default="1.0">
+			</argument>
+			<description>
+				Generates a random point uniformly distributed on the circle's boundary, within the circle's area, or the area confined by inner and outer circle ranges specified with [code]radius_min[/code] and [code]radius_max[/code] parameters.
+				By default, generates points in unit circle with radius [code]1.0[/code]. If you need random normalized vectors, use [member direction] instead, which is more efficient to compute.
+				If [code]radius_min == 0[/code], generates points inside a unit circle, such that [method Geometry2D.is_point_in_circle] shall return [code]true[/code] given the same radius.
+				If [code]radius_min != radius_max[/code], generates points within the ring's area, such that the inner area defined by [code]radius_min[/code] remains unaffected.
+				If [code]radius_min == radius_max[/code], generates points exactly [b]on[/b] the circle's boundary, but do note that a point may slightly deviate from the actual circle's boundary due to floating point error accumulation.
+				[codeblock]
+				var point: Vector2()
+				point = Random2D.point_in_circle(1.0, 1.0) # Unit vector.
+				point = Random2D.point_in_circle(0.0, 1.0) # Inside a circle.
+				point = Random2D.point_in_circle(0.5, 1.0) # Within a ring.
+				[/codeblock]
+				The parameters are not restricted to unit length of [code]1.0[/code].
+			</description>
+		</method>
+		<method name="point_in_region">
+			<return type="Vector2">
+			</return>
+			<argument index="0" name="position_start" type="Vector2">
+			</argument>
+			<argument index="1" name="position_end" type="Vector2">
+			</argument>
+			<description>
+				Generates a random point in the area specified by top-left and bottom-right corners of a rectangle.
+				[codeblock]
+				var rect := Rect2(-100, -100, 100, 100) # Position and size.
+				var point = Random2D.point_in_region(rect.position, rect.end)
+				[/codeblock]
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="direction" type="Vector2" setter="" getter="get_direction" default="Vector2( -0.726713, -0.686941 )">
+			A random normalized direction. Equivalent to [method point_in_circle] with minimum and maximum radiuses set to unit length of [code]1.0[/code] and is slightly more efficient. The unit vector can be multiplied by a scalar value.
+			[codeblock]
+			var radius = 64.0
+			var impulse = Random2D.direction * radius
+			[/codeblock]
+		</member>
+		<member name="rotation" type="float" setter="" getter="get_rotation" default="4.76497">
+			A random rotation in radians. Ranges from [code]0.0[/code] to [constant @GDScript.TAU].
+		</member>
+	</members>
+	<constants>
+	</constants>
+</class>

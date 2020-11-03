@@ -13,6 +13,7 @@
 		[/codeblock]
 		The class provides other useful and intuitive methods other than what [RandomNumberGenerator] already provides out of the box.
 		It's not possible to instantiate a new [Random] instance with [code]Random.new()[/code] in GDScript. If you'd like to instantiate a local instance of [Random], use [method new_instance] instead, or [code]ClassDB.instance("Random")[/code], see [method ClassDB.instance].
+		For 2D, use [Random2D] class, which inherits all the functionality behind [Random] as well.
 	</description>
 	<tutorials>
 	</tutorials>
@@ -24,32 +25,6 @@
 			</argument>
 			<description>
 				Returns a random element from indexable sequence-based types, such as [Array] or [String]. If the sequence is empty, prints an error and returns [code]null[/code].
-			</description>
-		</method>
-		<method name="circle_point">
-			<return type="Vector2">
-			</return>
-			<argument index="0" name="radius_min" type="float" default="1.0">
-			</argument>
-			<argument index="1" name="radius_max" type="float" default="1.0">
-			</argument>
-			<description>
-				Generates a random point uniformly distributed on the circle's boundary, within the circle's area, or the area confined by inner and outer circle ranges specified with [code]radius_min[/code] and [code]radius_max[/code] parameters.
-				By default, generates points [b]on[/b] unit circle with radius [code]1[/code], which produces normalized vectors.
-				If [code]radius_min == 0[/code], generates points inside a unit circle, such that [method Geometry2D.is_point_in_circle] shall return [code]true[/code] given the same radius.
-				If [code]radius_min != radius_max[/code], generates points within the ring's area, such that the inner area defined by [code]radius_min[/code] remains unaffected.
-				If [code]radius_min == radius_max[/code], generates points exactly [b]on[/b] the circle's boundary, but do note that a point may slightly deviate from the actual circle's boundary due to floating point error accumulation.
-				[codeblock]
-				var point: Vector2()
-				point = Random.circle_point() # Unit vector.
-				point = Random.circle_point(0.0, 1.0) # Inside a circle.
-				point = Random.circle_point(0.5, 1.0) # Within a ring.
-				[/codeblock]
-				The parameters are not restricted to unit length of [code]1.0[/code]. The generated unit vector can be multiplied by a scalar value as well:
-				[codeblock]
-				var radius = 64.0
-				var point = Random.circle_point() * radius
-				[/codeblock]
 			</description>
 		</method>
 		<method name="color_hsv">
