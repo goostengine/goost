@@ -461,7 +461,7 @@
 			</return>
 			<argument index="0" name="sides" type="int">
 			</argument>
-			<argument index="1" name="size" type="float" default="64.0">
+			<argument index="1" name="size" type="float">
 			</argument>
 			<description>
 				Generates a regular polygon (triangle, rectangle, pentagon, hexagon etc.) with all equal sides and angles. The specified size can be seen as a radius, with an increasing number of sides approximating a [method circle].
