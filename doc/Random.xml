@@ -93,6 +93,15 @@
 				For any other type, the value is linearly interpolated with a random weight of [code]0.0..1.0[/code].
 			</description>
 		</method>
+		<method name="shuffle">
+			<return type="void">
+			</return>
+			<argument index="0" name="array" type="Array">
+			</argument>
+			<description>
+				Shuffles the array such that the items will have a random order. By default, this method uses the global random number generator in [Random] singletons, but unlike in [method Array.shuffle], local instances of [Random] can be created with [method new_instance] to achieve reproducible results given the same seed.
+			</description>
+		</method>
 	</methods>
 	<members>
 		<member name="color" type="Color" setter="" getter="get_color" default="Color( 0.461085, 0.853845, 0.756011, 1 )">

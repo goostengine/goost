@@ -135,3 +135,29 @@ func test_choice():
 	# https://github.com/godotengine/godot-proposals/issues/1763
 	# assert_null(rng.choice(""))
 	# assert_null(rng.choice([]))
+
+
+func test_shuffle_array():
+	var rng = Random.new_instance()
+
+	rng.seed = 100
+	var array = [
+		"Godot",
+		37,
+		"Goost",
+		Color.red,
+		Vector2.UP
+	]
+	rng.shuffle(array)
+	assert_eq(array[0], Color.red)
+	assert_eq(array[1], "Godot")
+	assert_eq(array[2], "Goost")
+	assert_eq(array[3], 37)
+	assert_eq(array[4], Vector2.UP)
+
+	rng.shuffle(array)
+	assert_eq(array[0], "Goost")
+	assert_eq(array[1], Vector2.UP)
+	assert_eq(array[2], Color.red)
+	assert_eq(array[3], 37)
+	assert_eq(array[4], "Godot")
