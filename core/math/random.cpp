@@ -91,6 +91,18 @@ Variant Random::choice(const Variant &p_sequence) {
 	return Variant();
 }
 
+void Random::shuffle(Array p_array) {
+	if (p_array.size() < 2) {
+		return;
+	}
+	for (int i = p_array.size() - 1; i > 0; --i) {
+		const uint32_t j = randi() % (i + 1);
+		const Variant tmp = p_array[i];
+		p_array[i] = p_array[j];
+		p_array[j] = tmp;
+	}
+}
+
 void Random::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("new_instance"), &Random::new_instance);
 
@@ -106,6 +118,7 @@ void Random::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("range", "from", "to"), &Random::range);
 	ClassDB::bind_method(D_METHOD("choice", "from_sequence"), &Random::choice);
+	ClassDB::bind_method(D_METHOD("shuffle", "array"), &Random::shuffle);
 
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "number"), "", "get_number");
 	ADD_PROPERTY(PropertyInfo(Variant::REAL, "value"), "", "get_value");
