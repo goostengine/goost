@@ -119,27 +119,6 @@ func test_randi_range_unbiased():
 	assert_almost_eq(zero_count / float(one_count), 1.0, 0.1)
 
 
-func test_unit_circle_point():
-	for i in 100:
-		var point = Random.circle_point()
-		assert_almost_eq(point.length(), 1.0, 0.000001)
-		assert_true(point.is_normalized())
-
-
-func test_point_inside_unit_circle():
-	for i in 100:
-		var point = Random.circle_point(0.0, 1.0)
-		assert_gt(point.length(), 0.0)
-		assert_lt(point.length(), 1.0)
-
-
-func test_point_within_circle_range():
-	for i in 100:
-		var point = Random.circle_point(10.0, 100.0)
-		assert_gt(point.length(), 10.0)
-		assert_lt(point.length(), 100.0)
-
-
 func test_choice():
 	var rng = Random.new_instance()
 

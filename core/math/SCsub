@@ -2,7 +2,6 @@
 Import("env")
 Import("env_goost")
 
-env_goost.add_source_files(env.modules_sources, "2d/*.cpp")
 SConscript("2d/SCsub", exports="env_goost")
 
 if not env["disable_3d"]:

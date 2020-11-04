@@ -58,6 +58,7 @@ classes = [
     "PolyOffsetParameters2D",
     "PolyNode2D",
     "Random",
+    "Random2D",
     "ShapeCast2D",
     "VariantResource",
     "VisualShape2D",

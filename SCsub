@@ -3,6 +3,8 @@
 import os
 import goost
 
+import methods
+
 Import("env")
 env_goost = env.Clone()
 
@@ -18,6 +20,12 @@ for name in goost.get_components():
         env_goost.Prepend(CPPDEFINES=[opt.upper()])
 
 env_goost.Prepend(CPPDEFINES={"SCALE_FACTOR" : env["goost_scale_factor"]})
+
+# Workaround issues.
+if os.path.basename(env["CC"]) in ["clang", "clang++", "emcc", "em++"]:
+    # Produces false-positives in Godot 3.2 with
+    # GDCLASS macro expansion in inherited classes.
+    env_goost.Append(CCFLAGS=["-Wno-inconsistent-missing-override"])
 
 # Build subdirs, the build order is dependent on the link order.
 subdirs = [
