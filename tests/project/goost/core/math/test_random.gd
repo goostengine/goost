@@ -99,7 +99,7 @@ func test_color_hsv():
 func test_condition():
 	var false_count = 0
 	var true_count = 0
-	for x in 10000:
+	for x in 100000:
 		if Random.condition:
 			true_count += 1
 		else:

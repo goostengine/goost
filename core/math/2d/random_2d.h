@@ -26,6 +26,7 @@ public:
 
 	Random2D() {
 		if (!singleton) {
+			randomize(); // Only the global one is randomized automatically.
 			singleton = this;
 		}
 	}

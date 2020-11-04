@@ -30,6 +30,7 @@ public:
 
 	Random() {
 		if (!singleton) {
+			randomize(); // Only the global one is randomized automatically.
 			singleton = this;
 		}
 	}

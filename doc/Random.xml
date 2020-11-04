@@ -13,6 +13,7 @@
 		[/codeblock]
 		The class provides other useful and intuitive methods other than what [RandomNumberGenerator] already provides out of the box.
 		It's not possible to instantiate a new [Random] instance with [code]Random.new()[/code] in GDScript. If you'd like to instantiate a local instance of [Random], use [method new_instance] instead, or [code]ClassDB.instance("Random")[/code], see [method ClassDB.instance].
+		You have to call [method randomize] for local instances manually if you want to have non-reproducible results, else done automatically for the global instance by default.
 		For 2D, use [Random2D] class, which inherits all the functionality behind [Random] as well.
 	</description>
 	<tutorials>
@@ -104,14 +105,14 @@
 		</method>
 	</methods>
 	<members>
-		<member name="color" type="Color" setter="" getter="get_color" default="Color( 0.461085, 0.853845, 0.756011, 1 )">
+		<member name="color" type="Color" setter="" getter="get_color" default="Color( 0.894257, 0.564905, 0.226137, 1 )">
 			Generates a random color in RGB color space. Equivalent to the following code:
 			[codeblock]
 			var color = Color(randf(), randf(), randf())
 			[/codeblock]
 			For more options, use [method color_hsv].
 		</member>
-		<member name="condition" type="bool" setter="" getter="get_condition" default="false">
+		<member name="condition" type="bool" setter="" getter="get_condition" default="true">
 			Generates a random boolean value. Useful for randomizing [code]true[/code] and [code]false[/code] states, conditions, decisions etc. The outcome is equal for both values.
 			[codeblock]
 			if Random.condition:
@@ -123,10 +124,11 @@
 			    pass
 			[/codeblock]
 		</member>
-		<member name="number" type="int" setter="" getter="get_number" default="3161026589">
+		<member name="number" type="int" setter="" getter="get_number" default="505729919">
 			Generates a random unsigned 32-bit integer. Equivalent to [method RandomNumberGenerator.randi].
 		</member>
-		<member name="value" type="float" setter="" getter="get_value" default="0.962688">
+		<member name="seed" type="int" setter="set_seed" getter="get_seed" override="true" default="1330373036540619517" />
+		<member name="value" type="float" setter="" getter="get_value" default="0.370127">
 			Generates a random real number in the range of [code]0.0..1.0[/code]. Equivalent to [method RandomNumberGenerator.randf].
 		</member>
 	</members>
