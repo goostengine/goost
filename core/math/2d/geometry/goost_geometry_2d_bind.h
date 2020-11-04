@@ -76,10 +76,6 @@ public:
 	Vector<Point2> regular_polygon(int p_edge_count, real_t p_size) const;
 	Vector<Point2> circle(real_t p_radius, real_t p_max_error) const;
 
-	Vector2 rand_point_in_circle(real_t p_radius) const;
-	Vector2 rand_point_on_circle(real_t p_radius) const;
-	Vector2 rand_point_in_ring(real_t p_min_radius, real_t p_max_radius) const;
-
 	_GoostGeometry2D();
 };
 
