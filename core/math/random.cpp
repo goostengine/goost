@@ -48,19 +48,21 @@ Variant Random::range(const Variant &p_from, const Variant &p_to) {
 }
 
 Color Random::color_hsv(real_t h_min, real_t h_max, real_t s_min, real_t s_max, real_t v_min, real_t v_max, real_t a_min, real_t a_max) {
-	real_t h = randf_range(h_min, h_max);
-	real_t s = randf_range(s_min, s_max);
-	real_t v = randf_range(v_min, v_max);
-	real_t a = randf_range(a_min, a_max);
-	return Color(h, s, v, a);
+	Color color;
+	color.set_hsv(
+			randf_range(h_min, h_max),
+			randf_range(s_min, s_max),
+			randf_range(v_min, v_max),
+			randf_range(a_min, a_max));
+	return color;
 }
 
 Color Random::color_rgb(real_t r_min, real_t r_max, real_t g_min, real_t g_max, real_t b_min, real_t b_max, real_t a_min, real_t a_max) {
-	real_t r = randf_range(r_min, r_max);
-	real_t g = randf_range(g_min, g_max);
-	real_t b = randf_range(b_min, b_max);
-	real_t a = randf_range(a_min, a_max);
-	return Color(r, g, b, a);
+	return Color(
+			randf_range(r_min, r_max),
+			randf_range(g_min, g_max),
+			randf_range(b_min, b_max),
+			randf_range(a_min, a_max));
 }
 
 Variant Random::choice(const Variant &p_sequence) {
@@ -90,7 +92,6 @@ Variant Random::choice(const Variant &p_sequence) {
 }
 
 void Random::_bind_methods() {
-	// BIND_VMETHOD(MethodInfo(Variant::OBJECT, "new_instance"))
 	ClassDB::bind_method(D_METHOD("new_instance"), &Random::new_instance);
 
 	ClassDB::bind_method(D_METHOD("get_value"), &Random::get_value);
