@@ -21,6 +21,8 @@ public:
 
 	Vector2 point_in_region(const Vector2 &p_pos, const Vector2 &p_end);
 	Vector2 point_in_circle(real_t p_min_radius = 0.0, real_t p_max_radius = 1.0);
+	Vector2 point_in_triangle(const Vector<Point2> &p_triangle);
+	Variant point_in_polygon(const Variant &p_polygon, int p_point_count = 1);
 
 	Random2D() {
 		if (!singleton) {
