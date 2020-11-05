@@ -71,14 +71,14 @@
 		</method>
 	</methods>
 	<members>
-		<member name="direction" type="Vector2" setter="" getter="get_direction" default="Vector2( -0.726713, -0.686941 )">
+		<member name="direction" type="Vector2" setter="" getter="get_direction" default="Vector2( 1, 0 )">
 			A random normalized direction. Equivalent to [method point_in_circle] with minimum and maximum radiuses set to unit length of [code]1.0[/code] and is slightly more efficient. The unit vector can be multiplied by a scalar value.
 			[codeblock]
 			var radius = 64.0
 			var impulse = Random2D.direction * radius
 			[/codeblock]
 		</member>
-		<member name="rotation" type="float" setter="" getter="get_rotation" default="4.76497">
+		<member name="rotation" type="float" setter="" getter="get_rotation" default="6.28319">
 			A random rotation in radians. Ranges from [code]0.0[/code] to [constant @GDScript.TAU].
 		</member>
 	</members>
