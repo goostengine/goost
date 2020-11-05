@@ -124,4 +124,12 @@ void Random::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::REAL, "value"), "", "get_value");
 	ADD_PROPERTY(PropertyInfo(Variant::COLOR, "color"), "", "get_color");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "condition"), "", "get_condition");
+
+	// Default values are non-deterministic, override those for documentation purposes.
+	ADD_PROPERTY_DEFAULT("number", 37);
+	ADD_PROPERTY_DEFAULT("value", 0.5);
+	ADD_PROPERTY_DEFAULT("color", Color(0, 0, 1));
+	ADD_PROPERTY_DEFAULT("condition", true);
+	// Have to override in base class as well.
+	ADD_PROPERTY_DEFAULT("seed", 0);
 }

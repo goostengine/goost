@@ -129,4 +129,15 @@ void Random2D::_bind_methods() {
 
 	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "direction"), "", "get_direction");
 	ADD_PROPERTY(PropertyInfo(Variant::REAL, "rotation"), "", "get_rotation");
+
+	// Default values are non-deterministic, override those for documentation purposes.	
+	ADD_PROPERTY_DEFAULT("direction", Vector2(1, 0));
+	ADD_PROPERTY_DEFAULT("rotation", Math_TAU);
+
+	// Have to override in base class as well.
+	ADD_PROPERTY_DEFAULT("number", 37);
+	ADD_PROPERTY_DEFAULT("value", 0.5);
+	ADD_PROPERTY_DEFAULT("color", Color(0, 0, 1));
+	ADD_PROPERTY_DEFAULT("condition", true);
+	ADD_PROPERTY_DEFAULT("seed", 0);
 }

@@ -71,21 +71,16 @@
 		</method>
 	</methods>
 	<members>
-		<member name="color" type="Color" setter="" getter="get_color" override="true" default="Color( 0.153056, 0.472216, 0.293778, 1 )" />
-		<member name="condition" type="bool" setter="" getter="get_condition" override="true" default="false" />
-		<member name="direction" type="Vector2" setter="" getter="get_direction" default="Vector2( 0.290031, 0.957017 )">
+		<member name="direction" type="Vector2" setter="" getter="get_direction" default="Vector2( 1, 0 )">
 			A random normalized direction. Equivalent to [method point_in_circle] with minimum and maximum radiuses set to unit length of [code]1.0[/code] and is slightly more efficient. The unit vector can be multiplied by a scalar value.
 			[codeblock]
 			var radius = 64.0
 			var impulse = Random2D.direction * radius
 			[/codeblock]
 		</member>
-		<member name="number" type="int" setter="" getter="get_number" override="true" default="51361403" />
-		<member name="rotation" type="float" setter="" getter="get_rotation" default="4.21857">
+		<member name="rotation" type="float" setter="" getter="get_rotation" default="6.28319">
 			A random rotation in radians. Ranges from [code]0.0[/code] to [constant @GDScript.TAU].
 		</member>
-		<member name="seed" type="int" setter="set_seed" getter="get_seed" override="true" default="-2833408348807289048" />
-		<member name="value" type="float" setter="" getter="get_value" override="true" default="0.812761" />
 	</members>
 	<constants>
 	</constants>

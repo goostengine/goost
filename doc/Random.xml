@@ -105,7 +105,7 @@
 		</method>
 	</methods>
 	<members>
-		<member name="color" type="Color" setter="" getter="get_color" default="Color( 0.894257, 0.564905, 0.226137, 1 )">
+		<member name="color" type="Color" setter="" getter="get_color" default="Color( 0, 0, 1, 1 )">
 			Generates a random color in RGB color space. Equivalent to the following code:
 			[codeblock]
 			var color = Color(randf(), randf(), randf())
@@ -124,11 +124,11 @@
 			    pass
 			[/codeblock]
 		</member>
-		<member name="number" type="int" setter="" getter="get_number" default="505729919">
+		<member name="number" type="int" setter="" getter="get_number" default="37">
 			Generates a random unsigned 32-bit integer. Equivalent to [method RandomNumberGenerator.randi].
 		</member>
-		<member name="seed" type="int" setter="set_seed" getter="get_seed" override="true" default="1330373036540619517" />
-		<member name="value" type="float" setter="" getter="get_value" default="0.370127">
+		<member name="seed" type="int" setter="set_seed" getter="get_seed" override="true" default="0" />
+		<member name="value" type="float" setter="" getter="get_value" default="0.5">
 			Generates a random real number in the range of [code]0.0..1.0[/code]. Equivalent to [method RandomNumberGenerator.randf].
 		</member>
 	</members>
