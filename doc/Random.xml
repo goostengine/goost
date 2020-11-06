@@ -48,7 +48,11 @@
 			<argument index="7" name="alpha_max" type="float" default="1.0">
 			</argument>
 			<description>
-				Generates a random [Color] specified in HSV color model. See also [method Color.from_hsv].
+				Generates a random [Color] specified in HSV color model. See also [method Color.from_hsv]. By default, equivalent to the following code:
+				[codeblock]
+				var color = Color.from_hsv(randf(), randf(), randf())
+				[/codeblock]
+				If you want to generate colors which are not too pale and not too dark, use [member color].
 			</description>
 		</method>
 		<method name="color_rgb">
@@ -71,7 +75,11 @@
 			<argument index="7" name="alpha_max" type="float" default="1.0">
 			</argument>
 			<description>
-				Generates a random [Color] specified in RGB color model.
+				Generates a random [Color] specified in RGB color model. By default, equivalent to the following code:
+				[codeblock]
+				var color = Color(randf(), randf(), randf())
+				[/codeblock]
+				If you want to generate colors which are not too pale and not too dark, use [member color].
 			</description>
 		</method>
 		<method name="new_instance" qualifiers="const">
@@ -106,11 +114,11 @@
 	</methods>
 	<members>
 		<member name="color" type="Color" setter="" getter="get_color" default="Color( 0, 0, 1, 1 )">
-			Generates a random color in RGB color space. Equivalent to the following code:
+			The next random color in HSV color space. Saturated, bright colors are preferred. Equivalent to the following code:
 			[codeblock]
-			var color = Color(randf(), randf(), randf())
+			var color = Color.from_hsv(randf(), rand_range(0.5, 1.0), rand_range(0.5, 1.0))
 			[/codeblock]
-			For more options, use [method color_hsv].
+			For more options, use [method color_hsv] or [method color_rgb].
 		</member>
 		<member name="condition" type="bool" setter="" getter="get_condition" default="true">
 			Generates a random boolean value. Useful for randomizing [code]true[/code] and [code]false[/code] states, conditions, decisions etc. The outcome is equal for both values.

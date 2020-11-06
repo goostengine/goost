@@ -14,9 +14,8 @@ real_t Random::get_value() {
 
 Color Random::get_color() {
 	Color color;
-	// "Not too dark" version:
-	// color.set_hsv(randf(), 1.0, randf_range(0.5, 1.0));
-	color = Color(randf(), randf(), randf());
+	// Pick not too pale and not too dark color.
+	color.set_hsv(randf(), randf_range(0.5, 1.0), randf_range(0.5, 1.0));
 	return color;
 }
 
@@ -47,7 +46,7 @@ Variant Random::range(const Variant &p_from, const Variant &p_to) {
 	return Variant();
 }
 
-Color Random::color_hsv(real_t h_min, real_t h_max, real_t s_min, real_t s_max, real_t v_min, real_t v_max, real_t a_min, real_t a_max) {
+Color Random::color_hsv(float h_min, float h_max, float s_min, float s_max, float v_min, float v_max, float a_min, float a_max) {
 	Color color;
 	color.set_hsv(
 			randf_range(h_min, h_max),
@@ -57,7 +56,7 @@ Color Random::color_hsv(real_t h_min, real_t h_max, real_t s_min, real_t s_max, 
 	return color;
 }
 
-Color Random::color_rgb(real_t r_min, real_t r_max, real_t g_min, real_t g_max, real_t b_min, real_t b_max, real_t a_min, real_t a_max) {
+Color Random::color_rgb(float r_min, float r_max, float g_min, float g_max, float b_min, float b_max, float a_min, float a_max) {
 	return Color(
 			randf_range(r_min, r_max),
 			randf_range(g_min, g_max),
@@ -114,7 +113,7 @@ void Random::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("color_hsv", "hue_min", "hue_max", "saturation_min", "saturation_max", "value_min", "value_max", "alpha_min", "alpha_max"),
 			&Random::color_hsv, DEFVAL(0.0), DEFVAL(1.0), DEFVAL(0.0), DEFVAL(1.0), DEFVAL(0.0), DEFVAL(1.0), DEFVAL(1.0), DEFVAL(1.0));
 	ClassDB::bind_method(D_METHOD("color_rgb", "red_min", "red_max", "green_min", "green_max", "blue_min", "blue_max", "alpha_min", "alpha_max"),
-			&Random::color_hsv, DEFVAL(0.0), DEFVAL(1.0), DEFVAL(0.0), DEFVAL(1.0), DEFVAL(0.0), DEFVAL(1.0), DEFVAL(1.0), DEFVAL(1.0));
+			&Random::color_rgb, DEFVAL(0.0), DEFVAL(1.0), DEFVAL(0.0), DEFVAL(1.0), DEFVAL(0.0), DEFVAL(1.0), DEFVAL(1.0), DEFVAL(1.0));
 
 	ClassDB::bind_method(D_METHOD("range", "from", "to"), &Random::range);
 	ClassDB::bind_method(D_METHOD("choice", "from_sequence"), &Random::choice);
