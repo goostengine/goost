@@ -21,8 +21,8 @@ public:
 	Color get_color();
 	bool get_condition();
 
-	Color color_hsv(real_t h_min = 0.0, real_t h_max = 1.0, real_t s_min = 0.0, real_t s_max = 1.0, real_t v_min = 0.0, real_t v_max = 1.0, real_t a_min = 1.0, real_t a_max = 1.0);
-	Color color_rgb(real_t r_min = 0.0, real_t r_max = 1.0, real_t g_min = 0.0, real_t g_max = 1.0, real_t b_min = 0.0, real_t b_max = 1.0, real_t a_min = 1.0, real_t a_max = 1.0);
+	Color color_hsv(float h_min = 0.0, float h_max = 1.0, float s_min = 0.0, float s_max = 1.0, float v_min = 0.0, float v_max = 1.0, float a_min = 1.0, float a_max = 1.0);
+	Color color_rgb(float r_min = 0.0, float r_max = 1.0, float g_min = 0.0, float g_max = 1.0, float b_min = 0.0, float b_max = 1.0, float a_min = 1.0, float a_max = 1.0);
 
 	Variant range(const Variant &p_from, const Variant &p_to);
 	Variant choice(const Variant &p_sequence);
