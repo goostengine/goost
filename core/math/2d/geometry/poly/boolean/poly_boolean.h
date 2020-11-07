@@ -1,5 +1,5 @@
-#ifndef GOOST_GEOMETRY_POLY_H
-#define GOOST_GEOMETRY_POLY_H
+#ifndef GOOST_GEOMETRY_POLY_BOOLEAN_H
+#define GOOST_GEOMETRY_POLY_BOOLEAN_H
 
 #include "core/reference.h"
 
@@ -103,4 +103,4 @@ private:
 	Vector<Ref<PolyNode2D>> children;
 };
 
-#endif // GOOST_GEOMETRY_POLY_H
+#endif // GOOST_GEOMETRY_POLY_BOOLEAN_H

@@ -1,5 +1,5 @@
-#ifndef GOOST_GEOMETRY_CLIPPER6
-#define GOOST_GEOMETRY_CLIPPER6
+#ifndef GOOST_GEOMETRY_POLY_BOOLEAN_CLIPPER6_H
+#define GOOST_GEOMETRY_POLY_BOOLEAN_CLIPPER6_H
 
 #include "goost/core/math/2d/geometry/poly/boolean/poly_boolean.h"
 #include "thirdparty/misc/clipper.hpp"
@@ -19,4 +19,4 @@ private:
 	bool subject_open;
 };
 
-#endif // GOOST_GEOMETRY_CLIPPER6
+#endif // GOOST_GEOMETRY_POLY_BOOLEAN_CLIPPER6_H

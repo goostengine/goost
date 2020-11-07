@@ -181,9 +181,9 @@ public:
 				backends_list += ",";
 			}
 		}
-		// Suggest restart because the singleton can also be used in extension mode.
 		T default_backend = get_default_backend_instance();
 		if (default_backend) {
+			// Suggest restart because the singleton can also be used in extension mode.
 			GLOBAL_DEF_RST(setting_name, default_backend_name);
 		}
 		if (!backends_list.empty()) {
