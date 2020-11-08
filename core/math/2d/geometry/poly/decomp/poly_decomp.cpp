@@ -12,7 +12,7 @@ void PolyDecomp2DBackend::set_parameters(const Ref<PolyDecompParameters2D> &p_pa
 	}
 }
 
-Vector<Vector<Point2>> PolyDecomp2DBackend::decompose_polygons(DecompType p_type, const Vector<Vector<Point2>> &p_polygons) {
+Vector<Vector<Point2>> PolyDecomp2DBackend::decompose_polygons(const Vector<Vector<Point2>> &p_polygons, Decomposition p_type) {
 	Vector<Vector<Point2>> polys;
 	switch (p_type) {
 		case DECOMP_TRIANGLES_EC: {
@@ -44,9 +44,9 @@ Vector<Vector<Point2>> PolyDecomp2D::decompose_polygons_into_convex(const Vector
 	return backend->decompose_convex_hm(p_polygons);
 }
 
-Vector<Vector<Point2>> PolyDecomp2D::decompose_polygons(DecompType p_type, const Vector<Vector<Point2>> &p_polygons, const Ref<PolyDecompParameters2D> &p_parameters) {
+Vector<Vector<Point2>> PolyDecomp2D::decompose_polygons(const Vector<Vector<Point2>> &p_polygons, Decomposition p_type, const Ref<PolyDecompParameters2D> &p_parameters) {
 	backend->set_parameters(p_parameters);
-	return backend->decompose_polygons(PolyDecomp2DBackend::DecompType(p_type), p_polygons);
+	return backend->decompose_polygons(p_polygons, PolyDecomp2DBackend::Decomposition(p_type));
 }
 
 // BIND
@@ -81,13 +81,13 @@ Array _PolyDecomp2D::decompose_polygons_into_convex(Array p_polygons) const {
 	return ret;
 }
 
-Array _PolyDecomp2D::decompose_polygons(DecompType p_type, Array p_polygons) const {
+Array _PolyDecomp2D::decompose_polygons(Array p_polygons, Decomposition p_type) const {
 	Vector<Vector<Point2>> polygons;
 	for (int i = 0; i < p_polygons.size(); i++) {
 		polygons.push_back(p_polygons[i]);
 	}
 	const auto &params = singleton == this ? Ref<PolyDecompParameters2D>() : parameters;
-	Vector<Vector<Vector2>> solution = PolyDecomp2D::decompose_polygons(PolyDecomp2D::DecompType(p_type), polygons, params);
+	Vector<Vector<Vector2>> solution = PolyDecomp2D::decompose_polygons(polygons, PolyDecomp2D::Decomposition(p_type), params);
 	Array ret;
 	for (int i = 0; i < solution.size(); ++i) {
 		ret.push_back(solution[i]);
@@ -101,7 +101,7 @@ void _PolyDecomp2D::_bind_methods() {
 	
 	ClassDB::bind_method(D_METHOD("triangulate_polygons", "polygons"), &_PolyDecomp2D::triangulate_polygons);
 	ClassDB::bind_method(D_METHOD("decompose_polygons_into_convex", "polygons"), &_PolyDecomp2D::decompose_polygons_into_convex);
-	ClassDB::bind_method(D_METHOD("decompose_polygons", "type", "polygons"), &_PolyDecomp2D::decompose_polygons);
+	ClassDB::bind_method(D_METHOD("decompose_polygons", "polygons", "type"), &_PolyDecomp2D::decompose_polygons);
 
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "parameters"), "set_parameters", "get_parameters");
 

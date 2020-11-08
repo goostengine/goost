@@ -19,8 +19,8 @@ public:
 		OPERATION_INTERSECTION,
 		OPERATION_XOR,
 	};
-	virtual Vector<Vector<Point2>> polypaths_boolean(Operation p_op, const Vector<Vector<Point2>> &p_polypaths_A, const Vector<Vector<Point2>> &p_polypaths_B) = 0;
-	virtual Ref<PolyNode2D> polypaths_boolean_tree(Operation p_op, const Vector<Vector<Point2>> &p_polypaths_A, const Vector<Vector<Point2>> &p_polypaths_B) = 0;
+	virtual Vector<Vector<Point2>> boolean_polypaths(const Vector<Vector<Point2>> &p_polypaths_A, const Vector<Vector<Point2>> &p_polypaths_B, Operation p_op) = 0;
+	virtual Ref<PolyNode2D> boolean_polypaths_tree(const Vector<Vector<Point2>> &p_polypaths_A, const Vector<Vector<Point2>> &p_polypaths_B, Operation p_op) = 0;
 
 	PolyBoolean2DBackend() {
 		default_parameters.instance();
@@ -47,8 +47,8 @@ public:
 	static Vector<Vector<Point2>> intersect_polygons(const Vector<Vector<Point2>> &p_polygons_a, const Vector<Vector<Point2>> &p_polygons_b, const Ref<PolyBooleanParameters2D> &p_parameters = Ref<PolyBooleanParameters2D>());
 	static Vector<Vector<Point2>> exclude_polygons(const Vector<Vector<Point2>> &p_polygons_a, const Vector<Vector<Point2>> &p_polygons_b, const Ref<PolyBooleanParameters2D> &p_parameters = Ref<PolyBooleanParameters2D>());
 
-	static Vector<Vector<Point2>> polygons_boolean(Operation p_op, const Vector<Vector<Point2>> &p_polygons_a, const Vector<Vector<Point2>> &p_polygons_b = Vector<Vector<Point2>>(), const Ref<PolyBooleanParameters2D> &p_parameters = Ref<PolyBooleanParameters2D>());
-	static Ref<PolyNode2D> polygons_boolean_tree(Operation p_op, const Vector<Vector<Point2>> &p_polygons_a, const Vector<Vector<Point2>> &p_polygons_b = Vector<Vector<Point2>>(), const Ref<PolyBooleanParameters2D> &p_parameters = Ref<PolyBooleanParameters2D>());
+	static Vector<Vector<Point2>> boolean_polygons(const Vector<Vector<Point2>> &p_polygons_a, const Vector<Vector<Point2>> &p_polygons_b, Operation p_op, const Ref<PolyBooleanParameters2D> &p_parameters = Ref<PolyBooleanParameters2D>());
+	static Ref<PolyNode2D> boolean_polygons_tree(const Vector<Vector<Point2>> &p_polygons_a, const Vector<Vector<Point2>> &p_polygons_b, Operation p_op, const Ref<PolyBooleanParameters2D> &p_parameters = Ref<PolyBooleanParameters2D>());
 
 	static Vector<Vector<Point2>> clip_polylines_with_polygons(const Vector<Vector<Point2>> &p_polylines, const Vector<Vector<Point2>> &p_polygons, const Ref<PolyBooleanParameters2D> &p_parameters = Ref<PolyBooleanParameters2D>());
 	static Vector<Vector<Point2>> intersect_polylines_with_polygons(const Vector<Vector<Point2>> &p_polylines, const Vector<Vector<Point2>> &p_polygons, const Ref<PolyBooleanParameters2D> &p_parameters = Ref<PolyBooleanParameters2D>());
@@ -89,8 +89,8 @@ public:
 	Array intersect_polygons(Array p_polygons_a, Array p_polygons_b) const;
 	Array exclude_polygons(Array p_polygons_a, Array p_polygons_b) const;
 
-	Array polygons_boolean(Operation p_op, Array p_polygons_a, Array p_polygons_b) const;
-	Ref<PolyNode2D> polygons_boolean_tree(Operation p_op, Array p_polygons_a, Array p_polygons_b) const;
+	Array boolean_polygons(Array p_polygons_a, Array p_polygons_b, Operation p_op) const;
+	Ref<PolyNode2D> boolean_polygons_tree(Array p_polygons_a, Array p_polygons_b, Operation p_op) const;
 
 	Array clip_polylines_with_polygons(Array p_polylines, Array p_polygons) const;
 	Array intersect_polylines_with_polygons(Array p_polylines, Array p_polygons) const;

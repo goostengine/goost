@@ -43,7 +43,7 @@ func test_decompose_polygons_into_convex():
 
 
 func test_decompose_polygons_triangles_opt():
-	solution = PolyDecomp2D.decompose_polygons(PolyDecomp2D.DECOMP_TRIANGLES_OPT, [poly_boundary])
+	solution = PolyDecomp2D.decompose_polygons([poly_boundary], PolyDecomp2D.DECOMP_TRIANGLES_OPT)
 	assert_eq(solution.size(), 6)
 	assert_eq(solution[0].size(), 3)
 	assert_eq(solution[1].size(), 3)
@@ -58,7 +58,7 @@ func test_decompose_polygons_triangles_mono():
 		push_error("Skip, internal bug in PolyPartition.Triangulate_MONO...")
 		return true
 
-	solution = PolyDecomp2D.decompose_polygons(PolyDecomp2D.DECOMP_TRIANGLES_MONO, [poly_boundary, poly_hole])
+	solution = PolyDecomp2D.decompose_polygons([poly_boundary, poly_hole], PolyDecomp2D.DECOMP_TRIANGLES_MONO)
 	assert_eq(solution.size(), 12)
 	assert_eq(solution[0].size(), 3)
 	assert_eq(solution[1].size(), 3)
@@ -75,6 +75,6 @@ func test_decompose_polygons_triangles_mono():
 
 
 func test_decompose_polygons_convex_opt():
-	solution = PolyDecomp2D.decompose_polygons(PolyDecomp2D.DECOMP_CONVEX_OPT, [poly_boundary])
+	solution = PolyDecomp2D.decompose_polygons([poly_boundary], PolyDecomp2D.DECOMP_CONVEX_OPT)
 	assert_eq(solution.size(), 1)
 	assert_eq(solution[0].size(), 8)

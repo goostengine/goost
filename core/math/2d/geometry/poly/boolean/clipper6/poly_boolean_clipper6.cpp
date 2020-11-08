@@ -2,7 +2,7 @@
 #include "goost/core/math/2d/geometry/goost_geometry_2d.h"
 #include "goost/core/math/2d/geometry/poly/utils/godot_clipper6_path_convert.h"
 
-Vector<Vector<Point2>> PolyBoolean2DClipper6::polypaths_boolean(Operation p_op, const Vector<Vector<Point2>> &p_polypaths_a, const Vector<Vector<Point2>> &p_polypaths_b) {
+Vector<Vector<Point2>> PolyBoolean2DClipper6::boolean_polypaths(const Vector<Vector<Point2>> &p_polypaths_a, const Vector<Vector<Point2>> &p_polypaths_b, Operation p_op) {
 	ClipperLib::Clipper clp = configure(p_op, parameters);
 
 	ClipperLib::Paths subject;
@@ -30,7 +30,7 @@ Vector<Vector<Point2>> PolyBoolean2DClipper6::polypaths_boolean(Operation p_op, 
 	return ret;
 }
 
-Ref<PolyNode2D> PolyBoolean2DClipper6::polypaths_boolean_tree(Operation p_op, const Vector<Vector<Point2>> &p_polypaths_a, const Vector<Vector<Point2>> &p_polypaths_b) {
+Ref<PolyNode2D> PolyBoolean2DClipper6::boolean_polypaths_tree(const Vector<Vector<Point2>> &p_polypaths_a, const Vector<Vector<Point2>> &p_polypaths_b, Operation p_op) {
 	ClipperLib::Clipper clp = configure(p_op, parameters);
 
 	ClipperLib::Paths subject;

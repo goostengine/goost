@@ -77,13 +77,13 @@ Vector<Vector<Point2>> GoostGeometry2D::triangulate_polygon(const Vector<Point2>
 	Vector<Vector<Point2>> polygons;
 	polygons.push_back(p_polygon);
 	// Using DECOMP_TRIANGLES_MONO as it's mostly fail-proof in clipper10 backend (default).
-	return PolyDecomp2D::decompose_polygons(PolyDecomp2D::DECOMP_TRIANGLES_MONO, polygons);
+	return PolyDecomp2D::decompose_polygons(polygons, PolyDecomp2D::DECOMP_TRIANGLES_MONO);
 }
 
 Vector<Vector<Point2>> GoostGeometry2D::decompose_polygon(const Vector<Point2> &p_polygon) {
 	Vector<Vector<Point2>> polygons;
 	polygons.push_back(p_polygon);
-	return PolyDecomp2D::decompose_polygons(PolyDecomp2D::DECOMP_CONVEX_HM, polygons);
+	return PolyDecomp2D::decompose_polygons(polygons, PolyDecomp2D::DECOMP_CONVEX_HM);
 }
 
 Point2 GoostGeometry2D::polygon_centroid(const Vector<Point2> &p_polygon) {

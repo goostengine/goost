@@ -2,7 +2,7 @@
 #include "goost/core/math/2d/geometry/goost_geometry_2d.h"
 #include "thirdparty/misc/triangulator.h"
 
-List<TriangulatorPoly> configure(PolyDecomp2DPolyPartition::DecompType p_type, const Vector<Vector<Point2>> &p_polygons) {
+List<TriangulatorPoly> configure(PolyDecomp2DPolyPartition::Decomposition p_type, const Vector<Vector<Point2>> &p_polygons) {
 	List<TriangulatorPoly> in_poly;
 
 	// Split between inner and outer polygons first.
