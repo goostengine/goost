@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="PolyOffsetParameters2D" inherits="Reference" version="3.2">
 	<brief_description>
-		A set of parameters to configure various polygon and polyline deflating and inflating related methods in [GoostGeometry2D].
+		A set of parameters to configure various polygon and polyline deflating and inflating related methods in [PolyOffset2D].
 	</brief_description>
 	<description>
 	</description>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="PolyOffset2D" inherits="Reference" version="3.2">
+	<brief_description>
+		Polygon deflating and inflating.
+	</brief_description>
+	<description>
+		A singleton which provides various method for polygon and polylines deflating, inflating, buffering etc.
+		A new local instance must be created manually with [method new_instance] method if you need to override the default [member parameters], else the methods in this class are available globally:
+		[codeblock]
+		var polygons = []
+		# Globally.
+		polygons = PolyOffset2D.deflate_polygons([poly_a, poly_b])
+		# Locally.
+		var po = PolyOffset2D.new_instance()
+		po.parameters.miter_limit = 3.0
+		polygons = po.deflate_polygons([poly_a, poly_b])
+		[/codeblock]
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="deflate_polygons" qualifiers="const">
+			<return type="Array">
+			</return>
+			<argument index="0" name="polygons" type="Array">
+			</argument>
+			<argument index="1" name="delta" type="float">
+			</argument>
+			<description>
+				Deflates an array of [code]polygons[/code] by [code]delta[/code] pixels, growing the polygons outward.
+				Each polygon's vertices will be rounded as determined by [member PolyOffsetParameters2D.join_type].
+			</description>
+		</method>
+		<method name="deflate_polylines" qualifiers="const">
+			<return type="Array">
+			</return>
+			<argument index="0" name="polylines" type="Array">
+			</argument>
+			<argument index="1" name="delta" type="float">
+			</argument>
+			<description>
+				Deflates (grows) [code]polylines[/code] into polygons by [code]delta[/code] pixels.
+				Each polygon's vertices will be rounded as determined by [member PolyOffsetParameters2D.join_type].
+				Each polygon's endpoints will be rounded as determined by [member PolyOffsetParameters2D.end_type], except for the [constant PolyOffsetParameters2D.END_POLYGON] as it's used by polygon offsetting specifically, use [constant PolyOffsetParameters2D.END_JOINED] to grow a polyline like a closed donut instead.
+			</description>
+		</method>
+		<method name="inflate_polygons" qualifiers="const">
+			<return type="Array">
+			</return>
+			<argument index="0" name="polygons" type="Array">
+			</argument>
+			<argument index="1" name="delta" type="float">
+			</argument>
+			<description>
+				Inflates an array of [code]polygons[/code] by [code]delta[/code] pixels, shrinking the polygons inward. Returns an empty array if [code]delta[/code] approximately exceeds the minimum bounding rectangle dimensions of each of the polygons.
+				Each polygon's vertices will be rounded as determined by [member PolyOffsetParameters2D.join_type].
+			</description>
+		</method>
+		<method name="new_instance" qualifiers="const">
+			<return type="_PolyOffset2D">
+			</return>
+			<description>
+				Instantiates a new local [PolyOffset2D] instance, and [member parameters] can be configured.
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="parameters" type="PolyOffsetParameters2D" setter="set_parameters" getter="get_parameters">
+			Parameters to configure the default behavior of operations. Cannot be configured via the global instance, use [method new_instance] first if you need to override the defaults.
+		</member>
+	</members>
+	<constants>
+	</constants>
+</class>
