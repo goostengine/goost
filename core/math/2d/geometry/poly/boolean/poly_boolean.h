@@ -3,8 +3,35 @@
 
 #include "core/reference.h"
 
-class PolyNode2D;
+class PolyBoolean2D;
 class PolyBooleanParameters2D;
+class PolyNode2D;
+
+class PolyBoolean2DBackend {
+public:
+	virtual void set_parameters(const Ref<PolyBooleanParameters2D> &p_parameters);
+	virtual Ref<PolyBooleanParameters2D> get_parameters() { return parameters; }
+
+	enum Operation {
+		OPERATION_NONE,
+		OPERATION_UNION,
+		OPERATION_DIFFERENCE,
+		OPERATION_INTERSECTION,
+		OPERATION_XOR,
+	};
+	virtual Vector<Vector<Point2>> polypaths_boolean(Operation p_op, const Vector<Vector<Point2>> &p_polypaths_A, const Vector<Vector<Point2>> &p_polypaths_B) = 0;
+	virtual Ref<PolyNode2D> polypaths_boolean_tree(Operation p_op, const Vector<Vector<Point2>> &p_polypaths_A, const Vector<Vector<Point2>> &p_polypaths_B) = 0;
+
+	PolyBoolean2DBackend() {
+		default_parameters.instance();
+		parameters.instance();
+	}
+	virtual ~PolyBoolean2DBackend() {}
+
+protected:
+	Ref<PolyBooleanParameters2D> default_parameters;
+	Ref<PolyBooleanParameters2D> parameters;
+};
 
 class PolyBoolean2D {
 public:
@@ -15,17 +42,71 @@ public:
 		OPERATION_INTERSECTION,
 		OPERATION_XOR,
 	};
-	virtual Vector<Vector<Point2>> polypaths_boolean(Operation p_op, const Vector<Vector<Point2>> &p_polypaths_a, const Vector<Vector<Point2>> &p_polypaths_b) = 0;
-	virtual Ref<PolyNode2D> polypaths_boolean_tree(Operation p_op, const Vector<Vector<Point2>> &p_polypaths_a, const Vector<Vector<Point2>> &p_polypaths_b) = 0;
+	static Vector<Vector<Point2>> merge_polygons(const Vector<Vector<Point2>> &p_polygons_a, const Vector<Vector<Point2>> &p_polygons_b = Vector<Vector<Point2>>(), const Ref<PolyBooleanParameters2D> &p_parameters = Ref<PolyBooleanParameters2D>());
+	static Vector<Vector<Point2>> clip_polygons(const Vector<Vector<Point2>> &p_polygons_a, const Vector<Vector<Point2>> &p_polygons_b, const Ref<PolyBooleanParameters2D> &p_parameters = Ref<PolyBooleanParameters2D>());
+	static Vector<Vector<Point2>> intersect_polygons(const Vector<Vector<Point2>> &p_polygons_a, const Vector<Vector<Point2>> &p_polygons_b, const Ref<PolyBooleanParameters2D> &p_parameters = Ref<PolyBooleanParameters2D>());
+	static Vector<Vector<Point2>> exclude_polygons(const Vector<Vector<Point2>> &p_polygons_a, const Vector<Vector<Point2>> &p_polygons_b, const Ref<PolyBooleanParameters2D> &p_parameters = Ref<PolyBooleanParameters2D>());
 
-	virtual ~PolyBoolean2D() {}
+	static Vector<Vector<Point2>> polygons_boolean(Operation p_op, const Vector<Vector<Point2>> &p_polygons_a, const Vector<Vector<Point2>> &p_polygons_b = Vector<Vector<Point2>>(), const Ref<PolyBooleanParameters2D> &p_parameters = Ref<PolyBooleanParameters2D>());
+	static Ref<PolyNode2D> polygons_boolean_tree(Operation p_op, const Vector<Vector<Point2>> &p_polygons_a, const Vector<Vector<Point2>> &p_polygons_b = Vector<Vector<Point2>>(), const Ref<PolyBooleanParameters2D> &p_parameters = Ref<PolyBooleanParameters2D>());
 
-public:
-	void set_params(const Ref<PolyBooleanParameters2D> &p_params) { params = p_params; }
+	static Vector<Vector<Point2>> clip_polylines_with_polygons(const Vector<Vector<Point2>> &p_polylines, const Vector<Vector<Point2>> &p_polygons, const Ref<PolyBooleanParameters2D> &p_parameters = Ref<PolyBooleanParameters2D>());
+	static Vector<Vector<Point2>> intersect_polylines_with_polygons(const Vector<Vector<Point2>> &p_polylines, const Vector<Vector<Point2>> &p_polygons, const Ref<PolyBooleanParameters2D> &p_parameters = Ref<PolyBooleanParameters2D>());
+
+	static void set_backend(PolyBoolean2DBackend *p_backend) { backend = p_backend; }
+	static PolyBoolean2DBackend *get_backend() { return backend; }
+
+private:
+	static PolyBoolean2DBackend *backend;
+};
+
+// BIND
+
+class _PolyBoolean2D : public Reference {
+	GDCLASS(_PolyBoolean2D, Reference);
+
+private:
+	static _PolyBoolean2D *singleton;
 
 protected:
-	Ref<PolyBooleanParameters2D> params;
+	static void _bind_methods();
+
+public:
+	static _PolyBoolean2D *get_singleton() { return singleton; }
+
+	void set_parameters(const Ref<PolyBooleanParameters2D> &p_parameters) { parameters = p_parameters; }
+	Ref<PolyBooleanParameters2D> get_parameters() const { return parameters; }
+
+	enum Operation {
+		OPERATION_NONE,
+		OPERATION_UNION,
+		OPERATION_DIFFERENCE,
+		OPERATION_INTERSECTION,
+		OPERATION_XOR,
+	};
+	Array merge_polygons(Array p_polygons_a, Array p_polygons_b) const;
+	Array clip_polygons(Array p_polygons_a, Array p_polygons_b) const;
+	Array intersect_polygons(Array p_polygons_a, Array p_polygons_b) const;
+	Array exclude_polygons(Array p_polygons_a, Array p_polygons_b) const;
+
+	Array polygons_boolean(Operation p_op, Array p_polygons_a, Array p_polygons_b) const;
+	Ref<PolyNode2D> polygons_boolean_tree(Operation p_op, Array p_polygons_a, Array p_polygons_b) const;
+
+	Array clip_polylines_with_polygons(Array p_polylines, Array p_polygons) const;
+	Array intersect_polylines_with_polygons(Array p_polylines, Array p_polygons) const;
+
+	_PolyBoolean2D::_PolyBoolean2D() {
+		if (!singleton) {
+			singleton = this;
+		}
+		parameters.instance();
+	}
+
+protected:
+	Ref<PolyBooleanParameters2D> parameters;
 };
+
+VARIANT_ENUM_CAST(_PolyBoolean2D::Operation);
 
 class PolyBooleanParameters2D : public Reference {
 	GDCLASS(PolyBooleanParameters2D, Reference);

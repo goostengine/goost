@@ -3,7 +3,7 @@
 #include "goost/core/math/2d/geometry/poly/utils/godot_clipper6_path_convert.h"
 
 Vector<Vector<Point2>> PolyBoolean2DClipper6::polypaths_boolean(Operation p_op, const Vector<Vector<Point2>> &p_polypaths_a, const Vector<Vector<Point2>> &p_polypaths_b) {
-	ClipperLib::Clipper clp = configure(p_op, params);
+	ClipperLib::Clipper clp = configure(p_op, parameters);
 
 	ClipperLib::Paths subject;
 	GodotClipperUtils::scale_up_polypaths(p_polypaths_a, subject);
@@ -31,7 +31,7 @@ Vector<Vector<Point2>> PolyBoolean2DClipper6::polypaths_boolean(Operation p_op, 
 }
 
 Ref<PolyNode2D> PolyBoolean2DClipper6::polypaths_boolean_tree(Operation p_op, const Vector<Vector<Point2>> &p_polypaths_a, const Vector<Vector<Point2>> &p_polypaths_b) {
-	ClipperLib::Clipper clp = configure(p_op, params);
+	ClipperLib::Clipper clp = configure(p_op, parameters);
 
 	ClipperLib::Paths subject;
 	GodotClipperUtils::scale_up_polypaths(p_polypaths_a, subject);
@@ -71,7 +71,7 @@ Ref<PolyNode2D> PolyBoolean2DClipper6::polypaths_boolean_tree(Operation p_op, co
 	return root;
 }
 
-ClipperLib::Clipper PolyBoolean2DClipper6::configure(Operation p_op, const Ref<PolyBooleanParameters2D> &p_params) {
+ClipperLib::Clipper PolyBoolean2DClipper6::configure(Operation p_op, const Ref<PolyBooleanParameters2D> &p_parameters) {
 	using namespace ClipperLib;
 
 	switch (p_op) {
@@ -95,12 +95,12 @@ ClipperLib::Clipper PolyBoolean2DClipper6::configure(Operation p_op, const Ref<P
 
 	int init_options = 0;
 
-	subject_fill_type = PolyFillType(p_params->subject_fill_rule);
-	clip_fill_type = PolyFillType(p_params->clip_fill_rule);
-	init_options |= p_params->reverse_solution ? InitOptions::ioReverseSolution : 0;
-	init_options |= p_params->strictly_simple ? InitOptions::ioStrictlySimple : 0;
-	init_options |= p_params->preserve_collinear ? InitOptions::ioPreserveCollinear : 0;
-	subject_open = p_params->subject_open;
+	subject_fill_type = PolyFillType(p_parameters->subject_fill_rule);
+	clip_fill_type = PolyFillType(p_parameters->clip_fill_rule);
+	init_options |= p_parameters->reverse_solution ? InitOptions::ioReverseSolution : 0;
+	init_options |= p_parameters->strictly_simple ? InitOptions::ioStrictlySimple : 0;
+	init_options |= p_parameters->preserve_collinear ? InitOptions::ioPreserveCollinear : 0;
+	subject_open = p_parameters->subject_open;
 
 	return Clipper(init_options);
 }

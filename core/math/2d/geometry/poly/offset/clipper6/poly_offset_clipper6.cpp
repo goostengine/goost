@@ -2,7 +2,7 @@
 #include "goost/core/math/2d/geometry/poly/utils/godot_clipper6_path_convert.h"
 
 Vector<Vector<Point2>> PolyOffset2DClipper6::offset_polypaths(const Vector<Vector<Point2>> &p_polypaths, real_t p_delta) {
-	ClipperLib::ClipperOffset clp = configure(params);
+	ClipperLib::ClipperOffset clp = configure(parameters);
 
 	ClipperLib::Paths subject;
 	GodotClipperUtils::scale_up_polypaths(p_polypaths, subject);
@@ -17,10 +17,10 @@ Vector<Vector<Point2>> PolyOffset2DClipper6::offset_polypaths(const Vector<Vecto
 	return ret;
 }
 
-ClipperLib::ClipperOffset PolyOffset2DClipper6::configure(const Ref<PolyOffsetParameters2D> &p_params) {
+ClipperLib::ClipperOffset PolyOffset2DClipper6::configure(const Ref<PolyOffsetParameters2D> &p_parameters) {
 	using namespace ClipperLib;
 
-	switch (p_params->join_type) {
+	switch (p_parameters->join_type) {
 		case PolyOffsetParameters2D::JOIN_SQUARE:
 			join_type = jtSquare;
 			break;
@@ -31,7 +31,7 @@ ClipperLib::ClipperOffset PolyOffset2DClipper6::configure(const Ref<PolyOffsetPa
 			join_type = jtMiter;
 			break;
 	}
-	switch (p_params->end_type) {
+	switch (p_parameters->end_type) {
 		case PolyOffsetParameters2D::END_POLYGON:
 			end_type = etClosedPolygon;
 			break;
@@ -48,5 +48,5 @@ ClipperLib::ClipperOffset PolyOffset2DClipper6::configure(const Ref<PolyOffsetPa
 			end_type = etOpenRound;
 			break;
 	}
-	return ClipperOffset(p_params->miter_limit, p_params->arc_tolerance * SCALE_FACTOR);
+	return ClipperOffset(p_parameters->miter_limit, p_parameters->arc_tolerance * SCALE_FACTOR);
 }

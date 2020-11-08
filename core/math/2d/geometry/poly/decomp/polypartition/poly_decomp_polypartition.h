@@ -6,7 +6,7 @@
 
 class PolyDecompParameters2D;
 
-class PolyDecomp2DPolyPartition : public PolyDecomp2D {
+class PolyDecomp2DPolyPartition : public PolyDecomp2DBackend {
 public:
 	virtual Vector<Vector<Point2>> triangulate_ec(const Vector<Vector<Point2>> &p_polygons) override;
 	virtual Vector<Vector<Point2>> triangulate_opt(const Vector<Vector<Point2>> &p_polygons) override;

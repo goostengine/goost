@@ -1,4 +1,5 @@
 #include "random_2d.h"
+#include "goost/core/math/2d/geometry/poly/decomp/poly_decomp.h"
 #include "goost/core/math/2d/geometry/goost_geometry_2d.h"
 
 #include "core/method_bind_ext.gen.inc"
@@ -76,15 +77,12 @@ Variant Random2D::point_in_polygon(const Variant &p_polygon, int p_point_count) 
 			ERR_FAIL_V_MSG(Variant(), "Invalid type: expected either a single polygon or an array of polygons.");
 		}
 	}
-	using TS = GoostGeometry2D;
-	// `DECOMP_TRIANGLES_MONO` is mostly fail-proof for triangulation with holes,
-	// but may have slightly worse distribution due to producing thin triangles.
-	auto triangles = TS::decompose_polygons(TS::DECOMP_TRIANGLES_MONO, polygons_in);
+	Vector<Vector<Point2>> triangles = PolyDecomp2D::triangulate_polygons(polygons_in);
 	// Compute total positive and negative area for weighted distribution,
 	// for both outer and inner polygons respectively.
 	real_t total_area = 0.0;
 	for (int i = 0; i < triangles.size(); ++i) {
-		total_area += TS::polygon_area(triangles[i]);
+		total_area += GoostGeometry2D::polygon_area(triangles[i]);
 	}
 	if (p_point_count == 1) {
 		// Pre-generate enough points with approximately uniform distribution,
@@ -97,7 +95,7 @@ Variant Random2D::point_in_polygon(const Variant &p_polygon, int p_point_count) 
 	Vector<Point2> points;
 	for (int i = 0; i < triangles.size(); ++i) {
 		const Vector<Point2> &tri = triangles[i];
-		int n = Math::ceil(point_count * TS::polygon_area(tri) / total_area);
+		int n = Math::ceil(point_count * GoostGeometry2D::polygon_area(tri) / total_area);
 		for (int j = 0; j < n; ++j) {
 			points.push_back(point_in_triangle(tri));
 		}

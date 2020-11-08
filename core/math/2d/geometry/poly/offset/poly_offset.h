@@ -1,23 +1,73 @@
-#ifndef GOOST_GEOMETRY_POLY_OFFSET_H
-#define GOOST_GEOMETRY_POLY_OFFSET_H
+#ifndef GOOST_GEOMETRY_POLY_OFFSET_2D_H
+#define GOOST_GEOMETRY_POLY_OFFSET_2D_H
 
 #include "core/reference.h"
 
+class PolyOffset2D;
 class PolyOffsetParameters2D;
+
+class PolyOffset2DBackend {
+public:
+	virtual void set_parameters(const Ref<PolyOffsetParameters2D> &p_parameters);
+	virtual Ref<PolyOffsetParameters2D> get_parameters() { return parameters; }
+
+	virtual Vector<Vector<Point2>> offset_polypaths(const Vector<Vector<Point2>> &p_polypaths, real_t p_delta) = 0;
+
+	PolyOffset2DBackend() {
+		default_parameters.instance();
+		parameters.instance();
+	}
+	virtual ~PolyOffset2DBackend() {}
+
+protected:
+	Ref<PolyOffsetParameters2D> default_parameters;
+	Ref<PolyOffsetParameters2D> parameters;
+};
+
 
 class PolyOffset2D {
 public:
-	// Combines both polygon and polyline offseting.
-	virtual Vector<Vector<Point2>> offset_polypaths(const Vector<Vector<Point2>> &p_polypaths, real_t p_delta) = 0;
-	// virtual Ref<PolyNode2D> offset_polypaths_tree(const Vector<Vector<Point2> > &p_polypaths, real_t p_delta) = 0;
+	static Vector<Vector<Point2>> inflate_polygons(const Vector<Vector<Point2>> &p_polygons, real_t p_delta, const Ref<PolyOffsetParameters2D> &p_parameters = Ref<PolyOffsetParameters2D>());
+	static Vector<Vector<Point2>> deflate_polygons(const Vector<Vector<Point2>> &p_polygons, real_t p_delta, const Ref<PolyOffsetParameters2D> &p_parameters = Ref<PolyOffsetParameters2D>());
+	static Vector<Vector<Point2>> deflate_polylines(const Vector<Vector<Point2>> &p_polylines, real_t p_delta, const Ref<PolyOffsetParameters2D> &p_parameters = Ref<PolyOffsetParameters2D>());
 
-	virtual ~PolyOffset2D() {}
+	static void set_backend(PolyOffset2DBackend *p_backend) { backend = p_backend; }
+	static PolyOffset2DBackend *get_backend() { return backend; }
 
-public:
-	void set_params(const Ref<PolyOffsetParameters2D> &p_params) { params = p_params; }
+private:
+	static PolyOffset2DBackend *backend;
+};
+
+// BIND
+
+class _PolyOffset2D : public Reference {
+	GDCLASS(_PolyOffset2D, Reference);
+
+private:
+	static _PolyOffset2D *singleton;
 
 protected:
-	Ref<PolyOffsetParameters2D> params;
+	static void _bind_methods();
+
+public:
+	static _PolyOffset2D *get_singleton() { return singleton; }
+
+	void set_parameters(const Ref<PolyOffsetParameters2D> &p_parameters) { parameters = p_parameters; }
+	Ref<PolyOffsetParameters2D> get_parameters() const { return parameters; }
+
+	Array inflate_polygons(Array p_polygons, real_t p_delta) const;
+	Array deflate_polygons(Array p_polygons, real_t p_delta) const;
+	Array deflate_polylines(Array p_polylines, real_t p_delta) const;
+
+	_PolyOffset2D::_PolyOffset2D() {
+		if (!singleton) {
+			singleton = this;
+		}
+		parameters.instance();
+	}
+
+protected:
+	Ref<PolyOffsetParameters2D> parameters;
 };
 
 class PolyOffsetParameters2D : public Reference {
@@ -70,4 +120,4 @@ public:
 VARIANT_ENUM_CAST(PolyOffsetParameters2D::JoinType);
 VARIANT_ENUM_CAST(PolyOffsetParameters2D::EndType);
 
-#endif // GOOST_GEOMETRY_POLY_OFFSET_H
+#endif // GOOST_GEOMETRY_POLY_OFFSET_2D_H
