@@ -60,7 +60,7 @@ public:
 	Array deflate_polygons(Array p_polygons, real_t p_delta) const;
 	Array deflate_polylines(Array p_polylines, real_t p_delta) const;
 
-	_PolyOffset2D::_PolyOffset2D() {
+	_PolyOffset2D() {
 		if (!singleton) {
 			singleton = this;
 		}

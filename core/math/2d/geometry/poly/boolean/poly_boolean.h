@@ -96,7 +96,7 @@ public:
 	Array clip_polylines_with_polygons(Array p_polylines, Array p_polygons) const;
 	Array intersect_polylines_with_polygons(Array p_polylines, Array p_polygons) const;
 
-	_PolyBoolean2D::_PolyBoolean2D() {
+	_PolyBoolean2D() {
 		if (!singleton) {
 			singleton = this;
 		}

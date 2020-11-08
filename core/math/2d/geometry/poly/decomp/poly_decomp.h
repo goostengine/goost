@@ -86,7 +86,7 @@ public:
 	Array decompose_polygons_into_convex(Array p_polygons) const;
 	Array decompose_polygons(Array p_polygons, Decomposition p_type) const;
 
-	_PolyDecomp2D::_PolyDecomp2D() {
+	_PolyDecomp2D() {
 		if (!singleton) {
 			singleton = this;
 		}
