@@ -14,6 +14,16 @@ func before_all():
 	poly_hole.invert()
 
 
+func test_create_local_instance():
+	var global = PolyDecomp2D
+	var local = PolyDecomp2D.new_instance()
+	assert_ne(local, PolyDecomp2D)
+	assert_eq(global, PolyDecomp2D)
+	# Should be possible to override in local instance, but not in global.
+#	PolyDecomp2D.parameters.fill_rule = PolyDecompParameters2D.FILL_RULE_EVEN_ODD
+	local.parameters.fill_rule = PolyDecompParameters2D.FILL_RULE_EVEN_ODD
+
+
 func test_triangulate_polygons():
 	solution = PolyDecomp2D.triangulate_polygons([poly_boundary, poly_hole])
 	assert_eq(solution.size(), 12)

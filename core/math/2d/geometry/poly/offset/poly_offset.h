@@ -51,9 +51,10 @@ protected:
 
 public:
 	static _PolyOffset2D *get_singleton() { return singleton; }
+	virtual Ref<_PolyOffset2D> new_instance() const { return memnew(_PolyOffset2D); }
 
-	void set_parameters(const Ref<PolyOffsetParameters2D> &p_parameters) { parameters = p_parameters; }
-	Ref<PolyOffsetParameters2D> get_parameters() const { return parameters; }
+	void set_parameters(const Ref<PolyOffsetParameters2D> &p_parameters);
+	Ref<PolyOffsetParameters2D> get_parameters() const;
 
 	Array inflate_polygons(Array p_polygons, real_t p_delta) const;
 	Array deflate_polygons(Array p_polygons, real_t p_delta) const;

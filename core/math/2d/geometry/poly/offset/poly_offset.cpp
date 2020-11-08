@@ -40,6 +40,24 @@ Vector<Vector<Point2>> PolyOffset2D::deflate_polylines(const Vector<Vector<Point
 
 _PolyOffset2D *_PolyOffset2D::singleton = nullptr;
 
+void _PolyOffset2D::set_parameters(const Ref<PolyOffsetParameters2D> &p_parameters) {
+#ifdef DEBUG_ENABLED
+	if (singleton == this) {
+		ERR_FAIL_MSG("Configuring parameters is forbidden for a global instance. Please create a new local instance of PolyOffset2D with `new_instance()` method");
+	}
+#endif
+	parameters = p_parameters;
+}
+
+Ref<PolyOffsetParameters2D> _PolyOffset2D::get_parameters() const {
+#ifdef DEBUG_ENABLED
+	if (singleton == this) {
+		ERR_FAIL_V_MSG(Ref<PolyOffsetParameters2D>(), "Configuring parameters is forbidden for a global instance. Please create a new local instance of PolyOffset2D with `new_instance()` method");
+	}
+#endif
+	return parameters;
+}
+
 Array _PolyOffset2D::inflate_polygons(Array p_polygons, real_t p_delta) const {
 	Vector<Vector<Point2>> polygons;
 	for (int i = 0; i < p_polygons.size(); i++) {
@@ -83,6 +101,8 @@ Array _PolyOffset2D::deflate_polylines(Array p_polylines, real_t p_delta) const 
 }
 
 void _PolyOffset2D::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("new_instance"), &_PolyOffset2D::new_instance);
+
 	ClassDB::bind_method(D_METHOD("set_parameters", "parameters"), &_PolyOffset2D::set_parameters);
 	ClassDB::bind_method(D_METHOD("get_parameters"), &_PolyOffset2D::get_parameters);
 

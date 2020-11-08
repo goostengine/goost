@@ -73,9 +73,10 @@ protected:
 
 public:
 	static _PolyBoolean2D *get_singleton() { return singleton; }
+	virtual Ref<_PolyBoolean2D> new_instance() const { return memnew(_PolyBoolean2D); }
 
-	void set_parameters(const Ref<PolyBooleanParameters2D> &p_parameters) { parameters = p_parameters; }
-	Ref<PolyBooleanParameters2D> get_parameters() const { return parameters; }
+	void set_parameters(const Ref<PolyBooleanParameters2D> &p_parameters);
+	Ref<PolyBooleanParameters2D> get_parameters() const;
 
 	enum Operation {
 		OPERATION_NONE,

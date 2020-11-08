@@ -53,6 +53,24 @@ Vector<Vector<Point2>> PolyDecomp2D::decompose_polygons(const Vector<Vector<Poin
 
 _PolyDecomp2D *_PolyDecomp2D::singleton = nullptr;
 
+void _PolyDecomp2D::set_parameters(const Ref<PolyDecompParameters2D> &p_parameters) {
+#ifdef DEBUG_ENABLED
+	if (singleton == this) {
+		ERR_FAIL_MSG("Configuring parameters is forbidden for a global instance. Please create a new local instance of PolyDecomp2D with `new_instance()` method");
+	}
+#endif
+	parameters = p_parameters;
+}
+
+Ref<PolyDecompParameters2D> _PolyDecomp2D::get_parameters() const {
+#ifdef DEBUG_ENABLED
+	if (singleton == this) {
+		ERR_FAIL_V_MSG(Ref<PolyDecompParameters2D>(), "Configuring parameters is forbidden for a global instance. Please create a new local instance of PolyDecomp2D with `new_instance()` method");
+	}
+#endif
+	return parameters;
+}
+
 Array _PolyDecomp2D::triangulate_polygons(Array p_polygons) const {
 	Vector<Vector<Point2>> polygons;
 	for (int i = 0; i < p_polygons.size(); i++) {
@@ -96,9 +114,11 @@ Array _PolyDecomp2D::decompose_polygons(Array p_polygons, Decomposition p_type) 
 }
 
 void _PolyDecomp2D::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("new_instance"), &_PolyDecomp2D::new_instance);
+
 	ClassDB::bind_method(D_METHOD("set_parameters", "parameters"), &_PolyDecomp2D::set_parameters);
 	ClassDB::bind_method(D_METHOD("get_parameters"), &_PolyDecomp2D::get_parameters);
-	
+
 	ClassDB::bind_method(D_METHOD("triangulate_polygons", "polygons"), &_PolyDecomp2D::triangulate_polygons);
 	ClassDB::bind_method(D_METHOD("decompose_polygons_into_convex", "polygons"), &_PolyDecomp2D::decompose_polygons_into_convex);
 	ClassDB::bind_method(D_METHOD("decompose_polygons", "polygons", "type"), &_PolyDecomp2D::decompose_polygons);

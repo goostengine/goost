@@ -33,7 +33,7 @@ Vector<Vector<Point2>> PolyBoolean2D::intersect_polygons(const Vector<Vector<Poi
 Vector<Vector<Point2>> PolyBoolean2D::exclude_polygons(const Vector<Vector<Point2>> &p_polygons_a, const Vector<Vector<Point2>> &p_polygons_b, const Ref<PolyBooleanParameters2D> &p_parameters) {
 	backend->set_parameters(p_parameters);
 	backend->get_parameters()->subject_open = false;
-	return backend->boolean_polypaths( p_polygons_a, p_polygons_b, PolyBoolean2DBackend::OPERATION_XOR);
+	return backend->boolean_polypaths(p_polygons_a, p_polygons_b, PolyBoolean2DBackend::OPERATION_XOR);
 }
 
 Vector<Vector<Point2>> PolyBoolean2D::boolean_polygons(const Vector<Vector<Point2>> &p_polygons_a, const Vector<Vector<Point2>> &p_polygons_b, Operation p_op, const Ref<PolyBooleanParameters2D> &p_parameters) {
@@ -63,6 +63,24 @@ Vector<Vector<Point2>> PolyBoolean2D::intersect_polylines_with_polygons(const Ve
 // BIND
 
 _PolyBoolean2D *_PolyBoolean2D::singleton = nullptr;
+
+void _PolyBoolean2D::set_parameters(const Ref<PolyBooleanParameters2D> &p_parameters) {
+#ifdef DEBUG_ENABLED
+	if (singleton == this) {
+		ERR_FAIL_MSG("Configuring parameters is forbidden for a global instance. Please create a new local instance of PolyBoolean2D with `new_instance()` method");
+	}
+#endif
+	parameters = p_parameters;
+}
+
+Ref<PolyBooleanParameters2D> _PolyBoolean2D::get_parameters() const {
+#ifdef DEBUG_ENABLED
+	if (singleton == this) {
+		ERR_FAIL_V_MSG(Ref<PolyBooleanParameters2D>(), "Configuring parameters is forbidden for a global instance. Please create a new local instance of PolyBoolean2D with `new_instance()` method");
+	}
+#endif
+	return parameters;
+}
 
 Array _PolyBoolean2D::merge_polygons(Array p_polygons_a, Array p_polygons_b) const {
 	Vector<Vector<Vector2>> polygons_a;
@@ -204,6 +222,8 @@ Array _PolyBoolean2D::intersect_polylines_with_polygons(Array p_polylines, Array
 }
 
 void _PolyBoolean2D::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("new_instance"), &_PolyBoolean2D::new_instance);
+
 	ClassDB::bind_method(D_METHOD("set_parameters", "parameters"), &_PolyBoolean2D::set_parameters);
 	ClassDB::bind_method(D_METHOD("get_parameters"), &_PolyBoolean2D::get_parameters);
 

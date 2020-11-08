@@ -12,6 +12,16 @@ var poly_d = Transform2D(0, Vector2.ONE * SIZE).xform(poly_c)
 var solution = []
 
 
+func test_create_local_instance():
+	var global = PolyBoolean2D
+	var local = PolyBoolean2D.new_instance()
+	assert_ne(local, PolyBoolean2D)
+	assert_eq(global, PolyBoolean2D)
+	# Should be possible to override in local instance, but not in global.
+#	PolyBoolean2D.parameters.strictly_simple = true
+	local.parameters.strictly_simple = true
+
+
 func test_merge_polygons():
 	solution = PolyBoolean2D.merge_polygons([poly_a, poly_b, poly_c, poly_d])
 	assert_eq(solution.size(), 1)

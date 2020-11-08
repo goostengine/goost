@@ -70,9 +70,10 @@ protected:
 
 public:
 	static _PolyDecomp2D *get_singleton() { return singleton; }
+	virtual Ref<_PolyDecomp2D> new_instance() const { return memnew(_PolyDecomp2D); }
 
-	void set_parameters(const Ref<PolyDecompParameters2D> &p_parameters) { parameters = p_parameters; }
-	Ref<PolyDecompParameters2D> get_parameters() const { return parameters; }
+	void set_parameters(const Ref<PolyDecompParameters2D> &p_parameters);
+	Ref<PolyDecompParameters2D> get_parameters() const;
 
 	enum Decomposition {
 		DECOMP_TRIANGLES_EC,
