@@ -27,8 +27,9 @@ Ref<Texture> VariantResourcePreviewGenerator::generate(const Ref<Resource> &p_fr
             Color color = value;
             Ref<Image> image;
             image.instance();
-            // The small icon will be stretched anyway, speed up generation.
-            image->create(2, 2, false, Image::FORMAT_RGBA8);
+            // The icon is stretched in grid mode so it's possible to speed up
+            // generation in those cases, but won't work in tree mode (default).
+            image->create(p_size.x, p_size.y, false, Image::FORMAT_RGBA8);
             image->fill(color);
             Ref<ImageTexture> img_tex;
             img_tex.instance();
