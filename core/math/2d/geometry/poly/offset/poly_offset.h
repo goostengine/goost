@@ -51,7 +51,8 @@ protected:
 
 public:
 	static _PolyOffset2D *get_singleton() { return singleton; }
-	virtual Ref<_PolyOffset2D> new_instance() const { return memnew(_PolyOffset2D); }
+	// Not using Ref<_PolyOffset2D> as return type due to namespace issues in Godot.
+	virtual Ref<Reference> new_instance() const { return memnew(_PolyOffset2D); }
 
 	void set_parameters(const Ref<PolyOffsetParameters2D> &p_parameters);
 	Ref<PolyOffsetParameters2D> get_parameters() const;

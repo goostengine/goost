@@ -27,7 +27,7 @@
 			<argument index="1" name="type" type="int" enum="PolyDecomp2D.Decomposition">
 			</argument>
 			<description>
-				Partitions polygons into several other convex polygons. The exact algorithm used depends on the type from [enum PolyDecompType].
+				Partitions polygons into several other convex polygons. The exact algorithm used depends on the type from [enum Decomposition].
 				Both outer and inner polygons can be passed to cut holes during decomposition and are distinguished automatically, with potential performance cost.
 				[b]Note:[/b] [constant DECOMP_TRIANGLES_OPT] and [constant DECOMP_TRIANGLES_OPT] do not support partitioning of a polygon with holes.
 			</description>
@@ -42,7 +42,7 @@
 			</description>
 		</method>
 		<method name="new_instance" qualifiers="const">
-			<return type="_PolyDecomp2D">
+			<return type="Reference">
 			</return>
 			<description>
 				Instantiates a new local [PolyDecomp2D] instance, and [member parameters] can be configured.

@@ -13,7 +13,7 @@
 		[/codeblock]
 		The class provides other useful and intuitive methods other than what [RandomNumberGenerator] already provides out of the box.
 		It's not possible to instantiate a new [Random] instance with [code]Random.new()[/code] in GDScript. If you'd like to instantiate a local instance of [Random], use [method new_instance] instead, or [code]ClassDB.instance("Random")[/code], see [method ClassDB.instance].
-		You have to call [method randomize] for local instances manually if you want to have non-reproducible results, else done automatically for the global instance by default.
+		You have to call [method RandomNumberGenerator.randomize] for local instances manually if you want to have non-reproducible results, else done automatically for the global instance by default.
 		For 2D, use [Random2D] class, which inherits all the functionality behind [Random] as well.
 	</description>
 	<tutorials>

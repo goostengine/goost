@@ -70,7 +70,8 @@ protected:
 
 public:
 	static _PolyDecomp2D *get_singleton() { return singleton; }
-	virtual Ref<_PolyDecomp2D> new_instance() const { return memnew(_PolyDecomp2D); }
+	// Not using Ref<_PolyDecomp2D> as return type due to namespace issues in Godot.
+	virtual Ref<Reference> new_instance() const { return memnew(_PolyDecomp2D); }
 
 	void set_parameters(const Ref<PolyDecompParameters2D> &p_parameters);
 	Ref<PolyDecompParameters2D> get_parameters() const;

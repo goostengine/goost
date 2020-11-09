@@ -122,7 +122,7 @@
 			</description>
 		</method>
 		<method name="new_instance" qualifiers="const">
-			<return type="_PolyBoolean2D">
+			<return type="Reference">
 			</return>
 			<description>
 				Instantiates a new local [PolyBoolean2D] instance, and [member parameters] can be configured.

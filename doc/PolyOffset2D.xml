@@ -57,7 +57,7 @@
 			</description>
 		</method>
 		<method name="new_instance" qualifiers="const">
-			<return type="_PolyOffset2D">
+			<return type="Reference">
 			</return>
 			<description>
 				Instantiates a new local [PolyOffset2D] instance, and [member parameters] can be configured.
