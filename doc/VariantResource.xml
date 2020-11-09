@@ -50,7 +50,7 @@
 		</member>
 		<member name="type" type="int" setter="set_type" getter="get_type" default="0">
 			Sets the type of the [Variant], one of the [code]TYPE_*[/code] constants available at [@GlobalScope], such as [constant @GlobalScope.TYPE_INT].
-			Once the type is set, an implicit [Variant] [code]value[/code] property is constructed. The [code]value[/code] property can be changed dynamically anytime, and this emits the [signal changed] signal, which can be connected to other script or engine methods:
+			Once the type is set, an implicit [Variant] [code]value[/code] property is constructed. The [code]value[/code] property can be changed dynamically anytime, and this emits the [signal Resource.changed] signal, which can be connected to other script or engine methods:
 			[codeblock]
 			extends Node2D
 			

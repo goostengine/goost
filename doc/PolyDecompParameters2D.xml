@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="PolyDecompParameters2D" inherits="Reference" version="3.2">
 	<brief_description>
-		A set of parameters to configure various polygon partitioning related methods in [GoostGeometry2D].
+		A set of parameters to configure various polygon partitioning related methods in [PolyDecomp2D].
 	</brief_description>
 	<description>
 	</description>
@@ -12,7 +12,7 @@
 	<members>
 		<member name="fill_rule" type="int" setter="set_fill_rule" getter="get_fill_rule" enum="PolyDecompParameters2D.FillRule" default="1">
 			Filling indicates those regions that are inside a closed path ("filled" with a brush color or pattern in a graphical display) and those regions that are outside.
-			[b]Note:[/b] this is only currently relevant in the [b]clipper10[/b] backend for [constant GoostGeometry2D.DECOMP_TRIANGLES_MONO] algorithm.
+			[b]Note:[/b] this is only currently relevant in the [b]clipper10[/b] backend for [constant PolyDecomp2D.DECOMP_TRIANGLES_MONO] algorithm.
 		</member>
 	</members>
 	<constants>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="PolyDecomp2D" inherits="Reference" version="3.2">
+	<brief_description>
+		Polygon partitioning.
+	</brief_description>
+	<description>
+		A singleton which provides various method for polygon decomposition, partitioning etc.
+		A new local instance must be created manually with [method new_instance] method if you need to override the default [member parameters], else the methods in this class are available globally:
+		[codeblock]
+		var polygons = []
+		# Globally.
+		polygons = PolyDecomp2D.decompose_polygons([boundary, hole])
+		# Locally.
+		var pd = PolyDecomp2D.new_instance()
+		pd.parameters.fill_rule = PolyDecompParameters2D.FILL_RULE_EVEN_ODD
+		polygons = pd.decompose_polygons([boundary, hole])
+		[/codeblock]
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="decompose_polygons" qualifiers="const">
+			<return type="Array">
+			</return>
+			<argument index="0" name="polygons" type="Array">
+			</argument>
+			<argument index="1" name="type" type="int" enum="PolyDecomp2D.Decomposition">
+			</argument>
+			<description>
+				Partitions polygons into several other convex polygons. The exact algorithm used depends on the type from [enum Decomposition].
+				Both outer and inner polygons can be passed to cut holes during decomposition and are distinguished automatically, with potential performance cost.
+				[b]Note:[/b] [constant DECOMP_TRIANGLES_OPT] and [constant DECOMP_TRIANGLES_OPT] do not support partitioning of a polygon with holes.
+			</description>
+		</method>
+		<method name="decompose_polygons_into_convex" qualifiers="const">
+			<return type="Array">
+			</return>
+			<argument index="0" name="polygons" type="Array">
+			</argument>
+			<description>
+				Similar to [method decompose_polygons], but partitions polygons with the [constant DECOMP_CONVEX_HM].
+			</description>
+		</method>
+		<method name="new_instance" qualifiers="const">
+			<return type="Reference">
+			</return>
+			<description>
+				Instantiates a new local [PolyDecomp2D] instance, and [member parameters] can be configured.
+			</description>
+		</method>
+		<method name="triangulate_polygons" qualifiers="const">
+			<return type="Array">
+			</return>
+			<argument index="0" name="polygons" type="Array">
+			</argument>
+			<description>
+				Similar to [method decompose_polygons], but triangulates multiple polygons with the [constant DECOMP_TRIANGLES_MONO].
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="parameters" type="PolyDecompParameters2D" setter="set_parameters" getter="get_parameters">
+			Parameters to configure the default behavior of operations. Cannot be configured via the global instance, use [method new_instance] first if you need to override the defaults.
+		</member>
+	</members>
+	<constants>
+		<constant name="DECOMP_TRIANGLES_EC" value="0" enum="Decomposition">
+			Triangulate a polygon using the ear clipping algorithm. Time/Space complexity: O(n^2)/O(n).
+		</constant>
+		<constant name="DECOMP_TRIANGLES_OPT" value="1" enum="Decomposition">
+			Optimal triangulation in terms of edge length using dynamic programming algorithm. Time/Space complexity: O(n^3)/O(n^2).
+		</constant>
+		<constant name="DECOMP_TRIANGLES_MONO" value="2" enum="Decomposition">
+			Partition the polygon into monotone polygons, then triangulate. Time/Space complexity: O(n*log(n))/O(n).
+		</constant>
+		<constant name="DECOMP_CONVEX_HM" value="3" enum="Decomposition">
+			Convex polygon partitioning using Hertel-Mehlhorn algorithm. Time/Space complexity: O(n^2)/O(n).
+		</constant>
+		<constant name="DECOMP_CONVEX_OPT" value="4" enum="Decomposition">
+			Optimal convex partition using dynamic programming algorithm by Keil and Snoeyink. Time/Space complexity: O(n^3)/O(n^3).
+		</constant>
+	</constants>
+</class>

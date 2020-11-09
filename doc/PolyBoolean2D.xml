@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="PolyBoolean2D" inherits="Reference" version="3.2">
+	<brief_description>
+		Polygon and polyline boolean operations.
+	</brief_description>
+	<description>
+		A singleton which provides various "polygon vs. polygon" and "polyline vs. polygon" methods.
+		A new local instance must be created manually with [method new_instance] method if you need to override the default [member parameters], else the methods in this class are available globally:
+		[codeblock]
+		var polygons = []
+		# Globally.
+		polygons = PolyBoolean2D.merge_polygons([poly_a, poly_b])
+		# Locally.
+		var pb = PolyBoolean2D.new_instance()
+		pb.parameters.strictly_simple = true
+		polygons = pb.merge_polygons([poly_a, poly_b])
+		[/codeblock]
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="boolean_polygons" qualifiers="const">
+			<return type="Array">
+			</return>
+			<argument index="0" name="polygons_a" type="Array">
+			</argument>
+			<argument index="1" name="polygons_b" type="Array">
+			</argument>
+			<argument index="2" name="operation" type="int" enum="PolyBoolean2D.Operation">
+			</argument>
+			<description>
+				Performs a boolean operation between an array of polygons, with the [code]polygons_a[/code] acting as the [i]subject[/i] of the operation. Returns an array of resulting polygons with vertices in either clockwise or counterclockwise order, which determines whether a polygon is an outer polygon (boundary) or an inner polygon (hole). The orientation of returned polygons can be checked with [method Geometry.is_polygon_clockwise]. If you need to retain the hierarchy of nested outer and inner polygons, use [method boolean_polygons_tree] instead.
+				[b]Operations:[/b]
+				[constant OPERATION_UNION]:
+				Merges polygons into one if they overlap in any way. Passing [code]polygons_b[/code] is optional in this case, but you can specify a different [member PolyBooleanParameters2D.clip_fill_rule] for these polygons, producing different results.
+				This operation can also be used to convert arbitrary polygons into strictly simple ones (no self-intersections).
+				[constant OPERATION_DIFFERENCE]:
+				Clips polygons, the [i]subject[/i] remains intact if neither polygons overlap. Returns an empty array if [code]polygons_b[/code] completely covers [code]polygons_a[/code]. If [code]polygons_b[/code] are enclosed by [code]polygons_a[/code], returns an array of boundary and hole polygons.
+				[constant OPERATION_INTERSECTION]:
+				Intersects polygons, effectively returning the common area shared by these polygons. Returns an empty array if no intersection occurs.
+				[constant OPERATION_XOR]:
+				Mutually excludes common area defined by the intersection of the polygons. In other words, returns all but common area between the polygons.
+			</description>
+		</method>
+		<method name="boolean_polygons_tree" qualifiers="const">
+			<return type="PolyNode2D">
+			</return>
+			<argument index="0" name="polygons_a" type="Array">
+			</argument>
+			<argument index="1" name="polygons_b" type="Array">
+			</argument>
+			<argument index="2" name="operation" type="int" enum="PolyBoolean2D.Operation">
+			</argument>
+			<description>
+				Similar to [method boolean_polygons], but builds an hierarchy of clipped polygons and returns a top-level root node representing the tree of polygons, which has some performance cost. Whether a polygon is an outer or an inner path can be checked with [method PolyNode2D.is_hole] more easily and effectively compared to calculating polygon area to determine orientation, see [method GoostGeometry2D.polygon_area].
+			</description>
+		</method>
+		<method name="clip_polygons" qualifiers="const">
+			<return type="Array">
+			</return>
+			<argument index="0" name="polygons_a" type="Array">
+			</argument>
+			<argument index="1" name="polygons_b" type="Array">
+			</argument>
+			<description>
+				Similar to [method boolean_polygons], but performs [constant OPERATION_DIFFERENCE] between the polygons specifically.
+			</description>
+		</method>
+		<method name="clip_polylines_with_polygons" qualifiers="const">
+			<return type="Array">
+			</return>
+			<argument index="0" name="polylines" type="Array">
+			</argument>
+			<argument index="1" name="polygons" type="Array">
+			</argument>
+			<description>
+				Clips multiple polylines against polygons and returns an array of clipped polylines. This performs [constant OPERATION_DIFFERENCE] between the polylines and the polygons. Returns an empty array if polygons completely enclose polylines.
+			</description>
+		</method>
+		<method name="exclude_polygons" qualifiers="const">
+			<return type="Array">
+			</return>
+			<argument index="0" name="polygons_a" type="Array">
+			</argument>
+			<argument index="1" name="polygons_b" type="Array">
+			</argument>
+			<description>
+				Similar to [method boolean_polygons], but performs [constant OPERATION_XOR] between the polygons specifically.
+			</description>
+		</method>
+		<method name="intersect_polygons" qualifiers="const">
+			<return type="Array">
+			</return>
+			<argument index="0" name="polygons_a" type="Array">
+			</argument>
+			<argument index="1" name="polygons_b" type="Array">
+			</argument>
+			<description>
+				Similar to [method boolean_polygons], but performs [constant OPERATION_INTERSECTION] between the polygons specifically.
+			</description>
+		</method>
+		<method name="intersect_polylines_with_polygons" qualifiers="const">
+			<return type="Array">
+			</return>
+			<argument index="0" name="polylines" type="Array">
+			</argument>
+			<argument index="1" name="polygons" type="Array">
+			</argument>
+			<description>
+				Intersects multiple polylines with polygons and returns an array of intersected polylines. This performs [constant OPERATION_INTERSECTION] between the polylines and the polygons.
+			</description>
+		</method>
+		<method name="merge_polygons" qualifiers="const">
+			<return type="Array">
+			</return>
+			<argument index="0" name="polygons_a" type="Array">
+			</argument>
+			<argument index="1" name="polygons_b" type="Array" default="null">
+			</argument>
+			<description>
+				Similar to [method boolean_polygons], but performs [constant OPERATION_UNION] between the polygons specifically. The second parameter is optional.
+			</description>
+		</method>
+		<method name="new_instance" qualifiers="const">
+			<return type="Reference">
+			</return>
+			<description>
+				Instantiates a new local [PolyBoolean2D] instance, and [member parameters] can be configured.
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="parameters" type="PolyBooleanParameters2D" setter="set_parameters" getter="get_parameters">
+			Parameters to configure the default behavior of operations. Cannot be configured via the global instance, use [method new_instance] first if you need to override the defaults.
+		</member>
+	</members>
+	<constants>
+		<constant name="OPERATION_NONE" value="0" enum="Operation">
+			No-op, but may perform polygons fixup, build hierarchy, depending on the poly_boolean implementation.
+		</constant>
+		<constant name="OPERATION_UNION" value="1" enum="Operation">
+			Merge (combine) polygons.
+		</constant>
+		<constant name="OPERATION_DIFFERENCE" value="2" enum="Operation">
+			Clip (cut) polygons or polylines.
+		</constant>
+		<constant name="OPERATION_INTERSECTION" value="3" enum="Operation">
+			Intersect polygons or polylines.
+		</constant>
+		<constant name="OPERATION_XOR" value="4" enum="Operation">
+			Mutually exclude polygons.
+		</constant>
+	</constants>
+</class>

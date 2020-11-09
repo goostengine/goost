@@ -4,7 +4,8 @@
 		[Geometry] singleton extension.
 	</brief_description>
 	<description>
-		Performs polygon clipping, offsetting and decomposition, and other geometry utility operations mostly revolving around polygons and polylines.
+		Performs various geometry-related operations. Provides simple polygon clipping, offsetting and decomposition functionality, and other geometry utility operations mostly revolving around polygons and polylines.
+		The methods for polygon operations in this class operate on single polygons only. For more advanced operations on multiple polygons, refer to [PolyBoolean2D], [PolyOffset2D], [PolyDecomp2D] classes instead.
 	</description>
 	<tutorials>
 		<link>https://goost.readthedocs.io/en/gd3/components/geometry.html</link>
@@ -22,32 +23,6 @@
 				The [code]max_error[/code] parameter represents the maximum gap in pixels allowed between a circle segment and the boundary of the mathematical circle, with low values increasing the number of vertices. The maximum number of vertices returned is 4096. See also [method regular_polygon].
 			</description>
 		</method>
-		<method name="clip_multiple_polygons" qualifiers="const">
-			<return type="Array">
-			</return>
-			<argument index="0" name="polygons_a" type="Array">
-			</argument>
-			<argument index="1" name="polygons_b" type="Array">
-			</argument>
-			<argument index="2" name="params" type="PolyBooleanParameters2D" default="null">
-			</argument>
-			<description>
-				Similar to [method polygons_boolean], but performs [constant OPERATION_DIFFERENCE] between the polygons specifically.
-			</description>
-		</method>
-		<method name="clip_multiple_polylines_with_polygons" qualifiers="const">
-			<return type="Array">
-			</return>
-			<argument index="0" name="polylines" type="Array">
-			</argument>
-			<argument index="1" name="polygons" type="Array">
-			</argument>
-			<argument index="2" name="params" type="PolyBooleanParameters2D" default="null">
-			</argument>
-			<description>
-				Similar to [method clip_polyline_with_polygon], but operates on multiple polylines in batch.
-			</description>
-		</method>
 		<method name="clip_polygons" qualifiers="const">
 			<return type="Array">
 			</return>
@@ -55,10 +30,8 @@
 			</argument>
 			<argument index="1" name="polygon_b" type="PoolVector2Array">
 			</argument>
-			<argument index="2" name="params" type="PolyBooleanParameters2D" default="null">
-			</argument>
 			<description>
-				Similar to [method polygons_boolean], but performs [constant OPERATION_DIFFERENCE] between the polygons specifically, and accepts individual polygons only.
+				Performs [constant PolyBoolean2D.OPERATION_DIFFERENCE] between individual polygons.
 			</description>
 		</method>
 		<method name="clip_polyline_with_polygon" qualifiers="const">
@@ -68,73 +41,17 @@
 			</argument>
 			<argument index="1" name="polygon" type="PoolVector2Array">
 			</argument>
-			<argument index="2" name="params" type="PolyBooleanParameters2D" default="null">
-			</argument>
 			<description>
-				Clips a single [code]polyline[/code] against a single [code]polygon[/code] and returns an array of clipped polylines. This performs [constant OPERATION_DIFFERENCE] between the polyline and the polygon. Returns an empty array if the [code]polygon[/code] completely encloses [code]polyline[/code]. This operation can be thought of as cutting a line with a closed shape.
+				Clips a single [code]polyline[/code] against a single [code]polygon[/code] and returns an array of clipped polylines. This performs [constant PolyBoolean2D.OPERATION_DIFFERENCE] between the polyline and the polygon. Returns an empty array if the [code]polygon[/code] completely encloses [code]polyline[/code]. This operation can be thought of as cutting a line with a closed shape.
 			</description>
 		</method>
-		<method name="decompose_multiple_polygons_into_convex" qualifiers="const">
-			<return type="Array">
-			</return>
-			<argument index="0" name="polygon" type="Array">
-			</argument>
-			<argument index="1" name="params" type="PolyDecompParameters2D" default="null">
-			</argument>
-			<description>
-				Similar to [method decompose_polygons], but partitions multiple polygons with the [constant DECOMP_CONVEX_HM].
-			</description>
-		</method>
-		<method name="decompose_polygon_into_convex" qualifiers="const">
+		<method name="decompose_polygon" qualifiers="const">
 			<return type="Array">
 			</return>
 			<argument index="0" name="polygon" type="PoolVector2Array">
 			</argument>
-			<argument index="1" name="params" type="PolyDecompParameters2D" default="null">
-			</argument>
 			<description>
-				Similar to [method decompose_polygons], but partitions a single polygon with the [constant DECOMP_CONVEX_HM].
-			</description>
-		</method>
-		<method name="decompose_polygons" qualifiers="const">
-			<return type="Array">
-			</return>
-			<argument index="0" name="type" type="int" enum="GoostGeometry2D.PolyDecompType">
-			</argument>
-			<argument index="1" name="polygons" type="Array">
-			</argument>
-			<argument index="2" name="params" type="PolyDecompParameters2D" default="null">
-			</argument>
-			<description>
-				Partitions polygons into several other convex polygons. The exact algorithm used depends on the type from [enum PolyDecompType].
-				Both outer and inner polygons can be passed to cut holes during decomposition and are distinguished automatically, with potential performance cost.
-				[b]Note:[/b] [constant DECOMP_TRIANGLES_OPT] and [constant DECOMP_TRIANGLES_OPT] do not support partitioning of a polygon with holes.
-			</description>
-		</method>
-		<method name="deflate_multiple_polygons" qualifiers="const">
-			<return type="Array">
-			</return>
-			<argument index="0" name="polygons" type="Array">
-			</argument>
-			<argument index="1" name="delta" type="float">
-			</argument>
-			<argument index="2" name="params" type="PolyOffsetParameters2D" default="null">
-			</argument>
-			<description>
-				Similar to [method offset_multiple_polygons], but allows to grow polygons by the absolute value of [code]delta[/code].
-			</description>
-		</method>
-		<method name="deflate_multiple_polylines" qualifiers="const">
-			<return type="Array">
-			</return>
-			<argument index="0" name="polylines" type="Array">
-			</argument>
-			<argument index="1" name="delta" type="float">
-			</argument>
-			<argument index="2" name="params" type="PolyOffsetParameters2D" default="null">
-			</argument>
-			<description>
-				Similar to [method deflate_polyline], but operates on multiple polylines simultaneously.
+				Partitions a single polygon into a set of convex polygons with [constant PolyDecomp2D.DECOMP_CONVEX_HM].
 			</description>
 		</method>
 		<method name="deflate_polygon" qualifiers="const">
@@ -144,11 +61,8 @@
 			</argument>
 			<argument index="1" name="delta" type="float">
 			</argument>
-			<argument index="2" name="params" type="PolyOffsetParameters2D" default="null">
-			</argument>
 			<description>
-				Deflates (grows) a single [code]polygon[/code] by [code]delta[/code] pixels.
-				Each polygon's vertices will be rounded as determined by [member PolyOffsetParameters2D.join_type].
+				Grows a polygon by [code]delta[/code] pixels. See also [method PolyOffset2D.deflate_polygons].
 			</description>
 		</method>
 		<method name="deflate_polyline" qualifiers="const">
@@ -158,25 +72,8 @@
 			</argument>
 			<argument index="1" name="delta" type="float">
 			</argument>
-			<argument index="2" name="params" type="PolyOffsetParameters2D" default="null">
-			</argument>
 			<description>
-				Deflates (grows) [code]polylines[/code] into polygons by [code]delta[/code] pixels.
-				Each polygon's vertices will be rounded as determined by [member PolyOffsetParameters2D.join_type].
-				Each polygon's endpoints will be rounded as determined by [member PolyOffsetParameters2D.end_type], except for the [constant PolyOffsetParameters2D.END_POLYGON] as it's used by polygon offsetting specifically, use [constant PolyOffsetParameters2D.END_JOINED] to grow a polyline like a closed donut instead.
-			</description>
-		</method>
-		<method name="exclude_multiple_polygons" qualifiers="const">
-			<return type="Array">
-			</return>
-			<argument index="0" name="polygons_a" type="Array">
-			</argument>
-			<argument index="1" name="polygons_b" type="Array">
-			</argument>
-			<argument index="2" name="params" type="PolyBooleanParameters2D" default="null">
-			</argument>
-			<description>
-				Similar to [method polygons_boolean], but performs [constant OPERATION_XOR] between the polygons specifically.
+				Grows a single non-closed path into a polygon by [code]delta[/code] pixels. See also [method PolyOffset2D.deflate_polylines].
 			</description>
 		</method>
 		<method name="exclude_polygons" qualifiers="const">
@@ -186,23 +83,8 @@
 			</argument>
 			<argument index="1" name="polygon_b" type="PoolVector2Array">
 			</argument>
-			<argument index="2" name="params" type="PolyBooleanParameters2D" default="null">
-			</argument>
 			<description>
-				Similar to [method polygons_boolean], but performs [constant OPERATION_XOR] between the polygons specifically, and accepts individual polygons only.
-			</description>
-		</method>
-		<method name="inflate_multiple_polygons" qualifiers="const">
-			<return type="Array">
-			</return>
-			<argument index="0" name="polygons" type="Array">
-			</argument>
-			<argument index="1" name="delta" type="float">
-			</argument>
-			<argument index="2" name="params" type="PolyOffsetParameters2D" default="null">
-			</argument>
-			<description>
-				Similar to [method offset_multiple_polygons], but allows to shrink polygons by the absolute value of [code]delta[/code].
+				Performs [constant PolyBoolean2D.OPERATION_XOR] between individual polygons.
 			</description>
 		</method>
 		<method name="inflate_polygon" qualifiers="const">
@@ -212,36 +94,8 @@
 			</argument>
 			<argument index="1" name="delta" type="float">
 			</argument>
-			<argument index="2" name="params" type="PolyOffsetParameters2D" default="null">
-			</argument>
 			<description>
-				Similar to [method offset_polygon], but allows to shrink a single polygon by the absolute value of [code]delta[/code].
-			</description>
-		</method>
-		<method name="intersect_multiple_polygons" qualifiers="const">
-			<return type="Array">
-			</return>
-			<argument index="0" name="polygons_a" type="Array">
-			</argument>
-			<argument index="1" name="polygons_b" type="Array">
-			</argument>
-			<argument index="2" name="params" type="PolyBooleanParameters2D" default="null">
-			</argument>
-			<description>
-				Similar to [method polygons_boolean], but performs [constant OPERATION_INTERSECTION] between the polygons specifically.
-			</description>
-		</method>
-		<method name="intersect_multiple_polylines_with_polygons" qualifiers="const">
-			<return type="Array">
-			</return>
-			<argument index="0" name="polylines" type="Array">
-			</argument>
-			<argument index="1" name="polygons" type="Array">
-			</argument>
-			<argument index="2" name="params" type="PolyBooleanParameters2D" default="null">
-			</argument>
-			<description>
-				Similar to [method intersect_polyline_with_polygon], but operates on multiple polylines in batch.
+				Shrinks a polygon by [code]delta[/code] pixels. See also [method PolyOffset2D.inflate_polygons].
 			</description>
 		</method>
 		<method name="intersect_polygons" qualifiers="const">
@@ -251,10 +105,8 @@
 			</argument>
 			<argument index="1" name="polygon_b" type="PoolVector2Array">
 			</argument>
-			<argument index="2" name="params" type="PolyBooleanParameters2D" default="null">
-			</argument>
 			<description>
-				Similar to [method polygons_boolean], but performs [constant OPERATION_INTERSECTION] between the polygons specifically, and accepts individual polygons only.
+				Performs [constant PolyBoolean2D.OPERATION_INTERSECTION] between individual polygons.
 			</description>
 		</method>
 		<method name="intersect_polyline_with_polygon" qualifiers="const">
@@ -264,23 +116,8 @@
 			</argument>
 			<argument index="1" name="polygon" type="PoolVector2Array">
 			</argument>
-			<argument index="2" name="params" type="PolyBooleanParameters2D" default="null">
-			</argument>
 			<description>
-				Intersects polyline with polygon and returns an array of intersected polylines. This performs OPERATION_INTERSECTION between the polyline and the polygon. This operation can be thought of as chopping a line with a closed shape.
-			</description>
-		</method>
-		<method name="merge_multiple_polygons" qualifiers="const">
-			<return type="Array">
-			</return>
-			<argument index="0" name="polygons_a" type="Array">
-			</argument>
-			<argument index="1" name="polygons_b" type="Array" default="null">
-			</argument>
-			<argument index="2" name="params" type="PolyBooleanParameters2D" default="null">
-			</argument>
-			<description>
-				Similar to [method polygons_boolean], but performs [constant OPERATION_UNION] between the polygons specifically.
+				Intersects polyline with polygon and returns an array of intersected polylines. This performs [constant PolyBoolean2D.OPERATION_INTERSECTION] between the polyline and the polygon. This operation can be thought of as chopping a line with a closed shape.
 			</description>
 		</method>
 		<method name="merge_polygons" qualifiers="const">
@@ -290,38 +127,8 @@
 			</argument>
 			<argument index="1" name="polygon_b" type="PoolVector2Array">
 			</argument>
-			<argument index="2" name="params" type="PolyBooleanParameters2D" default="null">
-			</argument>
 			<description>
-				Similar to [method polygons_boolean], but performs [constant OPERATION_UNION] between the polygons specifically, and accepts individual polygons only.
-			</description>
-		</method>
-		<method name="offset_multiple_polygons" qualifiers="const">
-			<return type="Array">
-			</return>
-			<argument index="0" name="polygons" type="Array">
-			</argument>
-			<argument index="1" name="delta" type="float">
-			</argument>
-			<argument index="2" name="params" type="PolyOffsetParameters2D" default="null">
-			</argument>
-			<description>
-				Inflates or deflates an array of [code]polygons[/code] by [code]delta[/code] pixels. If [code]delta[/code] is positive, makes the polygons grow outward. If [code]delta[/code] is negative, shrinks the polygons inward. Returns an empty array if [code]delta[/code] is negative and the absolute value of it approximately exceeds the minimum bounding rectangle dimensions of each of the polygons.
-				Each polygon's vertices will be rounded as determined by [member PolyOffsetParameters2D.join_type].
-			</description>
-		</method>
-		<method name="offset_polygon" qualifiers="const">
-			<return type="Array">
-			</return>
-			<argument index="0" name="polygon" type="PoolVector2Array">
-			</argument>
-			<argument index="1" name="delta" type="float">
-			</argument>
-			<argument index="2" name="params" type="PolyOffsetParameters2D" default="null">
-			</argument>
-			<description>
-				Inflates or deflates a single [code]polygon[/code] by [code]delta[/code] pixels. If [code]delta[/code] is positive, makes the polygon grow outward. If [code]delta[/code] is negative, shrinks the polygon inward. Returns an empty array if [code]delta[/code] is negative and the absolute value of it approximately exceeds the minimum bounding rectangle dimensions of the polygon.
-				Each polygon's vertices will be rounded as determined by [member PolyOffsetParameters2D.join_type].
+				Performs [constant PolyBoolean2D.OPERATION_UNION] between individual polygons. If you need to merge multiple polygons, use [method PolyBoolean2D.merge_polygons] instead.
 			</description>
 		</method>
 		<method name="point_in_polygon" qualifiers="const">
@@ -362,52 +169,6 @@
 				Returns the perimeter of an arbitrary polygon. See also [method polyline_length].
 			</description>
 		</method>
-		<method name="polygons_boolean" qualifiers="const">
-			<return type="Array">
-			</return>
-			<argument index="0" name="operation" type="int" enum="GoostGeometry2D.PolyBooleanOperation">
-			</argument>
-			<argument index="1" name="polygons_a" type="Array">
-			</argument>
-			<argument index="2" name="polygons_b" type="Array" default="null">
-			</argument>
-			<argument index="3" name="params" type="PolyBooleanParameters2D" default="null">
-			</argument>
-			<description>
-				Performs a boolean operation between an array of polygons, with the [code]polygons_a[/code] acting as the [i]subject[/i] of the operation. Returns an array of resulting polygons with vertices in either clockwise or counterclockwise order, which determines whether a polygon is an outer polygon (boundary) or an inner polygon (hole). The orientation of returned polygons can be checked with [method Geometry.is_polygon_clockwise]. If you need to retain the hierarchy of nested outer and inner polygons, use [method polygons_boolean_tree] instead.
-				[b]Operations:[/b]
-				[constant OPERATION_UNION]:
-				Merges polygons into one if they overlap in any way. Passing [code]polygons_b[/code] is optional in this case, but you can specify a different [member PolyBooleanParameters2D.clip_fill_rule] for these polygons, producing different results.
-				This operation can also be used to convert arbitrary polygons into strictly simple ones (no self-intersections):
-				[codeblock]
-				var params = PolyBooleanParameters2D.new()
-				# May not be required on some backends, but provides an explicit intention.
-				params.strictly_simple = true
-				var solution = GoostGeometry2D.polygons_boolean(GoostGeometry2D.OPERATION_UNION, polygons, params)
-				[/codeblock]
-				[constant OPERATION_DIFFERENCE]:
-				Clips polygons, the [i]subject[/i] remains intact if neither polygons overlap. Returns an empty array if [code]polygons_b[/code] completely covers [code]polygons_a[/code]. If [code]polygons_b[/code] are enclosed by [code]polygons_a[/code], returns an array of boundary and hole polygons.
-				[constant OPERATION_INTERSECTION]:
-				Intersects polygons, effectively returning the common area shared by these polygons. Returns an empty array if no intersection occurs.
-				[constant OPERATION_XOR]:
-				Mutually excludes common area defined by the intersection of the polygons. In other words, returns all but common area between the polygons.
-			</description>
-		</method>
-		<method name="polygons_boolean_tree" qualifiers="const">
-			<return type="PolyNode2D">
-			</return>
-			<argument index="0" name="operation" type="int" enum="GoostGeometry2D.PolyBooleanOperation">
-			</argument>
-			<argument index="1" name="polygons_a" type="Array">
-			</argument>
-			<argument index="2" name="polygons_b" type="Array" default="null">
-			</argument>
-			<argument index="3" name="params" type="PolyBooleanParameters2D" default="null">
-			</argument>
-			<description>
-				Similar to [method polygons_boolean], but builds an hierarchy of clipped polygons and returns a top-level root node representing the tree of polygons, which has some performance cost. Whether a polygon is an outer or an inner path can be checked with [method PolyNode2D.is_hole] more easily and effectively compared to calculating polygon area to determine orientation, see [method polygon_area].
-			</description>
-		</method>
 		<method name="polyline_length" qualifiers="const">
 			<return type="float">
 			</return>
@@ -429,64 +190,16 @@
 				The order of vertices returned is counterclockwise which makes it an outer polygon by default. To convert it to an inner polygon specifically, use [method PoolVector2Array.invert].
 			</description>
 		</method>
-		<method name="triangulate_multiple_polygons" qualifiers="const">
-			<return type="Array">
-			</return>
-			<argument index="0" name="polygon" type="Array">
-			</argument>
-			<argument index="1" name="params" type="PolyDecompParameters2D" default="null">
-			</argument>
-			<description>
-				Similar to [method decompose_polygons], but triangulates multiple polygons with the [constant DECOMP_TRIANGLES_EC].
-			</description>
-		</method>
 		<method name="triangulate_polygon" qualifiers="const">
 			<return type="Array">
 			</return>
 			<argument index="0" name="polygon" type="PoolVector2Array">
 			</argument>
-			<argument index="1" name="params" type="PolyDecompParameters2D" default="null">
-			</argument>
 			<description>
-				Similar to [method decompose_polygons], but triangulates a single polygon with the [constant DECOMP_TRIANGLES_EC].
+				Decomposes the polygon into individual triangles using [constant PolyDecomp2D.DECOMP_TRIANGLES_MONO].
 			</description>
 		</method>
 	</methods>
 	<constants>
-		<constant name="OPERATION_NONE" value="0" enum="PolyBooleanOperation">
-			No-op, but may perform polygons fixup, build hierarchy, depending on the poly_boolean implementation.
-		</constant>
-		<constant name="OPERATION_UNION" value="1" enum="PolyBooleanOperation">
-			Merge (combine) polygons.
-		</constant>
-		<constant name="OPERATION_DIFFERENCE" value="2" enum="PolyBooleanOperation">
-			Clip (cut) polygons or polylines.
-		</constant>
-		<constant name="OPERATION_INTERSECTION" value="3" enum="PolyBooleanOperation">
-			Intersect polygons or polylines.
-		</constant>
-		<constant name="OPERATION_XOR" value="4" enum="PolyBooleanOperation">
-			Mutually exclude polygons.
-		</constant>
-		<constant name="DECOMP_TRIANGLES_EC" value="0" enum="PolyDecompType">
-			Triangulate a polygon using the ear clipping algorithm.
-			Time/Space complexity: O(n^2)/O(n).
-		</constant>
-		<constant name="DECOMP_TRIANGLES_OPT" value="1" enum="PolyDecompType">
-			Optimal triangulation in terms of edge length using dynamic programming algorithm.
-			Time/Space complexity: O(n^3)/O(n^2).
-		</constant>
-		<constant name="DECOMP_TRIANGLES_MONO" value="2" enum="PolyDecompType">
-			Partition the polygon into monotone polygons, then triangulate.
-			Time/Space complexity: O(n*log(n))/O(n).
-		</constant>
-		<constant name="DECOMP_CONVEX_HM" value="3" enum="PolyDecompType">
-			Convex polygon partitioning using Hertel-Mehlhorn algorithm.
-			Time/Space complexity: O(n^2)/O(n).
-		</constant>
-		<constant name="DECOMP_CONVEX_OPT" value="4" enum="PolyDecompType">
-			Optimal convex partition using dynamic programming algorithm by Keil and Snoeyink.
-			Time/Space complexity: O(n^3)/O(n^3).
-		</constant>
 	</constants>
 </class>

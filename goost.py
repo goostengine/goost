@@ -53,8 +53,11 @@ classes = [
     "ImageIndexed",
     "LinkedList",
     "ListNode",
+    "PolyBoolean2D",
     "PolyBooleanParameters2D",
+    "PolyDecomp2D",
     "PolyDecompParameters2D",
+    "PolyOffset2D",
     "PolyOffsetParameters2D",
     "PolyNode2D",
     "Random",
@@ -65,8 +68,11 @@ classes = [
 ]
 classes_dependencies = {
     # ClassA : Depends on ClassB.
-    "GoostGeometry2D" : "PolyBooleanParameters2D",
-    "GoostGeometry2D" : "PolyDecompParameters2D",
-    "GoostGeometry2D" : "PolyOffsetParameters2D",
-    "GoostGeometry2D" : "PolyNode2D",
+    "PolyBoolean2D" : "PolyBooleanParameters2D",
+    "PolyBoolean2D" : "PolyNode2D",
+    "PolyDecomp2D" : "PolyDecompParameters2D",
+    "PolyOffset2D" : "PolyOffsetParameters2D",
+    "GoostGeometry2D" : "PolyBoolean2D",
+    "GoostGeometry2D" : "PolyDecomp2D",
+    "GoostGeometry2D" : "PolyOffset2D",
 }

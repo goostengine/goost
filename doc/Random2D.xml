@@ -19,7 +19,7 @@
 			<description>
 				Generates a random point uniformly distributed on the circle's boundary, within the circle's area, or the area confined by inner and outer circle ranges specified with [code]radius_min[/code] and [code]radius_max[/code] parameters.
 				By default, generates points inside unit circle with radius [code]1.0[/code]. If you need random normalized vectors, use [member direction] instead, which is more efficient to compute.
-				If [code]radius_min == 0[/code], generates points inside a unit circle, such that [method Geometry2D.is_point_in_circle] shall return [code]true[/code] given the same radius.
+				If [code]radius_min == 0[/code], generates points inside a unit circle, such that [method Geometry.is_point_in_circle] shall return [code]true[/code] given the same radius.
 				If [code]radius_min != radius_max[/code], generates points within the ring's area, such that the inner area defined by [code]radius_min[/code] remains unaffected.
 				If [code]radius_min == radius_max[/code], generates points exactly [b]on[/b] the circle's boundary, but do note that a point may slightly deviate from the actual circle's boundary due to floating point error accumulation.
 				[codeblock]
@@ -40,7 +40,7 @@
 			</argument>
 			<description>
 				Generates a random point distributed within polygon's area. The distribution may not be completely uniform, but should be good enough in most cases. If [code]point_count == 1[/code], returns a single [Vector2] point. If [code]point_count &gt; 1[/code], returns a [PoolVector2Array] of points, which can be cached for further usage. This improves performance significantly as the polygon must be triangulated first.
-				This works by first decomposing polygons into triangles with [method GoostGeometry2D.decompose_polygons]. For approximately uniform distribution, each triangle is weighted by its area to fetch the needed number of points. Random points are then generated with [method point_in_triangle] uniformly.
+				This works by first decomposing polygons into triangles with [method PolyDecomp2D.decompose_polygons]. For approximately uniform distribution, each triangle is weighted by its area to fetch the needed number of points. Random points are then generated with [method point_in_triangle] uniformly.
 				Polygons may consist of outer and inner polygons (holes), so the [code]polygon[/code] parameter also accepts an [Array] of [PoolVector2Array]s as input.
 				The quality of distribution works better for single polygons with arbitrary number of holes, so it's recommended to use this method on distinct, non-overlapping objects.
 			</description>

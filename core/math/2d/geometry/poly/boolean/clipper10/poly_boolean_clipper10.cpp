@@ -2,8 +2,8 @@
 #include "goost/core/math/2d/geometry/goost_geometry_2d.h"
 #include "goost/core/math/2d/geometry/poly/utils/godot_clipper10_path_convert.h"
 
-Vector<Vector<Point2>> PolyBoolean2DClipper10::polypaths_boolean(Operation p_op, const Vector<Vector<Point2>> &p_polypaths_a, const Vector<Vector<Point2>> &p_polypaths_b) {
-	clipperlib::Clipper clp = configure(p_op, params);
+Vector<Vector<Point2>> PolyBoolean2DClipper10::boolean_polypaths(const Vector<Vector<Point2>> &p_polypaths_a, const Vector<Vector<Point2>> &p_polypaths_b, Operation p_op) {
+	clipperlib::Clipper clp = configure(p_op, parameters);
 
 	clipperlib::Paths subject;
 	GodotClipperUtils::scale_up_polypaths(p_polypaths_a, subject);
@@ -24,8 +24,8 @@ Vector<Vector<Point2>> PolyBoolean2DClipper10::polypaths_boolean(Operation p_op,
 	return ret;
 }
 
-Ref<PolyNode2D> PolyBoolean2DClipper10::polypaths_boolean_tree(Operation p_op, const Vector<Vector<Point2>> &p_polypaths_a, const Vector<Vector<Point2>> &p_polypaths_b) {
-	clipperlib::Clipper clp = configure(p_op, params);
+Ref<PolyNode2D> PolyBoolean2DClipper10::boolean_polypaths_tree(const Vector<Vector<Point2>> &p_polypaths_a, const Vector<Vector<Point2>> &p_polypaths_b, Operation p_op) {
+	clipperlib::Clipper clp = configure(p_op, parameters);
 
 	clipperlib::Paths subject;
 	GodotClipperUtils::scale_up_polypaths(p_polypaths_a, subject);
@@ -66,7 +66,7 @@ Ref<PolyNode2D> PolyBoolean2DClipper10::polypaths_boolean_tree(Operation p_op, c
 	return root;
 }
 
-clipperlib::Clipper PolyBoolean2DClipper10::configure(Operation p_op, const Ref<PolyBooleanParameters2D> &p_params) {
+clipperlib::Clipper PolyBoolean2DClipper10::configure(Operation p_op, const Ref<PolyBooleanParameters2D> &p_parameters) {
 	using namespace clipperlib;
 
 	switch (p_op) {
@@ -86,9 +86,9 @@ clipperlib::Clipper PolyBoolean2DClipper10::configure(Operation p_op, const Ref<
 			clip_type = ctXor;
 			break;
 	}
-	subject_fill_rule = FillRule(p_params->subject_fill_rule);
-	clip_fill_rule = FillRule(p_params->clip_fill_rule);
-	subject_open = p_params->subject_open;
+	subject_fill_rule = FillRule(p_parameters->subject_fill_rule);
+	clip_fill_rule = FillRule(p_parameters->clip_fill_rule);
+	subject_open = p_parameters->subject_open;
 
 	return Clipper();
 }

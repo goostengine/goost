@@ -4,7 +4,7 @@
 Vector<Vector<Point2>> PolyDecomp2DClipper10::triangulate_mono(const Vector<Vector<Point2>> &p_polygons) {
 	using namespace clipperlib;
 
-	ClipperTri clp = configure(params);
+	ClipperTri clp = configure(parameters);
 
 	Paths subject;
 	GodotClipperUtils::scale_up_polypaths(p_polygons, subject);
@@ -19,10 +19,10 @@ Vector<Vector<Point2>> PolyDecomp2DClipper10::triangulate_mono(const Vector<Vect
 	return ret;
 }
 
-clipperlib::ClipperTri PolyDecomp2DClipper10::configure(const Ref<PolyDecompParameters2D> &p_params) {
+clipperlib::ClipperTri PolyDecomp2DClipper10::configure(const Ref<PolyDecompParameters2D> &p_parameters) {
 	using namespace clipperlib;
 
-	fill_rule = FillRule(p_params->fill_rule);
+	fill_rule = FillRule(p_parameters->fill_rule);
 
 	return ClipperTri();
 }
