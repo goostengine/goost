@@ -30,7 +30,7 @@ Vector<Vector<Point2>> PolyBoolean2DClipper6::boolean_polypaths(const Vector<Vec
 	return ret;
 }
 
-Ref<PolyNode2D> PolyBoolean2DClipper6::boolean_polypaths_tree(const Vector<Vector<Point2>> &p_polypaths_a, const Vector<Vector<Point2>> &p_polypaths_b, Operation p_op) {
+PolyNode2D *PolyBoolean2DClipper6::boolean_polypaths_tree(const Vector<Vector<Point2>> &p_polypaths_a, const Vector<Vector<Point2>> &p_polypaths_b, Operation p_op) {
 	ClipperLib::Clipper clp = configure(p_op, parameters);
 
 	ClipperLib::Paths subject;
@@ -46,11 +46,10 @@ Ref<PolyNode2D> PolyBoolean2DClipper6::boolean_polypaths_tree(const Vector<Vecto
 	ClipperLib::PolyTree tree;
 	clp.Execute(clip_type, tree, subject_fill_type, clip_fill_type);
 
-	Ref<PolyNode2D> root;
-	root.instance();
+	PolyNode2D *root = memnew(PolyNode2D);
 
 	List<ClipperLib::PolyNode *> to_visit;
-	Map<ClipperLib::PolyNode *, Ref<PolyNode2D>> nodes;
+	Map<ClipperLib::PolyNode *, PolyNode2D *> nodes;
 
 	nodes.insert(&tree, root);
 	to_visit.push_back(&tree);
@@ -63,7 +62,7 @@ Ref<PolyNode2D> PolyBoolean2DClipper6::boolean_polypaths_tree(const Vector<Vecto
 			ClipperLib::PolyNode *child = parent->Childs[i];
 			Vector<Point2> child_path;
 			GodotClipperUtils::scale_down_polypath(child->Contour, child_path);
-			Ref<PolyNode2D> new_child = nodes[parent]->new_child(child_path);
+			PolyNode2D *new_child = nodes[parent]->new_child(child_path);
 			nodes.insert(child, new_child);
 			to_visit.push_back(child);
 		}

@@ -42,7 +42,7 @@ Vector<Vector<Point2>> PolyBoolean2D::boolean_polygons(const Vector<Vector<Point
 	return backend->boolean_polypaths(p_polygons_a, p_polygons_b, PolyBoolean2DBackend::Operation(p_op));
 }
 
-Ref<PolyNode2D> PolyBoolean2D::boolean_polygons_tree(const Vector<Vector<Point2>> &p_polygons_a, const Vector<Vector<Point2>> &p_polygons_b, Operation p_op, const Ref<PolyBooleanParameters2D> &p_parameters) {
+PolyNode2D *PolyBoolean2D::boolean_polygons_tree(const Vector<Vector<Point2>> &p_polygons_a, const Vector<Vector<Point2>> &p_polygons_b, Operation p_op, const Ref<PolyBooleanParameters2D> &p_parameters) {
 	backend->set_parameters(p_parameters);
 	backend->get_parameters()->subject_open = false;
 	return backend->boolean_polypaths_tree(p_polygons_a, p_polygons_b, PolyBoolean2DBackend::Operation(p_op));
@@ -172,7 +172,7 @@ Array _PolyBoolean2D::boolean_polygons(Array p_polygons_a, Array p_polygons_b, O
 	return ret;
 }
 
-Ref<PolyNode2D> _PolyBoolean2D::boolean_polygons_tree(Array p_polygons_a, Array p_polygons_b, Operation p_op) const {
+PolyNode2D *_PolyBoolean2D::boolean_polygons_tree(Array p_polygons_a, Array p_polygons_b, Operation p_op) const {
 	Vector<Vector<Point2>> polygons_a;
 	for (int i = 0; i < p_polygons_a.size(); i++) {
 		polygons_a.push_back(p_polygons_a[i]);
@@ -272,53 +272,4 @@ void PolyBooleanParameters2D::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "reverse_solution"), "set_reverse_solution", "is_reverse_solution");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "strictly_simple"), "set_strictly_simple", "is_strictly_simple");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "preserve_collinear"), "set_preserve_collinear", "is_preserve_collinear");
-}
-
-Ref<PolyNode2D> PolyNode2D::new_child(const Vector<Point2> &p_path) {
-	Ref<PolyNode2D> child;
-	child.instance();
-	child->path = p_path;
-	children.push_back(child);
-	return child;
-}
-
-Ref<PolyNode2D> PolyNode2D::get_child(int p_idx) {
-	ERR_FAIL_INDEX_V(p_idx, children.size(), nullptr);
-	return children[p_idx];
-}
-
-Array PolyNode2D::get_children() const {
-	Array ret;
-	for (int i = 0; i < children.size(); ++i) {
-		ret.push_back(children[i]);
-	}
-	return ret;
-}
-
-bool PolyNode2D::is_hole() const {
-	bool hole = true;
-	Ref<PolyNode2D> n = parent;
-	while (n.is_valid()) {
-		hole = !hole;
-		n = n->parent;
-	}
-	return hole;
-}
-
-void PolyNode2D::clear() {
-	children.clear();
-}
-
-void PolyNode2D::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("new_child", "path"), &PolyNode2D::new_child);
-	ClassDB::bind_method(D_METHOD("get_child", "index"), &PolyNode2D::get_child);
-	ClassDB::bind_method(D_METHOD("get_children"), &PolyNode2D::get_children);
-	ClassDB::bind_method(D_METHOD("get_child_count"), &PolyNode2D::get_child_count);
-	ClassDB::bind_method(D_METHOD("get_parent"), &PolyNode2D::get_parent);
-	ClassDB::bind_method(D_METHOD("set_path", "path"), &PolyNode2D::set_path);
-	ClassDB::bind_method(D_METHOD("get_path"), &PolyNode2D::get_path);
-	ClassDB::bind_method(D_METHOD("is_hole"), &PolyNode2D::is_hole);
-	ClassDB::bind_method(D_METHOD("clear"), &PolyNode2D::clear);
-
-	ADD_PROPERTY(PropertyInfo(Variant::POOL_VECTOR2_ARRAY, "path"), "set_path", "get_path");
 }

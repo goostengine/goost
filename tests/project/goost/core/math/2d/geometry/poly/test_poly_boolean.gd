@@ -61,8 +61,10 @@ func test_boolean_polygons_tree():
 	var clip = GoostGeometry2D.clip_polygons(a, b)
 	var c = GoostGeometry2D.regular_polygon(4, 50)
 	solution = PolyBoolean2D.boolean_polygons_tree(clip, [c], PolyBoolean2D.OP_UNION)
-	var inner = solution.get_child(0).get_child(0).get_child(0).path
+	var inner = solution.get_child(0).get_child(0).get_child(0).points
 	assert_eq(inner.size(), c.size())
+	solution.free()
+	solution = []
 
 
 func test_clip_polylines_with_polygons():
