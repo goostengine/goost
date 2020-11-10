@@ -50,7 +50,7 @@ func test_exclude_polygons():
 
 
 func test_boolean_polygons():
-	solution = PolyBoolean2D.boolean_polygons([poly_a, poly_b], [poly_c, poly_d], PolyBoolean2D.OPERATION_UNION)
+	solution = PolyBoolean2D.boolean_polygons([poly_a, poly_b], [poly_c, poly_d], PolyBoolean2D.OP_UNION)
 	assert_eq(solution.size(), 1)
 	assert_eq(solution[0].size(), 16)
 
@@ -60,7 +60,7 @@ func test_boolean_polygons_tree():
 	var b = GoostGeometry2D.regular_polygon(4, 100)
 	var clip = GoostGeometry2D.clip_polygons(a, b)
 	var c = GoostGeometry2D.regular_polygon(4, 50)
-	solution = PolyBoolean2D.boolean_polygons_tree(clip, [c], PolyBoolean2D.OPERATION_UNION)
+	solution = PolyBoolean2D.boolean_polygons_tree(clip, [c], PolyBoolean2D.OP_UNION)
 	var inner = solution.get_child(0).get_child(0).get_child(0).path
 	assert_eq(inner.size(), c.size())
 

@@ -75,20 +75,20 @@ ClipperLib::Clipper PolyBoolean2DClipper6::configure(Operation p_op, const Ref<P
 	using namespace ClipperLib;
 
 	switch (p_op) {
-		case OPERATION_NONE: {
+		case OP_NONE: {
 			clip_type = ctUnion;
-			WARN_PRINT_ONCE("OPERATION_NONE is not available in clipper6 backend, fallback to OPERATION_UNION.");
+			WARN_PRINT_ONCE("OP_NONE is not available in clipper6 backend, fallback to OP_UNION.");
 		} break;
-		case OPERATION_UNION:
+		case OP_UNION:
 			clip_type = ctUnion;
 			break;
-		case OPERATION_DIFFERENCE:
+		case OP_DIFFERENCE:
 			clip_type = ctDifference;
 			break;
-		case OPERATION_INTERSECTION:
+		case OP_INTERSECTION:
 			clip_type = ctIntersection;
 			break;
-		case OPERATION_XOR:
+		case OP_XOR:
 			clip_type = ctXor;
 			break;
 	}
