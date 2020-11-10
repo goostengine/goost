@@ -70,19 +70,19 @@ clipperlib::Clipper PolyBoolean2DClipper10::configure(Operation p_op, const Ref<
 	using namespace clipperlib;
 
 	switch (p_op) {
-		case OPERATION_NONE:
+		case OP_NONE:
 			clip_type = ctNone;
 			break;
-		case OPERATION_UNION:
+		case OP_UNION:
 			clip_type = ctUnion;
 			break;
-		case OPERATION_DIFFERENCE:
+		case OP_DIFFERENCE:
 			clip_type = ctDifference;
 			break;
-		case OPERATION_INTERSECTION:
+		case OP_INTERSECTION:
 			clip_type = ctIntersection;
 			break;
-		case OPERATION_XOR:
+		case OP_XOR:
 			clip_type = ctXor;
 			break;
 	}

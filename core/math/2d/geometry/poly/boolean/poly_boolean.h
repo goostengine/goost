@@ -13,11 +13,11 @@ public:
 	virtual Ref<PolyBooleanParameters2D> get_parameters() { return parameters; }
 
 	enum Operation {
-		OPERATION_NONE,
-		OPERATION_UNION,
-		OPERATION_DIFFERENCE,
-		OPERATION_INTERSECTION,
-		OPERATION_XOR,
+		OP_NONE,
+		OP_UNION,
+		OP_DIFFERENCE,
+		OP_INTERSECTION,
+		OP_XOR,
 	};
 	virtual Vector<Vector<Point2>> boolean_polypaths(const Vector<Vector<Point2>> &p_polypaths_A, const Vector<Vector<Point2>> &p_polypaths_B, Operation p_op) = 0;
 	virtual Ref<PolyNode2D> boolean_polypaths_tree(const Vector<Vector<Point2>> &p_polypaths_A, const Vector<Vector<Point2>> &p_polypaths_B, Operation p_op) = 0;
@@ -36,11 +36,11 @@ protected:
 class PolyBoolean2D {
 public:
 	enum Operation {
-		OPERATION_NONE,
-		OPERATION_UNION,
-		OPERATION_DIFFERENCE,
-		OPERATION_INTERSECTION,
-		OPERATION_XOR,
+		OP_NONE,
+		OP_UNION,
+		OP_DIFFERENCE,
+		OP_INTERSECTION,
+		OP_XOR,
 	};
 	static Vector<Vector<Point2>> merge_polygons(const Vector<Vector<Point2>> &p_polygons_a, const Vector<Vector<Point2>> &p_polygons_b = Vector<Vector<Point2>>(), const Ref<PolyBooleanParameters2D> &p_parameters = Ref<PolyBooleanParameters2D>());
 	static Vector<Vector<Point2>> clip_polygons(const Vector<Vector<Point2>> &p_polygons_a, const Vector<Vector<Point2>> &p_polygons_b, const Ref<PolyBooleanParameters2D> &p_parameters = Ref<PolyBooleanParameters2D>());
@@ -80,11 +80,11 @@ public:
 	Ref<PolyBooleanParameters2D> get_parameters() const;
 
 	enum Operation {
-		OPERATION_NONE,
-		OPERATION_UNION,
-		OPERATION_DIFFERENCE,
-		OPERATION_INTERSECTION,
-		OPERATION_XOR,
+		OP_NONE,
+		OP_UNION,
+		OP_DIFFERENCE,
+		OP_INTERSECTION,
+		OP_XOR,
 	};
 	Array merge_polygons(Array p_polygons_a, Array p_polygons_b) const;
 	Array clip_polygons(Array p_polygons_a, Array p_polygons_b) const;

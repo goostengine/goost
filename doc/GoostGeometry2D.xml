@@ -31,7 +31,7 @@
 			<argument index="1" name="polygon_b" type="PoolVector2Array">
 			</argument>
 			<description>
-				Performs [constant PolyBoolean2D.OPERATION_DIFFERENCE] between individual polygons.
+				Performs [constant PolyBoolean2D.OP_DIFFERENCE] between individual polygons.
 			</description>
 		</method>
 		<method name="clip_polyline_with_polygon" qualifiers="const">
@@ -42,7 +42,7 @@
 			<argument index="1" name="polygon" type="PoolVector2Array">
 			</argument>
 			<description>
-				Clips a single [code]polyline[/code] against a single [code]polygon[/code] and returns an array of clipped polylines. This performs [constant PolyBoolean2D.OPERATION_DIFFERENCE] between the polyline and the polygon. Returns an empty array if the [code]polygon[/code] completely encloses [code]polyline[/code]. This operation can be thought of as cutting a line with a closed shape.
+				Clips a single [code]polyline[/code] against a single [code]polygon[/code] and returns an array of clipped polylines. This performs [constant PolyBoolean2D.OP_DIFFERENCE] between the polyline and the polygon. Returns an empty array if the [code]polygon[/code] completely encloses [code]polyline[/code]. This operation can be thought of as cutting a line with a closed shape.
 			</description>
 		</method>
 		<method name="decompose_polygon" qualifiers="const">
@@ -84,7 +84,7 @@
 			<argument index="1" name="polygon_b" type="PoolVector2Array">
 			</argument>
 			<description>
-				Performs [constant PolyBoolean2D.OPERATION_XOR] between individual polygons.
+				Performs [constant PolyBoolean2D.OP_XOR] between individual polygons.
 			</description>
 		</method>
 		<method name="inflate_polygon" qualifiers="const">
@@ -106,7 +106,7 @@
 			<argument index="1" name="polygon_b" type="PoolVector2Array">
 			</argument>
 			<description>
-				Performs [constant PolyBoolean2D.OPERATION_INTERSECTION] between individual polygons.
+				Performs [constant PolyBoolean2D.OP_INTERSECTION] between individual polygons.
 			</description>
 		</method>
 		<method name="intersect_polyline_with_polygon" qualifiers="const">
@@ -117,7 +117,7 @@
 			<argument index="1" name="polygon" type="PoolVector2Array">
 			</argument>
 			<description>
-				Intersects polyline with polygon and returns an array of intersected polylines. This performs [constant PolyBoolean2D.OPERATION_INTERSECTION] between the polyline and the polygon. This operation can be thought of as chopping a line with a closed shape.
+				Intersects polyline with polygon and returns an array of intersected polylines. This performs [constant PolyBoolean2D.OP_INTERSECTION] between the polyline and the polygon. This operation can be thought of as chopping a line with a closed shape.
 			</description>
 		</method>
 		<method name="merge_polygons" qualifiers="const">
@@ -128,7 +128,7 @@
 			<argument index="1" name="polygon_b" type="PoolVector2Array">
 			</argument>
 			<description>
-				Performs [constant PolyBoolean2D.OPERATION_UNION] between individual polygons. If you need to merge multiple polygons, use [method PolyBoolean2D.merge_polygons] instead.
+				Performs [constant PolyBoolean2D.OP_UNION] between individual polygons. If you need to merge multiple polygons, use [method PolyBoolean2D.merge_polygons] instead.
 			</description>
 		</method>
 		<method name="point_in_polygon" qualifiers="const">

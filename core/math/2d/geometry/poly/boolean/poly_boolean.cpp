@@ -15,25 +15,25 @@ void PolyBoolean2DBackend::set_parameters(const Ref<PolyBooleanParameters2D> &p_
 Vector<Vector<Point2>> PolyBoolean2D::merge_polygons(const Vector<Vector<Point2>> &p_polygons_a, const Vector<Vector<Point2>> &p_polygons_b, const Ref<PolyBooleanParameters2D> &p_parameters) {
 	backend->set_parameters(p_parameters);
 	backend->get_parameters()->subject_open = false;
-	return backend->boolean_polypaths(p_polygons_a, p_polygons_b, PolyBoolean2DBackend::OPERATION_UNION);
+	return backend->boolean_polypaths(p_polygons_a, p_polygons_b, PolyBoolean2DBackend::OP_UNION);
 }
 
 Vector<Vector<Point2>> PolyBoolean2D::clip_polygons(const Vector<Vector<Point2>> &p_polygons_a, const Vector<Vector<Point2>> &p_polygons_b, const Ref<PolyBooleanParameters2D> &p_parameters) {
 	backend->set_parameters(p_parameters);
 	backend->get_parameters()->subject_open = false;
-	return backend->boolean_polypaths(p_polygons_a, p_polygons_b, PolyBoolean2DBackend::OPERATION_DIFFERENCE);
+	return backend->boolean_polypaths(p_polygons_a, p_polygons_b, PolyBoolean2DBackend::OP_DIFFERENCE);
 }
 
 Vector<Vector<Point2>> PolyBoolean2D::intersect_polygons(const Vector<Vector<Point2>> &p_polygons_a, const Vector<Vector<Point2>> &p_polygons_b, const Ref<PolyBooleanParameters2D> &p_parameters) {
 	backend->set_parameters(p_parameters);
 	backend->get_parameters()->subject_open = false;
-	return backend->boolean_polypaths(p_polygons_a, p_polygons_b, PolyBoolean2DBackend::OPERATION_INTERSECTION);
+	return backend->boolean_polypaths(p_polygons_a, p_polygons_b, PolyBoolean2DBackend::OP_INTERSECTION);
 }
 
 Vector<Vector<Point2>> PolyBoolean2D::exclude_polygons(const Vector<Vector<Point2>> &p_polygons_a, const Vector<Vector<Point2>> &p_polygons_b, const Ref<PolyBooleanParameters2D> &p_parameters) {
 	backend->set_parameters(p_parameters);
 	backend->get_parameters()->subject_open = false;
-	return backend->boolean_polypaths(p_polygons_a, p_polygons_b, PolyBoolean2DBackend::OPERATION_XOR);
+	return backend->boolean_polypaths(p_polygons_a, p_polygons_b, PolyBoolean2DBackend::OP_XOR);
 }
 
 Vector<Vector<Point2>> PolyBoolean2D::boolean_polygons(const Vector<Vector<Point2>> &p_polygons_a, const Vector<Vector<Point2>> &p_polygons_b, Operation p_op, const Ref<PolyBooleanParameters2D> &p_parameters) {
@@ -51,13 +51,13 @@ Ref<PolyNode2D> PolyBoolean2D::boolean_polygons_tree(const Vector<Vector<Point2>
 Vector<Vector<Point2>> PolyBoolean2D::clip_polylines_with_polygons(const Vector<Vector<Point2>> &p_polylines, const Vector<Vector<Point2>> &p_polygons, const Ref<PolyBooleanParameters2D> &p_parameters) {
 	backend->set_parameters(p_parameters);
 	backend->get_parameters()->subject_open = true;
-	return backend->boolean_polypaths(p_polylines, p_polygons, PolyBoolean2DBackend::OPERATION_DIFFERENCE);
+	return backend->boolean_polypaths(p_polylines, p_polygons, PolyBoolean2DBackend::OP_DIFFERENCE);
 }
 
 Vector<Vector<Point2>> PolyBoolean2D::intersect_polylines_with_polygons(const Vector<Vector<Point2>> &p_polylines, const Vector<Vector<Point2>> &p_polygons, const Ref<PolyBooleanParameters2D> &p_parameters) {
 	backend->set_parameters(p_parameters);
 	backend->get_parameters()->subject_open = true;
-	return backend->boolean_polypaths(p_polylines, p_polygons, PolyBoolean2DBackend::OPERATION_INTERSECTION);
+	return backend->boolean_polypaths(p_polylines, p_polygons, PolyBoolean2DBackend::OP_INTERSECTION);
 }
 
 // BIND
@@ -240,11 +240,11 @@ void _PolyBoolean2D::_bind_methods() {
 
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "parameters"), "set_parameters", "get_parameters");
 
-	BIND_ENUM_CONSTANT(OPERATION_NONE);
-	BIND_ENUM_CONSTANT(OPERATION_UNION);
-	BIND_ENUM_CONSTANT(OPERATION_DIFFERENCE);
-	BIND_ENUM_CONSTANT(OPERATION_INTERSECTION);
-	BIND_ENUM_CONSTANT(OPERATION_XOR);
+	BIND_ENUM_CONSTANT(OP_NONE);
+	BIND_ENUM_CONSTANT(OP_UNION);
+	BIND_ENUM_CONSTANT(OP_DIFFERENCE);
+	BIND_ENUM_CONSTANT(OP_INTERSECTION);
+	BIND_ENUM_CONSTANT(OP_XOR);
 }
 
 void PolyBooleanParameters2D::_bind_methods() {
