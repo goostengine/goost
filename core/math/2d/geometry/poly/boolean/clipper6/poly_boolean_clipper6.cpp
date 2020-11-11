@@ -30,7 +30,9 @@ Vector<Vector<Point2>> PolyBoolean2DClipper6::boolean_polypaths(const Vector<Vec
 	return ret;
 }
 
-PolyNode2D *PolyBoolean2DClipper6::boolean_polypaths_tree(const Vector<Vector<Point2>> &p_polypaths_a, const Vector<Vector<Point2>> &p_polypaths_b, Operation p_op) {
+void PolyBoolean2DClipper6::boolean_polypaths_tree(const Vector<Vector<Point2>> &p_polypaths_a, const Vector<Vector<Point2>> &p_polypaths_b, Operation p_op, PolyNode2D *r_root) {
+	ERR_FAIL_NULL(r_root);
+
 	ClipperLib::Clipper clp = configure(p_op, parameters);
 
 	ClipperLib::Paths subject;
@@ -46,12 +48,10 @@ PolyNode2D *PolyBoolean2DClipper6::boolean_polypaths_tree(const Vector<Vector<Po
 	ClipperLib::PolyTree tree;
 	clp.Execute(clip_type, tree, subject_fill_type, clip_fill_type);
 
-	PolyNode2D *root = memnew(PolyNode2D);
-
 	List<ClipperLib::PolyNode *> to_visit;
 	Map<ClipperLib::PolyNode *, PolyNode2D *> nodes;
 
-	nodes.insert(&tree, root);
+	nodes.insert(&tree, r_root);
 	to_visit.push_back(&tree);
 
 	while (!to_visit.empty()) {
@@ -67,7 +67,6 @@ PolyNode2D *PolyBoolean2DClipper6::boolean_polypaths_tree(const Vector<Vector<Po
 			to_visit.push_back(child);
 		}
 	}
-	return root;
 }
 
 ClipperLib::Clipper PolyBoolean2DClipper6::configure(Operation p_op, const Ref<PolyBooleanParameters2D> &p_parameters) {

@@ -166,20 +166,11 @@ bool PolyNode2D::is_hole() const {
 
 void PolyNode2D::create_from_polygons(const Array &p_polygons) {
 	clear();
-
 	Vector<Vector<Point2>> polygons;
 	for (int i = 0; i < p_polygons.size(); i++) {
 		polygons.push_back(p_polygons[i]);
 	}
-	PolyNode2D *result = PolyBoolean2D::boolean_polygons_tree(
-			polygons, Vector<Vector<Point2>>(), PolyBoolean2D::OP_NONE);
-
-	while (result->get_child_count() > 0) {
-		const int idx = result->get_child_count() - 1;
-		PolyNode2D *child = Object::cast_to<PolyNode2D>(result->get_child(idx));
-		result->remove_child(child);
-		add_child(child);
-	}
+	PolyBoolean2D::boolean_polygons_tree(polygons, Vector<Vector<Point2>>(), PolyBoolean2D::OP_NONE, this);
 	update();
 }
 
@@ -201,6 +192,7 @@ Array PolyNode2D::create_objects() {
 				continue;
 			}
 			PolyNode2D *root = memnew(PolyNode2D);
+
 			PolyNode2D *new_outer = memnew(PolyNode2D);
 			new_outer->points = outer->points;
 			new_outer->open = outer->open;

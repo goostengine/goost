@@ -42,10 +42,10 @@ Vector<Vector<Point2>> PolyBoolean2D::boolean_polygons(const Vector<Vector<Point
 	return backend->boolean_polypaths(p_polygons_a, p_polygons_b, PolyBoolean2DBackend::Operation(p_op));
 }
 
-PolyNode2D *PolyBoolean2D::boolean_polygons_tree(const Vector<Vector<Point2>> &p_polygons_a, const Vector<Vector<Point2>> &p_polygons_b, Operation p_op, const Ref<PolyBooleanParameters2D> &p_parameters) {
+void PolyBoolean2D::boolean_polygons_tree(const Vector<Vector<Point2>> &p_polygons_a, const Vector<Vector<Point2>> &p_polygons_b, Operation p_op, PolyNode2D *r_tree, const Ref<PolyBooleanParameters2D> &p_parameters) {
 	backend->set_parameters(p_parameters);
 	backend->get_parameters()->subject_open = false;
-	return backend->boolean_polypaths_tree(p_polygons_a, p_polygons_b, PolyBoolean2DBackend::Operation(p_op));
+	backend->boolean_polypaths_tree(p_polygons_a, p_polygons_b, PolyBoolean2DBackend::Operation(p_op), r_tree);
 }
 
 Vector<Vector<Point2>> PolyBoolean2D::clip_polylines_with_polygons(const Vector<Vector<Point2>> &p_polylines, const Vector<Vector<Point2>> &p_polygons, const Ref<PolyBooleanParameters2D> &p_parameters) {
@@ -182,7 +182,9 @@ PolyNode2D *_PolyBoolean2D::boolean_polygons_tree(Array p_polygons_a, Array p_po
 		polygons_b.push_back(p_polygons_b[i]);
 	}
 	const auto &params = singleton == this ? Ref<PolyBooleanParameters2D>() : parameters;
-	return PolyBoolean2D::boolean_polygons_tree(polygons_a, polygons_b, PolyBoolean2D::Operation(p_op), params);
+	PolyNode2D *root = memnew(PolyNode2D);
+	PolyBoolean2D::boolean_polygons_tree(polygons_a, polygons_b, PolyBoolean2D::Operation(p_op), root, params);
+	return root;
 }
 
 Array _PolyBoolean2D::clip_polylines_with_polygons(Array p_polylines, Array p_polygons) const {
