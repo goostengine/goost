@@ -75,8 +75,8 @@ ClipperLib::Clipper PolyBoolean2DClipper6::configure(Operation p_op, const Ref<P
 
 	switch (p_op) {
 		case OP_NONE: {
+			// OP_NONE is not available in clipper6 backend, fallback to OP_UNION.
 			clip_type = ctUnion;
-			WARN_PRINT_ONCE("OP_NONE is not available in clipper6 backend, fallback to OP_UNION.");
 		} break;
 		case OP_UNION:
 			clip_type = ctUnion;
