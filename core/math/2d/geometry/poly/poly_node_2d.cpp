@@ -122,7 +122,7 @@ void PolyNode2D::_collect_outlines(Vector<Vector<Point2>> *r_closed, Vector<Vect
 			Vector<Point2> poly;
 			poly.resize(points.size());
 			{
-				Point2* ptr = poly.ptrw();
+				Point2 *ptr = poly.ptrw();
 				for (int i = 0; i < points.size(); ++i) {
 					ptr[i] = trans.xform(points[i]);
 				}
@@ -164,10 +164,6 @@ bool PolyNode2D::is_hole() const {
 	return hole;
 }
 
-bool PolyNode2D::is_root() const {
-	return Object::cast_to<PolyNode2D>(get_parent()) == nullptr;
-}
-
 void PolyNode2D::create_from_polygons(const Array &p_polygons) {
 	clear();
 
@@ -185,6 +181,47 @@ void PolyNode2D::create_from_polygons(const Array &p_polygons) {
 		add_child(child);
 	}
 	update();
+}
+
+Array PolyNode2D::create_objects() {
+	Array objects;
+
+	List<PolyNode2D *> to_visit;
+	to_visit.push_back(this);
+
+	while (!to_visit.empty()) {
+		PolyNode2D *n = Object::cast_to<PolyNode2D>(to_visit.back()->get());
+		to_visit.pop_back();
+		if (!n) {
+			continue;
+		}
+		for (int i = 0; i < n->get_child_count(); ++i) {
+			PolyNode2D *outer = Object::cast_to<PolyNode2D>(n->get_child(i));
+			if (!outer || outer->is_hole()) {
+				continue;
+			}
+			PolyNode2D *root = memnew(PolyNode2D);
+			PolyNode2D *new_outer = memnew(PolyNode2D);
+			new_outer->points = outer->points;
+			new_outer->open = outer->open;
+			root->add_child(new_outer);
+
+			for (int j = 0; j < outer->get_child_count(); ++j) {
+				PolyNode2D *inner = Object::cast_to<PolyNode2D>(outer->get_child(j));
+				if (!inner) {
+					continue;
+				}
+				PolyNode2D *new_inner = memnew(PolyNode2D);
+				new_inner->points = inner->points;
+				new_inner->open = inner->open;
+				new_outer->add_child(new_inner);
+
+				to_visit.push_back(inner);
+			}
+			objects.push_back(root);
+		}
+	}
+	return objects;
 }
 
 void PolyNode2D::clear() {
@@ -211,6 +248,8 @@ void PolyNode2D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("is_root"), &PolyNode2D::is_root);
 
 	ClassDB::bind_method(D_METHOD("create_from_polygons", "polygons"), &PolyNode2D::create_from_polygons);
+	ClassDB::bind_method(D_METHOD("create_objects"), &PolyNode2D::create_objects);
+
 	ClassDB::bind_method(D_METHOD("clear"), &PolyNode2D::clear);
 
 	ADD_PROPERTY(PropertyInfo(Variant::POOL_VECTOR2_ARRAY, "points"), "set_points", "get_points");

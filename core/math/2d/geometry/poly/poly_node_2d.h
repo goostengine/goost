@@ -28,9 +28,13 @@ public:
 	PolyNode2D *new_child(const Vector<Point2> &p_points);
 
 	bool is_hole() const;
-	bool is_root() const;
+	_FORCE_INLINE_ bool is_root() const {
+		return Object::cast_to<PolyNode2D>(get_parent()) == nullptr;
+	}
 
 	void create_from_polygons(const Array &p_polygons);
+	Array create_objects();
+
 	void clear();
 
 	String get_configuration_warning() const;
