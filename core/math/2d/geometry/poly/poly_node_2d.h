@@ -33,7 +33,7 @@ public:
 	}
 
 	void create_from_polygons(const Array &p_polygons);
-	Array create_objects();
+	Array create_objects(Node *p_new_parent = nullptr, bool p_keep_transform = true);  
 
 	void clear();
 
