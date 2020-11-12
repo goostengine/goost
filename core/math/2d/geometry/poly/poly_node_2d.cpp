@@ -52,6 +52,12 @@ struct PolyObject2D {
 	}
 };
 
+void draw_polyline_closed(PolyNode2D* p_node, const Vector<Point2> &p_polyline, const Color &p_color, real_t p_width = 1.0) {
+	ERR_FAIL_COND(p_polyline.size() < 2);
+	p_node->draw_polyline(p_polyline, p_color, p_width);
+	p_node->draw_line(p_polyline[p_polyline.size() - 1], p_polyline[0], p_color, p_width);
+}
+
 void PolyNode2D::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_LOCAL_TRANSFORM_CHANGED: {
@@ -70,10 +76,11 @@ void PolyNode2D::_notification(int p_what) {
 			Vector<PolyObject2D> objects = PolyObject2D::find_objects(this);
 			for (int i = 0; i < objects.size(); ++i) {
 				const PolyObject2D &obj = objects[i];
-				if (obj.outer->open) {
-					Vector<Point2> polyline = obj.outer->get_points_transformed();
-					if (!polyline.empty()) {
-						draw_polyline(polyline, obj.outer->color);
+				PolyNode2D *outer = obj.outer;
+				if (outer->open) {
+					Vector<Point2> polyline = outer->get_points_transformed();
+					if (polyline.size() >= 2) {
+						draw_polyline(polyline, outer->color, outer->width);
 					}
 					continue; // Open paths have no inner outlines.
 				}
@@ -81,25 +88,33 @@ void PolyNode2D::_notification(int p_what) {
 				if (polygons.empty()) {
 					return;
 				}
-				Vector<Vector<Point2>> triangles = PolyDecomp2D::triangulate_polygons(polygons);
-				if (triangles.empty()) {
-					break;
-				}
-				Vector<Point2> vertices;
-				for (int i = 0; i < triangles.size(); ++i) {
-					const Vector<Point2> &tri = triangles[i];
-					for (int j = 0; j < tri.size(); ++j) {
-						vertices.push_back(tri[j]);
+				if (!outer->filled) {
+					draw_polyline_closed(this, outer->get_points_transformed(), outer->color, outer->width);
+					for (int i = 0; i < obj.inner.size(); ++i) {
+						PolyNode2D *inner = obj.inner[i];
+						draw_polyline_closed(this, inner->get_points_transformed(), inner->color, inner->width);
 					}
+				} else {
+					Vector<Vector<Point2>> triangles = PolyDecomp2D::triangulate_polygons(polygons);
+					if (triangles.empty()) {
+						break;
+					}
+					Vector<Point2> vertices;
+					for (int i = 0; i < triangles.size(); ++i) {
+						const Vector<Point2> &tri = triangles[i];
+						for (int j = 0; j < tri.size(); ++j) {
+							vertices.push_back(tri[j]);
+						}
+					}
+					const int indices_count = triangles.size() * 3;
+					Vector<int> indices;
+					for (int i = 0; i < indices_count; ++i) {
+						indices.push_back(i);
+					}
+					Vector<Color> colors;
+					colors.push_back(outer->color);
+					VS::get_singleton()->canvas_item_add_triangle_array(get_canvas_item(), indices, vertices, colors);
 				}
-				const int indices_count = triangles.size() * 3;
-				Vector<int> indices;
-				for (int i = 0; i < indices_count; ++i) {
-					indices.push_back(i);
-				}
-				Vector<Color> colors;
-				colors.push_back(obj.outer->color);
-				VS::get_singleton()->canvas_item_add_triangle_array(get_canvas_item(), indices, vertices, colors);
 			}
 		} break;
 		case NOTIFICATION_PARENTED: {
@@ -130,8 +145,18 @@ void PolyNode2D::_queue_update() {
 
 void PolyNode2D::_validate_property(PropertyInfo &property) const {
 	if (is_root()) {
-		if (property.name == "points" || property.name == "open" || property.name == "color") {
+		if (property.name == "points" || property.name == "color" || property.name == "open") {
 			// Do not make sense for container.
+			property.usage = PROPERTY_USAGE_NOEDITOR;
+		}
+	}
+	if (property.name == "filled") {
+		if (open) {
+			property.usage = PROPERTY_USAGE_NOEDITOR;
+		}
+	}
+	if (property.name == "width") {
+		if (!open && filled) {
 			property.usage = PROPERTY_USAGE_NOEDITOR;
 		}
 	}
@@ -215,14 +240,26 @@ Vector<Point2> PolyNode2D::get_points_transformed() {
 	return poly;
 }
 
+void PolyNode2D::set_color(const Color &p_color) {
+	color = p_color;
+	_queue_update();
+}
+
 void PolyNode2D::set_open(bool p_open) {
 	// Do not error out here if root, as it can be reparented to another root.
 	open = p_open;
 	_queue_update();
+	_change_notify();
 }
 
-void PolyNode2D::set_color(const Color &p_color) {
-	color = p_color;
+void PolyNode2D::set_filled(bool p_filled) {
+	filled = p_filled;
+	_queue_update();
+	_change_notify();
+}
+
+void PolyNode2D::set_width(real_t p_width) {
+	width = p_width;
 	_queue_update();
 }
 
@@ -352,11 +389,17 @@ void PolyNode2D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_points"), &PolyNode2D::get_points);
 	ClassDB::bind_method(D_METHOD("get_points_transformed"), &PolyNode2D::get_points_transformed);
 
+	ClassDB::bind_method(D_METHOD("set_color", "color"), &PolyNode2D::set_color);
+	ClassDB::bind_method(D_METHOD("get_color"), &PolyNode2D::get_color);
+	
 	ClassDB::bind_method(D_METHOD("set_open", "open"), &PolyNode2D::set_open);
 	ClassDB::bind_method(D_METHOD("is_open"), &PolyNode2D::is_open);
 
-	ClassDB::bind_method(D_METHOD("set_color", "color"), &PolyNode2D::set_color);
-	ClassDB::bind_method(D_METHOD("get_color"), &PolyNode2D::get_color);
+	ClassDB::bind_method(D_METHOD("set_filled", "filled"), &PolyNode2D::set_filled);
+	ClassDB::bind_method(D_METHOD("is_filled"), &PolyNode2D::is_filled);
+	
+	ClassDB::bind_method(D_METHOD("set_width", "width"), &PolyNode2D::set_width);
+	ClassDB::bind_method(D_METHOD("get_width"), &PolyNode2D::get_width);
 
 	ClassDB::bind_method(D_METHOD("new_child", "from_points"), &PolyNode2D::new_child);
 
@@ -372,8 +415,10 @@ void PolyNode2D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("clear"), &PolyNode2D::clear);
 
 	ADD_PROPERTY(PropertyInfo(Variant::POOL_VECTOR2_ARRAY, "points"), "set_points", "get_points");
-	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "open"), "set_open", "is_open");
 	ADD_PROPERTY(PropertyInfo(Variant::COLOR, "color"), "set_color", "get_color");
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "open"), "set_open", "is_open");
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "filled"), "set_filled", "is_filled");
+	ADD_PROPERTY(PropertyInfo(Variant::REAL, "width"), "set_width", "get_width");
 }
 
 PolyNode2D::PolyNode2D() {

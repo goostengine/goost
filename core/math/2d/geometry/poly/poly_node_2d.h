@@ -8,8 +8,10 @@ class PolyNode2D : public Node2D {
 
 private:
 	Vector<Point2> points;
-	bool open = false; // closed = polygon, open = polyline
 	Color color = Color(1, 1, 1, 1);
+	bool open = false; // closed = polygon, open = polyline
+	bool filled = true; // for polygons
+	real_t width = 1.0;
 
 protected:
 	void _notification(int p_what);
@@ -24,11 +26,17 @@ public:
 	Vector<Point2> get_points() const { return points; }
 	Vector<Point2> get_points_transformed();
 
+	void set_color(const Color &p_color);
+	Color get_color() const { return color; }
+
 	void set_open(bool p_open);
 	bool is_open() const { return open; }
 
-	void set_color(const Color &p_color);
-	Color get_color() const { return color; }
+	void set_filled(bool p_filled);
+	bool is_filled() const { return filled; }
+
+	void set_width(real_t p_width);
+	real_t get_width() const { return width; }
 
 	PolyNode2D *new_child(const Vector<Point2> &p_points);
 
