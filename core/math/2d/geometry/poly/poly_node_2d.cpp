@@ -2,6 +2,56 @@
 #include "boolean/poly_boolean.h"
 #include "decomp/poly_decomp.h"
 
+struct PolyObject2D {
+	PolyNode2D *outer;
+	Vector<PolyNode2D *> inner;
+
+	Vector<Vector<Point2>> get_polygons_transformed() const {
+		Vector<Vector<Point2>> polygons;
+		polygons.push_back(outer->get_points_transformed());
+		for (int i = 0; i < inner.size(); ++i) {
+			polygons.push_back(inner[i]->get_points_transformed());
+		}
+		return polygons;
+	}
+
+	// The node can be a root or a hole.
+	static Vector<PolyObject2D> find_objects(PolyNode2D *p_node) {
+		ERR_FAIL_NULL_V(p_node, Vector<PolyObject2D>());
+
+		Vector<PolyObject2D> objects;
+		List<PolyNode2D *> to_visit;
+		to_visit.push_back(p_node);
+
+		while (!to_visit.empty()) {
+			PolyNode2D *n = Object::cast_to<PolyNode2D>(to_visit.back()->get());
+			to_visit.pop_back();
+			if (!n) {
+				continue;
+			}
+			for (int i = 0; i < n->get_child_count(); ++i) {
+				PolyNode2D *outer = Object::cast_to<PolyNode2D>(n->get_child(i));
+				if (!outer || outer->is_hole()) {
+					continue;
+				}
+				PolyObject2D obj;
+				obj.outer = outer;
+
+				for (int j = 0; j < outer->get_child_count(); ++j) {
+					PolyNode2D *inner = Object::cast_to<PolyNode2D>(outer->get_child(j));
+					if (!inner) {
+						continue;
+					}
+					obj.inner.push_back(inner);
+					to_visit.push_back(inner);
+				}
+				objects.push_back(obj);
+			}
+		}
+		return objects;
+	}
+};
+
 void PolyNode2D::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_LOCAL_TRANSFORM_CHANGED: {
@@ -14,10 +64,23 @@ void PolyNode2D::_notification(int p_what) {
 			if (!is_root()) {
 				break; // Only the root node is responsible for drawing.
 			}
-			Vector<Vector<Point2>> polygons, polylines;
-			_collect_outlines(&polygons, &polylines);
+			// Apply final transform, but only on the level of drawing.
+			draw_set_transform_matrix(get_global_transform().affine_inverse());
 
-			if (!polygons.empty()) {
+			Vector<PolyObject2D> objects = PolyObject2D::find_objects(this);
+			for (int i = 0; i < objects.size(); ++i) {
+				const PolyObject2D &obj = objects[i];
+				if (obj.outer->open) {
+					Vector<Point2> polyline = obj.outer->get_points_transformed();
+					if (!polyline.empty()) {
+						draw_polyline(polyline, obj.outer->color);
+					}
+					continue; // Open paths have no inner outlines.
+				}
+				const Vector<Vector<Point2>> &polygons = obj.get_polygons_transformed();
+				if (polygons.empty()) {
+					return;
+				}
 				Vector<Vector<Point2>> triangles = PolyDecomp2D::triangulate_polygons(polygons);
 				if (triangles.empty()) {
 					break;
@@ -34,12 +97,9 @@ void PolyNode2D::_notification(int p_what) {
 				for (int i = 0; i < indices_count; ++i) {
 					indices.push_back(i);
 				}
-				VS::get_singleton()->canvas_item_add_triangle_array(get_canvas_item(), indices, vertices, Vector<Color>());
-			}
-			if (!polylines.empty()) {
-				for (int i = 0; i < polylines.size(); ++i) {
-					draw_polyline(polylines[i], Color(1, 1, 1));
-				}
+				Vector<Color> colors;
+				colors.push_back(obj.outer->color);
+				VS::get_singleton()->canvas_item_add_triangle_array(get_canvas_item(), indices, vertices, colors);
 			}
 		} break;
 		case NOTIFICATION_PARENTED: {
@@ -70,9 +130,8 @@ void PolyNode2D::_queue_update() {
 
 void PolyNode2D::_validate_property(PropertyInfo &property) const {
 	if (is_root()) {
-		if (property.name == "points" || property.name == "open") {
-			// The root node acts as a container which has no outer boundary,
-			// but technically treated as a hole.
+		if (property.name == "points" || property.name == "open" || property.name == "color") {
+			// Do not make sense for container.
 			property.usage = PROPERTY_USAGE_NOEDITOR;
 		}
 	}
@@ -92,13 +151,15 @@ String PolyNode2D::get_configuration_warning() const {
 		if (!warning.empty()) {
 			warning += "\n\n";
 		}
-		warning += TTR("The root node acts as a container for other nodes. Add a new PolyNode2D as child to create outer boundary.");
+		// The root node acts as a container which has no outer boundary,
+		// but technically treated as a hole with "infinite" inner boundary.
+		warning += TTR("The root node acts as a container for other nodes. Add a new PolyNode2D as a child to create outer boundary.");
 	}
 	return warning;
 }
 
 void PolyNode2D::_collect_outlines(Vector<Vector<Point2>> *r_closed, Vector<Vector<Point2>> *r_open) {
-	ERR_FAIL_NULL(r_closed);
+	ERR_FAIL_COND(!r_closed && !r_open);
 
 	List<PolyNode2D *> to_visit;
 	to_visit.push_back(this);
@@ -114,19 +175,10 @@ void PolyNode2D::_collect_outlines(Vector<Vector<Point2>> *r_closed, Vector<Vect
 			if (!child) {
 				continue;
 			}
-			const Vector<Point2> &points = child->get_points();
-			const Transform2D &trans = child->get_global_transform();
-			Vector<Point2> poly;
-			poly.resize(points.size());
-			{
-				Point2 *ptr = poly.ptrw();
-				for (int i = 0; i < points.size(); ++i) {
-					ptr[i] = trans.xform(points[i]);
-				}
-			}
+			Vector<Point2> poly = child->get_points_transformed();
 			if (child->open && r_open) {
 				r_open->push_back(poly);
-			} else {
+			} else if (r_closed) {
 				r_closed->push_back(poly);
 			}
 			to_visit.push_back(child);
@@ -140,9 +192,37 @@ void PolyNode2D::set_points(const Vector<Point2> &p_points) {
 	_queue_update();
 }
 
+Vector<Point2> PolyNode2D::get_points_transformed() {
+	ERR_FAIL_COND_V(!is_inside_tree(), Vector<Point2>());
+
+	Vector<PolyNode2D *> nodes;
+	nodes.push_back(this);
+	PolyNode2D *n = Object::cast_to<PolyNode2D>(get_parent());
+	while (n) {
+		nodes.push_back(n);
+		n = Object::cast_to<PolyNode2D>(n->get_parent());
+	}
+	Vector<Point2> poly = points;
+	{
+		Point2 *ptr = poly.ptrw();
+		for (int i = 0; i < nodes.size(); ++i) {
+			const Transform2D &trans = nodes[i]->get_transform();
+			for (int j = 0; j < points.size(); ++j) {
+				ptr[j] = trans.xform(ptr[j]);
+			}
+		}
+	}
+	return poly;
+}
+
 void PolyNode2D::set_open(bool p_open) {
 	// Do not error out here if root, as it can be reparented to another root.
 	open = p_open;
+	_queue_update();
+}
+
+void PolyNode2D::set_color(const Color &p_color) {
+	color = p_color;
 	_queue_update();
 }
 
@@ -173,10 +253,42 @@ void PolyNode2D::create_from_polygons(const Array &p_polygons) {
 	update();
 }
 
+Array PolyNode2D::collect_polygons() {
+	Vector<Vector<Point2>> polygons;
+	_collect_outlines(&polygons, nullptr);
+
+	Array ret;
+	for (int i = 0; i < polygons.size(); i++) {
+		ret.push_back(polygons[i]);
+	}
+	return ret;
+}
+
+Array PolyNode2D::collect_polylines() {
+	Vector<Vector<Point2>> polylines;
+	_collect_outlines(nullptr, &polylines);
+
+	Array ret;
+	for (int i = 0; i < polylines.size(); i++) {
+		ret.push_back(polylines[i]);
+	}
+	return ret;
+}
+
+Array PolyNode2D::find_objects() {
+	Array ret;
+	Vector<PolyObject2D> objects = PolyObject2D::find_objects(this);
+	for (int i = 0; i < objects.size(); ++i) {
+		ret.push_back(objects[i].outer);
+		// Inner outlines are always children of outer, so no need to retrieve those.
+	}
+	return ret;
+}
+
 Array PolyNode2D::create_objects(Node *p_new_parent, bool p_keep_transform) {
 	ERR_FAIL_COND_V_MSG(!is_inside_tree() && p_keep_transform, Array(),
 			"Requested to keep transform, but the node is not inside the scene tree.");
-	Array objects;
+	Array ret;
 
 	Node *new_parent = p_new_parent;
 	if (!new_parent) {
@@ -189,53 +301,39 @@ Array PolyNode2D::create_objects(Node *p_new_parent, bool p_keep_transform) {
 	ERR_FAIL_COND_V_MSG(this->is_a_parent_of(new_parent), Array(),
 			"Cannot create objects inside nodes which share the same root.");
 
-	List<PolyNode2D *> to_visit;
-	to_visit.push_back(this);
+	Vector<PolyObject2D> objects = PolyObject2D::find_objects(this);
+	for (int i = 0; i < objects.size(); ++i) {
+		const PolyObject2D &obj = objects[i];
+		const PolyNode2D *outer = obj.outer;
 
-	while (!to_visit.empty()) {
-		PolyNode2D *n = Object::cast_to<PolyNode2D>(to_visit.back()->get());
-		to_visit.pop_back();
-		if (!n) {
-			continue;
+		// Root node which will hold our object.
+		PolyNode2D *root = memnew(PolyNode2D);
+		new_parent->add_child(root);
+		if (p_keep_transform) {
+			root->set_global_transform(get_global_transform());
 		}
-		for (int i = 0; i < n->get_child_count(); ++i) {
-			PolyNode2D *outer = Object::cast_to<PolyNode2D>(n->get_child(i));
-			if (!outer || outer->is_hole()) {
-				continue;
-			}
-			// Root node which will hold our object.
-			PolyNode2D *root = memnew(PolyNode2D);
-			new_parent->add_child(root);
-			if (p_keep_transform) {
-				root->set_global_transform(get_global_transform());
-			}
-			// Boundary.
-			PolyNode2D *new_outer = memnew(PolyNode2D);
-			new_outer->points = outer->points;
-			new_outer->open = outer->open;
-			root->add_child(new_outer);
-			if (p_keep_transform) {
-				new_outer->set_global_transform(outer->get_global_transform());
-			}
-			// Holes.
-			for (int j = 0; j < outer->get_child_count(); ++j) {
-				PolyNode2D *inner = Object::cast_to<PolyNode2D>(outer->get_child(j));
-				if (!inner) {
-					continue;
-				}
-				PolyNode2D *new_inner = memnew(PolyNode2D);
-				new_inner->points = inner->points;
-				new_inner->open = inner->open;
-				new_outer->add_child(new_inner);
-				if (p_keep_transform) {
-					new_inner->set_global_transform(inner->get_global_transform());
-				}
-				to_visit.push_back(inner);
-			}
-			objects.push_back(root);
+		// Boundary.
+		PolyNode2D *new_outer = memnew(PolyNode2D);
+		new_outer->points = outer->points;
+		new_outer->open = outer->open;
+		root->add_child(new_outer);
+		if (p_keep_transform) {
+			new_outer->set_global_transform(outer->get_global_transform());
 		}
+		// Holes.
+		for (int j = 0; j < obj.inner.size(); ++j) {
+			const PolyNode2D *inner = obj.inner[j];
+			PolyNode2D *new_inner = memnew(PolyNode2D);
+			new_inner->points = inner->points;
+			new_inner->open = inner->open;
+			new_outer->add_child(new_inner);
+			if (p_keep_transform) {
+				new_inner->set_global_transform(inner->get_global_transform());
+			}
+		}
+		ret.push_back(root);
 	}
-	return objects;
+	return ret;
 }
 
 void PolyNode2D::clear() {
@@ -252,9 +350,13 @@ void PolyNode2D::clear() {
 void PolyNode2D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_points", "points"), &PolyNode2D::set_points);
 	ClassDB::bind_method(D_METHOD("get_points"), &PolyNode2D::get_points);
+	ClassDB::bind_method(D_METHOD("get_points_transformed"), &PolyNode2D::get_points_transformed);
 
 	ClassDB::bind_method(D_METHOD("set_open", "open"), &PolyNode2D::set_open);
 	ClassDB::bind_method(D_METHOD("is_open"), &PolyNode2D::is_open);
+
+	ClassDB::bind_method(D_METHOD("set_color", "color"), &PolyNode2D::set_color);
+	ClassDB::bind_method(D_METHOD("get_color"), &PolyNode2D::get_color);
 
 	ClassDB::bind_method(D_METHOD("new_child", "from_points"), &PolyNode2D::new_child);
 
@@ -262,12 +364,16 @@ void PolyNode2D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("is_root"), &PolyNode2D::is_root);
 
 	ClassDB::bind_method(D_METHOD("create_from_polygons", "polygons"), &PolyNode2D::create_from_polygons);
+	ClassDB::bind_method(D_METHOD("collect_polygons"), &PolyNode2D::collect_polygons);
+	ClassDB::bind_method(D_METHOD("collect_polylines"), &PolyNode2D::collect_polylines);
+	ClassDB::bind_method(D_METHOD("find_objects"), &PolyNode2D::find_objects);
 	ClassDB::bind_method(D_METHOD("create_objects", "new_parent", "keep_transform"), &PolyNode2D::create_objects, DEFVAL(Variant()), DEFVAL(true));
 
 	ClassDB::bind_method(D_METHOD("clear"), &PolyNode2D::clear);
 
 	ADD_PROPERTY(PropertyInfo(Variant::POOL_VECTOR2_ARRAY, "points"), "set_points", "get_points");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "open"), "set_open", "is_open");
+	ADD_PROPERTY(PropertyInfo(Variant::COLOR, "color"), "set_color", "get_color");
 }
 
 PolyNode2D::PolyNode2D() {

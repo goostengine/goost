@@ -9,6 +9,7 @@ class PolyNode2D : public Node2D {
 private:
 	Vector<Point2> points;
 	bool open = false; // closed = polygon, open = polyline
+	Color color = Color(1, 1, 1, 1);
 
 protected:
 	void _notification(int p_what);
@@ -21,9 +22,13 @@ protected:
 public:
 	void set_points(const Vector<Point2> &p_points);
 	Vector<Point2> get_points() const { return points; }
+	Vector<Point2> get_points_transformed();
 
 	void set_open(bool p_open);
 	bool is_open() const { return open; }
+
+	void set_color(const Color &p_color);
+	Color get_color() const { return color; }
 
 	PolyNode2D *new_child(const Vector<Point2> &p_points);
 
@@ -33,7 +38,10 @@ public:
 	}
 
 	void create_from_polygons(const Array &p_polygons);
-	Array create_objects(Node *p_new_parent = nullptr, bool p_keep_transform = true);  
+	Array collect_polygons();
+	Array collect_polylines();
+	Array find_objects();
+	Array create_objects(Node *p_new_parent = nullptr, bool p_keep_transform = true);
 
 	void clear();
 
