@@ -52,7 +52,7 @@ struct PolyObject2D {
 	}
 };
 
-void draw_polyline_closed(PolyNode2D* p_node, const Vector<Point2> &p_polyline, const Color &p_color, real_t p_width = 1.0) {
+void draw_polyline_closed(PolyNode2D *p_node, const Vector<Point2> &p_polyline, const Color &p_color, real_t p_width = 1.0) {
 	ERR_FAIL_COND(p_polyline.size() < 2);
 	p_node->draw_polyline(p_polyline, p_color, p_width);
 	p_node->draw_line(p_polyline[p_polyline.size() - 1], p_polyline[0], p_color, p_width);
@@ -74,28 +74,28 @@ void PolyNode2D::_notification(int p_what) {
 			draw_set_transform_matrix(get_global_transform().affine_inverse());
 
 			Vector<PolyObject2D> objects = PolyObject2D::find_objects(this);
-			for (int i = 0; i < objects.size(); ++i) {
-				const PolyObject2D &obj = objects[i];
+
+			for (int idx = 0; idx < objects.size(); ++idx) {
+				const PolyObject2D &obj = objects[idx];
 				PolyNode2D *outer = obj.outer;
-				if (outer->open) {
-					Vector<Point2> polyline = outer->get_points_transformed();
-					if (polyline.size() >= 2) {
-						draw_polyline(polyline, outer->color, outer->width);
+				const Vector<Point2> &outer_points = outer->get_points_transformed();
+
+				if (outer->open) { // Polyline.
+					if (outer_points.size() >= 2) {
+						draw_polyline(outer_points, outer->color, outer->width);
 					}
-					continue; // Open paths have no inner outlines.
-				}
-				const Vector<Vector<Point2>> &polygons = obj.get_polygons_transformed();
-				if (polygons.empty()) {
-					return;
-				}
-				if (!outer->filled) {
-					draw_polyline_closed(this, outer->get_points_transformed(), outer->color, outer->width);
+				} else if (!outer->filled) { // Non-filled polygon.
+					draw_polyline_closed(this, outer_points, outer->color, outer->width);
 					for (int i = 0; i < obj.inner.size(); ++i) {
 						PolyNode2D *inner = obj.inner[i];
 						draw_polyline_closed(this, inner->get_points_transformed(), inner->color, inner->width);
 					}
-				} else {
-					Vector<Vector<Point2>> triangles = PolyDecomp2D::triangulate_polygons(polygons);
+				} else { // Filled polygon.
+					const Vector<Vector<Point2>> &polygons = obj.get_polygons_transformed();
+					if (polygons.empty()) {
+						return;
+					}
+					const Vector<Vector<Point2>> &triangles = PolyDecomp2D::triangulate_polygons(polygons);
 					if (triangles.empty()) {
 						break;
 					}
@@ -391,13 +391,13 @@ void PolyNode2D::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("set_color", "color"), &PolyNode2D::set_color);
 	ClassDB::bind_method(D_METHOD("get_color"), &PolyNode2D::get_color);
-	
+
 	ClassDB::bind_method(D_METHOD("set_open", "open"), &PolyNode2D::set_open);
 	ClassDB::bind_method(D_METHOD("is_open"), &PolyNode2D::is_open);
 
 	ClassDB::bind_method(D_METHOD("set_filled", "filled"), &PolyNode2D::set_filled);
 	ClassDB::bind_method(D_METHOD("is_filled"), &PolyNode2D::is_filled);
-	
+
 	ClassDB::bind_method(D_METHOD("set_width", "width"), &PolyNode2D::set_width);
 	ClassDB::bind_method(D_METHOD("get_width"), &PolyNode2D::get_width);
 
