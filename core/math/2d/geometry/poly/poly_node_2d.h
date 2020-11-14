@@ -17,6 +17,7 @@ protected:
 	void _notification(int p_what);
 	virtual void _validate_property(PropertyInfo &property) const;
 	static void _bind_methods();
+	void _draw();
 
 	void _queue_update();
 	void _collect_outlines(Vector<Vector<Point2>> *r_closed, Vector<Vector<Point2>> *r_open = nullptr);
@@ -45,15 +46,13 @@ public:
 		return Object::cast_to<PolyNode2D>(get_parent()) == nullptr;
 	}
 
-	void create_from_polygons(const Array &p_polygons);
+	void make_from_outlines(const Array &p_outlines);
 	Array collect_polygons();
 	Array collect_polylines();
 	Array find_objects();
-	Array create_objects(Node *p_new_parent = nullptr, bool p_keep_transform = true);
+	Array separate_objects(Node *p_new_parent = nullptr, bool p_keep_transform = true);
 
 	void clear();
-
-	String get_configuration_warning() const;
 
 	PolyNode2D();
 };
