@@ -148,7 +148,7 @@
 			<argument index="0" name="polygon" type="PoolVector2Array">
 			</argument>
 			<description>
-				Returns [code]polygon[/code]'s positive or negative area depending on whether vertices are ordered in counterclockwise or anticlockwise order. See also [method Geometry.is_polygon_clockwise]. If the order is clockwise, the polygon can be interpreted as an inner polygon (hole), otherwise it's an outer polygon (boundary).
+				Returns [code]polygon[/code]'s positive or negative area depending on whether vertices are ordered in clockwise or counterclockwise order. See also [method Geometry.is_polygon_clockwise]. If the order is clockwise, the polygon can be interpreted as an inner polygon (hole), otherwise it's an outer polygon (boundary).
 			</description>
 		</method>
 		<method name="polygon_centroid" qualifiers="const">

@@ -62,56 +62,32 @@ void draw_polyline_closed(PolyNode2D *p_node, const Vector<Point2> &p_polyline, 
 }
 
 void PolyNode2D::_draw() {
-	// Apply final transform, but only on the level of drawing.
-	draw_set_transform_matrix(get_global_transform().affine_inverse());
-
-	Vector<PolyObject2D> objects = PolyObject2D::find_objects(this);
-
-	for (int idx = 0; idx < objects.size(); ++idx) {
-		const PolyObject2D &obj = objects[idx];
-		PolyNode2D *outer = obj.outer;
-		const Vector<Point2> &outer_points = outer->get_points_transformed();
-
-		if (outer->open) { // Polyline.
-			if (outer_points.size() >= 2) {
-				draw_polyline(outer_points, outer->color, outer->width);
-			}
-		} else if (!outer->filled) { // Non-filled polygon.
-			draw_polyline_closed(this, outer_points, outer->color, outer->width);
-			for (int i = 0; i < obj.inner.size(); ++i) {
-				PolyNode2D *inner = obj.inner[i];
-				draw_polyline_closed(this, inner->get_points_transformed(), inner->color, inner->width);
-			}
-		} else { // Filled polygon.
-			const Vector<Vector<Point2>> &polygons = obj.get_polygons_transformed();
-			if (polygons.empty()) {
-				return;
-			}
-			const Vector<Vector<Point2>> &triangles = PolyDecomp2D::triangulate_polygons(polygons);
-			if (triangles.empty()) {
-				break;
-			}
-			Vector<Point2> vertices;
-			for (int i = 0; i < triangles.size(); ++i) {
-				const Vector<Point2> &tri = triangles[i];
-				for (int j = 0; j < tri.size(); ++j) {
-					vertices.push_back(tri[j]);
-				}
-			}
-			const int indices_count = triangles.size() * 3;
-			Vector<int> indices;
-			for (int i = 0; i < indices_count; ++i) {
-				indices.push_back(i);
-			}
-			Vector<Color> colors;
-			colors.push_back(outer->color);
-			VS::get_singleton()->canvas_item_add_triangle_array(get_canvas_item(), indices, vertices, colors);
+	if (decomp.empty()) {
+		return;
+	}
+	Vector<Point2> vertices;
+	for (int i = 0; i < decomp.size(); ++i) {
+		const Vector<Point2> &part = decomp[i];
+		for (int j = 0; j < part.size(); ++j) {
+			vertices.push_back(part[j]);
 		}
 	}
+	const int indices_count = decomp.size() * 3;
+	Vector<int> indices;
+	for (int i = 0; i < indices_count; ++i) {
+		indices.push_back(i);
+	}
+	Vector<Color> colors;
+	colors.push_back(color);
+	VS::get_singleton()->canvas_item_add_triangle_array(get_canvas_item(), indices, vertices, colors);
 }
 
 void PolyNode2D::_notification(int p_what) {
 	switch (p_what) {
+		case NOTIFICATION_ENTER_TREE: {
+			parent = Object::cast_to<PolyNode2D>(get_parent());
+			_queue_update();
+		} break;
 		case NOTIFICATION_DRAW: {
 			if (!is_inside_tree()) {
 				break;
@@ -121,24 +97,130 @@ void PolyNode2D::_notification(int p_what) {
 			}
 			_draw();
 		} break;
-		case NOTIFICATION_LOCAL_TRANSFORM_CHANGED: {
-			_queue_update();
-		} break;
-		case NOTIFICATION_PARENTED: {
-			_queue_update();
+		case NOTIFICATION_LOCAL_TRANSFORM_CHANGED:
+		case NOTIFICATION_VISIBILITY_CHANGED:
+		case NOTIFICATION_PARENTED:
+		case NOTIFICATION_EXIT_TREE: {
+			if (parent) {
+				_queue_update();
+			}
 		} break;
 	}
 }
 
 void PolyNode2D::_queue_update() {
-	PolyNode2D *n = this;
-	while (n) {
-		if (n->is_root()) {
-			n->update();
-			break;
-		}
-		n = Object::cast_to<PolyNode2D>(n->get_parent());
+	if (!is_inside_tree()) {
+		return;
 	}
+	if (parent) {
+		parent->_queue_update();
+	} else if (!update_queued) {
+		call_deferred("_update_outlines");
+	}
+	update_queued = true;
+}
+
+Vector<Vector<Point2>> copy_outlines(const Vector<Vector<Point2>> &p_outlines, const Transform2D &p_trans) {
+	Vector<Vector<Point2>> outlines;
+
+	for (int i = 0; i < p_outlines.size(); ++i) {
+		Vector<Point2> poly = p_outlines[i];
+		{
+			Point2 *ptr = poly.ptrw();
+			for (int j = 0; j < poly.size(); ++j) {
+				ptr[j] = p_trans.xform(ptr[j]);
+			}
+		}
+		outlines.push_back(poly);
+	}
+	return outlines;
+}
+
+Vector<Vector<Point2>> PolyNode2D::_build_outlines() {
+	ERR_FAIL_COND_V(is_hole(), Vector<Vector<Point2>>());
+
+	Vector<Vector<Point2>> outlines;
+	Vector<Point2> outer_points = points;
+	if (Geometry::is_polygon_clockwise(outer_points)) {
+		outer_points.invert();
+	}
+	outlines.push_back(points);
+
+	for (int i = 0; i < get_child_count(); ++i) {
+		PolyNode2D *hole = Object::cast_to<PolyNode2D>(get_child(i));
+		if (!hole) {
+			continue;
+		}
+		Vector<Point2> inner_points = hole->points;
+		if (!Geometry::is_polygon_clockwise(inner_points)) {
+			inner_points.invert();
+		}
+		outlines.push_back(inner_points);
+	}
+	return outlines;
+}
+
+Vector<Vector<Point2>> PolyNode2D::_get_outlines() {
+	if (!update_queued) {
+		return outlines;
+	}
+	ERR_FAIL_COND_V(is_hole(), Vector<Vector<Point2>>());
+
+	outlines.clear();
+
+	Vector<Vector<Point2>> subject_outlines = _build_outlines();
+
+	// Collect objects.
+	Vector<PolyNode2D *> clip_objects;
+	for (int i = 0; i < get_child_count(); ++i) {
+		PolyNode2D *inner = Object::cast_to<PolyNode2D>(get_child(i));
+		if (!inner) {
+			continue;
+		}
+		for (int j = 0; j < inner->get_child_count(); ++j) {
+			PolyNode2D *outer = Object::cast_to<PolyNode2D>(inner->get_child(j));
+			if (!outer) {
+				continue;
+			}
+			clip_objects.push_back(outer);
+		}
+	}
+
+	// Clip.
+	for (int i = 0; i < clip_objects.size(); ++i) {
+		PolyNode2D *clip_outer = clip_objects[i];
+		if (!clip_outer->is_visible_in_tree()) {
+			continue;
+		}
+		Vector<Vector<Point2>> clip_outlines = clip_outer->_get_outlines();
+		if (clip_outlines.empty()) {
+			continue;
+		}
+		if (subject_outlines.empty()) {
+			subject_outlines = copy_outlines(clip_outlines, clip_outer->get_transform());
+		} else {
+			clip_outlines = copy_outlines(clip_outlines, clip_outer->get_transform());
+			auto op = PolyBoolean2D::Operation(clip_outer->operation);
+			subject_outlines = PolyBoolean2D::boolean_polygons(subject_outlines, clip_outlines, op);
+		}
+	}
+	outlines = subject_outlines;
+
+	update_queued = false;
+
+	return outlines;
+}
+
+void PolyNode2D::_update_outlines() {
+	if (parent) {
+		return;
+	}
+	if (is_hole()) {
+		return;
+	}
+	const Vector<Vector<Point2>> &shape = _get_outlines();
+	decomp = PolyDecomp2D::triangulate_polygons(shape);
+	update();
 }
 
 void PolyNode2D::_validate_property(PropertyInfo &property) const {
@@ -184,6 +266,11 @@ void PolyNode2D::_collect_outlines(Vector<Vector<Point2>> *r_closed, Vector<Vect
 
 void PolyNode2D::set_points(const Vector<Point2> &p_points) {
 	points = p_points;
+	_queue_update();
+}
+
+void PolyNode2D::set_operation(Operation p_operation) {
+	operation = p_operation;
 	_queue_update();
 }
 
@@ -362,9 +449,14 @@ void PolyNode2D::clear() {
 }
 
 void PolyNode2D::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("_update_outlines"), &PolyNode2D::_update_outlines);
+
 	ClassDB::bind_method(D_METHOD("set_points", "points"), &PolyNode2D::set_points);
 	ClassDB::bind_method(D_METHOD("get_points"), &PolyNode2D::get_points);
 	ClassDB::bind_method(D_METHOD("get_points_transformed"), &PolyNode2D::get_points_transformed);
+	
+	ClassDB::bind_method(D_METHOD("set_operation", "operation"), &PolyNode2D::set_operation);
+	ClassDB::bind_method(D_METHOD("get_operation"), &PolyNode2D::get_operation);
 
 	ClassDB::bind_method(D_METHOD("set_color", "color"), &PolyNode2D::set_color);
 	ClassDB::bind_method(D_METHOD("get_color"), &PolyNode2D::get_color);
@@ -392,6 +484,7 @@ void PolyNode2D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("clear"), &PolyNode2D::clear);
 
 	ADD_PROPERTY(PropertyInfo(Variant::POOL_VECTOR2_ARRAY, "points"), "set_points", "get_points");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "operation", PROPERTY_HINT_ENUM, "None,Union,Difference,Intersection,Xor"), "set_operation", "get_operation");
 	ADD_PROPERTY(PropertyInfo(Variant::COLOR, "color"), "set_color", "get_color");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "open"), "set_open", "is_open");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "filled"), "set_filled", "is_filled");
