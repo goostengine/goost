@@ -130,7 +130,19 @@ Vector<Vector<Point2>> PolyNode2D::_get_outlines() {
 		} else if (clip->operation != OP_NONE) {
 			clip_outlines = copy_outlines(clip_outlines, clip->get_transform());
 			auto op = PolyBoolean2D::Operation(clip->operation);
-			outlines = PolyBoolean2D::boolean_polygons(outlines, clip_outlines, op);
+
+			if (open && !clip->open) { // Polylines vs Polygons.
+				switch (op) {
+					case OP_DIFFERENCE: {
+						outlines = PolyBoolean2D::clip_polylines_with_polygons(outlines, clip_outlines);
+					} break;
+					case OP_INTERSECTION: {
+						outlines = PolyBoolean2D::intersect_polylines_with_polygons(outlines, clip_outlines);
+					} break;
+				}
+			} else { // Polygons vs Polygons.
+				outlines = PolyBoolean2D::boolean_polygons(outlines, clip_outlines, op);
+			}
 		}
 	}
 	update_queued = false;
