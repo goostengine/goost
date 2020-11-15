@@ -169,15 +169,15 @@ void PolyNode2D::set_operation(Operation p_operation) {
 	_queue_update();
 }
 
-void PolyNode2D::set_color(const Color &p_color) {
-	color = p_color;
-	_queue_update();
-}
-
 void PolyNode2D::set_open(bool p_open) {
 	open = p_open;
 	_queue_update();
 	_change_notify();
+}
+
+void PolyNode2D::set_color(const Color &p_color) {
+	color = p_color;
+	_queue_update();
 }
 
 void PolyNode2D::set_filled(bool p_filled) {
@@ -263,11 +263,11 @@ void PolyNode2D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_operation", "operation"), &PolyNode2D::set_operation);
 	ClassDB::bind_method(D_METHOD("get_operation"), &PolyNode2D::get_operation);
 
-	ClassDB::bind_method(D_METHOD("set_color", "color"), &PolyNode2D::set_color);
-	ClassDB::bind_method(D_METHOD("get_color"), &PolyNode2D::get_color);
-
 	ClassDB::bind_method(D_METHOD("set_open", "open"), &PolyNode2D::set_open);
 	ClassDB::bind_method(D_METHOD("is_open"), &PolyNode2D::is_open);
+
+	ClassDB::bind_method(D_METHOD("set_color", "color"), &PolyNode2D::set_color);
+	ClassDB::bind_method(D_METHOD("get_color"), &PolyNode2D::get_color);
 
 	ClassDB::bind_method(D_METHOD("set_filled", "filled"), &PolyNode2D::set_filled);
 	ClassDB::bind_method(D_METHOD("is_filled"), &PolyNode2D::is_filled);
@@ -287,8 +287,10 @@ void PolyNode2D::_bind_methods() {
 
 	ADD_PROPERTY(PropertyInfo(Variant::POOL_VECTOR2_ARRAY, "points"), "set_points", "get_points");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "operation", PROPERTY_HINT_ENUM, "None,Union,Difference,Intersection,Xor"), "set_operation", "get_operation");
-	ADD_PROPERTY(PropertyInfo(Variant::COLOR, "color"), "set_color", "get_color");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "open"), "set_open", "is_open");
+
+	ADD_GROUP("Draw", "");
+	ADD_PROPERTY(PropertyInfo(Variant::COLOR, "color"), "set_color", "get_color");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "filled"), "set_filled", "is_filled");
 	ADD_PROPERTY(PropertyInfo(Variant::REAL, "width"), "set_width", "get_width");
 }
