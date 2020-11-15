@@ -36,7 +36,6 @@ protected:
 	void _queue_update();
 
 	Vector<Vector<Point2>> outlines;
-	Vector<Vector<Point2>> decomp;
 
 	virtual Vector<Vector<Point2>> _build_outlines();
 	Vector<Vector<Point2>> _get_outlines();
