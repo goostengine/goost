@@ -64,7 +64,7 @@ public:
 
 	PolyNode2D *new_child(const Vector<Point2> &p_points);
 
-	bool is_hole() const;
+	bool is_inner() const;
 	bool is_root() const { return !parent; }
 
 	void make_from_outlines(const Array &p_outlines);

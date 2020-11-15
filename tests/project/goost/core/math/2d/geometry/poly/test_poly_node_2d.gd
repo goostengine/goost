@@ -29,22 +29,22 @@ func after_each():
 
 
 func test_is_hole_empty():
-	assert_true(n.is_hole())	
+	assert_true(n.is_inner())	
 
 
 func test_is_hole_outer():
 	n.make_from_outlines([outer_a])
-	assert_false(n.is_hole())
+	assert_false(n.is_inner())
 
 
 func test_is_hole_outer_inner():
 	n.make_from_outlines([outer_a, inner_a])
-	assert_false(n.is_hole())
-	assert_true(n.get_child(0).is_hole())
+	assert_false(n.is_inner())
+	assert_true(n.get_child(0).is_inner())
 
 
 func test_is_hole_outer_inner_outer():
 	n.make_from_outlines([outer_a, inner_a, outer_b])
-	assert_false(n.is_hole())
-	assert_true(n.get_child(0).is_hole())
-	assert_false(n.get_child(0).get_child(0).is_hole())
+	assert_false(n.is_inner())
+	assert_true(n.get_child(0).is_inner())
+	assert_false(n.get_child(0).get_child(0).is_inner())

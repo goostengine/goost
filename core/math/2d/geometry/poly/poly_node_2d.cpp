@@ -28,7 +28,7 @@ struct PolyObject2D {
 			if (!n) {
 				continue;
 			}
-			if (n->is_hole()) {
+			if (n->is_inner()) {
 				for (int i = 0; i < n->get_child_count(); ++i) {
 					PolyNode2D *nn = Object::cast_to<PolyNode2D>(n->get_child(i));
 					if (!nn) {
@@ -137,8 +137,6 @@ Vector<Vector<Point2>> copy_outlines(const Vector<Vector<Point2>> &p_outlines, c
 }
 
 Vector<Vector<Point2>> PolyNode2D::_build_outlines() {
-	ERR_FAIL_COND_V(is_hole(), Vector<Vector<Point2>>());
-
 	Vector<Vector<Point2>> outlines;
 	Vector<Point2> outer_points = points;
 	if (Geometry::is_polygon_clockwise(outer_points)) {
@@ -146,17 +144,6 @@ Vector<Vector<Point2>> PolyNode2D::_build_outlines() {
 	}
 	outlines.push_back(points);
 
-	for (int i = 0; i < get_child_count(); ++i) {
-		PolyNode2D *hole = Object::cast_to<PolyNode2D>(get_child(i));
-		if (!hole) {
-			continue;
-		}
-		Vector<Point2> inner_points = hole->points;
-		if (!Geometry::is_polygon_clockwise(inner_points)) {
-			inner_points.invert();
-		}
-		outlines.push_back(inner_points);
-	}
 	return outlines;
 }
 
@@ -164,48 +151,29 @@ Vector<Vector<Point2>> PolyNode2D::_get_outlines() {
 	if (!update_queued) {
 		return outlines;
 	}
-	ERR_FAIL_COND_V(is_hole(), Vector<Vector<Point2>>());
-
 	outlines.clear();
+	outlines = _build_outlines();
 
-	Vector<Vector<Point2>> subject_outlines = _build_outlines();
-
-	// Collect objects.
-	Vector<PolyNode2D *> clip_objects;
 	for (int i = 0; i < get_child_count(); ++i) {
-		PolyNode2D *inner = Object::cast_to<PolyNode2D>(get_child(i));
-		if (!inner) {
+		PolyNode2D *clip = Object::cast_to<PolyNode2D>(get_child(i));
+		if (!clip) {
 			continue;
 		}
-		for (int j = 0; j < inner->get_child_count(); ++j) {
-			PolyNode2D *outer = Object::cast_to<PolyNode2D>(inner->get_child(j));
-			if (!outer) {
-				continue;
-			}
-			clip_objects.push_back(outer);
-		}
-	}
-
-	// Clip.
-	for (int i = 0; i < clip_objects.size(); ++i) {
-		PolyNode2D *clip_outer = clip_objects[i];
-		if (!clip_outer->is_visible_in_tree()) {
+		if (!clip->is_visible_in_tree()) {
 			continue;
 		}
-		Vector<Vector<Point2>> clip_outlines = clip_outer->_get_outlines();
+		Vector<Vector<Point2>> clip_outlines = clip->_get_outlines();
 		if (clip_outlines.empty()) {
 			continue;
 		}
-		if (subject_outlines.empty()) {
-			subject_outlines = copy_outlines(clip_outlines, clip_outer->get_transform());
+		if (outlines.empty()) {
+			outlines = copy_outlines(clip_outlines, clip->get_transform());
 		} else {
-			clip_outlines = copy_outlines(clip_outlines, clip_outer->get_transform());
-			auto op = PolyBoolean2D::Operation(clip_outer->operation);
-			subject_outlines = PolyBoolean2D::boolean_polygons(subject_outlines, clip_outlines, op);
+			clip_outlines = copy_outlines(clip_outlines, clip->get_transform());
+			auto op = PolyBoolean2D::Operation(clip->operation);
+			outlines = PolyBoolean2D::boolean_polygons(outlines, clip_outlines, op);
 		}
 	}
-	outlines = subject_outlines;
-
 	update_queued = false;
 
 	return outlines;
@@ -213,9 +181,6 @@ Vector<Vector<Point2>> PolyNode2D::_get_outlines() {
 
 void PolyNode2D::_update_outlines() {
 	if (parent) {
-		return;
-	}
-	if (is_hole()) {
 		return;
 	}
 	const Vector<Vector<Point2>> &shape = _get_outlines();
@@ -324,14 +289,14 @@ PolyNode2D *PolyNode2D::new_child(const Vector<Point2> &p_points) {
 	return child;
 }
 
-bool PolyNode2D::is_hole() const {
+bool PolyNode2D::is_inner() const {
 	PolyNode2D *n = Object::cast_to<PolyNode2D>(get_parent());
-	bool hole = !n && points.empty();
+	bool inner = !n && points.empty();
 	while (n) {
-		hole = !hole;
+		inner = !inner;
 		n = Object::cast_to<PolyNode2D>(n->get_parent());
 	}
-	return hole;
+	return inner;
 }
 
 void PolyNode2D::make_from_outlines(const Array &p_outlines) {
@@ -412,7 +377,7 @@ Array PolyNode2D::separate_objects(Node *p_new_parent, bool p_keep_transform) {
 	for (int i = 0; i < objects.size(); ++i) {
 		const PolyObject2D &obj = objects[i];
 		const PolyNode2D *outer = obj.outer;
-		// Boundary.
+		// Outer.
 		PolyNode2D *new_outer = memnew(PolyNode2D);
 		new_parent->add_child(new_outer);
 		new_outer->points = outer->points;
@@ -420,7 +385,7 @@ Array PolyNode2D::separate_objects(Node *p_new_parent, bool p_keep_transform) {
 		if (p_keep_transform) {
 			new_outer->set_global_transform(outer->get_global_transform());
 		}
-		// Holes.
+		// Inner.
 		for (int j = 0; j < obj.inner.size(); ++j) {
 			const PolyNode2D *inner = obj.inner[j];
 			PolyNode2D *new_inner = memnew(PolyNode2D);
@@ -472,7 +437,7 @@ void PolyNode2D::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("new_child", "from_points"), &PolyNode2D::new_child);
 
-	ClassDB::bind_method(D_METHOD("is_hole"), &PolyNode2D::is_hole);
+	ClassDB::bind_method(D_METHOD("is_inner"), &PolyNode2D::is_inner);
 	ClassDB::bind_method(D_METHOD("is_root"), &PolyNode2D::is_root);
 
 	ClassDB::bind_method(D_METHOD("make_from_outlines", "polygons"), &PolyNode2D::make_from_outlines);
