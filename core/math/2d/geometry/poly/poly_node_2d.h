@@ -40,12 +40,10 @@ protected:
 
 	virtual Vector<Vector<Point2>> _build_outlines();
 	Vector<Vector<Point2>> _get_outlines();
-	void _collect_outlines(Vector<Vector<Point2>> *r_closed, Vector<Vector<Point2>> *r_open = nullptr);
 
 public:
 	void set_points(const Vector<Point2> &p_points);
 	Vector<Point2> get_points() const { return points; }
-	Vector<Point2> get_points_transformed();
 
 	void set_operation(Operation p_operation);
 	Operation get_operation() const { return operation; }
@@ -63,15 +61,11 @@ public:
 	real_t get_width() const { return width; }
 
 	PolyNode2D *new_child(const Vector<Point2> &p_points);
-
 	bool is_inner() const;
 	bool is_root() const { return !parent; }
 
 	void make_from_outlines(const Array &p_outlines);
-	Array collect_polygons();
-	Array collect_polylines();
-	Array find_objects();
-	Array separate_objects(Node *p_new_parent = nullptr, bool p_keep_transform = true);
+	Array get_outlines();
 
 	void clear();
 
