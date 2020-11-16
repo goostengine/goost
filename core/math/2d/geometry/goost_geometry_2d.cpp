@@ -1,8 +1,8 @@
 #include "goost_geometry_2d.h"
 
 #include "poly/boolean/poly_boolean.h"
-#include "poly/offset/poly_offset.h"
 #include "poly/decomp/poly_decomp.h"
+#include "poly/offset/poly_offset.h"
 
 Vector<Vector<Point2>> GoostGeometry2D::merge_polygons(const Vector<Point2> &p_polygon_a, const Vector<Point2> &p_polygon_b) {
 	Vector<Vector<Point2>> subject;
@@ -148,6 +148,18 @@ real_t GoostGeometry2D::polyline_length(const Vector<Point2> &p_polyline) {
 		length += Math::sqrt((v1.x - v2.x) * (v1.x - v2.x) + (v1.y - v2.y) * (v1.y - v2.y));
 	}
 	return length;
+}
+
+Rect2 GoostGeometry2D::bounding_rect(const Vector<Point2> &p_points) {
+	Rect2 rect;
+	for (int i = 0; i < p_points.size(); ++i) {
+		if (i == 0) {
+			rect = Rect2(p_points[i], Size2());
+		} else {
+			rect.expand_to(p_points[i]);
+		}
+	}
+	return rect;
 }
 
 // See "The Point in Polygon Problem for Arbitrary Polygons" by Hormann & Agathos

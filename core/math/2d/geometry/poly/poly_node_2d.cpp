@@ -2,6 +2,8 @@
 #include "boolean/poly_boolean.h"
 #include "decomp/poly_decomp.h"
 
+#include "goost/core/math/2d/geometry/goost_geometry_2d.h"
+
 void draw_polyline_open(PolyNode2D *p_node, const Vector<Point2> &p_polyline, const Color &p_color, real_t p_width = 1.0) {
 	ERR_FAIL_COND(p_polyline.size() < 2);
 	for (int i = 0; i < p_polyline.size() - 1; ++i) {
@@ -318,6 +320,38 @@ void PolyNode2D::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "filled"), "set_filled", "is_filled");
 	ADD_PROPERTY(PropertyInfo(Variant::REAL, "width", PROPERTY_HINT_RANGE, "1.0,5.0,0.1,or_greater"), "set_width", "get_width");
 }
+
+#ifdef TOOLS_ENABLED
+Rect2 PolyNode2D::_edit_get_rect() const {
+	Rect2 rect = GoostGeometry2D::bounding_rect(points);
+	if (rect == Rect2()) {
+		rect = Rect2(-10, -10, 20, 20);
+	} else {
+		rect.position -= rect.size * 0.3;
+		rect.size += rect.size * 0.6;
+	}
+	return rect;
+}
+
+bool PolyNode2D::_edit_use_rect() const {
+	return true;
+}
+
+bool PolyNode2D::_edit_is_selected_on_click(const Point2 &p_point, double p_tolerance) const {
+	if (open || points.size() < 3) {
+		const Point2 *ptr = points.ptr();
+		for (int i = 0; i < points.size() - 1; ++i) {
+			Vector2 p = Geometry::get_closest_point_to_segment_2d(p_point, &ptr[i]);
+			if (p.distance_to(p_point) <= p_tolerance) {
+				return true;
+			}
+		}
+	} else {
+		return static_cast<bool>(GoostGeometry2D::point_in_polygon(p_point, points));
+	}
+	return false;
+}
+#endif
 
 PolyNode2D::PolyNode2D() {
 	set_notify_local_transform(true);

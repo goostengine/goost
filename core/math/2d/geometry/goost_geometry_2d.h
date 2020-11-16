@@ -27,6 +27,7 @@ public:
 	static real_t polygon_area(const Vector<Point2> &p_polygon);
 	static real_t polygon_perimeter(const Vector<Point2> &p_polygon);
 	static real_t polyline_length(const Vector<Point2> &p_polyline);
+	static Rect2 bounding_rect(const Vector<Point2> &p_points);
 
 	// Returns 0 if false, +1 if true, -1 if point is exactly on the polygon's boundary.
 	static int point_in_polygon(const Point2 &p_point, const Vector<Point2> &p_polygon);
