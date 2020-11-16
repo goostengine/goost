@@ -49,6 +49,16 @@ void PolyNode2D::_draw() {
 				vertices.push_back(part[j]);
 			}
 		}
+		Vector<Point2> uvs;
+		if (texture.is_valid()) {
+			Transform2D trans(tex_rot, tex_ofs);
+			trans.scale(tex_scale);
+			Size2 tex_size = texture->get_size();
+			uvs.resize(vertices.size());
+			for (int i = 0; i < vertices.size(); ++i) {
+				uvs.write[i] = trans.xform(vertices[i]) / tex_size;
+			}
+		}
 		const int indices_count = triangles.size() * 3;
 		Vector<int> indices;
 		for (int i = 0; i < indices_count; ++i) {
@@ -56,7 +66,13 @@ void PolyNode2D::_draw() {
 		}
 		Vector<Color> colors;
 		colors.push_back(color);
-		VS::get_singleton()->canvas_item_add_triangle_array(get_canvas_item(), indices, vertices, colors);
+
+		RID texture_rid = texture.is_valid() ? texture->get_rid() : RID();
+		RID normal_map_rid = normal_map.is_valid() ? normal_map->get_rid() : RID();
+
+		VS::get_singleton()->canvas_item_add_triangle_array(
+				get_canvas_item(), indices, vertices, colors, uvs,
+				Vector<int>(), Vector<float>(), texture_rid, -1, normal_map_rid);
 	}
 }
 
@@ -201,6 +217,39 @@ void PolyNode2D::set_open(bool p_open) {
 	_change_notify();
 }
 
+void PolyNode2D::set_texture(const Ref<Texture> &p_texture) {
+	texture = p_texture;
+	update();
+}
+
+void PolyNode2D::set_normal_map(const Ref<Texture> &p_texture) {
+	normal_map = p_texture;
+	update();
+}
+
+void PolyNode2D::set_texture_offset(const Vector2 &p_offset) {
+	tex_ofs = p_offset;
+	update();
+}
+
+void PolyNode2D::set_texture_rotation(float p_rot) {
+	tex_rot = p_rot;
+	update();
+}
+
+void PolyNode2D::set_texture_rotation_degrees(float p_rot) {
+	set_texture_rotation(Math::deg2rad(p_rot));
+}
+
+float PolyNode2D::get_texture_rotation_degrees() const {
+	return Math::rad2deg(get_texture_rotation());
+}
+
+void PolyNode2D::set_texture_scale(const Size2 &p_scale) {
+	tex_scale = p_scale;
+	update();
+}
+
 void PolyNode2D::set_color(const Color &p_color) {
 	color = p_color;
 	_queue_update();
@@ -292,6 +341,24 @@ void PolyNode2D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_open", "open"), &PolyNode2D::set_open);
 	ClassDB::bind_method(D_METHOD("is_open"), &PolyNode2D::is_open);
 
+	ClassDB::bind_method(D_METHOD("set_texture", "texture"), &PolyNode2D::set_texture);
+	ClassDB::bind_method(D_METHOD("get_texture"), &PolyNode2D::get_texture);
+
+	ClassDB::bind_method(D_METHOD("set_normal_map", "normal_map"), &PolyNode2D::set_normal_map);
+	ClassDB::bind_method(D_METHOD("get_normal_map"), &PolyNode2D::get_normal_map);
+
+	ClassDB::bind_method(D_METHOD("set_texture_offset", "texture_offset"), &PolyNode2D::set_texture_offset);
+	ClassDB::bind_method(D_METHOD("get_texture_offset"), &PolyNode2D::get_texture_offset);
+
+	ClassDB::bind_method(D_METHOD("set_texture_rotation", "texture_rotation"), &PolyNode2D::set_texture_rotation);
+	ClassDB::bind_method(D_METHOD("get_texture_rotation"), &PolyNode2D::get_texture_rotation);
+
+	ClassDB::bind_method(D_METHOD("set_texture_rotation_degrees", "texture_rotation"), &PolyNode2D::set_texture_rotation_degrees);
+	ClassDB::bind_method(D_METHOD("get_texture_rotation_degrees"), &PolyNode2D::get_texture_rotation_degrees);
+
+	ClassDB::bind_method(D_METHOD("set_texture_scale", "texture_scale"), &PolyNode2D::set_texture_scale);
+	ClassDB::bind_method(D_METHOD("get_texture_scale"), &PolyNode2D::get_texture_scale);
+
 	ClassDB::bind_method(D_METHOD("set_color", "color"), &PolyNode2D::set_color);
 	ClassDB::bind_method(D_METHOD("get_color"), &PolyNode2D::get_color);
 
@@ -314,6 +381,16 @@ void PolyNode2D::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::POOL_VECTOR2_ARRAY, "points"), "set_points", "get_points");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "operation", PROPERTY_HINT_ENUM, "None,Union,Difference,Intersection,Xor"), "set_operation", "get_operation");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "open"), "set_open", "is_open");
+
+	ADD_GROUP("Draw", "");
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "texture", PROPERTY_HINT_RESOURCE_TYPE, "Texture"), "set_texture", "get_texture");
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "normal_map", PROPERTY_HINT_RESOURCE_TYPE, "Texture"), "set_normal_map", "get_normal_map");
+	ADD_GROUP("Draw", "texture_");
+	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "texture_offset"), "set_texture_offset", "get_texture_offset");
+	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "texture_offset"), "set_texture_offset", "get_texture_offset");
+	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "texture_scale"), "set_texture_scale", "get_texture_scale");
+	ADD_PROPERTY(PropertyInfo(Variant::REAL, "texture_rotation_degrees", PROPERTY_HINT_RANGE, "-360,360,0.1,or_lesser,or_greater"), "set_texture_rotation_degrees", "get_texture_rotation_degrees");
+	ADD_PROPERTY(PropertyInfo(Variant::REAL, "texture_rotation", PROPERTY_HINT_NONE, "", 0), "set_texture_rotation", "get_texture_rotation");
 
 	ADD_GROUP("Draw", "");
 	ADD_PROPERTY(PropertyInfo(Variant::COLOR, "color"), "set_color", "get_color");

@@ -16,17 +16,23 @@ public:
 	};
 
 private:
-	// Properties
+	// Properties.
 	Vector<Point2> points;
 	Operation operation = OP_NONE;
-	bool open = false; // closed = polygon, open = polyline
+	bool open = false; // Closed = polygon, Open = polyline.
 
-	// Drawing
-	Color color = Color(1, 1, 1, 1);
-	bool filled = true; // for polygons
-	real_t width = 2.0;
+	// Drawing.
+	Ref<Texture> texture;
+	Ref<Texture> normal_map;
+	Size2 tex_scale = Size2(1, 1);
+	Vector2 tex_ofs;
+	float tex_rot = 0.0;
 
-	// Internal
+	Color color = Color(1, 1, 1, 1); // Texture is also modulated by this.
+	bool filled = true; // For polygons, without texture.
+	real_t width = 2.0; // For polylines and non-filled polygons, without texture.
+
+	// Internal.
 	PolyNode2D *parent = nullptr;
 	bool update_queued = false;
 
@@ -52,6 +58,24 @@ public:
 
 	void set_open(bool p_open);
 	bool is_open() const { return open; }
+
+	void set_texture(const Ref<Texture> &p_texture);
+	Ref<Texture> get_texture() const { return texture; }
+
+	void set_normal_map(const Ref<Texture> &p_texture);
+	Ref<Texture> get_normal_map() const { return normal_map; }
+
+	void set_texture_offset(const Vector2 &p_offset);
+	Vector2 get_texture_offset() const { return tex_ofs; }
+
+	void set_texture_rotation(float p_rot);
+	float get_texture_rotation() const { return tex_rot; }
+
+	void set_texture_rotation_degrees(float p_rot);
+	float get_texture_rotation_degrees() const;
+
+	void set_texture_scale(const Size2 &p_scale);
+	Size2 get_texture_scale() const { return tex_scale; }
 
 	void set_color(const Color &p_color);
 	Color get_color() const { return color; }
