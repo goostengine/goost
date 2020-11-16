@@ -24,7 +24,7 @@ private:
 	// Drawing
 	Color color = Color(1, 1, 1, 1);
 	bool filled = true; // for polygons
-	real_t width = 1.0;
+	real_t width = 2.0;
 
 	// Internal
 	PolyNode2D *parent = nullptr;

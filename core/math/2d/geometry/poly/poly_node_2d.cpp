@@ -7,14 +7,14 @@
 void draw_polyline_open(PolyNode2D *p_node, const Vector<Point2> &p_polyline, const Color &p_color, real_t p_width = 1.0) {
 	ERR_FAIL_COND(p_polyline.size() < 2);
 	for (int i = 0; i < p_polyline.size() - 1; ++i) {
-		p_node->draw_line(p_polyline[i], p_polyline[i + 1], p_color, p_width);
+		p_node->draw_line(p_polyline[i], p_polyline[i + 1], p_color, p_width, true);
 	}
 }
 
 void draw_polyline_closed(PolyNode2D *p_node, const Vector<Point2> &p_polyline, const Color &p_color, real_t p_width = 1.0) {
 	ERR_FAIL_COND(p_polyline.size() < 3);
 	for (int i = 0; i < p_polyline.size(); ++i) {
-		p_node->draw_line(p_polyline[i], p_polyline[(i + 1) % p_polyline.size()], p_color, p_width);
+		p_node->draw_line(p_polyline[i], p_polyline[(i + 1) % p_polyline.size()], p_color, p_width, true);
 	}
 }
 
@@ -318,7 +318,7 @@ void PolyNode2D::_bind_methods() {
 	ADD_GROUP("Draw", "");
 	ADD_PROPERTY(PropertyInfo(Variant::COLOR, "color"), "set_color", "get_color");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "filled"), "set_filled", "is_filled");
-	ADD_PROPERTY(PropertyInfo(Variant::REAL, "width", PROPERTY_HINT_RANGE, "1.0,5.0,0.1,or_greater"), "set_width", "get_width");
+	ADD_PROPERTY(PropertyInfo(Variant::REAL, "width", PROPERTY_HINT_RANGE, "1.0,5.0,0.1"), "set_width", "get_width");
 }
 
 #ifdef TOOLS_ENABLED
