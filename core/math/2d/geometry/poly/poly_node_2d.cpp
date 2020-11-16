@@ -2,10 +2,18 @@
 #include "boolean/poly_boolean.h"
 #include "decomp/poly_decomp.h"
 
-void draw_polyline_closed(PolyNode2D *p_node, const Vector<Point2> &p_polyline, const Color &p_color, real_t p_width = 1.0) {
+void draw_polyline_open(PolyNode2D *p_node, const Vector<Point2> &p_polyline, const Color &p_color, real_t p_width = 1.0) {
 	ERR_FAIL_COND(p_polyline.size() < 2);
-	p_node->draw_polyline(p_polyline, p_color, p_width);
-	p_node->draw_line(p_polyline[p_polyline.size() - 1], p_polyline[0], p_color, p_width);
+	for (int i = 0; i < p_polyline.size() - 1; ++i) {
+		p_node->draw_line(p_polyline[i], p_polyline[i + 1], p_color, p_width);
+	}
+}
+
+void draw_polyline_closed(PolyNode2D *p_node, const Vector<Point2> &p_polyline, const Color &p_color, real_t p_width = 1.0) {
+	ERR_FAIL_COND(p_polyline.size() < 3);
+	for (int i = 0; i < p_polyline.size(); ++i) {
+		p_node->draw_line(p_polyline[i], p_polyline[(i + 1) % p_polyline.size()], p_color, p_width);
+	}
 }
 
 void PolyNode2D::_draw() {
@@ -17,11 +25,15 @@ void PolyNode2D::_draw() {
 	}
 	if (open) { // Polylines.
 		for (int i = 0; i < outlines.size(); ++i) {
-			draw_polyline(outlines[i], color, width);
+			if (outlines[i].size() > 1) {
+				draw_polyline_open(this, outlines[i], color, width);
+			}
 		}
 	} else if (!filled) { // Non-filled polygons.
 		for (int i = 0; i < outlines.size(); ++i) {
-			draw_polyline_closed(this, outlines[i], color, width);
+			if (outlines[i].size() >= 3) {
+				draw_polyline_closed(this, outlines[i], color, width);
+			}
 		}
 	} else { // Filled polygons.
 		const Vector<Vector<Point2>> &triangles = PolyDecomp2D::triangulate_polygons(outlines);
@@ -304,7 +316,7 @@ void PolyNode2D::_bind_methods() {
 	ADD_GROUP("Draw", "");
 	ADD_PROPERTY(PropertyInfo(Variant::COLOR, "color"), "set_color", "get_color");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "filled"), "set_filled", "is_filled");
-	ADD_PROPERTY(PropertyInfo(Variant::REAL, "width"), "set_width", "get_width");
+	ADD_PROPERTY(PropertyInfo(Variant::REAL, "width", PROPERTY_HINT_RANGE, "1.0,5.0,0.1,or_greater"), "set_width", "get_width");
 }
 
 PolyNode2D::PolyNode2D() {
