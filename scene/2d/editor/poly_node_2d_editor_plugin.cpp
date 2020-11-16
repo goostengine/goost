@@ -1,12 +1,21 @@
 #include "poly_node_2d_editor_plugin.h"
 #include "editor/plugins/canvas_item_editor_plugin.h"
 
-Node2D *PolyNode2DEditor::_get_node() const {
-	return node;
-}
-
 void PolyNode2DEditor::_set_node(Node *p_line) {
 	node = Object::cast_to<PolyNode2D>(p_line);
+	if (!node) {
+		return;
+	}
+	if (node->get_class() != "PolyNode2D") {
+		String reason = TTR("Can only edit points in PolyNode2D directly, please convert current node to PolyNode2D.");
+		disable_polygon_editing(true, reason);
+	} else {
+		disable_polygon_editing(false, "");
+	}
+}
+
+Node2D *PolyNode2DEditor::_get_node() const {
+	return node;
 }
 
 bool PolyNode2DEditor::_is_line() const {

@@ -13,8 +13,8 @@ class PolyNode2DEditor : public AbstractPolygon2DEditor {
 	PolyNode2D *node;
 
 protected:
+	virtual void _set_node(Node *p_node) override;
 	virtual Node2D *_get_node() const override;
-	virtual void _set_node(Node *p_line) override;
 
 	virtual bool _is_line() const override;
 	virtual Variant _get_polygon(int p_idx) const override;
