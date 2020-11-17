@@ -30,7 +30,7 @@ private:
 
 	Color color = Color(1, 1, 1, 1); // Texture is also modulated by this.
 	bool filled = true; // For polygons, without texture.
-	real_t width = 2.0; // For polylines and non-filled polygons, without texture.
+	real_t line_width = 2.0; // For polylines and non-filled polygons, without texture.
 
 	// Internal.
 	PolyNode2D *parent = nullptr;
@@ -83,8 +83,8 @@ public:
 	void set_filled(bool p_filled);
 	bool is_filled() const { return filled; }
 
-	void set_width(real_t p_width);
-	real_t get_width() const { return width; }
+	void set_line_width(real_t p_line_width);
+	real_t get_line_width() const { return line_width; }
 
 	PolyNode2D *new_child(const Vector<Point2> &p_points);
 	bool is_inner() const;

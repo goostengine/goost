@@ -4,17 +4,17 @@
 
 #include "goost/core/math/2d/geometry/goost_geometry_2d.h"
 
-void draw_polyline_open(PolyNode2D *p_node, const Vector<Point2> &p_polyline, const Color &p_color, real_t p_width = 1.0) {
+void draw_polyline_open(PolyNode2D *p_node, const Vector<Point2> &p_polyline, const Color &p_color, real_t p_line_width = 1.0) {
 	ERR_FAIL_COND(p_polyline.size() < 2);
 	for (int i = 0; i < p_polyline.size() - 1; ++i) {
-		p_node->draw_line(p_polyline[i], p_polyline[i + 1], p_color, p_width, true);
+		p_node->draw_line(p_polyline[i], p_polyline[i + 1], p_color, p_line_width, true);
 	}
 }
 
-void draw_polyline_closed(PolyNode2D *p_node, const Vector<Point2> &p_polyline, const Color &p_color, real_t p_width = 1.0) {
+void draw_polyline_closed(PolyNode2D *p_node, const Vector<Point2> &p_polyline, const Color &p_color, real_t p_line_width = 1.0) {
 	ERR_FAIL_COND(p_polyline.size() < 3);
 	for (int i = 0; i < p_polyline.size(); ++i) {
-		p_node->draw_line(p_polyline[i], p_polyline[(i + 1) % p_polyline.size()], p_color, p_width, true);
+		p_node->draw_line(p_polyline[i], p_polyline[(i + 1) % p_polyline.size()], p_color, p_line_width, true);
 	}
 }
 
@@ -28,13 +28,13 @@ void PolyNode2D::_draw() {
 	if (open) { // Polylines.
 		for (int i = 0; i < outlines.size(); ++i) {
 			if (outlines[i].size() > 1) {
-				draw_polyline_open(this, outlines[i], color, width);
+				draw_polyline_open(this, outlines[i], color, line_width);
 			}
 		}
 	} else if (!filled) { // Non-filled polygons.
 		for (int i = 0; i < outlines.size(); ++i) {
 			if (outlines[i].size() >= 3) {
-				draw_polyline_closed(this, outlines[i], color, width);
+				draw_polyline_closed(this, outlines[i], color, line_width);
 			}
 		}
 	} else { // Filled polygons.
@@ -194,7 +194,7 @@ void PolyNode2D::_validate_property(PropertyInfo &property) const {
 			property.usage = PROPERTY_USAGE_NOEDITOR;
 		}
 	}
-	if (property.name == "width") {
+	if (property.name == "line_width") {
 		if (!open && filled) {
 			property.usage = PROPERTY_USAGE_NOEDITOR;
 		}
@@ -261,8 +261,8 @@ void PolyNode2D::set_filled(bool p_filled) {
 	_change_notify();
 }
 
-void PolyNode2D::set_width(real_t p_width) {
-	width = p_width;
+void PolyNode2D::set_line_width(real_t p_line_width) {
+	line_width = p_line_width;
 	_queue_update();
 }
 
@@ -365,8 +365,8 @@ void PolyNode2D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_filled", "filled"), &PolyNode2D::set_filled);
 	ClassDB::bind_method(D_METHOD("is_filled"), &PolyNode2D::is_filled);
 
-	ClassDB::bind_method(D_METHOD("set_width", "width"), &PolyNode2D::set_width);
-	ClassDB::bind_method(D_METHOD("get_width"), &PolyNode2D::get_width);
+	ClassDB::bind_method(D_METHOD("set_line_width", "line_width"), &PolyNode2D::set_line_width);
+	ClassDB::bind_method(D_METHOD("get_line_width"), &PolyNode2D::get_line_width);
 
 	ClassDB::bind_method(D_METHOD("new_child", "from_points"), &PolyNode2D::new_child);
 
@@ -395,7 +395,7 @@ void PolyNode2D::_bind_methods() {
 	ADD_GROUP("Draw", "");
 	ADD_PROPERTY(PropertyInfo(Variant::COLOR, "color"), "set_color", "get_color");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "filled"), "set_filled", "is_filled");
-	ADD_PROPERTY(PropertyInfo(Variant::REAL, "width", PROPERTY_HINT_RANGE, "1.0,5.0,0.1"), "set_width", "get_width");
+	ADD_PROPERTY(PropertyInfo(Variant::REAL, "line_width", PROPERTY_HINT_RANGE, "1.0,5.0,0.1"), "set_line_width", "get_line_width");
 }
 
 #ifdef TOOLS_ENABLED
