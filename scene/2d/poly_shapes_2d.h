@@ -25,4 +25,22 @@ public:
 	}
 };
 
+class PolyRect2D : public PolyNode2D {
+	GDCLASS(PolyRect2D, PolyNode2D);
+
+	real_t extents = 32.0;
+
+protected:
+	static void _bind_methods();
+	virtual Vector<Vector<Point2>> _build_outlines();
+
+public:
+	void set_extents(real_t p_extents);
+	real_t get_extents() const { return extents; }
+
+	PolyRect2D::PolyRect2D() {
+		_queue_update();
+	}
+};
+
 #endif // GOOST_POLY_SHAPES_2D_H

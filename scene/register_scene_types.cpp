@@ -12,6 +12,7 @@ namespace goost {
 
 void register_scene_types() {
 	ClassDB::register_class<PolyCircle2D>();
+	ClassDB::register_class<PolyRect2D>();
 	ClassDB::register_class<VisualShape2D>();
 #if defined(TOOLS_ENABLED) && defined(GOOST_EDITOR_ENABLED)
 	EditorPlugins::add_by_type<PolyNode2DEditorPlugin>();
