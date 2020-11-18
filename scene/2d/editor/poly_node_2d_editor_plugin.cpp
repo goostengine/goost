@@ -81,6 +81,7 @@ PolyNode2DEditor::PolyNode2DEditor(EditorNode *p_editor) :
 }
 
 void PolyNode2DEditorPlugin::make_visible(bool p_visible) {
+	AbstractPolygon2DEditorPlugin::make_visible(p_visible);
 	if (p_visible) {
 		PolyNode2DEditor::get_singleton()->options->show();
 	} else {
