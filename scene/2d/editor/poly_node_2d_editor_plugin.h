@@ -10,9 +10,20 @@
 class PolyNode2DEditor : public AbstractPolygon2DEditor {
 	GDCLASS(PolyNode2DEditor, AbstractPolygon2DEditor);
 
-	PolyNode2D *node;
+	friend class PolyNode2DEditorPlugin;
 
 protected:
+	PolyNode2D *node = nullptr;
+
+	enum Menu {
+		MENU_OPTION_CONVERT_OUTLINES_TO_SINGLE_PATH = 100,
+	};
+	MenuButton *options = nullptr;
+	Menu selected_menu_item;
+	virtual void _menu_option(int p_option);
+
+	static PolyNode2DEditor* singleton;
+
 	virtual void _set_node(Node *p_node) override;
 	virtual Node2D *_get_node() const override;
 
@@ -22,6 +33,8 @@ protected:
 	virtual void _action_set_polygon(int p_idx, const Variant &p_previous, const Variant &p_polygon) override;
 
 public:
+	static PolyNode2DEditor* get_singleton() { return singleton; }
+
 	PolyNode2DEditor(EditorNode *p_editor);
 };
 
@@ -29,6 +42,8 @@ class PolyNode2DEditorPlugin : public AbstractPolygon2DEditorPlugin {
 	GDCLASS(PolyNode2DEditorPlugin, AbstractPolygon2DEditorPlugin);
 
 public:
+	virtual void make_visible(bool p_visible);
+
 	PolyNode2DEditorPlugin(EditorNode *p_node);
 };
 
