@@ -421,23 +421,30 @@ bool PolyNode2D::_edit_use_rect() const {
 }
 
 bool PolyNode2D::_edit_is_selected_on_click(const Point2 &p_point, double p_tolerance) const {
-	if (open || points.size() < 3) {
-		const Point2 *ptr = points.ptr();
-		for (int i = 0; i < points.size() - 1; ++i) {
-			Vector2 p = Geometry::get_closest_point_to_segment_2d(p_point, &ptr[i]);
-			if (p.distance_to(p_point) <= p_tolerance) {
-				return true;
+	if (open) {
+		if (points.size() >= 2) {
+			const Point2 *ptr = points.ptr();
+			for (int i = 0; i < points.size() - 1; ++i) {
+				Vector2 p = Geometry::get_closest_point_to_segment_2d(p_point, &ptr[i]);
+				if (p.distance_to(p_point) <= p_tolerance) {
+					return true;
+				}
 			}
 		}
 	} else {
-		if (!points.empty()) {
-			return static_cast<bool>(GoostGeometry2D::point_in_polygon(p_point, points));
-		} else if (!outlines.empty()) {
+		if (!outlines.empty()) {
 			bool inside = false;
 			for (int i = 0; i < outlines.size(); ++i) {
-				inside = inside || static_cast<bool>(GoostGeometry2D::point_in_polygon(p_point, outlines[i]));
+				const Vector<Point2> &outline = outlines[i];
+				if (outline.size() < 3) {
+					continue;
+				}
+				inside = inside || static_cast<bool>(GoostGeometry2D::point_in_polygon(p_point, outline));
+				if (inside) {
+					return true;
+				}
 			}
-			return inside;
+			return false;
 		}
 	}
 	return false;

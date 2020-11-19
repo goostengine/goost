@@ -92,6 +92,7 @@ public:
 
 	void make_from_outlines(const Array &p_outlines);
 	Array get_outlines();
+	void force_update_outlines() { _get_outlines(); }
 
 	void clear();
 

@@ -21,7 +21,7 @@ public:
 	real_t get_max_error() const { return max_error; }
 
 	PolyCircle2D::PolyCircle2D() {
-		_queue_update();
+		force_update_outlines();
 	}
 };
 
@@ -39,7 +39,7 @@ public:
 	real_t get_extents() const { return extents; }
 
 	PolyRect2D::PolyRect2D() {
-		_queue_update();
+		force_update_outlines();
 	}
 };
 
