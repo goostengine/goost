@@ -308,6 +308,9 @@ void PolyNode2D::make_from_outlines(const Array &p_outlines) {
 		for (int i = 0; i < outer->get_child_count(); ++i) {
 			PolyNode2D *inner = Object::cast_to<PolyNode2D>(outer->get_child(i));
 			outer->remove_child(inner);
+			if (Geometry::is_polygon_clockwise(inner->points)) {
+				inner->operation = OP_DIFFERENCE; // Cut a hole.
+			}
 			add_child(inner);
 		}
 	}
