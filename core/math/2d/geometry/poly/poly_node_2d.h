@@ -15,7 +15,7 @@ public:
 		OP_XOR,
 	};
 
-private:
+protected:
 	// Properties.
 	Vector<Point2> points;
 	Operation operation = OP_UNION;
@@ -32,7 +32,7 @@ private:
 	bool filled = true; // For polygons, without texture.
 	real_t line_width = 2.0; // For polylines and non-filled polygons, without texture.
 
-	// Internal.
+private:
 	PolyNode2D *parent = nullptr;
 	bool update_queued = false;
 
