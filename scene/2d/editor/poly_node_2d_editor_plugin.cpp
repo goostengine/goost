@@ -48,16 +48,19 @@ void PolyNode2DEditor::_menu_option(int p_option) {
 		case MENU_OPTION_CONVERT_OUTLINES_TO_SINGLE_PATH: {
 			PolyNode2D *new_node = memnew(PolyNode2D);
 			Array outlines = node->get_outlines();
+			Vector<Point2> prev_points = node->get_points();
 			if (!outlines.empty()) {
 				const Vector<Point2> &points = outlines[0];
 				new_node->set_points(points);
 			}
 			UndoRedo *ur = EditorNode::get_singleton()->get_undo_redo();
 			ur->create_action(TTR("Convert Outlines To Single Path"));
+			ur->add_do_method(node, "set_points", Vector<Point2>());
 			ur->add_do_method(EditorNode::get_singleton()->get_scene_tree_dock(), "replace_node", node, new_node, true, false);
 			ur->add_do_reference(new_node);
 			ur->add_undo_method(EditorNode::get_singleton()->get_scene_tree_dock(), "replace_node", new_node, node, false, false);
 			ur->add_undo_reference(node);
+			ur->add_undo_method(node, "set_points", prev_points);
 			ur->commit_action();
 		} break;
 	}
