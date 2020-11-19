@@ -401,7 +401,14 @@ void PolyNode2D::_bind_methods() {
 Rect2 PolyNode2D::_edit_get_rect() const {
 	Rect2 rect = GoostGeometry2D::bounding_rect(points);
 	if (rect == Rect2()) {
-		rect = Rect2(-10, -10, 20, 20);
+		if (!outlines.empty()) {
+			for (int i = 0; i < outlines.size(); ++i) {
+				const Rect2 &outline_rect = GoostGeometry2D::bounding_rect(outlines[i]);
+				rect = rect.merge(outline_rect);
+			}
+		} else {
+			rect = Rect2(-10, -10, 20, 20);
+		}
 	} else {
 		rect.position -= rect.size * 0.3;
 		rect.size += rect.size * 0.6;
@@ -423,7 +430,15 @@ bool PolyNode2D::_edit_is_selected_on_click(const Point2 &p_point, double p_tole
 			}
 		}
 	} else {
-		return static_cast<bool>(GoostGeometry2D::point_in_polygon(p_point, points));
+		if (!points.empty()) {
+			return static_cast<bool>(GoostGeometry2D::point_in_polygon(p_point, points));
+		} else if (!outlines.empty()) {
+			bool inside = false;
+			for (int i = 0; i < outlines.size(); ++i) {
+				inside = inside || static_cast<bool>(GoostGeometry2D::point_in_polygon(p_point, outlines[i]));
+			}
+			return inside;
+		}
 	}
 	return false;
 }
