@@ -28,15 +28,15 @@ public:
 class PolyRect2D : public PolyNode2D {
 	GDCLASS(PolyRect2D, PolyNode2D);
 
-	real_t extents = 32.0;
+	Vector2 extents = Vector2(32, 32);
 
 protected:
 	static void _bind_methods();
 	virtual Vector<Vector<Point2>> _build_outlines();
 
 public:
-	void set_extents(real_t p_extents);
-	real_t get_extents() const { return extents; }
+	void set_extents(const Vector2 &p_extents);
+	Vector2 get_extents() const { return extents; }
 
 	PolyRect2D::PolyRect2D() {
 		force_update_outlines();
