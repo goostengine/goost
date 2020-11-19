@@ -18,7 +18,7 @@ public:
 private:
 	// Properties.
 	Vector<Point2> points;
-	Operation operation = OP_NONE;
+	Operation operation = OP_UNION;
 	bool open = false; // Closed = polygon, Open = polyline.
 
 	// Drawing.
