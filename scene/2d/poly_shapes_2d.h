@@ -25,8 +25,8 @@ public:
 	}
 };
 
-class PolyRect2D : public PolyNode2D {
-	GDCLASS(PolyRect2D, PolyNode2D);
+class PolyRectangle2D : public PolyNode2D {
+	GDCLASS(PolyRectangle2D, PolyNode2D);
 
 	Vector2 extents = Vector2(32, 32);
 
@@ -38,7 +38,7 @@ public:
 	void set_extents(const Vector2 &p_extents);
 	Vector2 get_extents() const { return extents; }
 
-	PolyRect2D::PolyRect2D() {
+	PolyRectangle2D::PolyRectangle2D() {
 		force_update_outlines();
 	}
 };
