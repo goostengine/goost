@@ -9,7 +9,7 @@ void PolyNode2DEditor::_set_node(Node *p_node) {
 		return;
 	}
 	if (node->get_class() != "PolyNode2D") {
-		String reason = TTR("Can only edit points in PolyNode2D directly, please convert current node to PolyNode2D.");
+		String reason = TTR("Can only edit points in PolyNode2D directly, convert outlines to single path first.");
 		disable_polygon_editing(true, reason);
 	} else {
 		disable_polygon_editing(false, "");
@@ -73,6 +73,7 @@ PolyNode2DEditor::PolyNode2DEditor(EditorNode *p_editor) :
 	}
 	options = memnew(MenuButton);
 	CanvasItemEditor::get_singleton()->add_control_to_menu_panel(options);
+	options->hide();
 
 	options->set_text(TTR("PolyNode2D"));
 	options->set_icon(EditorNode::get_singleton()->get_gui_base()->get_icon("Polygon2D", "EditorIcons"));
