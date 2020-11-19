@@ -31,6 +31,7 @@ protected:
 	Color color = Color(1, 1, 1, 1); // Texture is also modulated by this.
 	bool filled = true; // For polygons, without texture.
 	real_t line_width = 2.0; // For polylines and non-filled polygons, without texture.
+	bool antialiased = false;
 
 private:
 	PolyNode2D *parent = nullptr;
@@ -85,6 +86,9 @@ public:
 
 	void set_line_width(real_t p_line_width);
 	real_t get_line_width() const { return line_width; }
+
+	void set_antialiased(bool p_antialiased);
+	bool is_antialiased() const { return antialiased; }
 
 	PolyNode2D *new_child(const Vector<Point2> &p_points);
 	bool is_inner() const;

@@ -7,14 +7,14 @@
 void draw_polyline_open(PolyNode2D *p_node, const Vector<Point2> &p_polyline, const Color &p_color, real_t p_line_width = 1.0) {
 	ERR_FAIL_COND(p_polyline.size() < 2);
 	for (int i = 0; i < p_polyline.size() - 1; ++i) {
-		p_node->draw_line(p_polyline[i], p_polyline[i + 1], p_color, p_line_width, true);
+		p_node->draw_line(p_polyline[i], p_polyline[i + 1], p_color, p_line_width, p_node->is_antialiased());
 	}
 }
 
 void draw_polyline_closed(PolyNode2D *p_node, const Vector<Point2> &p_polyline, const Color &p_color, real_t p_line_width = 1.0) {
 	ERR_FAIL_COND(p_polyline.size() < 3);
 	for (int i = 0; i < p_polyline.size(); ++i) {
-		p_node->draw_line(p_polyline[i], p_polyline[(i + 1) % p_polyline.size()], p_color, p_line_width, true);
+		p_node->draw_line(p_polyline[i], p_polyline[(i + 1) % p_polyline.size()], p_color, p_line_width, p_node->is_antialiased());
 	}
 }
 
@@ -72,7 +72,7 @@ void PolyNode2D::_draw() {
 
 		VS::get_singleton()->canvas_item_add_triangle_array(
 				get_canvas_item(), indices, vertices, colors, uvs,
-				Vector<int>(), Vector<float>(), texture_rid, -1, normal_map_rid);
+				Vector<int>(), Vector<float>(), texture_rid, -1, normal_map_rid, antialiased);
 	}
 }
 
@@ -239,6 +239,7 @@ void PolyNode2D::set_texture_rotation(float p_rot) {
 
 void PolyNode2D::set_texture_rotation_degrees(float p_rot) {
 	set_texture_rotation(Math::deg2rad(p_rot));
+	update();
 }
 
 float PolyNode2D::get_texture_rotation_degrees() const {
@@ -252,18 +253,23 @@ void PolyNode2D::set_texture_scale(const Size2 &p_scale) {
 
 void PolyNode2D::set_color(const Color &p_color) {
 	color = p_color;
-	_queue_update();
+	update();
 }
 
 void PolyNode2D::set_filled(bool p_filled) {
 	filled = p_filled;
-	_queue_update();
+	update();
 	_change_notify();
 }
 
 void PolyNode2D::set_line_width(real_t p_line_width) {
 	line_width = p_line_width;
-	_queue_update();
+	update();
+}
+
+void PolyNode2D::set_antialiased(bool p_antialiased) {
+	antialiased = p_antialiased;
+	update();
 }
 
 PolyNode2D *PolyNode2D::new_child(const Vector<Point2> &p_points) {
@@ -368,6 +374,9 @@ void PolyNode2D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_line_width", "line_width"), &PolyNode2D::set_line_width);
 	ClassDB::bind_method(D_METHOD("get_line_width"), &PolyNode2D::get_line_width);
 
+	ClassDB::bind_method(D_METHOD("set_antialiased", "antialiased"), &PolyNode2D::set_antialiased);
+	ClassDB::bind_method(D_METHOD("is_antialiased"), &PolyNode2D::is_antialiased);
+
 	ClassDB::bind_method(D_METHOD("new_child", "from_points"), &PolyNode2D::new_child);
 
 	ClassDB::bind_method(D_METHOD("is_inner"), &PolyNode2D::is_inner);
@@ -395,6 +404,7 @@ void PolyNode2D::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::COLOR, "color"), "set_color", "get_color");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "filled"), "set_filled", "is_filled");
 	ADD_PROPERTY(PropertyInfo(Variant::REAL, "line_width", PROPERTY_HINT_RANGE, "1.0,5.0,0.1"), "set_line_width", "get_line_width");
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "antialiased"), "set_antialiased", "is_antialiased");
 }
 
 #ifdef TOOLS_ENABLED
