@@ -21,7 +21,7 @@ public:
 	real_t get_max_error() const { return max_error; }
 
 	PolyCircle2D::PolyCircle2D() {
-		force_update_outlines();
+		build_outlines();
 	}
 };
 
@@ -39,7 +39,7 @@ public:
 	Vector2 get_extents() const { return extents; }
 
 	PolyRectangle2D::PolyRectangle2D() {
-		force_update_outlines();
+		build_outlines();
 	}
 };
 

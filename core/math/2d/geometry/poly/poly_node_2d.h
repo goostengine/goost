@@ -41,14 +41,11 @@ protected:
 	void _notification(int p_what);
 	virtual void _validate_property(PropertyInfo &property) const;
 	static void _bind_methods();
-
 	void _draw();
-	void _queue_update();
 
 	Vector<Vector<Point2>> outlines;
 	void _update_outlines();
 	virtual Vector<Vector<Point2>> _build_outlines();
-	Vector<Vector<Point2>> _get_outlines();
 
 public:
 	void set_points(const Vector<Point2> &p_points);
@@ -95,8 +92,10 @@ public:
 	bool is_root() const { return !parent; }
 
 	void make_from_outlines(const Array &p_outlines);
-	Array get_outlines();
-	void force_update_outlines() { _get_outlines(); }
+	Vector<Vector<Point2>> get_outlines(); // Queued.
+	Vector<Vector<Point2>> build_outlines(); // Immediate.
+	Array get_outlines_array();
+	void queue_update();
 
 	void clear();
 

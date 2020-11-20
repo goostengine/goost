@@ -6,14 +6,14 @@
 void PolyCircle2D::set_radius(real_t p_radius) {
 	ERR_FAIL_COND(p_radius <= 0);
 	radius = p_radius;
-	_queue_update();
+	queue_update();
 	_change_notify("radius");
 }
 
 void PolyCircle2D::set_max_error(real_t p_max_error) {
 	ERR_FAIL_COND(p_max_error <= 0);
 	max_error = p_max_error;
-	_queue_update();
+	queue_update();
 	_change_notify("max_error");
 }
 
@@ -40,7 +40,7 @@ void PolyRectangle2D::set_extents(const Vector2 &p_extents) {
 	ERR_FAIL_COND(p_extents.x <= 0);
 	ERR_FAIL_COND(p_extents.y <= 0);
 	extents = p_extents;
-	_queue_update();
+	queue_update();
 	_change_notify("extents");
 }
 

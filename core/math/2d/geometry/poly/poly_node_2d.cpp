@@ -81,7 +81,7 @@ void PolyNode2D::_notification(int p_what) {
 		case NOTIFICATION_ENTER_TREE:
 		case NOTIFICATION_PARENTED: {
 			parent = Object::cast_to<PolyNode2D>(get_parent());
-			_queue_update();
+			queue_update();
 		} break;
 		case NOTIFICATION_DRAW: {
 			if (!is_inside_tree()) {
@@ -92,17 +92,17 @@ void PolyNode2D::_notification(int p_what) {
 		case NOTIFICATION_LOCAL_TRANSFORM_CHANGED:
 		case NOTIFICATION_VISIBILITY_CHANGED:
 		case NOTIFICATION_EXIT_TREE: {
-			_queue_update();
+			queue_update();
 		} break;
 	}
 }
 
-void PolyNode2D::_queue_update() {
+void PolyNode2D::queue_update() {
 	if (!is_inside_tree()) {
 		return;
 	}
 	if (parent) {
-		parent->_queue_update();
+		parent->queue_update();
 	} else if (!update_queued) {
 		call_deferred("_update_outlines");
 	}
@@ -137,10 +137,14 @@ Vector<Vector<Point2>> PolyNode2D::_build_outlines() {
 	return outlines;
 }
 
-Vector<Vector<Point2>> PolyNode2D::_get_outlines() {
+Vector<Vector<Point2>> PolyNode2D::get_outlines() {
 	if (!update_queued) {
 		return outlines;
 	}
+	return build_outlines();
+}
+
+Vector<Vector<Point2>> PolyNode2D::build_outlines() {
 	outlines = _build_outlines();
 
 	for (int i = 0; i < get_child_count(); ++i) {
@@ -151,7 +155,7 @@ Vector<Vector<Point2>> PolyNode2D::_get_outlines() {
 		if (!clip->is_visible_in_tree()) {
 			continue;
 		}
-		Vector<Vector<Point2>> clip_outlines = clip->_get_outlines();
+		Vector<Vector<Point2>> clip_outlines = clip->get_outlines();
 		if (clip_outlines.empty()) {
 			continue;
 		}
@@ -184,8 +188,9 @@ void PolyNode2D::_update_outlines() {
 	if (parent) {
 		return;
 	}
-	_get_outlines();
+	get_outlines();
 	update();
+	emit_signal("outlines_updated");
 }
 
 void PolyNode2D::_validate_property(PropertyInfo &property) const {
@@ -203,17 +208,17 @@ void PolyNode2D::_validate_property(PropertyInfo &property) const {
 
 void PolyNode2D::set_points(const Vector<Point2> &p_points) {
 	points = p_points;
-	_queue_update();
+	queue_update();
 }
 
 void PolyNode2D::set_operation(Operation p_operation) {
 	operation = p_operation;
-	_queue_update();
+	queue_update();
 }
 
 void PolyNode2D::set_open(bool p_open) {
 	open = p_open;
-	_queue_update();
+	queue_update();
 	_change_notify();
 }
 
@@ -318,7 +323,7 @@ void PolyNode2D::make_from_outlines(const Array &p_outlines) {
 	update();
 }
 
-Array PolyNode2D::get_outlines() {
+Array PolyNode2D::get_outlines_array() {
 	Array ret;
 	for (int i = 0; i < outlines.size(); ++i) {
 		ret.push_back(outlines[i]);
@@ -386,7 +391,7 @@ void PolyNode2D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("is_root"), &PolyNode2D::is_root);
 
 	ClassDB::bind_method(D_METHOD("make_from_outlines", "outlines"), &PolyNode2D::make_from_outlines);
-	ClassDB::bind_method(D_METHOD("get_outlines"), &PolyNode2D::get_outlines);
+	ClassDB::bind_method(D_METHOD("get_outlines"), &PolyNode2D::get_outlines_array);
 
 	ClassDB::bind_method(D_METHOD("clear"), &PolyNode2D::clear);
 
@@ -408,6 +413,8 @@ void PolyNode2D::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "filled"), "set_filled", "is_filled");
 	ADD_PROPERTY(PropertyInfo(Variant::REAL, "line_width", PROPERTY_HINT_RANGE, "1.0,5.0,0.1"), "set_line_width", "get_line_width");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "antialiased"), "set_antialiased", "is_antialiased");
+	
+	ADD_SIGNAL(MethodInfo("outlines_updated"));
 }
 
 #ifdef TOOLS_ENABLED
