@@ -13,8 +13,9 @@ void draw_polyline_open(PolyNode2D *p_node, const Vector<Point2> &p_polyline, co
 
 void draw_polyline_closed(PolyNode2D *p_node, const Vector<Point2> &p_polyline, const Color &p_color, real_t p_line_width = 1.0) {
 	ERR_FAIL_COND(p_polyline.size() < 3);
-	for (int i = 0; i < p_polyline.size(); ++i) {
-		p_node->draw_line(p_polyline[i], p_polyline[(i + 1) % p_polyline.size()], p_color, p_line_width, p_node->is_antialiased());
+	const int vertices_count = p_polyline.size();
+	for (int i = 0; i < vertices_count; ++i) {
+		p_node->draw_line(p_polyline[i], p_polyline[(i + 1) % vertices_count], p_color, p_line_width, p_node->is_antialiased());
 	}
 }
 

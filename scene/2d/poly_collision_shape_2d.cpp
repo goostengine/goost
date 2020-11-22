@@ -22,15 +22,19 @@ void PolyCollisionShape2D::_apply_shapes() {
 		case BUILD_CONCAVE: {
 			for (int i = 0; i < shapes.size(); i++) {
 				const Vector<Point2> &polygon = shapes[i];
+				if (polygon.size() < 2) {
+					continue;
+				}
 				Ref<ConcavePolygonShape2D> concave = memnew(ConcavePolygonShape2D);
 
 				PoolVector<Vector2> segments;
 				segments.resize(polygon.size() * 2);
 				PoolVector<Vector2>::Write w = segments.write();
 
-				for (int i = 0; i < polygon.size(); i++) {
-					w[(i << 1) + 0] = polygon[i];
-					w[(i << 1) + 1] = polygon[(i + 1) % polygon.size()];
+				const int vertices_count = polygon.size();
+				for (int j = 0; j < vertices_count; j++) {
+					w[(j << 1) + 0] = polygon[j];
+					w[(j << 1) + 1] = polygon[(j + 1) % vertices_count];
 				}
 				w.release();
 				concave->set_segments(segments);
