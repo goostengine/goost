@@ -7,15 +7,26 @@
 #include "goost/core/math/2d/geometry/poly/decomp/poly_decomp.h"
 
 Vector<Vector<Point2>> PolyMesh2D::_collect_outlines() {
-    Vector<Vector<Point2>> outlines;
+    Vector<Vector<Point2>> ret;
     for (int i = 0; i < get_child_count(); ++i) {
         PolyNode2D *n = Object::cast_to<PolyNode2D>(get_child(i));
         if (!n) {
             continue;
         }
-        outlines.append_array(n->build_outlines());
+		Transform2D trans = n->get_transform();
+		const Vector<Vector<Point2>> &outlines = n->build_outlines();
+		for (int i = 0; i < outlines.size(); ++i) {
+			Vector<Point2> poly = outlines[i];
+			{
+				Point2 *ptr = poly.ptrw();
+				for (int j = 0; j < poly.size(); ++j) {
+					ptr[j] = trans.xform(ptr[j]);
+				}
+			}
+			ret.push_back(poly);
+		}
     }
-    return outlines;
+    return ret;
 }
 
 Vector<Vector<Point2>> PolyMesh2D::_build_shapes() {
