@@ -167,12 +167,15 @@ Vector<Vector<Point2>> PolyNode2D::build_outlines() {
 
 			if (open && !clip->open) { // Polylines vs Polygons.
 				switch (op) {
-					case OP_DIFFERENCE: {
+					case PolyBoolean2D::OP_DIFFERENCE: {
 						outlines = PolyBoolean2D::clip_polylines_with_polygons(outlines, clip_outlines);
 					} break;
-					case OP_INTERSECTION: {
+					case PolyBoolean2D::OP_INTERSECTION: {
 						outlines = PolyBoolean2D::intersect_polylines_with_polygons(outlines, clip_outlines);
 					} break;
+					default: {
+						WARN_PRINT("Union and Xor operations are not supported for polyline vs polygon");
+					}
 				}
 			} else { // Polygons vs Polygons.
 				outlines = PolyBoolean2D::boolean_polygons(outlines, clip_outlines, op);
