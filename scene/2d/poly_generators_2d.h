@@ -20,7 +20,7 @@ public:
 	void set_max_error(real_t p_max_error);
 	real_t get_max_error() const { return max_error; }
 
-	PolyCircle2D::PolyCircle2D() {
+	PolyCircle2D() {
 		build_outlines();
 	}
 };
@@ -38,7 +38,7 @@ public:
 	void set_extents(const Vector2 &p_extents);
 	Vector2 get_extents() const { return extents; }
 
-	PolyRectangle2D::PolyRectangle2D() {
+	PolyRectangle2D() {
 		build_outlines();
 	}
 };
