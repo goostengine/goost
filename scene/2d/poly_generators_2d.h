@@ -1,5 +1,5 @@
-#ifndef GOOST_POLY_SHAPES_2D_H
-#define GOOST_POLY_SHAPES_2D_H
+#ifndef GOOST_POLY_GENERATORS_2D_H
+#define GOOST_POLY_GENERATORS_2D_H
 
 #include "goost/core/math/2d/geometry/poly/poly_node_2d.h"
 
@@ -43,4 +43,4 @@ public:
 	}
 };
 
-#endif // GOOST_POLY_SHAPES_2D_H
+#endif // GOOST_POLY_GENERATORS_2D_H

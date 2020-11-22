@@ -1,4 +1,4 @@
-#include "poly_mesh_2d.h"
+#include "poly_shape_2d.h"
 
 #include "core/engine.h"
 #include "core/math/geometry.h"
@@ -6,7 +6,7 @@
 #include "goost/core/math/2d/geometry/goost_geometry_2d.h"
 #include "goost/core/math/2d/geometry/poly/decomp/poly_decomp.h"
 
-Vector<Vector<Point2>> PolyMesh2D::_collect_outlines() {
+Vector<Vector<Point2>> PolyShape2D::_collect_outlines() {
     Vector<Vector<Point2>> ret;
     for (int i = 0; i < get_child_count(); ++i) {
         PolyNode2D *n = Object::cast_to<PolyNode2D>(get_child(i));
@@ -29,7 +29,7 @@ Vector<Vector<Point2>> PolyMesh2D::_collect_outlines() {
     return ret;
 }
 
-Vector<Vector<Point2>> PolyMesh2D::_build_shapes() {
+Vector<Vector<Point2>> PolyShape2D::_build_shapes() {
     shapes.clear();
     const Vector<Vector<Point2>> &outlines = _collect_outlines();
     if (outlines.empty()) {
@@ -55,7 +55,7 @@ Vector<Vector<Point2>> PolyMesh2D::_build_shapes() {
     return shapes;
 }
 
-void PolyMesh2D::add_child_notify(Node *p_child) {
+void PolyShape2D::add_child_notify(Node *p_child) {
     Node2D::add_child_notify(p_child);
 
 	PolyNode2D *n = Object::cast_to<PolyNode2D>(p_child);
@@ -66,7 +66,7 @@ void PolyMesh2D::add_child_notify(Node *p_child) {
     call_deferred("_update_shapes");
 }
 
-void PolyMesh2D::remove_child_notify(Node *p_child) {
+void PolyShape2D::remove_child_notify(Node *p_child) {
     Node2D::remove_child_notify(p_child);
 
 	PolyNode2D *n = Object::cast_to<PolyNode2D>(p_child);
@@ -77,13 +77,13 @@ void PolyMesh2D::remove_child_notify(Node *p_child) {
     call_deferred("_update_shapes");
 }
 
-void PolyMesh2D::_update_shapes() {
+void PolyShape2D::_update_shapes() {
     _build_shapes();
 	_apply_shapes();
     update();
 }
 
-void PolyMesh2D::_notification(int p_what) {
+void PolyShape2D::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_PARENTED: {
 		} break;
@@ -113,13 +113,13 @@ void PolyMesh2D::_notification(int p_what) {
 	}
 }
 
-void PolyMesh2D::set_build_mode(BuildMode p_mode) {
+void PolyShape2D::set_build_mode(BuildMode p_mode) {
 	ERR_FAIL_INDEX((int)p_mode, 3);
 	build_mode = p_mode;
     _update_shapes();
 }
 
-String PolyMesh2D::get_configuration_warning() const {
+String PolyShape2D::get_configuration_warning() const {
     String warning = Node2D::get_configuration_warning();
 
 	bool found = false;
@@ -134,16 +134,16 @@ String PolyMesh2D::get_configuration_warning() const {
 		if (!warning.empty()) {
 			warning += "\n\n";
 		}
-		warning += TTR("PolyNode2D is required to build a mesh. Add PolyNode2D as a child.");
+		warning += TTR("PolyNode2D is required to build a shape. Add PolyNode2D as a child.");
     }
 	return warning;
 }
 
-void PolyMesh2D::_bind_methods() {
-    ClassDB::bind_method(D_METHOD("_update_shapes"), &PolyMesh2D::_update_shapes);
+void PolyShape2D::_bind_methods() {
+    ClassDB::bind_method(D_METHOD("_update_shapes"), &PolyShape2D::_update_shapes);
 
-	ClassDB::bind_method(D_METHOD("set_build_mode", "build_mode"), &PolyMesh2D::set_build_mode);
-	ClassDB::bind_method(D_METHOD("get_build_mode"), &PolyMesh2D::get_build_mode);
+	ClassDB::bind_method(D_METHOD("set_build_mode", "build_mode"), &PolyShape2D::set_build_mode);
+	ClassDB::bind_method(D_METHOD("get_build_mode"), &PolyShape2D::get_build_mode);
 
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "build_mode", PROPERTY_HINT_ENUM, "Triangles,Convex,Segments"), "set_build_mode", "get_build_mode");
 

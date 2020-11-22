@@ -1,10 +1,10 @@
-#ifndef POLY_MESH_2D_H
-#define POLY_MESH_2D_H
+#ifndef POLY_SHAPE_2D_H
+#define POLY_SHAPE_2D_H
 
 #include "goost/core/math/2d/geometry/poly/poly_node_2d.h"
 
-class PolyMesh2D : public Node2D {
-	GDCLASS(PolyMesh2D, Node2D);
+class PolyShape2D : public Node2D {
+	GDCLASS(PolyShape2D, Node2D);
 
 public:
 	enum BuildMode {
@@ -42,6 +42,6 @@ public:
 	virtual String get_configuration_warning() const;
 };
 
-VARIANT_ENUM_CAST(PolyMesh2D::BuildMode);
+VARIANT_ENUM_CAST(PolyShape2D::BuildMode);
 
-#endif // POLY_MESH_2D_H
+#endif // POLY_SHAPE_2D_H

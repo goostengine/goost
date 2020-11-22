@@ -1,11 +1,11 @@
 #ifndef POLY_COLLISION_SHAPE_2D_H
 #define POLY_COLLISION_SHAPE_2D_H
 
-#include "poly_mesh_2d.h"
+#include "poly_shape_2d.h"
 #include "scene/2d/collision_object_2d.h"
 
-class PolyCollisionShape2D : public PolyMesh2D {
-	GDCLASS(PolyCollisionShape2D, PolyMesh2D);
+class PolyCollisionShape2D : public PolyShape2D {
+	GDCLASS(PolyCollisionShape2D, PolyShape2D);
 
 protected:
 	CollisionObject2D *parent = nullptr;
