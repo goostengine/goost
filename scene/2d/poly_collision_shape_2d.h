@@ -1,11 +1,11 @@
-#ifndef POLY_COLLISION_2D_H
-#define POLY_COLLISION_2D_H
+#ifndef POLY_COLLISION_SHAPE_2D_H
+#define POLY_COLLISION_SHAPE_2D_H
 
 #include "poly_mesh_2d.h"
 #include "scene/2d/collision_object_2d.h"
 
-class PolyCollision2D : public PolyMesh2D {
-	GDCLASS(PolyCollision2D, PolyMesh2D);
+class PolyCollisionShape2D : public PolyMesh2D {
+	GDCLASS(PolyCollisionShape2D, PolyMesh2D);
 
 protected:
 	CollisionObject2D *parent = nullptr;
@@ -31,7 +31,7 @@ public:
 	void set_one_way_collision_margin(float p_margin);
 	float get_one_way_collision_margin() const { return one_way_collision_margin; }
 
-	PolyCollision2D();
+	PolyCollisionShape2D();
 };
 
-#endif // POLY_COLLISION_2D_H
+#endif // POLY_COLLISION_SHAPE_2D_H

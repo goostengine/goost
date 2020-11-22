@@ -1,11 +1,11 @@
-#include "poly_collision_2d.h"
+#include "poly_collision_shape_2d.h"
 
 #include "core/engine.h"
 #include "scene/2d/collision_object_2d.h"
 #include "scene/resources/concave_polygon_shape_2d.h"
 #include "scene/resources/convex_polygon_shape_2d.h"
 
-void PolyCollision2D::_apply_shapes() {
+void PolyCollisionShape2D::_apply_shapes() {
 	parent->shape_owner_clear_shapes(owner_id);
 	_build_shapes();
 	if (shapes.empty()) {
@@ -42,7 +42,7 @@ void PolyCollision2D::_apply_shapes() {
 	}
 }
 
-void PolyCollision2D::_update_in_shape_owner(bool p_xform_only) {
+void PolyCollisionShape2D::_update_in_shape_owner(bool p_xform_only) {
 	parent->shape_owner_set_transform(owner_id, get_transform());
 	if (p_xform_only) {
 		return;
@@ -52,7 +52,7 @@ void PolyCollision2D::_update_in_shape_owner(bool p_xform_only) {
 	parent->shape_owner_set_one_way_collision_margin(owner_id, one_way_collision_margin);
 }
 
-void PolyCollision2D::_notification(int p_what) {
+void PolyCollisionShape2D::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_PARENTED: {
 			parent = Object::cast_to<CollisionObject2D>(get_parent());
@@ -86,7 +86,7 @@ void PolyCollision2D::_notification(int p_what) {
 	}
 }
 
-void PolyCollision2D::set_disabled(bool p_disabled) {
+void PolyCollisionShape2D::set_disabled(bool p_disabled) {
 	disabled = p_disabled;
 	update();
 	if (parent) {
@@ -94,7 +94,7 @@ void PolyCollision2D::set_disabled(bool p_disabled) {
 	}
 }
 
-void PolyCollision2D::set_one_way_collision(bool p_enable) {
+void PolyCollisionShape2D::set_one_way_collision(bool p_enable) {
 	one_way_collision = p_enable;
 	update();
 	if (parent) {
@@ -102,28 +102,28 @@ void PolyCollision2D::set_one_way_collision(bool p_enable) {
 	}
 }
 
-void PolyCollision2D::set_one_way_collision_margin(float p_margin) {
+void PolyCollisionShape2D::set_one_way_collision_margin(float p_margin) {
 	one_way_collision_margin = p_margin;
 	if (parent) {
 		parent->shape_owner_set_one_way_collision_margin(owner_id, one_way_collision_margin);
 	}
 }
 
-void PolyCollision2D::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("set_disabled", "disabled"), &PolyCollision2D::set_disabled);
-	ClassDB::bind_method(D_METHOD("is_disabled"), &PolyCollision2D::is_disabled);
+void PolyCollisionShape2D::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("set_disabled", "disabled"), &PolyCollisionShape2D::set_disabled);
+	ClassDB::bind_method(D_METHOD("is_disabled"), &PolyCollisionShape2D::is_disabled);
 
-	ClassDB::bind_method(D_METHOD("set_one_way_collision", "enabled"), &PolyCollision2D::set_one_way_collision);
-	ClassDB::bind_method(D_METHOD("is_one_way_collision_enabled"), &PolyCollision2D::is_one_way_collision_enabled);
+	ClassDB::bind_method(D_METHOD("set_one_way_collision", "enabled"), &PolyCollisionShape2D::set_one_way_collision);
+	ClassDB::bind_method(D_METHOD("is_one_way_collision_enabled"), &PolyCollisionShape2D::is_one_way_collision_enabled);
 
-	ClassDB::bind_method(D_METHOD("set_one_way_collision_margin", "margin"), &PolyCollision2D::set_one_way_collision_margin);
-	ClassDB::bind_method(D_METHOD("get_one_way_collision_margin"), &PolyCollision2D::get_one_way_collision_margin);
+	ClassDB::bind_method(D_METHOD("set_one_way_collision_margin", "margin"), &PolyCollisionShape2D::set_one_way_collision_margin);
+	ClassDB::bind_method(D_METHOD("get_one_way_collision_margin"), &PolyCollisionShape2D::get_one_way_collision_margin);
 
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "disabled"), "set_disabled", "is_disabled");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "one_way_collision"), "set_one_way_collision", "is_one_way_collision_enabled");
 	ADD_PROPERTY(PropertyInfo(Variant::REAL, "one_way_collision_margin", PROPERTY_HINT_RANGE, "0,128,0.1"), "set_one_way_collision_margin", "get_one_way_collision_margin");
 }
 
-PolyCollision2D::PolyCollision2D() {
+PolyCollisionShape2D::PolyCollisionShape2D() {
 	set_notify_local_transform(true);
 }
