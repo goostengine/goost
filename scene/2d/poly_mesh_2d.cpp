@@ -68,6 +68,7 @@ void PolyMesh2D::remove_child_notify(Node *p_child) {
 
 void PolyMesh2D::_update_shapes() {
     _build_shapes();
+	_apply_shapes();
     update();
 }
 
@@ -104,8 +105,7 @@ void PolyMesh2D::_notification(int p_what) {
 void PolyMesh2D::set_build_mode(BuildMode p_mode) {
 	ERR_FAIL_INDEX((int)p_mode, 3);
 	build_mode = p_mode;
-    _build_shapes();
-    update();
+    _update_shapes();
 }
 
 String PolyMesh2D::get_configuration_warning() const {
@@ -123,7 +123,7 @@ String PolyMesh2D::get_configuration_warning() const {
 		if (!warning.empty()) {
 			warning += "\n\n";
 		}
-		warning += TTR("PolyNode2D is required to build a mesh. Add PolyNode2D as a child of this node.");
+		warning += TTR("PolyNode2D is required to build a mesh. Add PolyNode2D as a child.");
     }
 	return warning;
 }
