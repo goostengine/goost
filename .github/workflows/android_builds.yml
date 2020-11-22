@@ -67,4 +67,4 @@ jobs:
           cd godot/platform/android/java
           ./gradlew generateGodotTemplates
           cd ../../../..
-          ls -l bin/
+          ls -l godot/bin/
