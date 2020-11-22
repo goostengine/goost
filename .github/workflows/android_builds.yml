@@ -9,7 +9,7 @@ on:
 
 env:
   GOOST_BASE_BRANCH: gd3
-  SCONSFLAGS: godot_modules_enabled=no --jobs=4
+  SCONSFLAGS: godot_modules_enabled=no platform=android verbose=yes warnings=all werror=yes --jobs=4
   SCONS_CACHE_LIMIT: 4096
 
 jobs:
@@ -28,19 +28,10 @@ jobs:
           sudo cp -f misc/ci/sources.list /etc/apt/sources.list
           sudo apt-get update
 
-      - name: Configure dependencies
-        run: |
-         sudo apt-get install openjdk-8-jdk
-         echo "::set-env name=JAVA_HOME::usr/lib/jvm/java-8-openjdk-amd64"
-
-      - name: Install Android SDK and NDK
-        run: |
-          echo "::set-env name=PATH::/usr/lib/jvm/java-8-openjdk-amd64/jre/bin:${PATH}"
-          java -version
-          echo "::set-env name=ANDROID_HOME::$(pwd)/godot-dev/build-tools/android-sdk"
-          echo "::set-env name=ANDROID_NDK_ROOT::$(pwd)/godot-dev/build-tools/android-ndk"
-          misc/ci/android-tools-linux.sh
-          source ~/.bashrc
+      - name: Set up Java 8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 8
 
       - name: Load .scons_cache directory
         id: android-template-cache
@@ -69,5 +60,11 @@ jobs:
       - name: Compilation
         env:
           SCONS_CACHE: ${{github.workspace}}/.scons_cache/
+          ANDROID_NDK_ROOT: /usr/local/lib/android/sdk/ndk-bundle
         run: |
-          scons verbose=yes warnings=all werror=yes platform=android target=release tools=no
+          scons target=release tools=no android_arch=armv7
+          scons target=release tools=no android_arch=arm64v8
+          cd godot/platform/android/java
+          ./gradlew generateGodotTemplates
+          cd ../../../..
+          ls -l bin/
