@@ -13,6 +13,9 @@ Vector<Vector<Point2>> PolyShape2D::_collect_outlines() {
         if (!n) {
             continue;
         }
+		if (!n->is_visible_in_tree()) {
+			continue;
+		}
 		Transform2D trans = n->get_transform();
 		const Vector<Vector<Point2>> &outlines = n->build_outlines();
 		for (int i = 0; i < outlines.size(); ++i) {
