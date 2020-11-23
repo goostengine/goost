@@ -5,4 +5,11 @@ Import("env_goost")
 if env["tools"] and env["goost_editor_enabled"]:
     SConscript("editor/SCsub", exports="env_goost")
 
-env_goost.add_source_files(env.modules_sources, "*.cpp")
+sources = Glob("*.cpp")
+
+if not env["goost_core_enabled"]:
+    poly_sources = Glob("poly_*.cpp")
+    for src in poly_sources:
+        sources.remove(src)
+
+env_goost.add_source_files(env.modules_sources, sources)
