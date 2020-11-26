@@ -88,12 +88,8 @@ void PolyShape2D::_update_shapes() {
 
 void PolyShape2D::_notification(int p_what) {
 	switch (p_what) {
-		case NOTIFICATION_PARENTED: {
-		} break;
 		case NOTIFICATION_ENTER_TREE: {
 			_build_shapes();
-		} break;
-		case NOTIFICATION_UNPARENTED: {
 		} break;
 		case NOTIFICATION_DRAW: {
 			if (!Engine::get_singleton()->is_editor_hint() && !get_tree()->is_debugging_collisions_hint()) {
