@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="PolyCollisionShape2D" inherits="PolyShape2D" version="3.2">
+	<brief_description>
+		A collision shape based on [PolyNode2D] outlines.
+	</brief_description>
+	<description>
+		A class which allows to use [PolyNode2D] nodes as children to build collision shapes from. Applicable for both for static and rigid bodies, similarly to [CollisionPolygon2D].
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+	</methods>
+	<members>
+		<member name="disabled" type="bool" setter="set_disabled" getter="is_disabled" default="false">
+			If [code]true[/code], no collisions will be detected.
+		</member>
+		<member name="one_way_collision" type="bool" setter="set_one_way_collision" getter="is_one_way_collision_enabled" default="false">
+			If [code]true[/code], only edges that face up, relative to this node's rotation, will collide with other objects.
+		</member>
+		<member name="one_way_collision_margin" type="float" setter="set_one_way_collision_margin" getter="get_one_way_collision_margin" default="1.0">
+			The margin used for one-way collision (in pixels). Higher values will make the shape thicker, and work better for colliders that enter the polygon at a high velocity.
+		</member>
+	</members>
+	<constants>
+	</constants>
+</class>

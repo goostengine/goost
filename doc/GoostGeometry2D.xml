@@ -11,6 +11,15 @@
 		<link>https://goost.readthedocs.io/en/gd3/components/geometry.html</link>
 	</tutorials>
 	<methods>
+		<method name="bounding_rect" qualifiers="const">
+			<return type="Rect2">
+			</return>
+			<argument index="0" name="points" type="PoolVector2Array">
+			</argument>
+			<description>
+				Computes the axis-aligned bounding rectangle of given points.
+			</description>
+		</method>
 		<method name="circle" qualifiers="const">
 			<return type="PoolVector2Array">
 			</return>

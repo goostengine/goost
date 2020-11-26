@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="PolyRectangle2D" inherits="PolyNode2D" version="3.2">
+	<brief_description>
+		A rectangle [PolyNode2D] shape.
+	</brief_description>
+	<description>
+		Builds a rectangle-based outline.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+	</methods>
+	<members>
+		<member name="extents" type="Vector2" setter="set_extents" getter="get_extents" default="Vector2( 32, 32 )">
+			The rectangle's half extents. The width and height of this shape is twice the half extents.
+		</member>
+	</members>
+	<constants>
+	</constants>
+</class>
