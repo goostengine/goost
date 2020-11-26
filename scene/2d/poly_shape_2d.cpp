@@ -45,7 +45,7 @@ Vector<Vector<Point2>> PolyShape2D::_build_shapes() {
 		case BUILD_CONVEX: {
 			shapes.append_array(PolyDecomp2D::decompose_polygons_into_convex(outlines));
 		} break;
-		case BUILD_CONCAVE: {
+		case BUILD_SEGMENTS: {
 			// Concave shapes cannot have inner outlines, so filter those out.
 			for (int i = 0; i < outlines.size(); ++i) {
 				const Vector<Point2> &points = outlines[i];
@@ -152,5 +152,5 @@ void PolyShape2D::_bind_methods() {
 
 	BIND_ENUM_CONSTANT(BUILD_TRIANGLES);
 	BIND_ENUM_CONSTANT(BUILD_CONVEX);
-	BIND_ENUM_CONSTANT(BUILD_CONCAVE);
+	BIND_ENUM_CONSTANT(BUILD_SEGMENTS);
 }

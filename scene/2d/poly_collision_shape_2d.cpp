@@ -19,7 +19,7 @@ void PolyCollisionShape2D::_apply_shapes() {
 				parent->shape_owner_add_shape(owner_id, convex);
 			}
 		} break;
-		case BUILD_CONCAVE: {
+		case BUILD_SEGMENTS: {
 			for (int i = 0; i < shapes.size(); i++) {
 				const Vector<Point2> &polygon = shapes[i];
 				if (polygon.size() < 2) {

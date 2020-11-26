@@ -10,7 +10,7 @@ public:
 	enum BuildMode {
 		BUILD_TRIANGLES,
 		BUILD_CONVEX,
-		BUILD_CONCAVE,
+		BUILD_SEGMENTS,
 	};
 
 private:
