@@ -6,6 +6,9 @@
 #include "scene/resources/convex_polygon_shape_2d.h"
 
 void PolyCollisionShape2D::_apply_shapes() {
+	if (!parent) {
+		return;
+	}
 	parent->shape_owner_clear_shapes(owner_id);
 	if (shapes.empty()) {
 		return;
@@ -46,6 +49,9 @@ void PolyCollisionShape2D::_apply_shapes() {
 }
 
 void PolyCollisionShape2D::_update_in_shape_owner(bool p_xform_only) {
+	if (!parent) {
+		return;
+	}
 	parent->shape_owner_set_transform(owner_id, get_transform());
 	if (p_xform_only) {
 		return;
@@ -66,8 +72,10 @@ void PolyCollisionShape2D::_notification(int p_what) {
 			}
 		} break;
 		case NOTIFICATION_READY: {
-			_apply_shapes();
-			_update_in_shape_owner();
+			if (parent) {
+				_apply_shapes();
+				_update_in_shape_owner();
+			}
 		} break;
 		case NOTIFICATION_ENTER_TREE: {
 			if (parent) {

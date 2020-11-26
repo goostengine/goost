@@ -115,7 +115,7 @@ void PolyShape2D::_notification(int p_what) {
 void PolyShape2D::set_build_mode(BuildMode p_mode) {
 	ERR_FAIL_INDEX((int)p_mode, 3);
 	build_mode = p_mode;
-	_update_shapes();
+	call_deferred("_update_shapes");
 }
 
 String PolyShape2D::get_configuration_warning() const {
