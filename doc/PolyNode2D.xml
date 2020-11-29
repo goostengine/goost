@@ -103,10 +103,25 @@
 	<signals>
 		<signal name="outlines_updated">
 			<description>
-				Emitted whenever the outlines are updated. Changes in local transform, [member operation] and [member points] of children triggers the outlines to get updated on idle frame.
+				Emitted whenever the outlines are updated. Changes in local transform, [member operation] and [member points] of children triggers outlines to get updated on idle frame.
 			</description>
 		</signal>
 	</signals>
 	<constants>
+		<constant name="OP_NONE" value="0" enum="Operation">
+			No operation is applied. Nodes with no operation set are able to be drawn separately from the root [PolyNode2D].
+		</constant>
+		<constant name="OP_UNION" value="1" enum="Operation">
+			Outlines of parent and child nodes are merged together.
+		</constant>
+		<constant name="OP_DIFFERENCE" value="2" enum="Operation">
+			Outlines from the child node is subtracted from the parent's outlines.
+		</constant>
+		<constant name="OP_INTERSECTION" value="3" enum="Operation">
+			Only intersecting outlines from parent and child nodes remain, the rest is removed.
+		</constant>
+		<constant name="OP_XOR" value="4" enum="Operation">
+			Common area defined by intersection of outlines between the parent and child is removed, the rest outlines remain unaffected.
+		</constant>
 	</constants>
 </class>

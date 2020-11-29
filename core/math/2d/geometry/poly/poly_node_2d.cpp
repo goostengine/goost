@@ -419,6 +419,12 @@ void PolyNode2D::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "antialiased"), "set_antialiased", "is_antialiased");
 	
 	ADD_SIGNAL(MethodInfo("outlines_updated"));
+	
+	BIND_ENUM_CONSTANT(OP_NONE);
+	BIND_ENUM_CONSTANT(OP_UNION);
+	BIND_ENUM_CONSTANT(OP_DIFFERENCE);
+	BIND_ENUM_CONSTANT(OP_INTERSECTION);
+	BIND_ENUM_CONSTANT(OP_XOR);
 }
 
 #ifdef TOOLS_ENABLED
