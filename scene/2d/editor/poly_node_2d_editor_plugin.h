@@ -13,7 +13,7 @@ protected:
 	PolyNode2D *node = nullptr;
 
 	enum Menu {
-		MENU_OPTION_CONVERT_OUTLINES_TO_SINGLE_PATH = 100,
+		MENU_OPTION_CONVERT_OUTLINES_TO_PATH = 100,
 	};
 	MenuButton *options = nullptr;
 	Menu selected_menu_item;
