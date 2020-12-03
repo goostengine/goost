@@ -18,6 +18,7 @@ private:
 
 protected:
 	Vector<Vector<Point2>> shapes;
+	bool update_queued = false;
 
 	BuildMode build_mode = BUILD_TRIANGLES;
 	Rect2 rect = Rect2(-10, -10, 20, 20);
@@ -26,6 +27,7 @@ protected:
 	virtual Vector<Vector<Point2>> _build_shapes();
 	virtual void _apply_shapes(){};
 	void _update_shapes();
+	void _queue_update();
 
 	virtual void add_child_notify(Node *p_child);
 	virtual void remove_child_notify(Node *p_child);

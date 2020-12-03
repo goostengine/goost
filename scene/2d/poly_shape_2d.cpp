@@ -65,8 +65,8 @@ void PolyShape2D::add_child_notify(Node *p_child) {
 	if (!n) {
 		return;
 	}
-	n->connect("outlines_updated", this, "_update_shapes");
-	call_deferred("_update_shapes");
+	n->connect("outlines_updated", this, "_queue_update");
+	_queue_update();
 }
 
 void PolyShape2D::remove_child_notify(Node *p_child) {
@@ -76,8 +76,18 @@ void PolyShape2D::remove_child_notify(Node *p_child) {
 	if (!n) {
 		return;
 	}
-	n->disconnect("outlines_updated", this, "_update_shapes");
-	call_deferred("_update_shapes");
+	n->disconnect("outlines_updated", this, "_queue_update");
+	_queue_update();
+}
+
+void PolyShape2D::_queue_update() {
+	if (!is_inside_tree()) {
+		return;
+	}
+	if (!update_queued) {
+		call_deferred("_update_shapes");
+	}
+	update_queued = true;
 }
 
 void PolyShape2D::_update_shapes() {
@@ -88,6 +98,7 @@ void PolyShape2D::_update_shapes() {
 		_apply_shapes();
 	}
 	update();
+	update_queued = false;
 }
 
 void PolyShape2D::_notification(int p_what) {
@@ -119,7 +130,7 @@ void PolyShape2D::_notification(int p_what) {
 void PolyShape2D::set_build_mode(BuildMode p_mode) {
 	ERR_FAIL_INDEX((int)p_mode, 3);
 	build_mode = p_mode;
-	call_deferred("_update_shapes");
+	_queue_update();
 }
 
 String PolyShape2D::get_configuration_warning() const {
@@ -145,6 +156,7 @@ String PolyShape2D::get_configuration_warning() const {
 void PolyShape2D::_bind_methods() {
 	BIND_VMETHOD(MethodInfo(Variant::NIL, "_apply_shapes"));
 	ClassDB::bind_method(D_METHOD("_update_shapes"), &PolyShape2D::_update_shapes);
+	ClassDB::bind_method(D_METHOD("_queue_update"), &PolyShape2D::_queue_update);
 
 	ClassDB::bind_method(D_METHOD("set_build_mode", "build_mode"), &PolyShape2D::set_build_mode);
 	ClassDB::bind_method(D_METHOD("get_build_mode"), &PolyShape2D::get_build_mode);
