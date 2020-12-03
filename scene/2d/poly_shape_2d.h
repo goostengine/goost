@@ -40,6 +40,7 @@ public:
 	BuildMode get_build_mode() const { return build_mode; }
 
 	void update_shapes();
+	Array get_shapes_array();
 
 	virtual String get_configuration_warning() const;
 };

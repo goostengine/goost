@@ -58,6 +58,14 @@ Vector<Vector<Point2>> PolyShape2D::_build_shapes() {
 	return shapes;
 }
 
+Array PolyShape2D::get_shapes_array() {
+	Array ret;
+	for (int i = 0; i < shapes.size(); ++i) {
+		ret.push_back(shapes[i]);
+	}
+	return ret;
+}
+
 void PolyShape2D::add_child_notify(Node *p_child) {
 	Node2D::add_child_notify(p_child);
 
@@ -158,6 +166,8 @@ void PolyShape2D::_bind_methods() {
 	BIND_VMETHOD(MethodInfo(Variant::NIL, "_apply_shapes"));
 	ClassDB::bind_method(D_METHOD("_update_shapes"), &PolyShape2D::_update_shapes);
 	ClassDB::bind_method(D_METHOD("_queue_update"), &PolyShape2D::_queue_update);
+
+	ClassDB::bind_method(D_METHOD("get_shapes"), &PolyShape2D::get_shapes_array);
 
 	ClassDB::bind_method(D_METHOD("set_build_mode", "build_mode"), &PolyShape2D::set_build_mode);
 	ClassDB::bind_method(D_METHOD("get_build_mode"), &PolyShape2D::get_build_mode);
