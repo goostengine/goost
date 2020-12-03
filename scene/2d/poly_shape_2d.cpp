@@ -82,7 +82,11 @@ void PolyShape2D::remove_child_notify(Node *p_child) {
 
 void PolyShape2D::_update_shapes() {
 	_build_shapes();
-	_apply_shapes();
+	if (get_script_instance()) {
+		get_script_instance()->call("_apply_shapes");
+	} else {
+		_apply_shapes();
+	}
 	update();
 }
 
@@ -139,6 +143,7 @@ String PolyShape2D::get_configuration_warning() const {
 }
 
 void PolyShape2D::_bind_methods() {
+	BIND_VMETHOD(MethodInfo(Variant::NIL, "_apply_shapes"));
 	ClassDB::bind_method(D_METHOD("_update_shapes"), &PolyShape2D::_update_shapes);
 
 	ClassDB::bind_method(D_METHOD("set_build_mode", "build_mode"), &PolyShape2D::set_build_mode);
