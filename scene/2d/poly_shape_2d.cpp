@@ -92,8 +92,9 @@ void PolyShape2D::_queue_update() {
 
 void PolyShape2D::_update_shapes() {
 	_build_shapes();
-	if (get_script_instance()) {
-		get_script_instance()->call("_apply_shapes");
+	auto script = get_script_instance();
+	if (script && script->has_method("_apply_shapes")) {
+		script->call("_apply_shapes");
 	} else {
 		_apply_shapes();
 	}
