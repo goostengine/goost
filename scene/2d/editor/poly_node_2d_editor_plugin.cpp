@@ -9,7 +9,7 @@ void PolyNode2DEditor::_set_node(Node *p_node) {
 		return;
 	}
 	if (node->get_class() != "PolyNode2D") {
-		String reason = TTR("Can only edit points in PolyNode2D directly, convert outlines to single path first.");
+		String reason = TTR("Can only edit points in PolyNode2D directly, use \"Flatten outlines\" tool first.");
 		disable_polygon_editing(true, reason);
 	} else {
 		disable_polygon_editing(false, "");
@@ -45,7 +45,7 @@ void PolyNode2DEditor::_menu_option(int p_option) {
 	}
 	selected_menu_item = (Menu)p_option;
 	switch (p_option) {
-		case MENU_OPTION_CONVERT_OUTLINES_TO_PATH: {
+		case MENU_OPTION_FLATTEN_OUTLINES: {
 			PolyNode2D *new_node = memnew(PolyNode2D);
 			const Vector<Vector<Point2>> &outlines = node->get_outlines();
 			if (!outlines.empty()) {
@@ -55,7 +55,7 @@ void PolyNode2DEditor::_menu_option(int p_option) {
 			const Vector<Point2> &prev_points = node->get_points();
 
 			UndoRedo *ur = EditorNode::get_singleton()->get_undo_redo();
-			ur->create_action(TTR("Convert Outlines To Path"));
+			ur->create_action(TTR("Flatten Outlines"));
 			ur->add_do_method(node, "set_points", Vector<Point2>());
 			ur->add_do_method(EditorNode::get_singleton()->get_scene_tree_dock(), "replace_node", node, new_node, true, false);
 			ur->add_do_reference(new_node);
@@ -79,7 +79,7 @@ PolyNode2DEditor::PolyNode2DEditor(EditorNode *p_editor) :
 	options->set_text(TTR("PolyNode2D"));
 	options->set_icon(EditorNode::get_singleton()->get_gui_base()->get_icon("PolyNode2D", "EditorIcons"));
 
-	options->get_popup()->add_item(TTR("Convert Outlines To Path"), MENU_OPTION_CONVERT_OUTLINES_TO_PATH);
+	options->get_popup()->add_item(TTR("Flatten Outlines"), MENU_OPTION_FLATTEN_OUTLINES);
 	options->set_switch_on_hover(true);
 
 	options->get_popup()->connect("id_pressed", this, "_menu_option");
