@@ -69,18 +69,18 @@ func test_point_in_triangle():
 	var triangle = [Vector2(0, 0), Vector2(100, 0), Vector2(100, 100)]
 	for i in 100:
 		var point = Random2D.point_in_triangle(triangle)
-		assert_true(GoostGeometry2D.point_in_polygon(point, triangle))
+		assert_true(GoostGeometry2D.point_in_polygon(point, triangle) as bool)
 
 
 func test_point_in_polygon():
 	var polygon = PoolVector2Array([Vector2(0, 0), Vector2(100, 0), Vector2(100, 100), Vector2(50, 50), Vector2(10, 20)])
 	for p in 100:
 		var point = Random2D.point_in_polygon(polygon)
-		assert_true(GoostGeometry2D.point_in_polygon(point, polygon))
+		assert_true(GoostGeometry2D.point_in_polygon(point, polygon) as bool)
 
 
 func test_point_in_polygon_array():
 	var polygon = PoolVector2Array([Vector2(0, 0), Vector2(100, 0), Vector2(100, 100), Vector2(50, 50), Vector2(10, 20)])
 	var points = Random2D.point_in_polygon(polygon, 100)
 	for p in points:
-		assert_true(GoostGeometry2D.point_in_polygon(p, polygon))
+		assert_true(GoostGeometry2D.point_in_polygon(p, polygon) as bool)

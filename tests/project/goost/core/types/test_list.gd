@@ -336,6 +336,7 @@ func test_swap_adjacent_front_back_reverse():
 		if it == prev_it:
 			assert_true(false, "Infinite loop detected.")
 			break
+	assert_true(true)
 
 
 func test_swap_adjacent_middle_reverse():
@@ -348,6 +349,7 @@ func test_swap_adjacent_middle_reverse():
 		if it == prev_it:
 			assert_true(false, "Infinite loop detected.")
 			break
+	assert_true(true)
 
 
 func test_swap_random():
@@ -455,7 +457,7 @@ func test_move_before():
 func test_custom_iterators():
 	populate_test_data(list)
 	for node in list:
-		gut.p(node)
+		assert_not_null(node)
 
 
 func tets_sort_strings():
@@ -480,7 +482,6 @@ func tets_sort_strings():
 	var abcd_list = list.get_nodes()
 
 	for i in 4:
-		gut.p(abcd_list[i])
 		assert_eq(abcd[i], abcd_list[i])
 
 
@@ -509,11 +510,13 @@ func test_sort_variants():
 
 func test_print_list_node():
 	var node = list.push_back("Goost")
+	assert_not_null(node)
 	gut.p(node)
 
 
 func test_print_list():
 	populate_test_data(list)
+	assert_not_null(list)
 	gut.p(list)
 
 
