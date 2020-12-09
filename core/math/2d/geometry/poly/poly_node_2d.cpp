@@ -335,6 +335,15 @@ Array PolyNode2D::get_outlines_array() {
 	return ret;
 }
 
+Array PolyNode2D::build_outlines_array() {
+	build_outlines();
+	Array ret;
+	for (int i = 0; i < outlines.size(); ++i) {
+		ret.push_back(outlines[i]);
+	}
+	return ret;
+}
+
 void PolyNode2D::clear() {
 	while (get_child_count() > 0) {
 		const int idx = get_child_count() - 1;
@@ -396,6 +405,7 @@ void PolyNode2D::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("make_from_outlines", "outlines"), &PolyNode2D::make_from_outlines);
 	ClassDB::bind_method(D_METHOD("get_outlines"), &PolyNode2D::get_outlines_array);
+	ClassDB::bind_method(D_METHOD("build_outlines"), &PolyNode2D::build_outlines_array);
 
 	ClassDB::bind_method(D_METHOD("clear"), &PolyNode2D::clear);
 

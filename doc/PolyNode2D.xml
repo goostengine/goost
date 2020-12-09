@@ -11,6 +11,13 @@
 	<tutorials>
 	</tutorials>
 	<methods>
+		<method name="build_outlines">
+			<return type="Array">
+			</return>
+			<description>
+				Builds outlines from selected [member operation]. Unlike [method get_outlines], returns outlines immediately without scheduling operation for the next frame, so prefer to use [method get_outlines] if you care about performance over immediate information.
+			</description>
+		</method>
 		<method name="clear">
 			<return type="void">
 			</return>

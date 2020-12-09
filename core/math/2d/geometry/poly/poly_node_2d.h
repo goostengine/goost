@@ -95,6 +95,7 @@ public:
 	Vector<Vector<Point2>> get_outlines(); // Queued.
 	Vector<Vector<Point2>> build_outlines(); // Immediate.
 	Array get_outlines_array();
+	Array build_outlines_array();
 	void queue_update();
 
 	void clear();
