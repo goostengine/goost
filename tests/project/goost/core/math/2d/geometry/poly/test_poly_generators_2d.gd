@@ -14,7 +14,7 @@ func test_circle():
 	assert_ne(outlines_size, 26)
 	assert_eq(outlines_size, 51)
 	
-	assert_true(GoostGeometry2D.point_in_polygon(Vector2(n.radius - 1, 0), circle))
+	assert_true(GoostGeometry2D.point_in_polygon(Vector2(n.radius - 1, 0), circle) as bool)
 
 	n.queue_free()
 
@@ -31,6 +31,6 @@ func test_rectangle():
 	var outlines_size = rectangle.size()
 	assert_eq(outlines_size, 4)
 
-	assert_true(GoostGeometry2D.point_in_polygon(Vector2(128, 0), rectangle))
+	assert_true(GoostGeometry2D.point_in_polygon(Vector2(128, 0), rectangle) as bool)
 
 	n.queue_free()

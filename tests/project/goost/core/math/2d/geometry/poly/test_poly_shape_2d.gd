@@ -12,18 +12,10 @@ func test_collision_shape():
 	shape.add_child(circle)
 
 	body.add_child(shape)
-	# yield_to(shape, "shapes_applied", 1)
+	yield(shape, "shapes_applied")
 
-	# var body_shape = body.shape_owner_get_shape(0, 0)
-	# assert_not_null(body_shape)
+	var body_shape = body.shape_owner_get_shape(0, 0)
+	assert_not_null(body_shape)
 
-	# shape.connect("shapes_applied", self, "_on_shapes_applied", [body], CONNECT_ONESHOT)
-
-
-# func _on_shapes_applied(body):
-# 	var body_shape = body.shape_owner_get_shape(0, 0)
-# 	assert_not_null(body_shape)
-	
-# 	var shape_count = body.shape_owner_get_shape_count(0)
-	# print(shape_count)
-	# gut.p(shape_count)
+	var shape_count = body.shape_owner_get_shape_count(0)
+	assert_eq(shape_count, 1)
