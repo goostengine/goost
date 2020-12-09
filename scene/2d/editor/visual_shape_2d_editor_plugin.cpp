@@ -37,9 +37,10 @@ void VisualShape2DEditor::_set_polygon(int p_idx, const Variant &p_polygon) cons
 		segments.resize(polygon.size() * 2);
 		Vector2 *w = segments.ptrw();
 
-		for (int i = 0; i < polygon.size(); ++i) {
+		const int vertices_count = polygon.size();
+		for (int i = 0; i < vertices_count; ++i) {
 			w[(i << 1) + 0] = polygon[i];
-			w[(i << 1) + 1] = polygon[(i + 1) % polygon.size()];
+			w[(i << 1) + 1] = polygon[(i + 1) % vertices_count];
 		}
 		concave->set("segments", segments);
 	}

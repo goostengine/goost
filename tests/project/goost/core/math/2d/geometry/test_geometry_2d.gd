@@ -12,19 +12,15 @@ var poly_boundary = GoostGeometry2D.regular_polygon(8, SIZE * 2)
 var solution = []
 
 
-func setup():
+func before_each():
 	testbed = preload("geometry_2d_testbed.tscn").instance()
-	get_tree().get_root().call_deferred("add_child", testbed)
+	add_child_autofree(testbed)
 
 
 func after_each():
 	testbed.solution = solution
 	testbed.test = gut._current_test.name
 	testbed.update()
-
-
-func teardown():
-	testbed.queue_free()
 
 
 func test_merge_polygons():

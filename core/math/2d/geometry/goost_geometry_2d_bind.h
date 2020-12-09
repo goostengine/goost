@@ -34,6 +34,7 @@ public:
 	real_t polygon_area(const Vector<Vector2> &p_polygon) const;
 	real_t polygon_perimeter(const Vector<Vector2> &p_polygon) const;
 	real_t polyline_length(const Vector<Vector2> &p_polyline) const;
+	Rect2 bounding_rect(const Vector<Point2> &p_points) const;
 
 	int point_in_polygon(const Point2 &p_point, const Vector<Point2> &p_polygon) const;
 

@@ -118,6 +118,10 @@ real_t _GoostGeometry2D::polyline_length(const Vector<Vector2> &p_polyline) cons
 	return GoostGeometry2D::polyline_length(p_polyline);
 }
 
+Rect2 _GoostGeometry2D::bounding_rect(const Vector<Point2> &p_points) const {
+	return GoostGeometry2D::bounding_rect(p_points);
+}
+
 int _GoostGeometry2D::point_in_polygon(const Point2 &p_point, const Vector<Point2> &p_polygon) const {
 	return GoostGeometry2D::point_in_polygon(p_point, p_polygon);
 }
@@ -149,6 +153,7 @@ void _GoostGeometry2D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("polygon_area", "polygon"), &_GoostGeometry2D::polygon_area);
 	ClassDB::bind_method(D_METHOD("polygon_perimeter", "polygon"), &_GoostGeometry2D::polygon_perimeter);
 	ClassDB::bind_method(D_METHOD("polyline_length", "polyline"), &_GoostGeometry2D::polyline_length);
+	ClassDB::bind_method(D_METHOD("bounding_rect", "points"), &_GoostGeometry2D::bounding_rect);
 
 	ClassDB::bind_method(D_METHOD("point_in_polygon", "point", "polygon"), &_GoostGeometry2D::point_in_polygon);
 
