@@ -103,8 +103,10 @@ void PolyShape2D::_update_shapes() {
 	auto script = get_script_instance();
 	if (script && script->has_method("_apply_shapes")) {
 		script->call("_apply_shapes");
+		emit_signal("shapes_applied");
 	} else {
 		_apply_shapes();
+		emit_signal("shapes_applied");
 	}
 	update();
 	update_queued = false;
@@ -173,6 +175,8 @@ void PolyShape2D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_build_mode"), &PolyShape2D::get_build_mode);
 
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "build_mode", PROPERTY_HINT_ENUM, "Triangles,Convex,Segments"), "set_build_mode", "get_build_mode");
+
+	ADD_SIGNAL(MethodInfo("shapes_applied"));
 
 	BIND_ENUM_CONSTANT(BUILD_TRIANGLES);
 	BIND_ENUM_CONSTANT(BUILD_CONVEX);

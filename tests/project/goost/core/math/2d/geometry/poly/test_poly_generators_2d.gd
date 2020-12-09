@@ -3,7 +3,7 @@ extends "res://addons/gut/test.gd"
 
 func test_circle():
 	var n = PolyCircle2D.new()
-	add_child(n)
+	add_child_autofree(n)
 	n.radius = 128
 
 	var outlines = n.build_outlines()
@@ -21,7 +21,7 @@ func test_circle():
 
 func test_rectangle():
 	var n = PolyRectangle2D.new()
-	add_child(n)
+	add_child_autofree(n)
 	n.extents = Vector2(128, 128)
 
 	var outlines = n.build_outlines()
