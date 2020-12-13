@@ -49,6 +49,7 @@ def get_child_components(parent):
 classes = [
     "GoostGeometry2D",
     "GoostImage",
+    "GradientTexture2D",
     "ImageBlender",
     "ImageIndexed",
     "LinkedList",

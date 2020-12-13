@@ -6,9 +6,10 @@
 #include "2d/editor/poly_node_2d_editor_plugin.h"
 #include "2d/editor/visual_shape_2d_editor_plugin.h"
 #include "2d/poly_collision_shape_2d.h"
-#include "2d/poly_shape_2d.h"
 #include "2d/poly_generators_2d.h"
+#include "2d/poly_shape_2d.h"
 #include "2d/visual_shape_2d.h"
+#include "resources/gradient_texture_2d.h"
 
 namespace goost {
 
@@ -21,6 +22,7 @@ void register_scene_types() {
 	ClassDB::register_class<PolyCollisionShape2D>();
 #endif
 	ClassDB::register_class<VisualShape2D>();
+	ClassDB::register_class<GradientTexture2D>();
 
 #if defined(TOOLS_ENABLED) && defined(GOOST_EDITOR_ENABLED)
 #ifdef GOOST_CORE_ENABLED
