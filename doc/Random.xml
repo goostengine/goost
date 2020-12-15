@@ -135,7 +135,6 @@
 		<member name="number" type="int" setter="" getter="get_number" default="37">
 			Generates a random unsigned 32-bit integer. Equivalent to [method RandomNumberGenerator.randi].
 		</member>
-		<member name="seed" type="int" setter="set_seed" getter="get_seed" override="true" default="0" />
 		<member name="value" type="float" setter="" getter="get_value" default="0.5">
 			Generates a random real number in the range of [code]0.0..1.0[/code]. Equivalent to [method RandomNumberGenerator.randf].
 		</member>

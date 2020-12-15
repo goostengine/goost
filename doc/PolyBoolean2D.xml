@@ -52,7 +52,7 @@
 			<argument index="2" name="operation" type="int" enum="PolyBoolean2D.Operation">
 			</argument>
 			<description>
-				Similar to [method boolean_polygons], but builds an hierarchy of clipped polygons and returns a top-level root node representing the tree of polygons, which has some performance cost. Whether a polygon is an outer or an inner path can be checked with [method PolyNode2D.is_hole] more easily and effectively compared to calculating polygon area to determine orientation, see [method GoostGeometry2D.polygon_area].
+				Similar to [method boolean_polygons], but builds an hierarchy of clipped polygons and returns a top-level root node representing the tree of polygons, which has some performance cost. Whether a polygon is an outer or an inner path can be checked with [method PolyNode2D.is_inner] more easily and effectively compared to calculating polygon area to determine orientation, see [method GoostGeometry2D.polygon_area].
 			</description>
 		</method>
 		<method name="clip_polygons" qualifiers="const">

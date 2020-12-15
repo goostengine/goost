@@ -31,6 +31,13 @@
 			The mode to build shapes from [PolyNode2D] children.
 		</member>
 	</members>
+	<signals>
+		<signal name="shapes_applied">
+			<description>
+				Emitted whenever the shapes are built and applied to some other object. The signal is emitted after [method _apply_shapes] is called in all cases, so you don't have to emit the signal manually.
+			</description>
+		</signal>
+	</signals>
 	<constants>
 		<constant name="BUILD_TRIANGLES" value="0" enum="BuildMode">
 			Decomposes outlines into triangle shapes.
