@@ -42,26 +42,37 @@ void GradientTexture2D::_update() {
 	if (gradient.is_null()) {
 		return;
 	}
-	PoolVector<uint8_t> data;
-	data.resize(width * height * 4);
-	{
-		PoolVector<uint8_t>::Write wd8 = data.write();
-		Gradient &g = **gradient;
+	Ref<Image> image;
+	image.instance();
 
-		for (int y = 0; y < height; y++) {
-			for (int x = 0; x < width; x++) {
-				float ofs = _get_gradient_offset_at(x, y);
-				Color color = g.get_color_at_offset(ofs);
-
-				wd8[(x + (y * width)) * 4 + 0] = uint8_t(CLAMP(color.r * 255.0, 0, 255));
-				wd8[(x + (y * width)) * 4 + 1] = uint8_t(CLAMP(color.g * 255.0, 0, 255));
-				wd8[(x + (y * width)) * 4 + 2] = uint8_t(CLAMP(color.b * 255.0, 0, 255));
-				wd8[(x + (y * width)) * 4 + 3] = uint8_t(CLAMP(color.a * 255.0, 0, 255));
+	if (gradient->get_points_count() <= 1) { // No need to interpolate.
+		image->create(width, height, false, Image::FORMAT_RGBA8);
+		Color color;
+		if (gradient->get_points_count() == 1) {
+			color = gradient->get_color(0);
+		} else {
+			color = Color(0, 0, 0, 1);
+		}
+		image->fill(color);
+	} else {
+		PoolVector<uint8_t> data;
+		data.resize(width * height * 4);
+		{
+			PoolVector<uint8_t>::Write wd8 = data.write();
+			Gradient &g = **gradient;
+			for (int y = 0; y < height; y++) {
+				for (int x = 0; x < width; x++) {
+					float ofs = _get_gradient_offset_at(x, y);
+					const Color &c = g.get_color_at_offset(ofs);
+					wd8[(x + (y * width)) * 4 + 0] = uint8_t(CLAMP(c.r * 255.0, 0, 255));
+					wd8[(x + (y * width)) * 4 + 1] = uint8_t(CLAMP(c.g * 255.0, 0, 255));
+					wd8[(x + (y * width)) * 4 + 2] = uint8_t(CLAMP(c.b * 255.0, 0, 255));
+					wd8[(x + (y * width)) * 4 + 3] = uint8_t(CLAMP(c.a * 255.0, 0, 255));
+				}
 			}
 		}
+		image->create(width, height, false, Image::FORMAT_RGBA8, data);
 	}
-	Ref<Image> image = memnew(Image(width, height, false, Image::FORMAT_RGBA8, data));
-
 	VS::get_singleton()->texture_allocate(texture, width, height, 0, Image::FORMAT_RGBA8, VS::TEXTURE_TYPE_2D, VS::TEXTURE_FLAG_FILTER);
 	VS::get_singleton()->texture_set_data(texture, image);
 

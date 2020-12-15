@@ -1,5 +1,6 @@
 extends "res://addons/gut/test.gd"
 
+
 func test_linear():
     var texture = GradientTexture2D.new()
     var gradient = Gradient.new()
@@ -32,4 +33,22 @@ func test_radial():
     image.lock()
     assert_eq(image.get_pixel(0, 0), Color.white)
     assert_ne(image.get_pixel(texture.get_width() - 1, 0), Color.black)
+    image.unlock()
+
+
+func test_gradient_single_color():
+    var texture = GradientTexture2D.new()
+    var gradient = Gradient.new()
+    for i in gradient.get_point_count():
+        gradient.remove_point(i)
+    texture.gradient = gradient
+
+    yield(texture, "changed")
+
+    var image = texture.get_data()
+    assert_not_null(image)
+
+    image.lock()
+    assert_eq(image.get_pixel(0, 0), Color.white)
+    assert_eq(image.get_pixel(texture.get_width() - 1, 0), Color.white)
     image.unlock()
