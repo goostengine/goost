@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="Grid2D" inherits="Resource" version="3.2">
+	<brief_description>
+		A two-dimensional data container.
+	</brief_description>
+	<description>
+		A data structure which holds an arbitrary number of elements in a grid. Each cell represents a single element which stores any [Variant] compatible datatype. Can act as a helper class for other pixel-based classes such as [Image], [BitMap], [TileMap] etc.
+		The grid is initialized with [method create] method:
+		[codeblock]
+		var grid = Grid2D.new()
+		grid.create(3, 4)
+		grid.set_element(2, 3, "Goost")
+		print(grid.get_element(2, 3)) # Prints: "Goost".
+		[/codeblock]
+		Traversing all elements can be done just like two-dimensional array (or image):
+		[codeblock]
+		for y in grid.get_height():
+		    for x in grid.get_width():
+		        print(grid.get_element(x, y))
+		[/codeblock]
+		Alternatively, all elements can be traversed using a simplified syntax:
+		[codeblock]
+		for element in grid:
+		    print(element)
+		[/codeblock]
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="clear">
+			<return type="void">
+			</return>
+			<description>
+				Clears all elements in this grid.
+			</description>
+		</method>
+		<method name="create">
+			<return type="void">
+			</return>
+			<argument index="0" name="width" type="int">
+			</argument>
+			<argument index="1" name="height" type="int">
+			</argument>
+			<description>
+				Initializes the grid by allocating new data to hold [code]width * height[/code] elements. By default, all elements of the grid are initialized to [code]null[/code] values.
+				[b]Note:[/b] this clears all existing elements from the grid before creation.
+			</description>
+		</method>
+		<method name="create_from_data">
+			<return type="void">
+			</return>
+			<argument index="0" name="width" type="int">
+			</argument>
+			<argument index="1" name="height" type="int">
+			</argument>
+			<argument index="2" name="data" type="Array">
+			</argument>
+			<description>
+				Initializes the grid from a continuos 1D array of data. The number of elements in [code]data[/code] must be equal to [code]width * height[/code].
+			</description>
+		</method>
+		<method name="fill">
+			<return type="void">
+			</return>
+			<argument index="0" name="with_value" type="Variant">
+			</argument>
+			<description>
+				Fills all elements in the grid with a specified value.
+			</description>
+		</method>
+		<method name="get_cell">
+			<return type="Variant">
+			</return>
+			<argument index="0" name="position" type="Vector2">
+			</argument>
+			<description>
+				Similar to [method get_element], but accepts [Vector2] as coordinates.
+			</description>
+		</method>
+		<method name="get_element">
+			<return type="Variant">
+			</return>
+			<argument index="0" name="x" type="int">
+			</argument>
+			<argument index="1" name="y" type="int">
+			</argument>
+			<description>
+				Returns an element at specified coordinates.
+			</description>
+		</method>
+		<method name="get_height" qualifiers="const">
+			<return type="int">
+			</return>
+			<description>
+				Returns the total number of rows.
+			</description>
+		</method>
+		<method name="get_size" qualifiers="const">
+			<return type="Vector2">
+			</return>
+			<description>
+				Returns the grid dimensions as [Vector2] (width and height).
+			</description>
+		</method>
+		<method name="get_width" qualifiers="const">
+			<return type="int">
+			</return>
+			<description>
+				Returns the total number of elements per row.
+			</description>
+		</method>
+		<method name="is_empty" qualifiers="const">
+			<return type="bool">
+			</return>
+			<description>
+				Returns whether the grid is empty (does not contain data).
+			</description>
+		</method>
+		<method name="resize">
+			<return type="void">
+			</return>
+			<argument index="0" name="new_width" type="int">
+			</argument>
+			<argument index="1" name="new_height" type="int">
+			</argument>
+			<description>
+				Resizes the grid to have a different number of elements. Resizing an existing grid to a smaller size rearranges the elements to fit new width and height without preserving original positions ([b]To-do:[/b] implement cropping method for this). Resizing an existing grid to a larger size initializes new elements to [code]null[/code].
+			</description>
+		</method>
+		<method name="set_cell">
+			<return type="void">
+			</return>
+			<argument index="0" name="position" type="Vector2">
+			</argument>
+			<argument index="1" name="value" type="Variant">
+			</argument>
+			<description>
+				Similar to [method set_element], but accepts [Vector2] as coordinates.
+			</description>
+		</method>
+		<method name="set_element">
+			<return type="void">
+			</return>
+			<argument index="0" name="x" type="int">
+			</argument>
+			<argument index="1" name="y" type="int">
+			</argument>
+			<argument index="2" name="value" type="Variant">
+			</argument>
+			<description>
+				Sets any value to element at specified coordinates.
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="data" type="Dictionary" setter="_set_data" getter="_get_data" default="{&quot;data&quot;: [  ],&quot;height&quot;: 0,&quot;width&quot;: 0}">
+			The data which represents this grid. Used for storage.
+		</member>
+	</members>
+	<constants>
+	</constants>
+</class>

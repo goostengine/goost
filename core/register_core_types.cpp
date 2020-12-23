@@ -4,6 +4,7 @@
 
 #include "image/register_image_types.h"
 #include "math/register_math_types.h"
+#include "types/grid_2d.h"
 #include "types/list.h"
 #include "types/variant_resource.h"
 
@@ -24,6 +25,7 @@ static void _variant_resource_preview_init() {
 #endif
 
 void register_core_types() {
+	ClassDB::register_class<Grid2D>();
 	ClassDB::register_class<ListNode>();
 	ClassDB::register_class<LinkedList>();
 

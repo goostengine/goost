@@ -50,6 +50,7 @@ classes = [
     "GoostGeometry2D",
     "GoostImage",
     "GradientTexture2D",
+    "Grid2D",
     "ImageBlender",
     "ImageIndexed",
     "LinkedList",
