@@ -36,8 +36,8 @@ void Grid2D::set_element(int p_x, int p_y, const Variant &p_value) {
 #ifdef DEBUG_ENABLED
 	ERR_FAIL_COND(p_x < 0);
 	ERR_FAIL_COND(p_y < 0);
-	ERR_FAIL_COND(p_x > width);
-	ERR_FAIL_COND(p_y > height);
+	ERR_FAIL_COND(p_x >= width);
+	ERR_FAIL_COND(p_y >= height);
 #endif
 	uint32_t ofs = p_y * width + p_x;
 	return data.write[ofs] = p_value;
@@ -47,8 +47,8 @@ Variant Grid2D::get_element(int p_x, int p_y) {
 #ifdef DEBUG_ENABLED
 	ERR_FAIL_COND_V(p_x < 0, Variant());
 	ERR_FAIL_COND_V(p_y < 0, Variant());
-	ERR_FAIL_COND_V(p_x > width, Variant());
-	ERR_FAIL_COND_V(p_y > height, Variant());
+	ERR_FAIL_COND_V(p_x >= width, Variant());
+	ERR_FAIL_COND_V(p_y >= height, Variant());
 #endif
 	uint32_t ofs = p_y * width + p_x;
 	return data[ofs];
