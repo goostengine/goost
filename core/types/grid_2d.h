@@ -33,8 +33,11 @@ public:
 
 	_FORCE_INLINE_ void set_element(int p_x, int p_y, const Variant &p_value);
 	_FORCE_INLINE_ Variant get_element(int p_x, int p_y);
+
 	void set_cell(const Vector2 &p_pos, const Variant &p_value);
 	Variant get_cell(const Vector2 &p_pos);
+	Variant get_cell_or_null(const Vector2 &p_pos);
+	bool has_cell(const Vector2 &p_pos);
 
 	void fill(const Variant &p_value);
 
@@ -43,7 +46,7 @@ public:
 	Vector2 get_size() const { return Vector2(width, height); }
 
 	bool is_empty() const { return width == 0 && height == 0; }
-	void clear() { data.clear(); width = height = 0; }
+	void clear();
 
 	virtual String to_string();
 };

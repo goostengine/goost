@@ -77,6 +77,15 @@
 				Similar to [method get_element], but accepts [Vector2] as coordinates.
 			</description>
 		</method>
+		<method name="get_cell_or_null">
+			<return type="Variant">
+			</return>
+			<argument index="0" name="position" type="Vector2">
+			</argument>
+			<description>
+				Returns cell's value if the grid contains an element at specified position, otherwise returns [code]null[/code]. See also [method has_cell].
+			</description>
+		</method>
 		<method name="get_element">
 			<return type="Variant">
 			</return>
@@ -107,6 +116,15 @@
 			</return>
 			<description>
 				Returns the total number of elements per row.
+			</description>
+		</method>
+		<method name="has_cell">
+			<return type="bool">
+			</return>
+			<argument index="0" name="position" type="Vector2">
+			</argument>
+			<description>
+				Returns [code]true[/code] if the grid contains an element at specified position. Returns [code]false[/code] if the position lies outside the grid dimensions. See also [method get_cell_or_null].
 			</description>
 		</method>
 		<method name="is_empty" qualifiers="const">
