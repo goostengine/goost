@@ -74,7 +74,7 @@ func test_resize():
 	assert_eq(grid.get_element(1, 1), 3, msg)
 
 
-func test_element_cell_pixel():
+func test_element_cell():
 	var grid = Grid2D.new()
 	grid.create(4, 4)
 	assert_null(grid.get_element(0, 0))
@@ -87,6 +87,22 @@ func test_element_cell_pixel():
 
 	grid.set_cell(Vector2(0, 0), null)
 	assert_null(grid.get_element(0, 0))
+
+	assert_true(grid.has_cell(Vector2(0, 0)))
+	assert_true(grid.has_cell(Vector2(3, 0)))
+	assert_true(grid.has_cell(Vector2(0, 3)))
+	assert_true(grid.has_cell(Vector2(3, 3)))
+	assert_false(grid.has_cell(Vector2(0, -1)))
+	assert_false(grid.has_cell(Vector2(4, 3)))
+
+	assert_null(grid.get_cell_or_null(Vector2(-1, -1)))
+	assert_null(grid.get_cell_or_null(Vector2(3, 4)))
+	assert_null(grid.get_cell_or_null(Vector2(4, 3)))
+
+	grid.set_cell(Vector2(0, 0), "Goost")
+
+	assert_not_null(grid.get_cell_or_null(Vector2(0, 0)))
+	assert_eq(grid.get_cell_or_null(Vector2(0, 0)), "Goost")
 
 
 func test_custom_iterator():

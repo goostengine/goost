@@ -62,6 +62,17 @@ Variant Grid2D::get_cell(const Vector2 &p_pos) {
 	return get_element(p_pos.x, p_pos.y);
 }
 
+Variant Grid2D::get_cell_or_null(const Vector2 &p_pos) {
+	if (!has_cell(p_pos)) {
+		return Variant();
+	}
+	return get_element(p_pos.x, p_pos.y);
+}
+
+bool Grid2D::has_cell(const Vector2 &p_pos) {
+	return p_pos.x >= 0 && p_pos.y >= 0 && p_pos.x < width && p_pos.y < height;
+}
+
 void Grid2D::fill(const Variant &p_value) {
 	int idx = 0;
 	const int count = width * height;
@@ -69,6 +80,12 @@ void Grid2D::fill(const Variant &p_value) {
 	while (idx < count) {
 		dest[idx++] = p_value;
 	}
+}
+
+void Grid2D::clear() {
+	data.clear();
+	width = 0;
+	height = 0;
 }
 
 Variant Grid2D::_iter_init(const Array &p_iter) {
@@ -137,8 +154,11 @@ void Grid2D::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("set_element", "x", "y", "value"), &Grid2D::set_element);
 	ClassDB::bind_method(D_METHOD("get_element", "x", "y"), &Grid2D::get_element);
+
 	ClassDB::bind_method(D_METHOD("set_cell", "position", "value"), &Grid2D::set_cell);
 	ClassDB::bind_method(D_METHOD("get_cell", "position"), &Grid2D::get_cell);
+	ClassDB::bind_method(D_METHOD("get_cell_or_null", "position"), &Grid2D::get_cell_or_null);
+	ClassDB::bind_method(D_METHOD("has_cell", "position"), &Grid2D::has_cell);
 
 	ClassDB::bind_method(D_METHOD("fill", "with_value"), &Grid2D::fill);
 
@@ -148,11 +168,11 @@ void Grid2D::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("is_empty"), &Grid2D::is_empty);
 	ClassDB::bind_method(D_METHOD("clear"), &Grid2D::clear);
-	
+
 	ClassDB::bind_method(D_METHOD("_iter_init"), &Grid2D::_iter_init);
 	ClassDB::bind_method(D_METHOD("_iter_get"), &Grid2D::_iter_get);
 	ClassDB::bind_method(D_METHOD("_iter_next"), &Grid2D::_iter_next);
-	
+
 	ClassDB::bind_method(D_METHOD("_set_data", "data"), &Grid2D::_set_data);
 	ClassDB::bind_method(D_METHOD("_get_data"), &Grid2D::_get_data);
 	ADD_PROPERTY(PropertyInfo(Variant::DICTIONARY, "data", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_STORAGE), "_set_data", "_get_data");
