@@ -4,7 +4,7 @@
 		Polygon partitioning.
 	</brief_description>
 	<description>
-		A singleton which provides various method for polygon decomposition, partitioning etc.
+		A singleton which provides various methods for polygon decomposition, partitioning etc.
 		A new local instance must be created manually with [method new_instance] method if you need to override the default [member parameters], else the methods in this class are available globally:
 		[codeblock]
 		var polygons = []

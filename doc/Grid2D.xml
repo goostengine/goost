@@ -4,7 +4,7 @@
 		A two-dimensional data container.
 	</brief_description>
 	<description>
-		A data structure which holds an arbitrary number of elements in a grid. Each cell represents a single element which stores any [Variant] compatible datatype. Can act as a helper class for other pixel-based classes such as [Image], [BitMap], [TileMap] etc.
+		A data structure which holds an arbitrary number of elements in a grid. Each cell represents a single element which stores any [Variant] compatible datatype. Can act as a helper class for other pixel-based classes such as [Image] ([Color]), [BitMap] (@GlobalScope.bool) etc.
 		The grid is initialized with [method create] method:
 		[codeblock]
 		var grid = Grid2D.new()
