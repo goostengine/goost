@@ -235,6 +235,8 @@ void ShapeCast2D::_notification(int p_what) {
 }
 
 void ShapeCast2D::_update_shapecast_state() {
+	result.clear();
+
 	ERR_FAIL_COND_MSG(shape.is_null(), "Invalid shape.");
 
 	Ref<World2D> w2d = get_world_2d();
@@ -258,8 +260,6 @@ void ShapeCast2D::_update_shapecast_state() {
 		process_intersections = !can_move || collision_unsafe_distance < 1.0;
 	}
 	if (process_intersections) {
-		result.clear();
-
 		bool intersected = true;
 		Set<RID> checked = exclude;
 
