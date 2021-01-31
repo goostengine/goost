@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="GoostEngine" inherits="Object" version="3.2">
+	<brief_description>
+		Goost singleton.
+	</brief_description>
+	<description>
+		A general-purpose engine singleton. Provides methods which may be global in nature (both in terms of availability and the frequency of use throughout projects), or relating to global scope of other classes. May contain methods closely related to the [Engine].
+	</description>
+	<tutorials>
+		<link>https://goost.readthedocs.io/en/gd3/</link>
+	</tutorials>
+	<methods>
+		<method name="get_color_constants" qualifiers="const">
+			<return type="Dictionary">
+			</return>
+			<description>
+				Returns a [Dictionary] of color constants listed in [Color], with keys as names and values as actual colors.
+				[codeblock]
+				# Pick a random color constant.
+				static func rand_color_constant():
+				    var colors = GoostEngine.get_color_constants()
+				    var name = Random.choice(colors.keys())
+				    var color = colors[name]
+				    return color
+				[/codeblock]
+			</description>
+		</method>
+	</methods>
+	<constants>
+	</constants>
+</class>

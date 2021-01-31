@@ -10,12 +10,12 @@ config_version=4
 
 _global_script_classes=[ {
 "base": "Reference",
-"class": "Goost",
+"class": "TestUtils",
 "language": "GDScript",
-"path": "res://goost/goost.gd"
+"path": "res://test_utils.gd"
 } ]
 _global_script_class_icons={
-"Goost": ""
+"TestUtils": ""
 }
 
 [application]
