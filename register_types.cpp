@@ -1,8 +1,9 @@
 #include "register_types.h"
 
 #include "core/engine.h"
+#include "core/goost_engine.h"
+#include "scene/main/scene_tree.h"
 
-#include "goost.h"
 #include "core/register_core_types.h"
 #include "scene/register_scene_types.h"
 #include "editor/register_editor_types.h"
@@ -17,6 +18,8 @@ void register_goost_types() {
 	ClassDB::register_class<GoostEngine>();
 	Engine::get_singleton()->add_singleton(
 			Engine::Singleton("GoostEngine", GoostEngine::get_singleton()));
+	SceneTree::add_idle_callback(&GoostEngine::flush_calls);
+
 	goost::register_core_types();
 #endif
 #ifdef GOOST_SCENE_ENABLED
