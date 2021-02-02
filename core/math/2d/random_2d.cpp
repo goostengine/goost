@@ -138,4 +138,5 @@ void Random2D::_bind_methods() {
 	ADD_PROPERTY_DEFAULT("color", Color(0, 0, 1));
 	ADD_PROPERTY_DEFAULT("condition", true);
 	ADD_PROPERTY_DEFAULT("seed", 0);
+	ADD_PROPERTY_DEFAULT("state", 0);
 }

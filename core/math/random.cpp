@@ -131,4 +131,5 @@ void Random::_bind_methods() {
 	ADD_PROPERTY_DEFAULT("condition", true);
 	// Have to override in base class as well.
 	ADD_PROPERTY_DEFAULT("seed", 0);
+	ADD_PROPERTY_DEFAULT("state", 0);
 }
