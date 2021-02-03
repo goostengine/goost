@@ -36,6 +36,37 @@
 				[/codeblock]
 			</description>
 		</method>
+		<method name="invoke">
+			<return type="void">
+			</return>
+			<argument index="0" name="object" type="Object">
+			</argument>
+			<argument index="1" name="method" type="String">
+			</argument>
+			<argument index="2" name="delay_seconds" type="float">
+			</argument>
+			<argument index="3" name="pause_mode_process" type="bool" default="true">
+			</argument>
+			<description>
+				Schedules a [code]method[/code] on the [code]object[/code] to be called [code]delay_seconds[/code] later. If [code]pause_mode_process[/code] is set to [code]false[/code], pausing the [SceneTree] will also postpone the function from being called until the [SceneTree] pause state is resumed. If the object is freed during the wait period, the invocation is cancelled.
+				[b]Note:[/b] manual cancellation is not supported.
+			</description>
+		</method>
+		<method name="invoke_deferred">
+			<return type="void">
+			</return>
+			<argument index="0" name="object" type="Object">
+			</argument>
+			<argument index="1" name="method" type="String">
+			</argument>
+			<argument index="2" name="delay_seconds" type="float">
+			</argument>
+			<argument index="3" name="pause_mode_process" type="bool" default="true">
+			</argument>
+			<description>
+				Same as [method invoke], but calls the [code]method[/code] on idle time when the time arrives.
+			</description>
+		</method>
 	</methods>
 	<constants>
 	</constants>
