@@ -7,6 +7,7 @@
 #include "types/grid_2d.h"
 #include "types/list.h"
 #include "types/variant_resource.h"
+#include "invoke_state.h"
 
 #ifdef TOOLS_ENABLED
 #include "editor/editor_node.h"
@@ -33,6 +34,7 @@ void register_core_types() {
 #ifdef TOOLS_ENABLED
 	EditorNode::add_init_callback(_variant_resource_preview_init);
 #endif
+	ClassDB::register_class<InvokeState>();
 
 #ifdef GOOST_IMAGE_ENABLED
 	register_image_types();
