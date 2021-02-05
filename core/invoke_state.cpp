@@ -2,7 +2,6 @@
 #include "scene/scene_string_names.h"
 
 void InvokeState::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("get_target_id"), &InvokeState::get_target_id);
 	ClassDB::bind_method(D_METHOD("get_target"), &InvokeState::get_target);
 	ClassDB::bind_method(D_METHOD("get_target_method"), &InvokeState::get_target_method);
 
@@ -12,6 +11,11 @@ void InvokeState::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("get_time_left"), &InvokeState::get_time_left);
 	
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "target"), "", "get_target");
+	ADD_PROPERTY(PropertyInfo(Variant::STRING, "method"), "", "get_target_method");
+	ADD_PROPERTY(PropertyInfo(Variant::REAL, "time_left"), "", "get_time_left");
+
+	ADD_SIGNAL(MethodInfo("pre_call"));
+	ADD_SIGNAL(MethodInfo("post_call"));
 	ADD_SIGNAL(MethodInfo("completed"));
-	ADD_SIGNAL(MethodInfo("step"));
 }

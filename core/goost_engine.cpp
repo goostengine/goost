@@ -47,13 +47,13 @@ Variant GoostEngine::_defer_call_unique_bind(const Variant **p_args, int p_argco
 	return Variant();
 }
 
-void GoostEngine::_invoke(Object *p_obj, StringName p_method, real_t p_sec, real_t p_rate, bool p_pause_mode, bool p_deferred) {
-	ERR_FAIL_NULL_MSG(p_obj, "Invalid object");
+Ref<InvokeState> GoostEngine::_invoke(Object *p_obj, StringName p_method, real_t p_delay, real_t p_rate, bool p_pause_mode, bool p_deferred) {
+	ERR_FAIL_NULL_V_MSG(p_obj, Ref<InvokeState>(), "Invalid object");
 
 	SceneTree *tree = Object::cast_to<SceneTree>(OS::get_singleton()->get_main_loop());
-	ERR_FAIL_NULL_MSG(tree, "The `invoke()` method requires a SceneTree to work.");
+	ERR_FAIL_NULL_V_MSG(tree, Ref<InvokeState>(), "The `invoke()` method requires a SceneTree to work.");
 
-	Ref<SceneTreeTimer> timer = tree->create_timer(p_sec, p_pause_mode);
+	Ref<SceneTreeTimer> timer = tree->create_timer(p_delay, p_pause_mode);
 
 	Ref<InvokeState> state;
 	state.instance();
@@ -67,33 +67,39 @@ void GoostEngine::_invoke(Object *p_obj, StringName p_method, real_t p_sec, real
 			varray(state, p_pause_mode, p_deferred), p_deferred ? CONNECT_DEFERRED : 0);
 
 	invokes.push_back(state);
+	return state;
 }
 
-void GoostEngine::invoke(Object *p_obj, StringName p_method, real_t p_sec, real_t p_rate, bool p_pause_mode) {
-	_invoke(p_obj, p_method, p_sec, p_rate, p_pause_mode, false);
+Ref<InvokeState> GoostEngine::invoke(Object *p_obj, StringName p_method, real_t p_delay, real_t p_rate, bool p_pause_mode) {
+	return _invoke(p_obj, p_method, p_delay, p_rate, p_pause_mode, false);
 }
 
-void GoostEngine::invoke_deferred(Object *p_obj, StringName p_method, real_t p_sec, real_t p_rate, bool p_pause_mode) {
-	_invoke(p_obj, p_method, p_sec, p_rate, p_pause_mode, true);
+Ref<InvokeState> GoostEngine::invoke_deferred(Object *p_obj, StringName p_method, real_t p_delay, real_t p_rate, bool p_pause_mode) {
+	return _invoke(p_obj, p_method, p_delay, p_rate, p_pause_mode, true);
 }
 
 void GoostEngine::_on_invoke_timeout(Ref<InvokeState> p_state, bool p_pause_mode, bool p_deferred) {
 	ERR_FAIL_COND(p_state.is_null());
 
 	Object *obj = ObjectDB::get_instance(p_state->instance_id);
+	if (!obj) {
+		p_state->active = false;
+	}
 	if (obj && p_state->is_active()) {
 		Variant::CallError ce;
+		p_state->emit_signal("pre_call");
 		obj->call(p_state->method, nullptr, 0, ce);
 		if (ce.error != Variant::CallError::CALL_OK) {
 			ERR_PRINT("Error invoking method: " + Variant::get_call_error_text(obj, p_state->method, nullptr, 0, ce) + ".");
+			p_state->active = false;
 		}
-		if (p_state->is_repeating()) {
+		p_state->emit_signal("post_call");
+		if (p_state->is_repeating() && ce.error == Variant::CallError::CALL_OK) {
 			SceneTree *tree = Object::cast_to<SceneTree>(OS::get_singleton()->get_main_loop());
 			Ref<SceneTreeTimer> timer = tree->create_timer(p_state->repeat_rate, p_pause_mode);
 			p_state->timer = timer;
 			timer->connect("timeout", this, "_on_invoke_timeout",
 					varray(p_state, p_pause_mode, p_deferred), p_deferred ? CONNECT_DEFERRED : 0);
-			p_state->emit_signal("step");
 		} else {
 			p_state->active = false;
 			p_state->emit_signal("completed");
@@ -125,8 +131,8 @@ void GoostEngine::_bind_methods() {
 		mi.arguments.push_back(PropertyInfo(Variant::STRING, "method"));
 		ClassDB::bind_vararg_method(METHOD_FLAGS_DEFAULT, "defer_call_unique", &GoostEngine::_defer_call_unique_bind, mi, varray(), false);
 	}
-	ClassDB::bind_method(D_METHOD("invoke", "object", "method", "delay_seconds", "repeat_rate_seconds", "pause_mode_process"), &GoostEngine::invoke, DEFVAL(-1.0), DEFVAL(true));
-	ClassDB::bind_method(D_METHOD("invoke_deferred", "object", "method", "delay_seconds", "repeat_rate_seconds", "pause_mode_process"), &GoostEngine::invoke_deferred, DEFVAL(-1.0), DEFVAL(true));
+	ClassDB::bind_method(D_METHOD("invoke", "object", "method", "delay", "repeat_rate", "pause_mode_process"), &GoostEngine::invoke, DEFVAL(-1.0), DEFVAL(true));
+	ClassDB::bind_method(D_METHOD("invoke_deferred", "object", "method", "delay", "repeat_rate", "pause_mode_process"), &GoostEngine::invoke_deferred, DEFVAL(-1.0), DEFVAL(true));
 	ClassDB::bind_method(D_METHOD("get_invokes"), &GoostEngine::get_invokes);
 	ClassDB::bind_method(D_METHOD("_on_invoke_timeout"), &GoostEngine::_on_invoke_timeout);
 }

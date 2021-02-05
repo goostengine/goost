@@ -20,7 +20,7 @@ protected:
 
 	Variant _defer_call_unique_bind(const Variant **p_args, int p_argcount, Variant::CallError &r_error);
 
-	void _invoke(Object *p_obj, StringName p_method, real_t p_delay_seconds, real_t p_repeat_rate, bool p_pause_mode_process, bool p_deferred);
+	Ref<InvokeState> _invoke(Object *p_obj, StringName p_method, real_t p_delay, real_t p_repeat_rate, bool p_pause_mode_process, bool p_deferred);
 	void _on_invoke_timeout(Ref<InvokeState> p_state, bool p_pause_mode, bool p_deferred);
 
 public:
@@ -30,8 +30,8 @@ public:
 
 	void defer_call_unique(Object *p_obj, StringName p_method, VARIANT_ARG_LIST);
 
-	void invoke(Object *p_obj, StringName p_method, real_t p_delay_seconds, real_t p_repeat_rate, bool p_pause_mode_process = true);
-	void invoke_deferred(Object *p_obj, StringName p_method, real_t p_delay_seconds, real_t p_repeat_rate, bool p_pause_mode_process = true);
+	Ref<InvokeState> invoke(Object *p_obj, StringName p_method, real_t p_delay, real_t p_repeat_rate, bool p_pause_mode_process = true);
+	Ref<InvokeState> invoke_deferred(Object *p_obj, StringName p_method, real_t p_delay, real_t p_repeat_rate, bool p_pause_mode_process = true);
 	Array get_invokes() const;
 
 	static void flush_calls();
