@@ -10,6 +10,17 @@
 		<link>https://goost.readthedocs.io/en/gd3/</link>
 	</tutorials>
 	<methods>
+		<method name="defer_call" qualifiers="vararg">
+			<return type="void">
+			</return>
+			<argument index="0" name="object" type="Object">
+			</argument>
+			<argument index="1" name="method" type="String">
+			</argument>
+			<description>
+				Calls the [code]method[/code] on the [code]object[/code] during idle time. Mostly equivalent to [method Object.call_deferred], so prefer to use [method Object.call_deferred] unless you need the same behavior along with [method defer_call_unique] which uses the same deferring mechanism.
+			</description>
+		</method>
 		<method name="defer_call_unique" qualifiers="vararg">
 			<return type="void">
 			</return>

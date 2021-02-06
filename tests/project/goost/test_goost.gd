@@ -28,6 +28,18 @@ class Counter:
 		counter += arg5
 
 
+func test_defer_call():
+	var m = Counter.new()
+	assert_eq(m.counter, 0)
+
+	for i in 100:
+		GoostEngine.defer_call(m, "inc")
+
+	assert_eq(m.counter, 0)
+	yield(get_tree(), "physics_frame") # Make it flush calls.
+	assert_eq(m.counter, 100)
+
+
 func test_defer_call_unique():
 	var m = Counter.new()
 	assert_eq(m.counter, 0)
