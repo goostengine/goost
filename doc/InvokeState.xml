@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="InvokeState" inherits="Reference" version="3.2">
+	<brief_description>
+		The function invocation state.
+	</brief_description>
+	<description>
+		This class is used by [method GoostEngine.invoke] to manage pending invocations.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="cancel">
+			<return type="void">
+			</return>
+			<description>
+				Cancels the invocation, preventing the target [member method] from being called.
+			</description>
+		</method>
+		<method name="is_active">
+			<return type="bool">
+			</return>
+			<description>
+				Tells whether this state is currently processed. If the state is cancelled with [method cancel], then this will return [code]false[/code].
+			</description>
+		</method>
+		<method name="is_repeating">
+			<return type="bool">
+			</return>
+			<description>
+				Tells whether the [member method] invocation is repeated every [code]repeat_rate[/code] seconds as requested by [method GoostEngine.invoke].
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="method" type="String" setter="" getter="get_target_method" default="&quot;&quot;">
+			The method name which is going to be invoked in the [member target] object (read-only).
+		</member>
+		<member name="target" type="Object" setter="" getter="get_target">
+			The target [Object] where the [member method] is going to be invoked (read-only).
+		</member>
+		<member name="time_left" type="float" setter="" getter="get_time_left" default="0.0">
+			The total time left before the target method is called (read-only).
+		</member>
+	</members>
+	<signals>
+		<signal name="completed">
+			<description>
+				Emitted when the [member method] is successfully called without errors. This signal is not emitted if the invocation is configured as repeating, see [method is_repeating].
+			</description>
+		</signal>
+		<signal name="post_call">
+			<description>
+				Emitted after the [member method] is called.
+			</description>
+		</signal>
+		<signal name="pre_call">
+			<description>
+				Emitted when the [member method] is about to be called.
+			</description>
+		</signal>
+	</signals>
+	<constants>
+	</constants>
+</class>

@@ -36,6 +36,54 @@
 				[/codeblock]
 			</description>
 		</method>
+		<method name="get_invokes" qualifiers="const">
+			<return type="Array">
+			</return>
+			<description>
+				Returns an [Array] of active [InvokeState] objects which can be used to track pending method invocations. If any reference to repeating [InvokeState] is lost, then all such invocations can be cancelled the following way:
+				[codeblock]
+				for state in GoostEngine.get_invokes():
+				    if state.is_repeating():
+				        state.cancel()
+				[/codeblock]
+			</description>
+		</method>
+		<method name="invoke">
+			<return type="InvokeState">
+			</return>
+			<argument index="0" name="object" type="Object">
+			</argument>
+			<argument index="1" name="method" type="String">
+			</argument>
+			<argument index="2" name="delay" type="float">
+			</argument>
+			<argument index="3" name="repeat_rate" type="float" default="-1.0">
+			</argument>
+			<argument index="4" name="pause_mode_process" type="bool" default="true">
+			</argument>
+			<description>
+				Schedules a [code]method[/code] on the [code]object[/code] to be called [code]delay[/code] seconds later.
+				If [code]repeat_rate &gt;= 0.0[/code], then the method is invoked repeatedly every [code]repeat_rate[/code] seconds until it's cancelled manually using [method InvokeState.cancel]. If the object is freed during the wait period, the invocation is cancelled automatically.
+				If [code]pause_mode_process[/code] is set to [code]false[/code], pausing the [SceneTree] will also postpone the function from being called until the [SceneTree] pause state is resumed.
+			</description>
+		</method>
+		<method name="invoke_deferred">
+			<return type="InvokeState">
+			</return>
+			<argument index="0" name="object" type="Object">
+			</argument>
+			<argument index="1" name="method" type="String">
+			</argument>
+			<argument index="2" name="delay" type="float">
+			</argument>
+			<argument index="3" name="repeat_rate" type="float" default="-1.0">
+			</argument>
+			<argument index="4" name="pause_mode_process" type="bool" default="true">
+			</argument>
+			<description>
+				Same as [method invoke], but calls the [code]method[/code] on idle time when the time arrives. This means that the method may not always be invoked exactly after [code]delay[/code] seconds.
+			</description>
+		</method>
 	</methods>
 	<constants>
 	</constants>

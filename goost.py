@@ -54,6 +54,7 @@ classes = [
     "Grid2D",
     "ImageBlender",
     "ImageIndexed",
+    "InvokeState",
     "LinkedList",
     "ListNode",
     "PolyBoolean2D",
@@ -74,6 +75,7 @@ classes = [
     "VisualShape2D",
 ]
 # ClassA : Depends on ClassB.
+# "GoostEngine" : "InvokeState"
 # "PolyBoolean2D" : "PolyBooleanParameters2D"
 # "PolyBoolean2D" : "PolyNode2D"
 # "PolyDecomp2D" : "PolyDecompParameters2D"
