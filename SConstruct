@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #
 # Upstream: https://github.com/goostengine/goost
-# Version: 1.5 (Godot Engine 3.2.2+)
+# Version: 2.0 (Godot Engine 3.2.4+)
 # License: MIT
 #
 # `SConstruct` which allows to build any C++ module just like Godot Engine.
@@ -58,7 +58,6 @@ opts = Variables("custom.py", ARGUMENTS)
 opts.Add("godot_version", "Godot version (branch, tags, commit hashes)", godot_version)
 opts.Add(BoolVariable("godot_sync", "Synchronize Godot version from the remote URL before building", False))
 opts.Add(BoolVariable("godot_modules_enabled", "Build all Godot builtin modules", True))
-opts.Add(BoolVariable("parent_modules_enabled", "Build all modules which may reside in the same parent directory", False))
 opts.Add(BoolVariable("use_godot_patches", "Apply custom fixes and small enhancements to Godot source before building", False))
 opts.Add("godot_patches", "A directory path containing custom Godot patches", "misc/patches")
 
@@ -71,7 +70,7 @@ Help(opts.GenerateHelpText(env), append=True)
 help_msg = """
 {module} environment variables:
 
-GODOT_VERSION: such as 3.2, 3.2.2-stable, master, commit hash etc.
+GODOT_VERSION: such as 3.2, 3.2.4-stable, master, commit hash etc.
     Current: {version}
 GODOT_SOURCE_PATH: a directory path to the existing Godot source code.
     Current: {path}
@@ -102,10 +101,10 @@ def godot_check_if_branch(ref):
 def godot_verify_min_version():
     sys.path.insert(0, godot_dir.abspath)
     import version
-    compatible = (version.major, version.minor, version.patch) >= (3, 2, 2)
+    compatible = (version.major, version.minor, version.patch) >= (3, 2, 4)
     if not compatible:
         print("Cannot compile %s without `custom_modules` support." % module_name.capitalize())
-        print("The minimum required Godot version is 3.2.2 (current: %s)" % env["godot_version"])
+        print("The minimum required Godot version is 3.2.4 (current: %s)" % env["godot_version"])
     sys.path.remove(godot_dir.abspath)
     sys.modules.pop("version")
     return compatible
@@ -138,14 +137,7 @@ for arg in ARGLIST:
 
 # Link this module as a custom module.
 modules = []
-modules.append(Dir("..").abspath)
-
-# This module may provide other nested modules, just like this one.
-try:
-    modules_path = config.get_modules_path()
-    modules.append(os.path.join(Dir(".").abspath, modules_path))
-except AttributeError:
-    pass
+modules.append(Dir(".").abspath)
 
 # We use the `custom_modules` build option to build this module, 
 # but allow to specify additional modules to build along this one.
@@ -154,23 +146,6 @@ if "custom_modules" in ARGUMENTS:
     modules.extend(custom_modules)
 
 build_args.append("custom_modules=%s" % ",".join(modules))
-
-# We cannot link to a single module using the `custom_modules` build option,
-# so this may compile other modules which reside in the same location as this 
-# module. To prevent this, we disable all modules there, excluding this one.
-if not env["parent_modules_enabled"]:
-    DIRNAMES = 1
-    dirs = next(os.walk(Dir("..").abspath))[DIRNAMES]
-    parent_modules = []
-
-    for d in dirs:
-        if d == module_name:
-            continue
-        if os.path.exists(os.path.join(Dir("..").abspath, d, "SCsub")):
-            parent_modules.append(d)
-
-    for m in parent_modules:
-        build_args.append("module_%s_enabled=no" % m)
 
 # Optionally disable Godot's built-in modules which are non-essential in order
 # to test out this module in the engine. For more details, refer to Godot docs:
