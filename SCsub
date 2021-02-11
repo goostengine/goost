@@ -3,8 +3,6 @@
 import os
 import goost
 
-import methods
-
 Import("env")
 env_goost = env.Clone()
 
@@ -18,6 +16,19 @@ for name in goost.get_components():
     opt = "goost_%s_enabled" % (name)
     if env_goost[opt]:
         env_goost.Prepend(CPPDEFINES=[opt.upper()])
+
+# Generate header with classes enabled.
+with open("classes_enabled.gen.h", "w") as f:
+    f.write("static const int _goost_classes_enabled_count = %s;\n" % len(goost.classes_enabled))
+    f.write("static const char* _goost_classes_enabled[_goost_classes_enabled_count] = {\n")
+    for c in goost.classes_enabled:
+        f.write('\t"%s",\n' % c)
+    f.write("};\n")
+    for c in goost.classes_enabled:
+        m = "GOOST_CLASS_" + c.upper() + "_ENABLED"
+        f.write("#ifndef %s\n" % m)
+        f.write("#define %s\n" % m)
+        f.write("#endif\n")
 
 env_goost.Prepend(CPPDEFINES={"SCALE_FACTOR" : env["goost_scale_factor"]})
 

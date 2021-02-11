@@ -8,6 +8,18 @@ def can_build(env, platform):
 def configure(env):
     from SCons.Script import Variables, BoolVariable, Help, Exit
 
+    # Check dependencies.
+    dependencies_satisfied = True
+    for c in goost.classes_enabled:
+        resolved = goost.resolve_dependency(goost.classes[c])
+        for cr in resolved:
+            if cr not in goost.classes_enabled:
+                dependencies_satisfied = False
+                print("Goost: Cannot disable `%s` class, because `%s` class depends on it." % (cr, c))
+
+    if not dependencies_satisfied:
+        Exit(255)
+
     opts = Variables()
     for name in goost.get_components():
         opts.Add(BoolVariable("goost_%s_enabled" % (name), "Build %s component." % (name), True))
@@ -41,8 +53,7 @@ def configure(env):
 
 
 def get_doc_classes():
-    # No error if a particular class is missing anyway, so return all classes.
-    return goost.classes
+    return goost.classes.keys()
 
 
 def get_doc_path():
