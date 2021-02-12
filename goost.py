@@ -46,6 +46,14 @@ def get_child_components(parent):
 # This is used by config.py::get_doc_classes(), and potentially allow to disable
 # each of the class in the future.
 #
+class GoostClass:
+   def __init__(self, name, deps=[]):
+      self.name = name
+      self.deps = []
+
+   def add_depencency(self, goost_class):
+      self.deps.append(goost_class)
+
 classes = [
     "GoostEngine",
     "GoostGeometry2D",
@@ -74,16 +82,56 @@ classes = [
     "VariantResource",
     "VisualShape2D",
 ]
-# ClassA : Depends on ClassB.
-# "GoostEngine" : "InvokeState"
-# "PolyBoolean2D" : "PolyBooleanParameters2D"
-# "PolyBoolean2D" : "PolyNode2D"
-# "PolyDecomp2D" : "PolyDecompParameters2D"
-# "PolyOffset2D" : "PolyOffsetParameters2D"
-# "GoostGeometry2D" : "PolyBoolean2D"
-# "GoostGeometry2D" : "PolyDecomp2D"
-# "GoostGeometry2D" : "PolyOffset2D"
-# "PolyCircle2D" : "PolyNode2D"
-# "PolyRectangle2D" : "PolyNode2D"
-# "PolyShape2D" : "PolyNode2D"
-# "PolyCollisionShape2D" : "PolyNode2D"
+
+# Convert to dictionary, because we need to instantiate `GoostClass` nodes.
+_classes = {}
+for c in classes:
+    _classes[c] = GoostClass(c)
+classes = _classes
+
+# Define dependencies.
+classes["GoostEngine"].add_depencency(classes["InvokeState"])
+classes["GoostGeometry2D"].add_depencency(classes["PolyBoolean2D"])
+classes["GoostGeometry2D"].add_depencency(classes["PolyDecomp2D"])
+classes["GoostGeometry2D"].add_depencency(classes["PolyOffset2D"])
+classes["LinkedList"].add_depencency(classes["ListNode"])
+classes["PolyBoolean2D"].add_depencency(classes["PolyBooleanParameters2D"])
+classes["PolyBoolean2D"].add_depencency(classes["PolyNode2D"])
+classes["PolyDecomp2D"].add_depencency(classes["PolyDecompParameters2D"])
+classes["PolyOffset2D"].add_depencency(classes["PolyOffsetParameters2D"])
+classes["PolyCircle2D"].add_depencency(classes["PolyNode2D"])
+classes["PolyRectangle2D"].add_depencency(classes["PolyNode2D"])
+classes["PolyShape2D"].add_depencency(classes["PolyNode2D"])
+classes["PolyCollisionShape2D"].add_depencency(classes["PolyNode2D"])
+classes["Random2D"].add_depencency(classes["Random"])
+
+def resolve_dependency(goost_class):
+    resolved = set()
+    def resolve(c, r_resolved):
+        for n in c.deps:
+            resolve(n, r_resolved)
+        r_resolved.add(c)
+    resolve(goost_class, resolved)
+    resolved_list = []
+    for c in resolved:
+        resolved_list.append(c.name)
+    return resolved_list
+    
+classes_enabled = []
+for c in classes:
+    classes_enabled.append(c)
+
+classes_disabled = []
+
+try:
+    import custom
+    try:
+        classes_disabled = custom.goost_classes_disabled
+        for c in classes_disabled:
+            if not c in classes:
+                raise NameError("Goost: Requested to disable non-existing class.")
+            classes_enabled.remove(c)
+    except AttributeError:
+        pass
+except ImportError:
+    pass

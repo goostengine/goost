@@ -1,7 +1,8 @@
-#include "core/object.h"
+#include "register_scene_types.h"
+#include "goost/register_types.h"
+#include "goost/classes_enabled.gen.h"
 
 #include "physics/register_physics_types.h"
-#include "register_scene_types.h"
 
 #include "2d/editor/poly_node_2d_editor_plugin.h"
 #include "2d/editor/visual_shape_2d_editor_plugin.h"
@@ -16,19 +17,21 @@ namespace goost {
 void register_scene_types() {
 #ifdef GOOST_CORE_ENABLED
 	// Depend on `PolyNode2D`.
-	ClassDB::register_class<PolyCircle2D>();
-	ClassDB::register_class<PolyRectangle2D>();
-	ClassDB::register_class<PolyShape2D>();
-	ClassDB::register_class<PolyCollisionShape2D>();
+	GOOST_REGISTER_CLASS(PolyCircle2D);
+	GOOST_REGISTER_CLASS(PolyRectangle2D);
+	GOOST_REGISTER_CLASS(PolyShape2D);
+	GOOST_REGISTER_CLASS(PolyCollisionShape2D);
 #endif
-	ClassDB::register_class<VisualShape2D>();
-	ClassDB::register_class<GradientTexture2D>();
+	GOOST_REGISTER_CLASS(VisualShape2D);
+	GOOST_REGISTER_CLASS(GradientTexture2D);
 
 #if defined(TOOLS_ENABLED) && defined(GOOST_EDITOR_ENABLED)
-#ifdef GOOST_CORE_ENABLED
-	EditorPlugins::add_by_type<PolyNode2DEditorPlugin>(); // Depends on `PolyNode2D`.
+#if defined(GOOST_CORE_ENABLED) && defined(GOOST_CLASS_POLYNODE2D_ENABLED)
+	EditorPlugins::add_by_type<PolyNode2DEditorPlugin>();
 #endif
+#if defined(GOOST_CLASS_VISUALSHAPE2D_ENABLED)
 	EditorPlugins::add_by_type<VisualShape2DEditorPlugin>();
+#endif
 #endif
 #ifdef GOOST_PHYSICS_ENABLED
 	register_physics_types();
