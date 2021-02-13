@@ -7,7 +7,7 @@
 namespace goost {
 
 void register_physics_types() {
-	GOOST_REGISTER_CLASS(ShapeCast2D);
+	GOOST_REGISTER_ShapeCast2D;
 }
 
 void unregister_physics_types() {

@@ -18,12 +18,12 @@ static Ref<ResourceSaverIndexedPNG> resource_saver_indexed_png;
 namespace goost {
 
 void register_image_types() {
-#ifdef GOOST_CLASS_GOOSTIMAGE_ENABLED
+#ifdef GOOST_GoostImage
 	_goost_image = memnew(_GoostImage);
 	ClassDB::register_class<_GoostImage>();
 	Engine::get_singleton()->add_singleton(Engine::Singleton("GoostImage", _GoostImage::get_singleton()));
 #endif
-#ifdef GOOST_CLASS_IMAGEINDEXED_ENABLED
+#ifdef GOOST_ImageIndexed
 	ClassDB::register_class<ImageIndexed>();
 
 	image_loader_indexed_png = memnew(ImageLoaderIndexedPNG);
@@ -33,14 +33,14 @@ void register_image_types() {
 	ResourceSaver::add_resource_format_saver(resource_saver_indexed_png);
 #endif
 
-	GOOST_REGISTER_CLASS(ImageBlender);
+	GOOST_REGISTER_ImageBlender;
 }
 
 void unregister_image_types() {
-#ifdef GOOST_CLASS_GOOSTIMAGE_ENABLED
+#ifdef GOOST_GoostImage
 	memdelete(_goost_image);
 #endif
-#ifdef GOOST_CLASS_IMAGEINDEXED_ENABLED
+#ifdef GOOST_ImageIndexed
 	if (image_loader_indexed_png) {
 		memdelete(image_loader_indexed_png);
 	}

@@ -1,6 +1,6 @@
 #include "register_core_types.h"
-#include "goost/register_types.h"
 #include "goost/classes_enabled.gen.h"
+#include "goost/register_types.h"
 
 #include "core/engine.h"
 #include "scene/main/scene_tree.h"
@@ -25,26 +25,26 @@ namespace goost {
 
 static GoostEngine *_goost = nullptr;
 
-#if defined(TOOLS_ENABLED) && defined(GOOST_CLASS_VARIANTRESOURCE_ENABLED)
+#if defined(TOOLS_ENABLED) && defined(GOOST_VariantResource)
 static void _variant_resource_preview_init();
 #endif
 
 void register_core_types() {
-#ifdef GOOST_CLASS_GOOSTENGINE_ENABLED
+#ifdef GOOST_GoostEngine
 	_goost = memnew(GoostEngine);
 	ClassDB::register_class<GoostEngine>();
 	Engine::get_singleton()->add_singleton(
 			Engine::Singleton("GoostEngine", GoostEngine::get_singleton()));
 	SceneTree::add_idle_callback(&GoostEngine::flush_calls);
 #endif
-	GOOST_REGISTER_CLASS(InvokeState);
+	GOOST_REGISTER_InvokeState;
 
-	GOOST_REGISTER_CLASS(Grid2D);
-	GOOST_REGISTER_CLASS(ListNode);
-	GOOST_REGISTER_CLASS(LinkedList);
+	GOOST_REGISTER_Grid2D;
+	GOOST_REGISTER_ListNode;
+	GOOST_REGISTER_LinkedList;
 
-	GOOST_REGISTER_CLASS(VariantResource);
-#if defined(TOOLS_ENABLED) && defined(GOOST_CLASS_VARIANTRESOURCE_ENABLED)
+	GOOST_REGISTER_VariantResource;
+#if defined(TOOLS_ENABLED) && defined(GOOST_VariantResource)
 	EditorNode::add_init_callback(_variant_resource_preview_init);
 #endif
 
@@ -68,7 +68,7 @@ void unregister_core_types() {
 #endif
 }
 
-#if defined(TOOLS_ENABLED) && defined(GOOST_CLASS_VARIANTRESOURCE_ENABLED)
+#if defined(TOOLS_ENABLED) && defined(GOOST_VariantResource)
 void _variant_resource_preview_init() {
 	Ref<VariantResourcePreviewGenerator> variant_resource_preview;
 	variant_resource_preview.instance();
