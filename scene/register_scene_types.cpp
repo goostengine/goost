@@ -15,21 +15,20 @@
 namespace goost {
 
 void register_scene_types() {
-#ifdef GOOST_CORE_ENABLED
-	// Depend on `PolyNode2D`.
-	GOOST_REGISTER_CLASS(PolyCircle2D);
-	GOOST_REGISTER_CLASS(PolyRectangle2D);
-	GOOST_REGISTER_CLASS(PolyShape2D);
-	GOOST_REGISTER_CLASS(PolyCollisionShape2D);
+#if defined(GOOST_CORE_ENABLED) && defined(GOOST_PolyNode2D)
+	GOOST_REGISTER_PolyCircle2D;
+	GOOST_REGISTER_PolyRectangle2D;
+	GOOST_REGISTER_PolyShape2D;
+	GOOST_REGISTER_PolyCollisionShape2D;
 #endif
-	GOOST_REGISTER_CLASS(VisualShape2D);
-	GOOST_REGISTER_CLASS(GradientTexture2D);
+	GOOST_REGISTER_VisualShape2D;
+	GOOST_REGISTER_GradientTexture2D;
 
 #if defined(TOOLS_ENABLED) && defined(GOOST_EDITOR_ENABLED)
-#if defined(GOOST_CORE_ENABLED) && defined(GOOST_CLASS_POLYNODE2D_ENABLED)
+#if defined(GOOST_CORE_ENABLED) && defined(GOOST_PolyNode2D)
 	EditorPlugins::add_by_type<PolyNode2DEditorPlugin>();
 #endif
-#if defined(GOOST_CLASS_VISUALSHAPE2D_ENABLED)
+#if defined(GOOST_VisualShape2D)
 	EditorPlugins::add_by_type<VisualShape2DEditorPlugin>();
 #endif
 #endif

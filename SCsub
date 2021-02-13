@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 
 import os
+import glob
+import re
+
+from compat import isbasestring
 import goost
 
 Import("env")
@@ -19,15 +23,14 @@ for name in goost.get_components():
 
 # Generate header with classes enabled.
 with open("classes_enabled.gen.h", "w") as f:
-    f.write("static const int _goost_classes_enabled_count = %s;\n" % len(goost.classes_enabled))
-    f.write("static const char* _goost_classes_enabled[_goost_classes_enabled_count] = {\n")
     for c in goost.classes_enabled:
-        f.write('\t"%s",\n' % c)
-    f.write("};\n")
-    for c in goost.classes_enabled:
-        m = "GOOST_CLASS_" + c.upper() + "_ENABLED"
-        f.write("#ifndef %s\n" % m)
-        f.write("#define %s\n" % m)
+        f.write("#define GOOST_%s\n" % c)
+    for c in goost.classes:
+        f.write("#ifdef GOOST_%s\n" % c)
+        f.write("#define GOOST_REGISTER_%s \\\n" % c)
+        f.write("\tClassDB::register_class<%s>();\n" % c)
+        f.write("#else\n")
+        f.write("#define GOOST_REGISTER_%s\n" % c)
         f.write("#endif\n")
 
 env_goost.Prepend(CPPDEFINES={"SCALE_FACTOR" : env["goost_scale_factor"]})
@@ -44,8 +47,67 @@ subdirs = [
     "scene",
     "editor",
     "thirdparty",
-    # "modules", # Cannot build directly, use `custom_modules` option explicitly.
+    # "modules", # Built automatically if `custom_modules_recursive=yes` (default).
 ]
-SConscript(dirs=subdirs, name="SCsub", exports="env_goost")
 
+# Inject our own version of `add_source_files` (found in methods.py in Godot).
+# This is needed to filter out the sources of disabled classes without
+# modifying each and every SCSub file, making it work everywhere in Goost.
+godot_add_source_files = env_goost.__class__.add_source_files
+
+def goost_add_source_files(self, sources, files, warn_duplicates=True):
+    # Convert string to list of absolute paths (including expanding wildcard)
+    if isbasestring(files):
+        # Keep SCons project-absolute path as they are (no wildcard support)
+        if files.startswith("#"):
+            if "*" in files:
+                print("ERROR: Wildcards can't be expanded in SCons project-absolute path: '{}'".format(files))
+                return
+            files = [files]
+        else:
+            dir_path = self.Dir(".").abspath
+            files = sorted(glob.glob(dir_path + "/" + files))
+    # Flatten.
+    _files = []
+    for path in files:
+        if isinstance(path, list):
+            for p in path:
+                _files.append(p.abspath)
+        elif isinstance(path, str):
+            _files.append(path)
+        else:
+            _files.append(path.abspath)
+    files = _files
+
+    def to_snake_case(pascal):
+        # https://stackoverflow.com/a/33516645/
+        return re.sub(r'([A-Z]*)([A-Z][a-z]+)', lambda x: (x.group(1) + '_' if x.group(1) else '') + x.group(2) + '_', pascal).rstrip('_').lower()
+
+    # Add each path as compiled Object following environment (self) configuration
+    for path in files:
+        # Skip compiling sources of disabled Goost classes.
+        skip = False
+        for c in goost.classes_disabled:
+            n = "%s.cpp" % to_snake_case(c)
+            if re.search(n, path):
+                skip = True
+                break
+        if skip:
+            continue
+        obj = self.Object(path)
+        if obj in sources:
+            if warn_duplicates:
+                print('WARNING: Object "{}" already included in environment sources.'.format(obj))
+            else:
+                continue
+        sources.append(obj)
+
+# Inject now!
+env_goost.__class__.add_source_files = goost_add_source_files
+
+# Add sources.
+SConscript(dirs=subdirs, name="SCsub", exports="env_goost")
 env_goost.add_source_files(env.modules_sources, "*.cpp")
+
+# Restore the method back (not sure if needed, but good for consistency).
+env_goost.__class__.add_source_files = godot_add_source_files
