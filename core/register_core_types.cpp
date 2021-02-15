@@ -12,7 +12,7 @@
 #include "invoke_state.h"
 
 #include "types/grid_2d.h"
-#include "types/list.h"
+#include "types/linked_list.h"
 #include "types/variant_resource.h"
 
 #ifdef TOOLS_ENABLED
