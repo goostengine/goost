@@ -6,6 +6,8 @@ labels: feature
 assignees: ''
 
 ---
+<!-- Note that you may want to start an open-ended discussion prior to proposing a new feature:
+https://github.com/goostengine/goost/discussions/new -->
 
 **Describe the problem you are having in your project**
 
@@ -31,4 +33,4 @@ assignees: ''
 
 **Is there a reason why this should be in Goost and not in Godot?**
 <!-- Has this feature been proposed before for Godot Engine development? -->
-<!-- If yes, please add links to Godot pull requests, proposals, or issues -->
+<!-- If yes, please add links to Godot pull requests, proposals, issues etc. -->
