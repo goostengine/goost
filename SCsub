@@ -88,7 +88,7 @@ def goost_add_source_files(self, sources, files, warn_duplicates=True):
         # Skip compiling sources of disabled Goost classes.
         skip = False
         for c in goost.classes_disabled:
-            n = "%s.cpp" % to_snake_case(c)
+            n = "%s.*\.cpp" % to_snake_case(c)
             if re.search(n, path):
                 skip = True
                 break
