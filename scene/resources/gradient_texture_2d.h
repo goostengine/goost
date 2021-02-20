@@ -44,9 +44,9 @@ public:
 	Ref<Gradient> get_gradient() const { return gradient; }
 
 	void set_width(int p_width);
-	virtual int get_width() const override { return width; }
+	virtual int get_width() const { return width; }
 	void set_height(int p_height);
-	virtual int get_height() const override { return height; };
+	virtual int get_height() const { return height; };
 
 	void set_fill(Fill p_fill);
 	Fill get_fill() const { return fill; }
@@ -61,9 +61,9 @@ public:
 	virtual void set_flags(uint32_t p_flags) {}
 	virtual uint32_t get_flags() const { return FLAG_FILTER; }
 
-	virtual RID get_rid() const override { return texture; }
-	virtual bool has_alpha() const override { return true; }
-	virtual Ref<Image> get_data() const override;
+	virtual RID get_rid() const { return texture; }
+	virtual bool has_alpha() const { return true; }
+	virtual Ref<Image> get_data() const;
 
 	GradientTexture2D();
 	virtual ~GradientTexture2D();

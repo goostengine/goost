@@ -14,7 +14,7 @@ protected:
 
 public:
 	static Random2D *get_singleton() { return singleton; }
-	virtual Ref<Random> new_instance() const override { return memnew(Random2D); }
+	virtual Ref<Random> new_instance() const { return memnew(Random2D); }
 
 	real_t get_rotation();
 	Vector2 get_direction(); // Unit vector.
