@@ -1,3 +1,6 @@
+#ifndef GOOST_REGISTER_TYPES
+#define GOOST_REGISTER_TYPES
+
 #include "core/engine.h"
 
 #include "scene/2d/editor/poly_node_2d_editor_plugin.h"
@@ -36,3 +39,5 @@ void register_class() {
 	ClassDB::register_class<T>();
 }
 } // namespace goost
+
+#endif // GOOST_REGISTER_TYPES

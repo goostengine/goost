@@ -21,13 +21,13 @@ protected:
 
 	static PolyNode2DEditor* singleton;
 
-	virtual void _set_node(Node *p_node) override;
-	virtual Node2D *_get_node() const override;
+	virtual void _set_node(Node *p_node);
+	virtual Node2D *_get_node() const;
 
-	virtual bool _is_line() const override;
-	virtual Variant _get_polygon(int p_idx) const override;
-	virtual void _set_polygon(int p_idx, const Variant &p_polygon) const override;
-	virtual void _action_set_polygon(int p_idx, const Variant &p_previous, const Variant &p_polygon) override;
+	virtual bool _is_line() const;
+	virtual Variant _get_polygon(int p_idx) const;
+	virtual void _set_polygon(int p_idx, const Variant &p_polygon) const;
+	virtual void _action_set_polygon(int p_idx, const Variant &p_previous, const Variant &p_polygon);
 
 public:
 	static PolyNode2DEditor* get_singleton() { return singleton; }

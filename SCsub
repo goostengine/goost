@@ -32,14 +32,15 @@ with open("classes_enabled.gen.h", "w") as f:
         f.write("template <> void register_class<%s>();\n" % c)
     f.write("}\n")
 
-with open("classes_enabled.gen.cpp", "w") as f:
-    f.write("#include \"register_types.h\"\n")
-    f.write("#include \"classes_enabled.gen.h\"\n")
-    f.write("\n")
-    f.write("namespace goost {\n")
-    for c in goost.classes_disabled:
-        f.write("template <> void register_class<%s>() {}\n" % c)
-    f.write("}\n")
+if len(goost.classes_disabled) > 0:
+    with open("classes_enabled.gen.cpp", "w") as f:
+        f.write("#include \"register_types.h\"\n")
+        f.write("#include \"classes_enabled.gen.h\"\n")
+        f.write("\n")
+        f.write("namespace goost {\n")
+        for c in goost.classes_disabled:
+            f.write("template <> void register_class<%s>() {}\n" % c)
+        f.write("}\n")
 
 env_goost.Prepend(CPPDEFINES={"SCALE_FACTOR" : env["goost_scale_factor"]})
 
