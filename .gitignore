@@ -1,5 +1,6 @@
-# Godot auto generated files
+# Auto generated files
 *.gen.*
+*_gen.*
 
 # Compiled Object files
 *.slo

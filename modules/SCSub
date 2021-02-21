@@ -1,0 +1,71 @@
+Import("env")
+import os
+
+# We use the `custom_modules` build option to build this module, 
+# but allow to specify additional modules to build along this one.
+if "custom_modules" in ARGUMENTS:
+    env.modules.extend(ARGUMENTS.get("custom_modules").split(","))
+
+# Optionally disable Godot's built-in modules which are non-essential in order
+# to test out Goost, which is useful for CI and speeding up compilation.
+# https://docs.godotengine.org/en/latest/development/compiling/optimizing_for_size.html
+godot_modules = {
+    "arkit" : False,
+    "assimp" : False,
+    "fbx" : False,
+    "bmp" : False,
+    "bullet" : False,
+    "camera" : False,
+    "csg" : False,
+    "cvtt" : False,
+    "denoise" : False,
+    "dds" : False,
+    "enet" : False,
+    "etc" : False,
+    "gdnative" : True, # FIXME: still required to run GUT tests...
+    "gridmap" : False,
+    "hdr" : False,
+    "jpg" : False,
+    "jsonrpc" : False,
+    "lightmapper_cpu" : False,
+    "mobile_vr" : False,
+    "mono" : False,
+    "minimp3": False,
+    "ogg" : False,
+    "opensimplex" : False,
+    "opus" : False,
+    "pvr" : False,
+    "raycast": False,
+    "recast" : False,
+    "squish" : False,
+    "stb_vorbis" : False,
+    "tga" : False,
+    "theora" : False,
+    "tinyexr" : False,
+    "upnp" : False,
+    "vhacd" : False,
+    "visual_script" : False,
+    "vorbis" : False,
+    "webm" : False,
+    "webp" : False,
+    "webrtc" : True, # FIXME: required by GDNative, see above...
+    "websocket" : False,
+    "xatlas_unwrap" : False,
+}
+
+f = open("modules_config_gen.py", "w")
+
+if not env["godot_modules_enabled"]:
+    for name, enabled in godot_modules.items():
+        f.write("module_%s_enabled = \"%s\"\n" % (name, "yes" if enabled else "no"))
+
+if ARGUMENTS.get("goost_image_enabled", "yes") == "no":
+    f.write("module_gif_enabled = \"no\"\n")
+
+f.close()
+
+if "profile" in ARGUMENTS:
+    env.build_args.append("profile=%s" % ARGUMENTS.get("profile"))
+else:
+    env.build_args.append("profile=%s" % 
+            os.path.join(Dir(".").abspath, "modules_config_gen.py"))

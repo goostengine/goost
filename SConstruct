@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #
 # Upstream: https://github.com/goostengine/goost
-# Version: 2.0 (Godot Engine 3.2.4+)
+# Version: 2.1 (Godot Engine 3.2.4+)
 # License: MIT
 #
 # `SConstruct` which allows to build any C++ module just like Godot Engine.
@@ -128,45 +128,25 @@ if godot_dir == Dir("godot"):
 
 # Setup base SCons arguments to the Godot build command.
 # Copy all from the command line, except for options in this SConstruct.
-build_args = ["scons"]
+env.build_args = ["scons"]
 for arg in ARGLIST:
     if arg[0] in opts.keys():
         continue
     opt = "%s=%s" % (arg[0], arg[1])
-    build_args.append(opt)
+    env.build_args.append(opt)
 
 # Link this module as a custom module.
-modules = []
-modules.append(Dir(".").abspath)
-
-# We use the `custom_modules` build option to build this module, 
-# but allow to specify additional modules to build along this one.
-if "custom_modules" in ARGUMENTS:
-    custom_modules = ARGUMENTS.get("custom_modules").split(",")
-    modules.extend(custom_modules)
-
-build_args.append("custom_modules=%s" % ",".join(modules))
-
-# Optionally disable Godot's built-in modules which are non-essential in order
-# to test out this module in the engine. For more details, refer to Godot docs:
-# https://docs.godotengine.org/en/latest/development/compiling/optimizing_for_size.html
-if not env["godot_modules_enabled"]:
-    if "profile" in ARGUMENTS:
-        build_args.append("profile=%s" % ARGUMENTS.get("profile"))
-    else:
-        try:
-            import modules_disabled
-            build_args.append("profile=%s" % 
-                    os.path.join(Dir(".").abspath, "modules_disabled.py"))
-        except ImportError:
-            pass
+env.modules = []
+env.modules.append(Dir(".").abspath)
+SConscript("modules/SCSub", exports="env", must_exist=False)
+env.build_args.append("custom_modules=%s" % ",".join(env.modules))
 
 # Append the default `extra_suffix` to distinguish between other builds.
 # Extend the suffix if `extra_suffix` is specified via the command line.
 module_suffix = module_name
 if "extra_suffix" in ARGUMENTS:
     module_suffix += "." + ARGUMENTS.get("extra_suffix")
-build_args.append("extra_suffix=%s" % module_suffix)
+env.build_args.append("extra_suffix=%s" % module_suffix)
 
 # Set custom build name from the module name.
 # Extend the build name if it's already overridden.
@@ -193,12 +173,12 @@ for opt in scons_options:
     if not GetOption(opt):
         continue
     skip_build |= opt in ["help", "clean"]
-    build_args.append("--%s" % opt)
+    env.build_args.append("--%s" % opt)
 
 # The following can be overridden using the `SCONSFLAGS` environment variable,
 # but for convenience, we just copy those options here.
 if GetOption("num_jobs") > 1:
-    build_args.append("--jobs=%s" % GetOption("num_jobs"))
+    env.build_args.append("--jobs=%s" % GetOption("num_jobs"))
 
 # Apply custom Godot patches before build.
 if env["use_godot_patches"] and godot_dir == Dir("godot") and not skip_build:
@@ -235,4 +215,4 @@ if not skip_build:
     print("Building Godot with %s ..." % module_name.capitalize())
 
 # Run SCons to build Godot with the module, check the build configuration etc.
-run(build_args, godot_dir.abspath)
+run(env.build_args, godot_dir.abspath)
