@@ -71,9 +71,12 @@ and development updates.
 For testing purposes, build artifacts are uploaded for Linux, macOS, and Windows
 editor builds and can be downloaded manually for each recently built commit:
 
-- [🐧 Linux](https://github.com/goostengine/goost/actions?query=workflow%3A%22%F0%9F%90%A7+Linux%22+branch%3Agd3)
-- [🍎 macOS](https://github.com/goostengine/goost/actions?query=workflow%3A%22%F0%9F%8D%8E+macOS%22+branch%3Agd3)
-- [🎨 Windows](https://github.com/goostengine/goost/actions?query=workflow%3A%22%F0%9F%8E%A8+Windows%22+branch%3Agd3)
+- [🐧 Linux](https://nightly.link/goostengine/goost/workflows/linux_builds/gd3/godot.x11.opt.tools.64.goost.mono.zip)
+- [🍎 macOS](https://nightly.link/goostengine/goost/workflows/macos_builds/gd3/godot.osx.opt.tools.64.goost.zip)
+- [🎨 Windows](https://nightly.link/goostengine/goost/workflows/windows_builds/gd3/godot.windows.opt.tools.64.goost.zip)
+
+If the links provided by [nightly.link](https://nightly.link/) above don't work,
+proceed to [GitHub Actions tab](https://github.com/goostengine/goost/actions) (have to be logged in).
 
 ### Compiling
 
