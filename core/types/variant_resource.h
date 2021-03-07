@@ -18,7 +18,7 @@ protected:
 	PropertyInfo pi;
 
 public:
-	void set_type(Variant::Type p_type);
+	void set_type(int p_type);
 	int get_type() const { return type; }
 
 	void set_value(const Variant &p_value) { set(pi.name, p_value); }

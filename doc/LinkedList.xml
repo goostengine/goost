@@ -212,7 +212,7 @@
 			<return type="void">
 			</return>
 			<description>
-				Sorts the list in alphabetical order if the list contains [String]s. If the list contains nodes with different types of values, these are sorted according to the order of [enum @GlobalScope.Variant.Type].
+				Sorts the list in alphabetical order if the list contains [String]s. If the list contains nodes with different types of values, these are sorted according to the order of type in [Variant].
 			</description>
 		</method>
 		<method name="swap">

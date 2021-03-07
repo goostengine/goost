@@ -1,8 +1,8 @@
 #include "variant_resource.h"
 
-void VariantResource::set_type(Variant::Type p_type) {
+void VariantResource::set_type(int p_type) {
 	const Variant::Type prev_type = type;
-	type = p_type;
+	type = static_cast<Variant::Type>(p_type);
 	// Convert previous value to a new type, if possible.
 	if (prev_type != Variant::NIL) {
 		value = convert(value, type);
