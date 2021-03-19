@@ -32,7 +32,7 @@ module_name = os.path.basename(Dir(".").abspath)
 print("Configuring %s module ..." % module_name.capitalize())
 
 # Environment variables (can override default build options).
-godot_version = os.getenv("GODOT_VERSION", "3.2") # A branch, commit, tag etc.
+godot_version = os.getenv("GODOT_VERSION", "3.x") # A branch, commit, tag etc.
 
 # Find a path to Godot source to build with this module.
 godot_dir = Dir("godot")
@@ -70,7 +70,7 @@ Help(opts.GenerateHelpText(env), append=True)
 help_msg = """
 {module} environment variables:
 
-GODOT_VERSION: such as 3.2, 3.2.4-stable, master, commit hash etc.
+GODOT_VERSION: such as 3.x, 3.3-stable, master, commit hash etc.
     Current: {version}
 GODOT_SOURCE_PATH: a directory path to the existing Godot source code.
     Current: {path}
