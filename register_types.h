@@ -11,6 +11,7 @@
 #include "scene/2d/visual_shape_2d.h"
 #include "scene/physics/2d/shape_cast_2d.h"
 #include "scene/resources/gradient_texture_2d.h"
+#include "scene/resources/light_texture.h"
 
 #include "core/goost_engine.h"
 #include "core/image/goost_image.h"

@@ -18,8 +18,12 @@ public:
 	};
 
 private:
-	Ref<Gradient> gradient;
 	RID texture;
+	float _get_gradient_offset_at(int x, int y) const;
+	bool update_pending = false;
+
+protected:
+	Ref<Gradient> gradient;
 
 	int width = 64;
 	int height = 64;
@@ -30,14 +34,10 @@ private:
 	Fill fill = FILL_LINEAR;
 	Repeat repeat = REPEAT_NONE;
 
-	float _get_gradient_offset_at(int x, int y) const;
+	static void _bind_methods();
 
-	bool update_pending = false;
 	void _queue_update();
 	void _update();
-
-protected:
-	static void _bind_methods();
 
 public:
 	void set_gradient(Ref<Gradient> p_gradient);
