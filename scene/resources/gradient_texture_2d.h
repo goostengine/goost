@@ -25,8 +25,8 @@ private:
 protected:
 	Ref<Gradient> gradient;
 
-	int width = 64;
-	int height = 64;
+	int width = 256;
+	int height = 256;
 
 	Vector2 fill_from;
 	Vector2 fill_to = Vector2(1, 0);
