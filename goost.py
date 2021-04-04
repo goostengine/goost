@@ -63,6 +63,7 @@ classes = [
     "ImageBlender",
     "ImageIndexed",
     "InvokeState",
+    "LightTexture",
     "LinkedList",
     "ListNode",
     "PolyBoolean2D",
@@ -94,6 +95,7 @@ classes["GoostEngine"].add_depencency(classes["InvokeState"])
 classes["GoostGeometry2D"].add_depencency(classes["PolyBoolean2D"])
 classes["GoostGeometry2D"].add_depencency(classes["PolyDecomp2D"])
 classes["GoostGeometry2D"].add_depencency(classes["PolyOffset2D"])
+classes["LightTexture"].add_depencency(classes["GradientTexture2D"])
 classes["LinkedList"].add_depencency(classes["ListNode"])
 classes["PolyBoolean2D"].add_depencency(classes["PolyBooleanParameters2D"])
 classes["PolyBoolean2D"].add_depencency(classes["PolyNode2D"])

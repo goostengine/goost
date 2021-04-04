@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="LightTexture" inherits="GradientTexture2D" version="3.2">
+	<brief_description>
+		A default light texture.
+	</brief_description>
+	<description>
+		A procedurally-generated radial light texture based on a [Gradient] to be used with nodes such as [Light2D].
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+	</methods>
+	<members>
+		<member name="fill" type="int" setter="set_fill" getter="get_fill" override="true" enum="GradientTexture2D.Fill" default="1" />
+		<member name="fill_from" type="Vector2" setter="set_fill_from" getter="get_fill_from" override="true" default="Vector2( 0.5, 0.5 )" />
+		<member name="fill_to" type="Vector2" setter="set_fill_to" getter="get_fill_to" override="true" default="Vector2( 0.5, 0 )" />
+		<member name="gradient" type="Gradient" setter="set_gradient" getter="get_gradient" override="true" />
+	</members>
+	<constants>
+	</constants>
+</class>

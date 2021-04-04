@@ -14,6 +14,7 @@ void register_scene_types() {
 #endif
 	goost::register_class<VisualShape2D>();
 	goost::register_class<GradientTexture2D>();
+	goost::register_class<LightTexture>();
 
 #if defined(TOOLS_ENABLED) && defined(GOOST_EDITOR_ENABLED)
 #if defined(GOOST_CORE_ENABLED) && defined(GOOST_PolyNode2D)
