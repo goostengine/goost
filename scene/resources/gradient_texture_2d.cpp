@@ -5,7 +5,8 @@
 
 GradientTexture2D::GradientTexture2D() {
 	texture = VS::get_singleton()->texture_create();
-	_queue_update();
+	gradient = Ref<Gradient>(memnew(Gradient));
+	set_gradient(gradient);
 }
 
 GradientTexture2D::~GradientTexture2D() {
