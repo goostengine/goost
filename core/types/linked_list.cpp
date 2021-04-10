@@ -380,11 +380,17 @@ Variant LinkedList::_iter_init(const Array &p_iter) {
 }
 
 Variant LinkedList::_iter_next(const Array &p_iter) {
+#ifdef DEBUG_ENABLED
+	ERR_FAIL_NULL_V(_iter_current, Variant());
+#endif
 	_iter_current = _iter_current->get_next();
 	return _iter_current != nullptr;
 }
 
 Variant LinkedList::_iter_get(const Variant &p_iter) {
+#ifdef DEBUG_ENABLED
+	ERR_FAIL_NULL_V(_iter_current, Variant());
+#endif
 	return _iter_current->get_value();
 }
 
