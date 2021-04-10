@@ -99,6 +99,11 @@ Variant Grid2D::_iter_next(const Array &p_iter) {
 }
 
 Variant Grid2D::_iter_get(const Variant &p_iter) {
+#ifdef DEBUG_ENABLED
+	ERR_FAIL_COND_V(p_iter.get_type() != Variant::INT, Variant());
+	int size = p_iter;
+	ERR_FAIL_INDEX_V(size, data.size(), Variant());
+#endif
 	return data[_iter_current];
 }
 
