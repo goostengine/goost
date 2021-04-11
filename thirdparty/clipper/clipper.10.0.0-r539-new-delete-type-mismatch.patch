@@ -1,0 +1,22 @@
+diff --git a/thirdparty/clipper/clipper.h b/thirdparty/clipper/clipper.h
+index 453b341..c86f38d 100644
+--- a/thirdparty/clipper/clipper.h
++++ b/thirdparty/clipper/clipper.h
+@@ -97,6 +97,8 @@ public:
+   Point64      pt;
+   OutPt       *next;
+   OutPt       *prev;
++
++  virtual ~OutPt();
+ };
+ 
+ enum OutRecFlag { orInner, orOuter, orOpen};
+@@ -111,6 +113,8 @@ struct OutRec {
+   OutPt       *pts;
+   PolyPath    *polypath;
+   OutRecFlag  flag;
++  
++  virtual ~OutRec();
+ };
+ 
+ //Active: an edge in the AEL that may or may not be 'hot' (part of the clip solution).
