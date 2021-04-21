@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #
 # Upstream: https://github.com/goostengine/goost
-# Version: 2.1 (Godot Engine 3.2.4+)
+# Version: 2.1 (Godot Engine 3.3+)
 # License: MIT
 #
 # `SConstruct` which allows to build any C++ module just like Godot Engine.
@@ -101,10 +101,10 @@ def godot_check_if_branch(ref):
 def godot_verify_min_version():
     sys.path.insert(0, godot_dir.abspath)
     import version
-    compatible = (version.major, version.minor, version.patch) >= (3, 2, 4)
+    compatible = (version.major, version.minor, version.patch) >= (3, 3, 0)
     if not compatible:
         print("Cannot compile %s without `custom_modules` support." % module_name.capitalize())
-        print("The minimum required Godot version is 3.2.4 (current: %s)" % env["godot_version"])
+        print("The minimum required Godot version is 3.3 (current: %s)" % env["godot_version"])
     sys.path.remove(godot_dir.abspath)
     sys.modules.pop("version")
     return compatible
