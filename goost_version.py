@@ -1,6 +1,7 @@
 short_name = "goost"
 name = "Goost: Godot Engine Extension"
 url = "https://github.com/goostengine/goost"
+website = "https://goostengine.github.io/"
 major = 0
 minor = 1
 patch = 0

@@ -6,6 +6,7 @@ import re
 
 from compat import isbasestring
 import goost
+import goost_version
 
 Import("env")
 env_goost = env.Clone()
@@ -41,6 +42,37 @@ if len(goost.classes_disabled) > 0:
         for c in goost.classes_disabled:
             f.write("template <> void register_class<%s>() {}\n" % c)
         f.write("}\n")
+
+# Generate version header.
+with open("core/version.gen.h", "w") as f:
+    f.write('#define GOOST_VERSION_SHORT_NAME "' + str(goost_version.short_name) + '"\n')
+    f.write('#define GOOST_VERSION_NAME "' + str(goost_version.name) + '"\n')
+    f.write('#define GOOST_VERSION_URL "' + str(goost_version.url) + '"\n')
+    f.write('#define GOOST_VERSION_WEBSITE "' + str(goost_version.website) + '"\n')
+    f.write("#define GOOST_VERSION_MAJOR " + str(goost_version.major) + "\n")
+    f.write("#define GOOST_VERSION_MINOR " + str(goost_version.minor) + "\n")
+    f.write("#define GOOST_VERSION_PATCH " + str(goost_version.patch) + "\n")
+
+    githash = ""
+    gitfolder = ".git"
+
+    if os.path.isfile(".git"):
+        module_folder = open(".git", "r").readline().strip()
+        if module_folder.startswith("gitdir: "):
+            gitfolder = module_folder[8:]
+
+    if os.path.isfile(os.path.join(gitfolder, "HEAD")):
+        head = open(os.path.join(gitfolder, "HEAD"), "r").readline().strip()
+        if head.startswith("ref: "):
+            head = os.path.join(gitfolder, head[5:])
+            if os.path.isfile(head):
+                githash = open(head, "r").readline().strip()
+        else:
+            githash = head
+
+    f.write('#define GOOST_VERSION_HASH "' + githash + '"' + "\n")
+    f.write('#define GOOST_VERSION_STATUS "' + str(goost_version.status) + '"\n')
+    f.write("#define GOOST_VERSION_YEAR " + str(goost_version.year) + "\n")
 
 env_goost.Prepend(CPPDEFINES={"SCALE_FACTOR" : env["goost_scale_factor"]})
 

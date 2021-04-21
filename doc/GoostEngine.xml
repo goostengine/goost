@@ -59,6 +59,22 @@
 				[/codeblock]
 			</description>
 		</method>
+		<method name="get_version_info" qualifiers="const">
+			<return type="Dictionary">
+			</return>
+			<description>
+				Returns the current Goost version information in a Dictionary.
+				[code]major[/code]    - Holds the major version number as an int
+				[code]minor[/code]    - Holds the minor version number as an int
+				[code]patch[/code]    - Holds the patch version number as an int
+				[code]hex[/code]      - Holds the full version number encoded as a hexadecimal int with one byte (2 places) per number (see example below)
+				[code]status[/code]   - Holds the status (e.g. "beta", "rc1", "rc2", ... "stable") as a String
+				[code]hash[/code]     - Holds the full Git commit hash as a String
+				[code]year[/code]     - Holds the year the version was released in as an int
+				[code]string[/code]   - [code]major[/code] + [code]minor[/code] + [code]patch[/code] + [code]status[/code] + [code]build[/code] in a single String
+				[b]Note: [/b] This method does not contain the build name as in [method Engine.get_version_info], since the build name is related to the engine, not the extension. In Goost, the build name is usually overridden to [code]"goost"[/code] value.
+			</description>
+		</method>
 		<method name="invoke">
 			<return type="InvokeState">
 			</return>

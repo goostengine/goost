@@ -2,8 +2,30 @@
 
 #include "core/color_names.inc"
 #include "core/os/os.h"
+#include "version.gen.h"
 
 GoostEngine *GoostEngine::singleton = nullptr;
+
+Dictionary GoostEngine::get_version_info() const {
+	Dictionary dict;
+	dict["major"] = GOOST_VERSION_MAJOR;
+	dict["minor"] = GOOST_VERSION_MINOR;
+	dict["patch"] = GOOST_VERSION_PATCH;
+	dict["hex"] = 0x10000 * GOOST_VERSION_MAJOR + 0x100 * GOOST_VERSION_MINOR + GOOST_VERSION_PATCH;
+	dict["status"] = GOOST_VERSION_STATUS;
+	dict["year"] = GOOST_VERSION_YEAR;
+
+	String hash = GOOST_VERSION_HASH;
+	dict["hash"] = hash.length() == 0 ? String("unknown") : hash;
+
+	String stringver = String(dict["major"]) + "." + String(dict["minor"]);
+	if ((int)dict["patch"] != 0)
+		stringver += "." + String(dict["patch"]);
+	stringver += "-" + String(dict["status"]);
+	dict["string"] = stringver;
+
+	return dict;
+}
 
 Dictionary GoostEngine::get_color_constants() const {
 	if (_named_colors.empty()) {
@@ -154,6 +176,7 @@ void GoostEngine::flush_calls() {
 }
 
 void GoostEngine::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("get_version_info"), &GoostEngine::get_version_info);
 	ClassDB::bind_method(D_METHOD("get_color_constants"), &GoostEngine::get_color_constants);
 	{
 		MethodInfo mi;

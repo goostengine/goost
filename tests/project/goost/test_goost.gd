@@ -3,6 +3,27 @@ extends "res://addons/gut/test.gd"
 func test_goost():
 	var goost = GoostEngine
 	assert_true(goost is Object)
+	
+	
+func test_get_version_info():
+	var v = GoostEngine.get_version_info()
+	gut.p(v)
+	assert_true(v.has("major"))
+	assert_typeof(v.major, TYPE_INT)
+	assert_true(v.has("minor"))
+	assert_typeof(v.minor, TYPE_INT)
+	assert_true(v.has("patch"))
+	assert_typeof(v.patch, TYPE_INT)
+	assert_true(v.has("hex"))
+	assert_typeof(v.hex, TYPE_INT)
+	assert_true(v.has("status"))
+	assert_typeof(v.status, TYPE_STRING)
+	assert_true(v.has("year"))
+	assert_typeof(v.year, TYPE_INT)
+	assert_true(v.has("hash"))
+	assert_typeof(v.hash, TYPE_STRING)
+
+	assert_false(v.has("build"), "This should not be defined, as it relates to the engine.")
 
 
 func test_get_color_constants():

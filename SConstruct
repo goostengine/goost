@@ -150,9 +150,11 @@ env.build_args.append("extra_suffix=%s" % module_suffix)
 
 # Set custom build name from the module name.
 # Extend the build name if it's already overridden.
-build_name = module_name.capitalize()
+build_name = module_name
 if os.getenv("BUILD_NAME"):
     build_name += "." + os.getenv("BUILD_NAME")
+else:
+    build_name += "." + "custom_build"
 os.environ["BUILD_NAME"] = build_name
 
 # Avoid issues when building with different versions of Python.
