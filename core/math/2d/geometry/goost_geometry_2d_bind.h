@@ -41,6 +41,8 @@ public:
 	Vector<Point2> regular_polygon(int p_edge_count, real_t p_size) const;
 	Vector<Point2> circle(real_t p_radius, real_t p_max_error) const;
 
+	_FORCE_INLINE_ Vector2 to_vector(real_t p_radians) const;
+
 	_GoostGeometry2D();
 };
 

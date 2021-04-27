@@ -235,3 +235,7 @@ Vector<Point2> GoostGeometry2D::circle(real_t p_radius, real_t p_max_error) {
 
 	return regular_polygon(vertex_count, p_radius); // vertex count == edge count
 }
+
+Vector2 GoostGeometry2D::to_vector(real_t p_angle) {
+	return Vector2(Math::cos(p_angle), Math::sin(p_angle));
+}

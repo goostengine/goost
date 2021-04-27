@@ -134,6 +134,10 @@ Vector<Point2> _GoostGeometry2D::circle(real_t p_radius, real_t p_max_error) con
 	return GoostGeometry2D::circle(p_radius, p_max_error);
 }
 
+Vector2 _GoostGeometry2D::to_vector(real_t p_radians) const {
+	return GoostGeometry2D::to_vector(p_radians);
+}
+
 void _GoostGeometry2D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("merge_polygons", "polygon_a", "polygon_b"), &_GoostGeometry2D::merge_polygons);
 	ClassDB::bind_method(D_METHOD("clip_polygons", "polygon_a", "polygon_b"), &_GoostGeometry2D::clip_polygons);
@@ -159,6 +163,8 @@ void _GoostGeometry2D::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("regular_polygon", "sides", "size"), &_GoostGeometry2D::regular_polygon);
 	ClassDB::bind_method(D_METHOD("circle", "radius", "max_error"), &_GoostGeometry2D::circle, DEFVAL(0.25));
+	
+	ClassDB::bind_method(D_METHOD("to_vector", "angle"), &_GoostGeometry2D::to_vector);
 }
 
 _GoostGeometry2D::_GoostGeometry2D() {

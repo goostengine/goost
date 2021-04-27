@@ -127,3 +127,12 @@ func test_regular_polygon():
 func test_circle():
 	solution = GoostGeometry2D.circle(SIZE, 0.25)
 	assert_eq(solution.size(), 32)
+
+
+func test_to_vector():
+	assert_true(GoostGeometry2D.to_vector(0).is_equal_approx(Vector2.RIGHT))
+	assert_true(GoostGeometry2D.to_vector(PI / 2).is_equal_approx(Vector2.DOWN))
+	assert_true(GoostGeometry2D.to_vector(PI).is_equal_approx(Vector2.LEFT))
+	assert_true(GoostGeometry2D.to_vector(-PI / 2).is_equal_approx(Vector2.UP))
+	assert_true(GoostGeometry2D.to_vector(deg2rad(-137)).is_equal_approx(Vector2(-0.731354, -0.681998)))
+	assert_true(GoostGeometry2D.to_vector(deg2rad(180)).is_equal_approx(Vector2.LEFT))

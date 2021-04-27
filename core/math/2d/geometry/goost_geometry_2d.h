@@ -35,6 +35,9 @@ public:
 	/* Polygon/shapes generation methods */
 	static Vector<Point2> regular_polygon(int p_edge_count, real_t p_size);
 	static Vector<Point2> circle(real_t p_radius, real_t p_max_error = 0.25);
+	
+	/* Trigonometry utilities */
+	static Vector2 to_vector(real_t p_angle);
 };
 
 #endif // GOOST_GEOMETRY_2D_H

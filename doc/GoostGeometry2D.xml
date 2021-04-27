@@ -199,6 +199,20 @@
 				The order of vertices returned is counterclockwise which makes it an outer polygon by default. To convert it to an inner polygon specifically, use [method PoolVector2Array.invert].
 			</description>
 		</method>
+		<method name="to_vector" qualifiers="const">
+			<return type="Vector2">
+			</return>
+			<argument index="0" name="angle" type="float">
+			</argument>
+			<description>
+				Converts an [code]angle[/code] radians to unit [Vector2]. Equivalent to [code]Vector2(cos(angle), sin(angle))[/code] and [code]Vector2.RIGHT.rotated(angle)[/code].
+				[codeblock]
+				print(GoostGeometry2D.to_vector(0)) # Prints Vector2(1, 0).
+				print(Vector2(1, 0).angle()) # Prints 0, which is the angle used above.
+				print(GoostGeometry2D.to_vector(PI / 2)) # Prints Vector2(0, 1).
+				[/codeblock]
+			</description>
+		</method>
 		<method name="triangulate_polygon" qualifiers="const">
 			<return type="Array">
 			</return>
