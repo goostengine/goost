@@ -59,7 +59,6 @@ classes = [
     "GoostGeometry2D",
     "GoostImage",
     "GradientTexture2D",
-    "Grid2D",
     "ImageBlender",
     "ImageIndexed",
     "InvokeState",
@@ -80,6 +79,7 @@ classes = [
     "Random",
     "Random2D",
     "ShapeCast2D",
+    "VariantMap",
     "VariantResource",
     "VisualShape2D",
 ]

@@ -1,11 +1,11 @@
-#ifndef GOOST_GRID_2D_H
-#define GOOST_GRID_2D_H
+#ifndef GOOST_VARIANT_MAP_H
+#define GOOST_VARIANT_MAP_H
 
 #include "core/resource.h"
 #include "core/variant.h"
 
-class Grid2D : public Resource {
-	GDCLASS(Grid2D, Resource);
+class VariantMap : public Resource {
+	GDCLASS(VariantMap, Resource);
 
 protected:
 	static void _bind_methods();
@@ -51,4 +51,4 @@ public:
 	virtual String to_string();
 };
 
-#endif // GOOST_GRID_2D_H
+#endif // GOOST_VARIANT_MAP_H

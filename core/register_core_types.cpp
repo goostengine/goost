@@ -32,10 +32,10 @@ void register_core_types() {
 #endif
 	goost::register_class<InvokeState>();
 
-	goost::register_class<Grid2D>();
 	goost::register_class<ListNode>();
 	goost::register_class<LinkedList>();
 
+	goost::register_class<VariantMap>();
 	goost::register_class<VariantResource>();
 #if defined(TOOLS_ENABLED) && defined(GOOST_VariantResource)
 	EditorNode::add_init_callback(_variant_resource_preview_init);
