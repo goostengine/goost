@@ -15,10 +15,11 @@ real_t Random2D::get_rotation() {
 	return randf_range(0.0, Math_TAU);
 }
 
-Vector2 Random2D::point_in_region(const Vector2 &p_pos, const Vector2 &p_end) {
+Vector2 Random2D::point_in_region(const Rect2 &p_region) {
 	Point2 point;
-	point.x = randf_range(p_pos.x, p_end.x);
-	point.y = randf_range(p_pos.y, p_end.y);
+	const Vector2& end = p_region.position + p_region.size;
+	point.x = randf_range(p_region.position.x, end.x);
+	point.y = randf_range(p_region.position.y, end.y);
 	return point;
 }
 
@@ -120,7 +121,7 @@ void Random2D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_direction"), &Random2D::get_direction);
 	ClassDB::bind_method(D_METHOD("get_rotation"), &Random2D::get_rotation);
 
-	ClassDB::bind_method(D_METHOD("point_in_region", "position_start", "position_end"), &Random2D::point_in_region);
+	ClassDB::bind_method(D_METHOD("point_in_region", "region"), &Random2D::point_in_region);
 	ClassDB::bind_method(D_METHOD("point_in_circle", "radius_min", "radius_max"), &Random2D::point_in_circle, DEFVAL(0.0), DEFVAL(1.0));
 	ClassDB::bind_method(D_METHOD("point_in_triangle", "triangle"), &Random2D::point_in_triangle);
 	ClassDB::bind_method(D_METHOD("point_in_polygon", "polygon", "point_count"), &Random2D::point_in_polygon, DEFVAL(1));
