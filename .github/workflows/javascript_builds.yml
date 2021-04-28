@@ -11,7 +11,7 @@ env:
   GOOST_BASE_BRANCH: gd3
   SCONSFLAGS: godot_modules_enabled=no platform=javascript verbose=yes warnings=all werror=yes --jobs=4
   SCONS_CACHE_LIMIT: 4096
-  EM_VERSION: 1.39.20
+  EM_VERSION: 2.0.15
   EM_CACHE_FOLDER: 'emsdk-cache'
 
 jobs:
