@@ -27,8 +27,8 @@
 #include "core/math/2d/geometry/poly/poly_backends.h"
 #include "core/math/2d/random_2d.h"
 #include "core/math/random.h"
-#include "core/types/grid_2d.h"
 #include "core/types/linked_list.h"
+#include "core/types/variant_map.h"
 #include "core/types/variant_resource.h"
 
 void register_goost_types();

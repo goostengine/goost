@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="Grid2D" inherits="Resource" version="3.3">
+<class name="VariantMap" inherits="Resource" version="3.3">
 	<brief_description>
 		A two-dimensional data container.
 	</brief_description>
 	<description>
-		A data structure which holds an arbitrary number of elements in a grid. Each cell represents a single element which stores any [Variant] compatible datatype. Can act as a helper class for other pixel-based classes such as [Image] ([Color]), [BitMap] (@GlobalScope.bool) etc.
-		The grid is initialized with [method create] method:
+		A data structure which holds an arbitrary number of elements accessed via 2D coordinates. Each cell represents a single element which stores any [Variant] compatible datatype. Can act as a helper class for other pixel-based classes such as [Image], [BitMap] etc.
+		The map is initialized with [method create] method:
 		[codeblock]
-		var grid = Grid2D.new()
-		grid.create(3, 4)
-		grid.set_element(2, 3, "Goost")
-		print(grid.get_element(2, 3)) # Prints: "Goost".
+		var map = VariantMap.new()
+		map.create(3, 4)
+		map.set_element(2, 3, "Goost")
+		print(map.get_element(2, 3)) # Prints: "Goost".
 		[/codeblock]
 		Traversing all elements can be done just like two-dimensional array (or image):
 		[codeblock]
-		for y in grid.get_height():
-		    for x in grid.get_width():
-		        print(grid.get_element(x, y))
+		for y in map.get_height():
+		    for x in map.get_width():
+		        print(map.get_element(x, y))
 		[/codeblock]
 		Alternatively, all elements can be traversed using a simplified syntax:
 		[codeblock]
-		for element in grid:
+		for element in map:
 		    print(element)
 		[/codeblock]
 	</description>
@@ -31,7 +31,7 @@
 			<return type="void">
 			</return>
 			<description>
-				Clears all elements in this grid.
+				Clears all elements in this map.
 			</description>
 		</method>
 		<method name="create">
@@ -42,8 +42,8 @@
 			<argument index="1" name="height" type="int">
 			</argument>
 			<description>
-				Initializes the grid by allocating new data to hold [code]width * height[/code] elements. By default, all elements of the grid are initialized to [code]null[/code] values.
-				[b]Note:[/b] this clears all existing elements from the grid before creation.
+				Initializes the map by allocating new data to hold [code]width * height[/code] elements. By default, all elements of the map are initialized to [code]null[/code] values.
+				[b]Note:[/b] this clears all existing elements from the map before creation.
 			</description>
 		</method>
 		<method name="create_from_data">
@@ -56,7 +56,7 @@
 			<argument index="2" name="data" type="Array">
 			</argument>
 			<description>
-				Initializes the grid from a continuos 1D array of data. The number of elements in [code]data[/code] must be equal to [code]width * height[/code].
+				Initializes the map from a continuos 1D array of data. The number of elements in [code]data[/code] must be equal to [code]width * height[/code].
 			</description>
 		</method>
 		<method name="fill">
@@ -65,7 +65,7 @@
 			<argument index="0" name="with_value" type="Variant">
 			</argument>
 			<description>
-				Fills all elements in the grid with a specified value.
+				Fills all elements in the map with a specified value.
 			</description>
 		</method>
 		<method name="get_cell">
@@ -83,7 +83,7 @@
 			<argument index="0" name="position" type="Vector2">
 			</argument>
 			<description>
-				Returns cell's value if the grid contains an element at specified position, otherwise returns [code]null[/code]. See also [method has_cell].
+				Returns cell's value if the map contains an element at specified position, otherwise returns [code]null[/code]. See also [method has_cell].
 			</description>
 		</method>
 		<method name="get_element">
@@ -108,7 +108,7 @@
 			<return type="Vector2">
 			</return>
 			<description>
-				Returns the grid dimensions as [Vector2] (width and height).
+				Returns the map dimensions as [Vector2] (width and height).
 			</description>
 		</method>
 		<method name="get_width" qualifiers="const">
@@ -124,14 +124,14 @@
 			<argument index="0" name="position" type="Vector2">
 			</argument>
 			<description>
-				Returns [code]true[/code] if the grid contains an element at specified position. Returns [code]false[/code] if the position lies outside the grid dimensions. See also [method get_cell_or_null].
+				Returns [code]true[/code] if the map contains an element at specified position. Returns [code]false[/code] if the position lies outside the map dimensions. See also [method get_cell_or_null].
 			</description>
 		</method>
 		<method name="is_empty" qualifiers="const">
 			<return type="bool">
 			</return>
 			<description>
-				Returns whether the grid is empty (does not contain data).
+				Returns whether the map is empty (does not contain data).
 			</description>
 		</method>
 		<method name="resize">
@@ -142,7 +142,7 @@
 			<argument index="1" name="new_height" type="int">
 			</argument>
 			<description>
-				Resizes the grid to have a different number of elements. Resizing an existing grid to a smaller size rearranges the elements to fit new width and height without preserving original positions ([b]To-do:[/b] implement cropping method for this). Resizing an existing grid to a larger size initializes new elements to [code]null[/code].
+				Resizes the map to have a different number of elements. Resizing an existing map to a smaller size rearranges the elements to fit new width and height without preserving original positions ([b]To-do:[/b] implement cropping method for this). Resizing an existing map to a larger size initializes new elements to [code]null[/code].
 			</description>
 		</method>
 		<method name="set_cell">
@@ -172,7 +172,7 @@
 	</methods>
 	<members>
 		<member name="data" type="Dictionary" setter="_set_data" getter="_get_data" default="{&quot;data&quot;: [  ],&quot;height&quot;: 0,&quot;width&quot;: 0}">
-			The data which represents this grid. Used for storage.
+			The data which represents this map. Used for storage.
 		</member>
 	</members>
 	<constants>
