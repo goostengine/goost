@@ -39,8 +39,6 @@ godot_dir = Dir("godot")
 godot_search_dirs = [
     # Try environment variable pointing to the Godot source, should be first.
     Dir(os.getenv("GODOT_SOURCE_PATH")),
-    # Search for the Godot source in the parent directory.
-    Dir("../godot"),
     # Use the Godot source within the module, should be last.
     # If not found, the source is fetched from the remote URL.
     Dir("godot"),
