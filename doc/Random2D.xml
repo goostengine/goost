@@ -49,15 +49,13 @@
 		<method name="point_in_region">
 			<return type="Vector2">
 			</return>
-			<argument index="0" name="position_start" type="Vector2">
-			</argument>
-			<argument index="1" name="position_end" type="Vector2">
+			<argument index="0" name="region" type="Rect2">
 			</argument>
 			<description>
-				Generates a random point in the area specified by top-left and bottom-right corners of a rectangle.
+				Generates a random point in the area specified by top-left and bottom-right corners of a [Rect2].
 				[codeblock]
 				var rect := Rect2(-100, -100, 100, 100) # Position and size.
-				var point = Random2D.point_in_region(rect.position, rect.end)
+				var point = Random2D.point_in_region(rect)
 				[/codeblock]
 			</description>
 		</method>

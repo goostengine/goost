@@ -61,7 +61,7 @@ func test_point_within_circle_range():
 func test_point_in_region():
 	var rect = Rect2(Vector2(-100, -100), Vector2(200, 200))
 	for i in 100:
-		var point = Random2D.point_in_region(rect.position, rect.end)
+		var point = Random2D.point_in_region(rect)
 		assert_true(rect.has_point(point))
 
 
