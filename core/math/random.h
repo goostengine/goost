@@ -27,6 +27,7 @@ public:
 	Variant range(const Variant &p_from, const Variant &p_to);
 	Variant choice(const Variant &p_sequence);
 	void shuffle(Array p_array);
+	bool decision(float probability);
 
 	Random() {
 		if (!singleton) {

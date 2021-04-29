@@ -102,6 +102,10 @@ void Random::shuffle(Array p_array) {
 	}
 }
 
+bool Random::decision(float probability) {
+	return randf() <= probability;
+}
+
 void Random::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("new_instance"), &Random::new_instance);
 
@@ -118,6 +122,7 @@ void Random::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("range", "from", "to"), &Random::range);
 	ClassDB::bind_method(D_METHOD("choice", "from_sequence"), &Random::choice);
 	ClassDB::bind_method(D_METHOD("shuffle", "array"), &Random::shuffle);
+	ClassDB::bind_method(D_METHOD("decision", "probability"), &Random::decision);
 
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "number"), "", "get_number");
 	ADD_PROPERTY(PropertyInfo(Variant::REAL, "value"), "", "get_value");

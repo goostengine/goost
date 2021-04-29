@@ -111,6 +111,15 @@
 				Shuffles the array such that the items will have a random order. By default, this method uses the global random number generator in [Random] singletons, but unlike in [method Array.shuffle], local instances of [Random] can be created with [method new_instance] to achieve reproducible results given the same seed.
 			</description>
 		</method>
+		<method name="decision">
+			<return type="bool">
+			</return>
+			<argument index="0" name="probability" type="float">
+			</argument>
+			<description>
+				Returns a boolean based on a given [code]probability[/code] value in the range of [code]0.0..1.0[/code]. The higher the probabilty value the higher the chance of this returning true.
+			</description>
+		</method>
 	</methods>
 	<members>
 		<member name="color" type="Color" setter="" getter="get_color" default="Color( 0, 0, 1, 1 )">
