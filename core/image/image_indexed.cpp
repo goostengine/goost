@@ -20,7 +20,7 @@ Error ImageIndexed::create_indexed(int p_num_palette_entries) {
 	index_data.resize(num_pixels);
 	{
 		PoolVector<uint8_t>::Write w = index_data.write();
-		zeromem(w.ptr(), num_pixels);
+		memset(w.ptr(), 0, num_pixels);
 	}
 
 	const int ps = get_format_pixel_size(get_format());
@@ -30,7 +30,7 @@ Error ImageIndexed::create_indexed(int p_num_palette_entries) {
 	palette_data.resize(num_colors * ps);
 	{
 		PoolVector<uint8_t>::Write w = palette_data.write();
-		zeromem(w.ptr(), num_colors * ps);
+		memset(w.ptr(), 0, num_colors * ps);
 	}
 	return OK;
 }
