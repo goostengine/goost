@@ -99,20 +99,39 @@ documentation pages.
 See [Contributing](CONTRIBUTING.md) if you are interested in development and to
 find out what kind of features are accepted.
 
-### Writing tests
+### Writing and running tests
 
 While not mandatory, developers are encouraged to write unit tests (or any tests
-for that matter) for any existing or new features.
+for that matter) for any existing or new features. See [tests](tests/README.md)
+for details.
 
-See [Tests](tests/README.md) for details.
+After build, run tests with the following command:
 
-### Writing documentation
+```
+python run.py tests
+```
+
+### Writing and generating documentation
 
 The documentation can be generated for new classes, and updated for existing
 ones. See the following official documentation pages for further instructions:
 
 - [Contribute to the Class Reference](https://docs.godotengine.org/en/latest/community/contributing/updating_the_class_reference.html)
 - [Writing custom documentation](https://docs.godotengine.org/en/latest/development/cpp/custom_modules_in_cpp.html#writing-custom-documentation)
+
+To easily generate new or update existing documentation, run:
+
+```
+python run.py doc
+```
+
+The `editor` command is also useful for manually checking and proof-reading the
+built-in documentation from within the editor, especially when you want to make
+sure that all references work as expected:
+
+```
+python run.py editor
+```
 
 ### Versioning and compatibility
 
