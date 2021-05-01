@@ -51,6 +51,7 @@ custom.py
 # Prevent Godot editor to reimport image test output
 !/tests/project/out/.gdignore
 
-# Godot repository
+# Related to Godot repository
 /godot
 /logs
+/doc/godot

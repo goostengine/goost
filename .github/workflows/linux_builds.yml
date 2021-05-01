@@ -118,9 +118,9 @@ jobs:
         run: |
           scons verbose=yes warnings=all werror=yes platform=server tools=yes target=debug
 
-      - name: Run GUT Tests
+      - name: Run unit tests
         run: |
-          tests/run.sh ${{github.workspace}}/godot/bin/godot_server.x11.tools.64.goost
+          python run.py tests
 
   linux-template:
     runs-on: "ubuntu-20.04"
