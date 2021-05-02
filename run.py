@@ -23,6 +23,14 @@ def get_engine_executable_path():
     return binary_path
 
 
+def run(p_args, windowed=False): # Assumes the first arg is the binary path.
+    args = p_args.copy()
+    if not windowed:
+        if sys.platform.startswith("win"):
+            args.insert(1, "--no-window") # Only implemented on Windows.
+    return subprocess.run(args).returncode
+
+
 if __name__ == "__main__":
     if not os.path.exists("godot"):
         print("Error: no Godot repository found at Goost root, aborting.")
@@ -50,8 +58,7 @@ if __name__ == "__main__":
 
     if args.tool.startswith("editor"):
         print("Running Godot editor ...")
-        ret = subprocess.run([
-                godot_bin, "--path", "tests/project", "--editor"]).returncode
+        ret = run([godot_bin, "--path", "tests/project", "--editor"], windowed=True)
         sys.exit(ret)
     elif args.tool.startswith("test"):
         print("Running Goost tests ...")
@@ -64,15 +71,13 @@ if __name__ == "__main__":
             test_args.extend(["-gtest=%s" % res_file, '-gdir='])
         if args.test_case:
             test_args.extend(["-gunit_test_name=%s" % args.test_case])
-        ret = subprocess.run(test_args).returncode
+        ret = run(test_args)
         sys.exit(ret)
     elif args.tool.startswith("doc"):
         print("Generating documentation ...")
         if not os.path.exists("doc/godot"):
             os.makedirs("doc/godot")
-        ret = subprocess.run([
-                godot_bin, "--doctool",
-                os.path.join(base_path, "doc/godot")]).returncode
+        ret = run([godot_bin, "--doctool", os.path.join(base_path, "doc/godot")])
         sys.exit(ret)
     else:
         print('Error: tool not found. Run with `--help` to list available tools.')
