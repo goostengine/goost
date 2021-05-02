@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="PolyNode2D" inherits="Node2D" version="3.3">
+<class name="PolyNode2D" inherits="Node2D" version="3.4">
 	<brief_description>
 		Represents a single polygon-based node in the hierarchy of nested polygons.
 	</brief_description>

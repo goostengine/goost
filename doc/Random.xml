@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="Random" inherits="RandomNumberGenerator" version="3.3">
+<class name="Random" inherits="RandomNumberGenerator" version="3.4">
 	<brief_description>
 		An instance of [RandomNumberGenerator] available at [@GlobalScope].
 	</brief_description>
@@ -82,6 +82,15 @@
 				If you want to generate colors which are not too pale and not too dark, use [member color].
 			</description>
 		</method>
+		<method name="decision">
+			<return type="bool">
+			</return>
+			<argument index="0" name="probability" type="float">
+			</argument>
+			<description>
+				Returns a boolean based on a given [code]probability[/code] value in the range of [code]0.0..1.0[/code]. The higher the probabilty value the higher the chance of this returning true.
+			</description>
+		</method>
 		<method name="new_instance" qualifiers="const">
 			<return type="Reference">
 			</return>
@@ -109,15 +118,6 @@
 			</argument>
 			<description>
 				Shuffles the array such that the items will have a random order. By default, this method uses the global random number generator in [Random] singletons, but unlike in [method Array.shuffle], local instances of [Random] can be created with [method new_instance] to achieve reproducible results given the same seed.
-			</description>
-		</method>
-		<method name="decision">
-			<return type="bool">
-			</return>
-			<argument index="0" name="probability" type="float">
-			</argument>
-			<description>
-				Returns a boolean based on a given [code]probability[/code] value in the range of [code]0.0..1.0[/code]. The higher the probabilty value the higher the chance of this returning true.
 			</description>
 		</method>
 	</methods>
