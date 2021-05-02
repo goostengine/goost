@@ -88,7 +88,7 @@
 			<argument index="0" name="probability" type="float">
 			</argument>
 			<description>
-				Returns a boolean based on a given [code]probability[/code] value in the range of [code]0.0..1.0[/code]. The higher the probabilty value the higher the chance of this returning true.
+				Returns a boolean based on a given [code]probability[/code] value in the range of [code]0.0..1.0[/code]. The higher the probability value the higher the chance of this returning [code]true[/code].
 			</description>
 		</method>
 		<method name="new_instance" qualifiers="const">

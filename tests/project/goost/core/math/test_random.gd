@@ -107,6 +107,22 @@ func test_condition():
 	assert_almost_eq(false_count / float(true_count), 1.0, 0.05)
 
 
+func test_decision_high():
+	var hit_count = 0
+	for x in 100000:
+		if Random.decision(0.7):
+			hit_count += 1
+	assert_almost_eq(hit_count / 100000.0, 0.7, 0.05)
+
+
+func test_decision_low():
+	var hit_count = 0
+	for x in 100000:
+		if Random.decision(0.1):
+			hit_count += 1
+	assert_almost_eq(hit_count / 100000.0, 0.1, 0.05)
+
+
 func test_randi_range_unbiased():
 	var zero_count = 0
 	var one_count = 0
