@@ -54,7 +54,8 @@ if __name__ == "__main__":
         sys.exit(ret)
     elif args.tool.startswith("doc"):
         print("Generating documentation ...")
-        os.makedirs("doc/godot")
+        if not os.path.exists("doc/godot"):
+            os.makedirs("doc/godot")
         ret = subprocess.run([
                 godot_bin, "--doctool",
                 os.path.join(base_path, "doc/godot")]).returncode
