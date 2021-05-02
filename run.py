@@ -39,6 +39,13 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument("tool", help='The type of a tool to run: "editor", "tests", "doctool".')
+
+    # Unit test arguments.
+    parser.add_argument("-t", "--test-file",
+            help='A relative path to test file to run, for instance: "core/math/test_random.gd"')
+    parser.add_argument("-tc", "--test-case",
+            help="Name of a test case to run. Any test case matching the name will be run.")
+
     args = parser.parse_args()
 
     if args.tool.startswith("editor"):
@@ -48,9 +55,16 @@ if __name__ == "__main__":
         sys.exit(ret)
     elif args.tool.startswith("test"):
         print("Running Goost tests ...")
-        ret = subprocess.run([
-                godot_bin, "--path", "tests/project", "-d", "-s",
-                os.path.join(base_path, "tests/project/addons/gut/gut_cmdln.gd")]).returncode
+        test_args = [godot_bin, "--path", "tests/project", "-d", "-s",
+                os.path.join(base_path, "tests/project/addons/gut/gut_cmdln.gd")]
+        if args.test_file:
+            # Reset `-gdir`, otherwise all scripts are going to be collected
+            # recursively from the directory defined in `.gutconfig.json`.
+            res_file = "res://goost/" + args.test_file
+            test_args.extend(["-gtest=%s" % res_file, '-gdir='])
+        if args.test_case:
+            test_args.extend(["-gunit_test_name=%s" % args.test_case])
+        ret = subprocess.run(test_args).returncode
         sys.exit(ret)
     elif args.tool.startswith("doc"):
         print("Generating documentation ...")
