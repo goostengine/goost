@@ -8,6 +8,8 @@
 #include "goost/thirdparty/hqx/HQ3x.hh"
 #include "goost/thirdparty/leptonica/allheaders.h"
 
+#include "core/local_vector.h"
+
 void GoostImage::replace_color(Ref<Image> p_image, const Color &p_color, const Color &p_with_color) {
 	if (p_color == p_with_color) {
 		return;
@@ -25,10 +27,27 @@ void GoostImage::replace_color(Ref<Image> p_image, const Color &p_color, const C
 	p_image->unlock();
 }
 
-Ref<Image> GoostImage::bucket_fill(Ref<Image> p_image, const Point2 &p_at, const Color &p_fill_color, bool p_fill_image, Connectivity p_con) {
-	// Based on flood-fill algorithm
-	// Runs up to x35 faster compared to GDScript implementation
+struct BucketFillQueue {
+	LocalVector<Vector2> array;
+	uint32_t front = 0;
+	uint32_t back = 0;
 
+	_FORCE_INLINE_ void push_back(const Vector2 &p_point) {
+		array.push_back(p_point);
+		++back;
+	}
+	_FORCE_INLINE_ Vector2 pop_front() {
+		return array[front++];
+	}
+	_FORCE_INLINE_ bool is_empty() {
+		return front == back;
+	}
+};
+
+// Based on flood-fill algorithm.
+// Scanline could perform better for 4-connected case, but this runs up to
+// x35 faster compared to equivalent GDScript implementation in any case.
+Ref<Image> GoostImage::bucket_fill(Ref<Image> p_image, const Point2 &p_at, const Color &p_fill_color, bool p_fill_image, Connectivity p_con) {
 	if (!has_pixelv(p_image, p_at)) {
 		return Ref<Image>();
 	}
@@ -70,12 +89,13 @@ Ref<Image> GoostImage::bucket_fill(Ref<Image> p_image, const Point2 &p_at, const
 		} break;
 	}
 
-	List<Vector2> to_fill;
+	BucketFillQueue to_fill;
+	// Reserve some memory for typical images such as textures, will grow as needed.
+	to_fill.array.reserve(MIN(512 * 512, width * height));
 	to_fill.push_back(pos);
 
-	while (!to_fill.empty()) {
-		pos = to_fill.front()->get();
-		to_fill.pop_front();
+	while (!to_fill.is_empty()) {
+		pos = to_fill.pop_front();
 
 		for (int i = 0; i < kernel.size(); ++i) {
 			const Vector2 &dir = kernel[i];
@@ -83,8 +103,9 @@ Ref<Image> GoostImage::bucket_fill(Ref<Image> p_image, const Point2 &p_at, const
 
 			if (has_pixelv(fill_image, at)) {
 				pixel = fill_image->get_pixelv(at);
-				if (pixel.a > 0.0)
-					continue; // already filled
+				if (pixel.a > 0.0) {
+					continue; // Already filled.
+				}
 			}
 			if (has_pixelv(fill_image, at)) {
 				pixel = p_image->get_pixelv(at);
@@ -98,8 +119,8 @@ Ref<Image> GoostImage::bucket_fill(Ref<Image> p_image, const Point2 &p_at, const
 		}
 	}
 	if (p_fill_image) {
-		// Fill the actual image (no undo)
-		// else just return filled area as a new image
+		// Fill the actual image (no undo),
+		// else just return filled area as a new image.
 		Rect2 fill_rect(0, 0, width, height);
 		p_image->blend_rect(fill_image, fill_rect, Point2());
 	}
