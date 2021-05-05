@@ -264,9 +264,9 @@ func test_get_pixel_average_grayscale():
 	output = TestUtils.image_load(SAMPLES.icon_binary)
 	var color = GoostImage.get_pixel_average(output)
 	output.lock()
-	assert_almost_eq(color.r, 0.452, 0.001)
-	assert_almost_eq(color.g, 0.452, 0.001)
-	assert_almost_eq(color.b, 0.452, 0.001)
+	assert_almost_eq(color.r, 0.449, 0.001)
+	assert_almost_eq(color.g, 0.449, 0.001)
+	assert_almost_eq(color.b, 0.449, 0.001)
 	assert_eq(color.a, 1.0)
 	output.unlock()
 	debug_color(color)
@@ -431,3 +431,45 @@ func test_load_gif():
 	assert_eq(output.get_pixel(0, 0), Color("#77b4c6"))
 	assert_eq(output.get_size(), Vector2(684, 37))
 	output.unlock()
+
+
+func test_bucket_fill_4_connected():
+	var input = TestUtils.image_load(SAMPLES.icon_binary)
+	input.convert(Image.FORMAT_RGBA8)
+	var filled = GoostImage.bucket_fill(input, Vector2(20, 20), Color.red, true, GoostImage.FOUR_CONNECTED)
+	output = input
+	# Image.
+	output.lock()
+	assert_eq(output.get_pixel(20, 20), Color.red)
+	assert_eq(output.get_pixel(44, 44), Color.red)
+	assert_eq(output.get_pixel(45, 26), Color.white, "Should not fill this portion, it's 4-connected.")
+	assert_eq(output.get_pixel(62, 37), Color.white)
+	output.unlock()
+	# Filled area.
+	filled.lock()
+	assert_eq(filled.get_pixel(20, 20), Color.red)
+	assert_eq(filled.get_pixel(44, 44), Color.red)
+	assert_eq(filled.get_pixel(45, 26), Color(0,0,0,0), "Should be black, not white.")
+	assert_eq(filled.get_pixel(62, 37), Color(0,0,0,0), "Should be black, not white.")
+	filled.unlock()
+
+
+func test_bucket_fill_8_connected():
+	var input = TestUtils.image_load(SAMPLES.icon_binary)
+	input.convert(Image.FORMAT_RGBA8)
+	var filled = GoostImage.bucket_fill(input, Vector2(20, 20), Color.red, true, GoostImage.EIGHT_CONNECTED)
+	output = input
+	# Image.
+	output.lock()
+	assert_eq(output.get_pixel(20, 20), Color.red)
+	assert_eq(output.get_pixel(44, 44), Color.red)
+	assert_eq(output.get_pixel(45, 26), Color.red, "Should fill this portion, it's 8-connected.")
+	assert_eq(output.get_pixel(62, 37), Color.white)
+	output.unlock()
+	# Filled area.
+	filled.lock()
+	assert_eq(filled.get_pixel(20, 20), Color.red)
+	assert_eq(filled.get_pixel(44, 44), Color.red)
+	assert_eq(filled.get_pixel(45, 26), Color.red)
+	assert_eq(filled.get_pixel(62, 37), Color(0,0,0,0), "Should be black, not white.")
+	filled.unlock()
