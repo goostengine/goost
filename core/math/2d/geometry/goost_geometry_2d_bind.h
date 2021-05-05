@@ -40,6 +40,7 @@ public:
 
 	Vector<Point2> regular_polygon(int p_edge_count, real_t p_size) const;
 	Vector<Point2> circle(real_t p_radius, real_t p_max_error) const;
+	Vector<Point2> bresenham_line(const Point2 &p_start, const Point2 &p_end) const;
 
 	_GoostGeometry2D();
 };

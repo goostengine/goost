@@ -32,9 +32,10 @@ public:
 	// Returns 0 if false, +1 if true, -1 if point is exactly on the polygon's boundary.
 	static int point_in_polygon(const Point2 &p_point, const Vector<Point2> &p_polygon);
 
-	/* Polygon/shapes generation methods */
+	/* Polygon/primitives generation methods */
 	static Vector<Point2> regular_polygon(int p_edge_count, real_t p_size);
 	static Vector<Point2> circle(real_t p_radius, real_t p_max_error = 0.25);
+	static Vector<Point2i> bresenham_line(const Point2i &p_start, const Point2i &p_end);
 };
 
 #endif // GOOST_GEOMETRY_2D_H
