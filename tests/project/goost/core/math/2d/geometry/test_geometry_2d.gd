@@ -127,3 +127,61 @@ func test_regular_polygon():
 func test_circle():
 	solution = GoostGeometry2D.circle(SIZE, 0.25)
 	assert_eq(solution.size(), 32)
+
+
+func test_bresenham_line():
+	var line = GoostGeometry2D.bresenham_line(Vector2(0, 0), Vector2(5, 0))
+	assert_eq(line.size(), 6)
+	for x in 6:
+		assert_eq(line[x], Vector2(x, 0))
+
+	line = GoostGeometry2D.bresenham_line(Vector2(0, 0), Vector2(-10, 0))
+	assert_eq(line.size(), 11)
+	for x in 11:
+		assert_eq(line[x], Vector2(-x, 0))
+
+	line = GoostGeometry2D.bresenham_line(Vector2(0, 0), Vector2(0, 5))
+	assert_eq(line.size(), 6)
+	for x in 6:
+		assert_eq(line[x], Vector2(0, x))
+
+	line = GoostGeometry2D.bresenham_line(Vector2(0, 0), Vector2(0, -10))
+	assert_eq(line.size(), 11)
+	for x in 11:
+		assert_eq(line[x], Vector2(0, -x))
+
+	line = GoostGeometry2D.bresenham_line(Vector2(-5, -5), Vector2(5, 5))
+	assert_eq(line.size(), 11)
+	assert_eq(line[0], Vector2(-5, -5))
+	assert_eq(line[5], Vector2(0, 0))
+	assert_eq(line[10], Vector2(5, 5))
+
+	line = GoostGeometry2D.bresenham_line(Vector2(5, -5), Vector2(-5, 5))
+	assert_eq(line.size(), 11)
+	assert_eq(line[0], Vector2(5, -5))
+	assert_eq(line[5], Vector2(0, 0))
+	assert_eq(line[10], Vector2(-5, 5))
+
+	line = GoostGeometry2D.bresenham_line(Vector2(5, -5), Vector2(-5, 5))
+	assert_eq(line.size(), 11)
+	assert_eq(line[0], Vector2(5, -5))
+	assert_eq(line[5], Vector2(0, 0))
+	assert_eq(line[10], Vector2(-5, 5))
+
+	line = GoostGeometry2D.bresenham_line(Vector2(-5, -5), Vector2(10, 3))
+	assert_eq(line[0], Vector2(-5, -5))
+	assert_eq(line[1], Vector2(-4, -4))
+	assert_eq(line[2], Vector2(-3, -4))
+	assert_eq(line[3], Vector2(-2, -3))
+	assert_eq(line[4], Vector2(-1, -3))
+	assert_eq(line[5], Vector2(0, -2))
+	assert_eq(line[6], Vector2(1, -2))
+	assert_eq(line[7], Vector2(2, -1))
+	assert_eq(line[8], Vector2(3, -1))
+	assert_eq(line[9], Vector2(4, 0))
+	assert_eq(line[10], Vector2(5, 0))
+	assert_eq(line[11], Vector2(6, 1))
+	assert_eq(line[12], Vector2(7, 1))
+	assert_eq(line[13], Vector2(8, 2))
+	assert_eq(line[14], Vector2(9, 2))
+	assert_eq(line[15], Vector2(10, 3))

@@ -20,6 +20,17 @@
 				Computes the axis-aligned bounding rectangle of given points.
 			</description>
 		</method>
+		<method name="bresenham_line" qualifiers="const">
+			<return type="PoolVector2Array">
+			</return>
+			<argument index="0" name="start" type="Vector2">
+			</argument>
+			<argument index="1" name="end" type="Vector2">
+			</argument>
+			<description>
+				Returns an array of 2D-dimensional raster coordinates going through a segment determined by [code]start[/code] and [code]end[/code] points. The line is a close approximation to a straight line between those points.
+			</description>
+		</method>
 		<method name="circle" qualifiers="const">
 			<return type="PoolVector2Array">
 			</return>

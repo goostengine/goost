@@ -235,3 +235,43 @@ Vector<Point2> GoostGeometry2D::circle(real_t p_radius, real_t p_max_error) {
 
 	return regular_polygon(vertex_count, p_radius); // vertex count == edge count
 }
+
+// Implementation borrowed from `TileMap` editor plugin:
+// https://github.com/godotengine/godot/blob/0d819ae5f5/editor/plugins/tile_map_editor_plugin.cpp#L982-L1023
+//
+Vector<Point2i> GoostGeometry2D::bresenham_line(const Point2i &p_start, const Point2i &p_end) {
+	Vector<Point2i> points;
+
+	real_t dx = ABS(p_end.x - p_start.x);
+	real_t dy = ABS(p_end.y - p_start.y);
+
+	int x = p_start.x;
+	int y = p_start.y;
+
+	int sx = p_start.x > p_end.x ? -1 : 1;
+	int sy = p_start.y > p_end.y ? -1 : 1;
+
+	if (dx > dy) {
+		real_t err = dx / 2;
+		for (; x != p_end.x; x += sx) {
+			points.push_back(Point2i(x, y));
+			err -= dy;
+			if (err < 0) {
+				y += sy;
+				err += dx;
+			}
+		}
+	} else {
+		real_t err = dy / 2;
+		for (; y != p_end.y; y += sy) {
+			points.push_back(Point2i(x, y));
+			err -= dx;
+			if (err < 0) {
+				x += sx;
+				err += dy;
+			}
+		}
+	}
+	points.push_back(Point2i(x, y));
+	return points;
+}
