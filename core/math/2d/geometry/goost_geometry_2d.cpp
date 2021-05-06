@@ -86,10 +86,115 @@ Vector<Vector<Point2>> GoostGeometry2D::decompose_polygon(const Vector<Point2> &
 	return PolyDecomp2D::decompose_polygons(polygons, PolyDecomp2D::DECOMP_CONVEX_HM);
 }
 
+// Polyline decimation using Ramer-Douglas-Peucker (RDP) algorithm.
+Vector<Point2> GoostGeometry2D::simplify_polyline(const Vector<Point2> &p_polyline, real_t p_epsilon) {
+	if (p_polyline.size() <= 2) {
+		return p_polyline;
+	}
+	Vector<bool> points_to_retain;
+	points_to_retain.resize(p_polyline.size());
+
+	bool *retain = points_to_retain.ptrw();
+	memset(retain, 0, points_to_retain.size());
+
+	real_t eps = MAX(0.0, p_epsilon);
+	real_t distance_max = 0;
+	real_t distance = 0;
+
+	using Sub = Pair<int, int>;
+	List<Sub> polylines;
+	Sub sub(0, p_polyline.size() - 1);
+	polylines.push_back(sub);
+
+	retain[sub.first] = true;
+	retain[sub.second] = true;
+	int index = 0;
+
+	while (!polylines.empty()) {
+		sub = polylines.back()->get();
+		polylines.pop_back();
+
+		distance_max = 0;
+		Vector2 a = p_polyline[sub.first];
+		Vector2 b = p_polyline[sub.second];
+		Vector2 n = b - a;
+
+		for (int i = sub.first + 1; i < sub.second; ++i) {
+			Vector2 pa = a - p_polyline[i];
+			Vector2 c = n * pa.dot(n) / n.dot(n);
+			Vector2 d = pa - c;
+			distance = d.dot(d);
+			if (distance > distance_max) {
+				index = i;
+				distance_max = distance;
+			}
+		}
+		if (distance_max >= eps) {
+			retain[index] = true;
+			polylines.push_back(Sub(sub.first, index));
+			polylines.push_back(Sub(index, sub.second));
+		}
+	}
+	Vector<Vector2> ret;
+	for (int i = 0; i < p_polyline.size(); ++i) {
+		if (retain[i]) {
+			ret.push_back(p_polyline[i]);
+		}
+	}
+	return ret;
+}
+
+// Approximate polygon smoothing using Chaikin algorithm.
+// https://www.cs.unc.edu/~dm/UNC/COMP258/LECTURES/Chaikins-Algorithm.pdf
+//
+Vector<Point2> GoostGeometry2D::smooth_polygon_approx(const Vector<Point2> &p_polygon, int p_iterations, real_t p_cut_distance) {
+	ERR_FAIL_COND_V_MSG(p_polygon.size() < 3, Vector<Point2>(), "Bad polygon!");
+
+	Vector<Point2> subject = p_polygon;
+	const real_t cd = CLAMP(p_cut_distance, 0.0, 0.5);
+	for (int i = 0; i < p_iterations; ++i) {
+		Vector<Point2> smoothed;
+		for (int j = 0; j < subject.size(); ++j) {
+			const Point2 &p1 = subject[j];
+			const Point2 &p2 = subject[(j + 1) % subject.size()];
+			smoothed.push_back((1.0 - cd) * p1 + cd * p2); // Q
+			smoothed.push_back(cd * p1 + (1.0 - cd) * p2); // R
+		}
+		subject = smoothed;
+	}
+	return subject;
+}
+
+// Approximate polyline smoothing using Chaikin algorithm:
+// https://www.cs.unc.edu/~dm/UNC/COMP258/LECTURES/Chaikins-Algorithm.pdf
+//
+// Unlike polygon version, the endpoints are always retained.
+//
+Vector<Point2> GoostGeometry2D::smooth_polyline_approx(const Vector<Point2> &p_polyline, int p_iterations, real_t p_cut_distance) {
+	if (p_polyline.size() <= 2) {
+		return p_polyline;
+	}
+	Vector<Point2> subject = p_polyline;
+	const real_t cd = CLAMP(p_cut_distance, 0.0, 0.5);
+	for (int i = 0; i < p_iterations; ++i) {
+		Vector<Point2> smoothed;
+		smoothed.push_back(subject[0]); // Always add first point.
+		for (int j = 0; j < subject.size() - 1; ++j) {
+			const Point2 &p1 = subject[j];
+			const Point2 &p2 = subject[j + 1];
+			smoothed.push_back((1.0 - cd) * p1 + cd * p2); // Q
+			smoothed.push_back(cd * p1 + (1.0 - cd) * p2); // R
+		}
+		smoothed.push_back(subject[subject.size() - 1]); // Always add last point.
+		subject = smoothed;
+	}
+	return subject;
+}
+
+// "Calculating The Area And Centroid Of A Polygon" Written by Paul Bourke July 1988
+// https://www.seas.upenn.edu/~sys502/extra_materials/Polygon%20Area%20and%20Centroid.pdf
+//
 Point2 GoostGeometry2D::polygon_centroid(const Vector<Point2> &p_polygon) {
-	// Based on formulae from:
-	// "Calculating The Area And Centroid Of A Polygon" Written by Paul Bourke July 1988
-	// https://www.seas.upenn.edu/~sys502/extra_materials/Polygon%20Area%20and%20Centroid.pdf
 	int c = p_polygon.size();
 	ERR_FAIL_COND_V(c < 3, Vector2());
 
@@ -162,7 +267,7 @@ Rect2 GoostGeometry2D::bounding_rect(const Vector<Point2> &p_points) {
 	return rect;
 }
 
-// See "The Point in Polygon Problem for Arbitrary Polygons" by Hormann & Agathos
+// "The Point in Polygon Problem for Arbitrary Polygons" by Hormann & Agathos
 // http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.88.5498&rep=rep1&type=pdf
 //
 // Implementation ported from Clipper 6.4.2.

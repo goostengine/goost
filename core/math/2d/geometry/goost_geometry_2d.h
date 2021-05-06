@@ -22,6 +22,11 @@ public:
 	static Vector<Vector<Point2>> triangulate_polygon(const Vector<Point2> &p_polygon);
 	static Vector<Vector<Point2>> decompose_polygon(const Vector<Point2> &p_polygon);
 
+	/* Polygon/Polyline simplification and smoothing */
+	static Vector<Point2> simplify_polyline(const Vector<Point2> &p_polyline, real_t p_epsilon);
+	static Vector<Point2> smooth_polygon_approx(const Vector<Point2> &p_polygon, int p_iterations = 1, real_t p_cut_distance = 0.25);
+	static Vector<Point2> smooth_polyline_approx(const Vector<Point2> &p_polyline, int p_iterations = 1, real_t p_cut_distance = 0.25);
+
 	/* Polygon/Polyline attributes */
 	static Point2 polygon_centroid(const Vector<Point2> &p_polygon);
 	static real_t polygon_area(const Vector<Point2> &p_polygon);
