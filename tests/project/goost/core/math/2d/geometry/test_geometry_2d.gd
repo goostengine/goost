@@ -226,3 +226,17 @@ func test_smooth_polyline_approx():
 
 	for i in smoothed.size():
 		assert_eq(smoothed[i], control[i])
+
+
+class Stress extends "res://addons/gut/test.gd":
+	func test_simplify_polyline():
+		var time = 0
+		var input = GoostGeometry2D.circle(1024)
+		for i in input.size():
+			input[i] += Random2D.point_in_circle(100)
+		for i in 100000:
+			var t1 = OS.get_ticks_msec()
+			var _simplified = GoostGeometry2D.simplify_polyline(input, 100.0)
+			var t2 = OS.get_ticks_msec()
+			time += t2 - t1
+		gut.p(time / 100000.0)

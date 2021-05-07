@@ -4,6 +4,8 @@
 #include "poly/decomp/poly_decomp.h"
 #include "poly/offset/poly_offset.h"
 
+#include "core/local_vector.h"
+
 Vector<Vector<Point2>> GoostGeometry2D::merge_polygons(const Vector<Point2> &p_polygon_a, const Vector<Point2> &p_polygon_b) {
 	Vector<Vector<Point2>> subject;
 	subject.push_back(p_polygon_a);
@@ -86,6 +88,32 @@ Vector<Vector<Point2>> GoostGeometry2D::decompose_polygon(const Vector<Point2> &
 	return PolyDecomp2D::decompose_polygons(polygons, PolyDecomp2D::DECOMP_CONVEX_HM);
 }
 
+struct IndicesStack {
+	LocalVector<int> stack;
+	uint32_t stack_size = 0;
+	uint32_t back = 0;
+
+	_FORCE_INLINE_ void push_back(int p_index) {
+		if (stack.size() == back) {
+			stack.push_back(p_index);
+		} else {
+			stack[back] = p_index;
+		}
+		++back;
+		++stack_size;
+	}
+	_FORCE_INLINE_ int pop_back() {
+		--stack_size;
+		return stack[--back];
+	}
+	_FORCE_INLINE_ bool is_empty() {
+		return stack_size == 0;
+	}
+	_FORCE_INLINE_ const int &operator[](int p_index) const {
+		return stack[p_index];
+	}
+};
+
 // Polyline decimation using Ramer-Douglas-Peucker (RDP) algorithm.
 Vector<Point2> GoostGeometry2D::simplify_polyline(const Vector<Point2> &p_polyline, real_t p_epsilon) {
 	if (p_polyline.size() <= 2) {
@@ -101,25 +129,25 @@ Vector<Point2> GoostGeometry2D::simplify_polyline(const Vector<Point2> &p_polyli
 	real_t distance_max = 0;
 	real_t distance = 0;
 
-	using Sub = Pair<int, int>;
-	List<Sub> polylines;
-	Sub sub(0, p_polyline.size() - 1);
-	polylines.push_back(sub);
+	IndicesStack parts;
+	parts.stack.reserve(p_polyline.size() * 2);
+	parts.push_back(0);
+	parts.push_back(p_polyline.size() - 1);
 
-	retain[sub.first] = true;
-	retain[sub.second] = true;
+	retain[parts[0]] = true;
+	retain[parts[1]] = true;
 	int index = 0;
 
-	while (!polylines.empty()) {
-		sub = polylines.back()->get();
-		polylines.pop_back();
+	while (!parts.is_empty()) {
+		int second = parts.pop_back(); // Pop back in other order.
+		int first = parts.pop_back();
 
 		distance_max = 0;
-		Vector2 a = p_polyline[sub.first];
-		Vector2 b = p_polyline[sub.second];
+		Vector2 a = p_polyline[first];
+		Vector2 b = p_polyline[second];
 		Vector2 n = b - a;
 
-		for (int i = sub.first + 1; i < sub.second; ++i) {
+		for (int i = first + 1; i < second; ++i) {
 			Vector2 pa = a - p_polyline[i];
 			Vector2 c = n * pa.dot(n) / n.dot(n);
 			Vector2 d = pa - c;
@@ -131,8 +159,10 @@ Vector<Point2> GoostGeometry2D::simplify_polyline(const Vector<Point2> &p_polyli
 		}
 		if (distance_max >= eps) {
 			retain[index] = true;
-			polylines.push_back(Sub(sub.first, index));
-			polylines.push_back(Sub(index, sub.second));
+			parts.push_back(first);
+			parts.push_back(index);
+			parts.push_back(index);
+			parts.push_back(second);
 		}
 	}
 	Vector<Vector2> ret;
