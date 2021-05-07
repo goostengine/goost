@@ -210,6 +210,44 @@
 				The order of vertices returned is counterclockwise which makes it an outer polygon by default. To convert it to an inner polygon specifically, use [method PoolVector2Array.invert].
 			</description>
 		</method>
+		<method name="simplify_polyline" qualifiers="const">
+			<return type="PoolVector2Array">
+			</return>
+			<argument index="0" name="polyline" type="PoolVector2Array">
+			</argument>
+			<argument index="1" name="epsilon" type="float">
+			</argument>
+			<description>
+				Simplifies a polyline by reducing the number of points using the Ramer-Douglas-Peucker (RDP) algorithm. Higher [code]epsilon[/code] values result in fewer points retained.
+			</description>
+		</method>
+		<method name="smooth_polygon_approx" qualifiers="const">
+			<return type="PoolVector2Array">
+			</return>
+			<argument index="0" name="polygon" type="PoolVector2Array">
+			</argument>
+			<argument index="1" name="iterations" type="int" default="1">
+			</argument>
+			<argument index="2" name="cut_distance" type="float" default="0.25">
+			</argument>
+			<description>
+				Approximately smoothers the polygon using the Chaikin's algorithm resulting in larger number of vertices. Number of [code]iterations[/code] can be specified to produce smoother polygons. The [code]cut_distance[/code] determines at what distance new control points are selected from segments.
+			</description>
+		</method>
+		<method name="smooth_polyline_approx" qualifiers="const">
+			<return type="PoolVector2Array">
+			</return>
+			<argument index="0" name="polyline" type="PoolVector2Array">
+			</argument>
+			<argument index="1" name="iterations" type="int" default="1">
+			</argument>
+			<argument index="2" name="cut_distance" type="float" default="0.25">
+			</argument>
+			<description>
+				Approximately smoothers the polyline using the Chaikin's algorithm resulting in larger number of vertices. Number of [code]iterations[/code] can be specified to produce smoother polylines. The [code]cut_distance[/code] determines at what distance new control points are selected from segments.
+				Unlike [method smooth_polygon_approx], this method always retains start and end points from the original polyline.
+			</description>
+		</method>
 		<method name="triangulate_polygon" qualifiers="const">
 			<return type="Array">
 			</return>
