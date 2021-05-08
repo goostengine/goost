@@ -34,15 +34,17 @@ def run(p_args, windowed=False): # Assumes the first arg is the binary path.
 if __name__ == "__main__":
     if not os.path.exists("godot"):
         print("Error: no Godot repository found at Goost root, aborting.")
-        print("Please run `scons` command first to clone Godot repository from remote and build Godot with Goost.")
+        print("Please run `scons` command first.")
         sys.exit(255)
 
     base_path = os.path.dirname(os.path.abspath(__file__))
     try:
         godot_bin = get_engine_executable_path()
-    except ValueError as e:
-        print(e)
-        print("Have you forgot to build the engine first?")
+        if not os.path.exists(godot_bin):
+            raise RuntimeError("Could not find engine executable.")
+    except (ValueError, RuntimeError) as e:
+        print("Error: %s" % e)
+        print("Please run `scons` command first.")
         sys.exit(255)
 
     parser = argparse.ArgumentParser()
