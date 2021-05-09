@@ -31,6 +31,8 @@ public:
 	Array decompose_polygon(const Vector<Point2> &p_polygon) const;
 
 	Vector<Point2> simplify_polyline(const Vector<Point2> &p_polyline, real_t p_epsilon) const;
+	Vector<Point2> smooth_polygon(const Vector<Point2> &p_polygon, float p_density, float p_alpha = 0.5) const;
+	Vector<Point2> smooth_polyline(const Vector<Point2> &p_polyline, float p_density, float p_alpha = 0.5) const;
 	Vector<Point2> smooth_polygon_approx(const Vector<Point2> &p_polygon, int p_iterations = 1, real_t cut_distance = 0.25) const;
 	Vector<Point2> smooth_polyline_approx(const Vector<Point2> &p_polyline, int p_iterations = 1, real_t cut_distance = 0.25) const;
 
