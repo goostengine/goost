@@ -228,18 +228,19 @@ Vector<Point2> GoostGeometry2D::smooth_polyline(const Vector<Point2> &p_polyline
 
 	const real_t length = polyline_length(p_polyline);
 
+	const Point2 *p = pts.ptr();
 	Vector<Point2> smoothed;
 	for (int i = 0; i < pts.size() - 3; ++i) {
 		// Weighted distribution.
-		const real_t segment_length = pts[i + 1].distance_to(pts[i + 2]);
+		const real_t segment_length = p[i + 1].distance_to(p[i + 2]);
 		const int pc = Math::ceil(point_count * segment_length / length);
 		for (int j = 0; j < pc; ++j) {
 			real_t t = 1.0 / pc * j;
 			smoothed.push_back(catmull_rom(
-					pts[i + 0], pts[i + 1], pts[i + 2], pts[i + 3], t, p_alpha));
+					p[i + 0], p[i + 1], p[i + 2], p[i + 3], t, p_alpha));
 		}
 	}
-	smoothed.push_back(pts[pts.size() - 2]);
+	smoothed.push_back(p[pts.size() - 2]);
 	return smoothed;
 }
 
@@ -251,15 +252,14 @@ Vector<Point2> GoostGeometry2D::smooth_polygon(const Vector<Point2> &p_polygon, 
 		// No need to interpolate.
 		return p_polygon;
 	}
-	Vector<Point2> pts = p_polygon;
 	const real_t perimeter = polygon_perimeter(p_polygon);
-	
-	auto pt = [&](int i) {
-		const int s = pts.size();
-		return pts[((i % s) + s) % s];
+	const int s = p_polygon.size();
+	const Point2 *p = p_polygon.ptr();
+	auto pt = [&](int idx) {
+		return p[(idx % s + s) % s];
 	};
 	Vector<Point2> smoothed;
-	for (int i = 0; i < pts.size(); ++i) {
+	for (int i = 0; i < s; ++i) {
 		// Weighted distribution.
 		const real_t segment_length = pt(i + 0).distance_to(pt(i + 1));
 		const int pc = Math::ceil(point_count * segment_length / perimeter);

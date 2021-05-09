@@ -262,9 +262,21 @@ class Stress extends "res://addons/gut/test.gd":
 		var input = GoostGeometry2D.circle(1024)
 		for i in input.size():
 			input[i] += Random2D.point_in_circle(100)
-		for i in 100000:
+		for i in 10000:
 			var t1 = OS.get_ticks_msec()
-			var _simplified = GoostGeometry2D.simplify_polyline(input, 100.0)
+			var _out = GoostGeometry2D.simplify_polyline(input, 100.0)
 			var t2 = OS.get_ticks_msec()
 			time += t2 - t1
-		gut.p(time / 100000.0)
+		gut.p(time / 10000.0)
+
+	func test_smooth_polyline():
+		var time = 0
+		var input = GoostGeometry2D.regular_polygon(1024, 6)
+		for i in input.size():
+			input[i] += Random2D.point_in_circle(100)
+		for i in 100:
+			var t1 = OS.get_ticks_msec()
+			var _out = GoostGeometry2D.smooth_polyline(input, 20)
+			var t2 = OS.get_ticks_msec()
+			time += t2 - t1
+		gut.p(time / 100.0)
