@@ -188,7 +188,7 @@ static Vector2 catmull_rom(const Vector2 &p0, const Vector2 &p1, const Vector2 &
 		ERR_FAIL_COND_V_MSG(p0 == p1 || p1 == p2 || p2 == p3, Vector2(), "Duplicate points detected, cannot interpolate.");
 #endif
 		auto compute_t = [&](float t, float alpha, const Vector2 &v0, const Vector2 &v1) {
-			real_t a = Math::pow(v1.x - v0.x, 2.0f) + Math::pow(v1.y - v0.y, 2.0f);
+			real_t a = (v1.x - v0.x) * (v1.x - v0.x) + (v1.y - v0.y) * (v1.y - v0.y);
 			real_t b = Math::pow(a, alpha * 0.5f);
 			return b + t;
 		};
@@ -205,7 +205,9 @@ static Vector2 catmull_rom(const Vector2 &p0, const Vector2 &p1, const Vector2 &
 		c = (t2 - t) / (t2 - t1) * b1 + (t - t1) / (t2 - t1) * b2;
 	} else {
 		// Uniform, faster to compute, duplicate points allowed but not recommended...
-		c = 0.5 * (2 * p1 + (-1 * p0 + p2) * p_t + (2 * p0 - 5 * p1 + 4 * p2 - p3) * Math::pow(p_t, 2) + (-1 * p0 + 3 * p1 - 3 * p2 + p3) * Math::pow(p_t, 3));
+		real_t t2 = p_t * p_t;
+		real_t t3 = t2 * p_t;
+		c = 0.5 * (2 * p1 + (-1 * p0 + p2) * p_t + (2 * p0 - 5 * p1 + 4 * p2 - p3) * t2 + (-1 * p0 + 3 * p1 - 3 * p2 + p3) * t3);
 	}
 	return c;
 }
@@ -214,10 +216,8 @@ Vector<Point2> GoostGeometry2D::smooth_polyline(const Vector<Point2> &p_polyline
 	ERR_FAIL_COND_V_MSG(p_polyline.size() < 3, Vector<Point2>(),
 			"Cannot smooth polyline: requires at least 3 points for interpolation.");
 
-	const int point_count = p_polyline.size() * p_density;
-	if (point_count <= p_polyline.size()) {
-		// No need to interpolate.
-		return p_polyline;
+	if (p_density <= 1.0f) {
+		return p_polyline; // No need to interpolate.
 	}
 	Vector<Point2> pts = p_polyline;
 	// Extrapolate first and last points to act as control points.
@@ -226,6 +226,7 @@ Vector<Point2> GoostGeometry2D::smooth_polyline(const Vector<Point2> &p_polyline
 	const Vector2 &d2 = pts[pts.size() - 1] - pts[pts.size() - 2];
 	pts.insert(pts.size(), pts[pts.size() - 1] + d2);
 
+	const int point_count = p_polyline.size() * p_density;
 	const real_t length = polyline_length(p_polyline);
 
 	const Point2 *p = pts.ptr();
@@ -247,12 +248,12 @@ Vector<Point2> GoostGeometry2D::smooth_polyline(const Vector<Point2> &p_polyline
 Vector<Point2> GoostGeometry2D::smooth_polygon(const Vector<Point2> &p_polygon, float p_density, float p_alpha) {
 	ERR_FAIL_COND_V_MSG(p_polygon.size() < 3, Vector<Point2>(), "Bad polygon!");
 
-	const int point_count = p_polygon.size() * p_density;
-	if (point_count <= p_polygon.size()) {
-		// No need to interpolate.
-		return p_polygon;
+	if (p_density <= 1.0f) {
+		return p_polygon; // No need to interpolate.
 	}
+	const int point_count = p_polygon.size() * p_density;
 	const real_t perimeter = polygon_perimeter(p_polygon);
+
 	const int s = p_polygon.size();
 	const Point2 *p = p_polygon.ptr();
 	auto pt = [&](int idx) {
@@ -272,14 +273,14 @@ Vector<Point2> GoostGeometry2D::smooth_polygon(const Vector<Point2> &p_polygon, 
 	return smoothed;
 }
 
-// Approximate polygon smoothing using Chaikin algorithm.
+// Approximate polygon smoothing using Chaikin's corner-cutting algorithm.
 // https://www.cs.unc.edu/~dm/UNC/COMP258/LECTURES/Chaikins-Algorithm.pdf
 //
-Vector<Point2> GoostGeometry2D::smooth_polygon_approx(const Vector<Point2> &p_polygon, int p_iterations, real_t p_cut_distance) {
+Vector<Point2> GoostGeometry2D::smooth_polygon_approx(const Vector<Point2> &p_polygon, int p_iterations, float p_cut_distance) {
 	ERR_FAIL_COND_V_MSG(p_polygon.size() < 3, Vector<Point2>(), "Bad polygon!");
 
 	Vector<Point2> subject = p_polygon;
-	const real_t cd = CLAMP(p_cut_distance, 0.0, 0.5);
+	const float cd = CLAMP(p_cut_distance, 0.0f, 0.5f);
 	for (int i = 0; i < p_iterations; ++i) {
 		Vector<Point2> smoothed;
 		for (int j = 0; j < subject.size(); ++j) {
@@ -293,17 +294,17 @@ Vector<Point2> GoostGeometry2D::smooth_polygon_approx(const Vector<Point2> &p_po
 	return subject;
 }
 
-// Approximate polyline smoothing using Chaikin algorithm:
+// Approximate polyline smoothing using Chaikin's corner-cutting algorithm:
 // https://www.cs.unc.edu/~dm/UNC/COMP258/LECTURES/Chaikins-Algorithm.pdf
 //
 // Unlike polygon version, the endpoints are always retained.
 //
-Vector<Point2> GoostGeometry2D::smooth_polyline_approx(const Vector<Point2> &p_polyline, int p_iterations, real_t p_cut_distance) {
+Vector<Point2> GoostGeometry2D::smooth_polyline_approx(const Vector<Point2> &p_polyline, int p_iterations, float p_cut_distance) {
 	if (p_polyline.size() <= 2) {
 		return p_polyline;
 	}
 	Vector<Point2> subject = p_polyline;
-	const real_t cd = CLAMP(p_cut_distance, 0.0, 0.5);
+	const float cd = CLAMP(p_cut_distance, 0.0f, 0.5f);
 	for (int i = 0; i < p_iterations; ++i) {
 		Vector<Point2> smoothed;
 		smoothed.push_back(subject[0]); // Always add first point.

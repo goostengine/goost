@@ -110,15 +110,15 @@ Vector<Point2> _GoostGeometry2D::smooth_polygon(const Vector<Point2> &p_polygon,
 	return GoostGeometry2D::smooth_polygon(p_polygon, p_density, p_alpha);
 }
 
-Vector<Point2> _GoostGeometry2D::smooth_polyline(const Vector<Point2> &p_polyline, float p_density, real_t p_alpha) const {
+Vector<Point2> _GoostGeometry2D::smooth_polyline(const Vector<Point2> &p_polyline, float p_density, float p_alpha) const {
 	return GoostGeometry2D::smooth_polyline(p_polyline, p_density, p_alpha);
 }
 
-Vector<Point2> _GoostGeometry2D::smooth_polygon_approx(const Vector<Point2> &p_polygon, int p_iterations, real_t cut_distance) const {
+Vector<Point2> _GoostGeometry2D::smooth_polygon_approx(const Vector<Point2> &p_polygon, int p_iterations, float cut_distance) const {
 	return GoostGeometry2D::smooth_polygon_approx(p_polygon, p_iterations, cut_distance);
 }
 
-Vector<Point2> _GoostGeometry2D::smooth_polyline_approx(const Vector<Point2> &p_polyline, int p_iterations, real_t cut_distance) const {
+Vector<Point2> _GoostGeometry2D::smooth_polyline_approx(const Vector<Point2> &p_polyline, int p_iterations, float cut_distance) const {
 	return GoostGeometry2D::smooth_polyline_approx(p_polyline, p_iterations, cut_distance);
 }
 
@@ -180,10 +180,10 @@ void _GoostGeometry2D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("decompose_polygon", "polygon"), &_GoostGeometry2D::decompose_polygon);
 
 	ClassDB::bind_method(D_METHOD("simplify_polyline", "polyline", "epsilon"), &_GoostGeometry2D::simplify_polyline);
-	ClassDB::bind_method(D_METHOD("smooth_polygon", "polygon", "density", "alpha"), &_GoostGeometry2D::smooth_polygon, DEFVAL(0.5));
-	ClassDB::bind_method(D_METHOD("smooth_polyline", "polyline", "density", "alpha"), &_GoostGeometry2D::smooth_polyline, DEFVAL(0.5));
-	ClassDB::bind_method(D_METHOD("smooth_polygon_approx", "polygon", "iterations", "cut_distance"), &_GoostGeometry2D::smooth_polygon_approx, DEFVAL(1), DEFVAL(0.25));
-	ClassDB::bind_method(D_METHOD("smooth_polyline_approx", "polyline", "iterations", "cut_distance"), &_GoostGeometry2D::smooth_polyline_approx, DEFVAL(1), DEFVAL(0.25));
+	ClassDB::bind_method(D_METHOD("smooth_polygon", "polygon", "density", "alpha"), &_GoostGeometry2D::smooth_polygon, DEFVAL(0.5f));
+	ClassDB::bind_method(D_METHOD("smooth_polyline", "polyline", "density", "alpha"), &_GoostGeometry2D::smooth_polyline, DEFVAL(0.5f));
+	ClassDB::bind_method(D_METHOD("smooth_polygon_approx", "polygon", "iterations", "cut_distance"), &_GoostGeometry2D::smooth_polygon_approx, DEFVAL(1), DEFVAL(0.25f));
+	ClassDB::bind_method(D_METHOD("smooth_polyline_approx", "polyline", "iterations", "cut_distance"), &_GoostGeometry2D::smooth_polyline_approx, DEFVAL(1), DEFVAL(0.25f));
 
 	ClassDB::bind_method(D_METHOD("polygon_centroid", "polygon"), &_GoostGeometry2D::polygon_centroid);
 	ClassDB::bind_method(D_METHOD("polygon_area", "polygon"), &_GoostGeometry2D::polygon_area);
