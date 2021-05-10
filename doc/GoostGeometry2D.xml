@@ -221,6 +221,22 @@
 				Simplifies a polyline by reducing the number of points using the Ramer-Douglas-Peucker (RDP) algorithm. Higher [code]epsilon[/code] values result in fewer points retained.
 			</description>
 		</method>
+		<method name="smooth_polygon" qualifiers="const">
+			<return type="PoolVector2Array">
+			</return>
+			<argument index="0" name="polygon" type="PoolVector2Array">
+			</argument>
+			<argument index="1" name="density" type="float">
+			</argument>
+			<argument index="2" name="alpha" type="float" default="0.5">
+			</argument>
+			<description>
+				Smoothers the polygon using the Catmull-Rom's interpolating spline, resulting in larger number of vertices.
+				The [code]density[/code] parameter configures the desired number of vertices in the output polygon: [code]n = polygon.size() * density[/code], where [code]n[/code] is the point count computed. If [code]density &lt; 1.0[/code], returns original [code]polygon[/code]. The number of vertices is weighted per segment according to the [method polygon_perimeter].
+				The [code]alpha[/code] parameter determines the type of the Catmull-Rom's spline: uniform - [code]alpha == 0[/code], centripetal - [code]alpha == 0.5[/code], chordal - [code]alpha > 0.5[/code]. The default value of [code]0.5[/code] is recommended for eliminating self-intersections and cusps.
+				For faster, approximate smoothing method, see [method smooth_polygon_approx].
+			</description>
+		</method>
 		<method name="smooth_polygon_approx" qualifiers="const">
 			<return type="PoolVector2Array">
 			</return>
@@ -232,6 +248,23 @@
 			</argument>
 			<description>
 				Approximately smoothers the polygon using the Chaikin's algorithm resulting in larger number of vertices. Number of [code]iterations[/code] can be specified to produce smoother polygons. The [code]cut_distance[/code] determines at what distance new control points are selected from segments.
+				Unlike [method smooth_polygon], the resulting curve does not go through input vertices, but instead touches the segments of the original [code]polygon[/code].
+			</description>
+		</method>
+		<method name="smooth_polyline" qualifiers="const">
+			<return type="PoolVector2Array">
+			</return>
+			<argument index="0" name="polyline" type="PoolVector2Array">
+			</argument>
+			<argument index="1" name="density" type="float">
+			</argument>
+			<argument index="2" name="alpha" type="float" default="0.5">
+			</argument>
+			<description>
+				Smoothers the polyline using the Catmull-Rom's interpolating spline, resulting in larger number of vertices.
+				The [code]density[/code] parameter configures the desired number of vertices in the output polyline: [code]n = polyline.size() * density[/code], where [code]n[/code] is the point count computed. If [code]density &lt; 1.0[/code], returns original [code]polyline[/code]. The number of vertices is weighted per segment according to the [method polyline_length].
+				The [code]alpha[/code] parameter determines the type of the Catmull-Rom's spline: uniform - [code]alpha == 0[/code], centripetal - [code]alpha == 0.5[/code], chordal - [code]alpha > 0.5[/code]. The default value of [code]0.5[/code] is recommended for eliminating self-intersections and cusps.
+				For faster, approximate smoothing method, see [method smooth_polyline_approx].
 			</description>
 		</method>
 		<method name="smooth_polyline_approx" qualifiers="const">
@@ -245,7 +278,8 @@
 			</argument>
 			<description>
 				Approximately smoothers the polyline using the Chaikin's algorithm resulting in larger number of vertices. Number of [code]iterations[/code] can be specified to produce smoother polylines. The [code]cut_distance[/code] determines at what distance new control points are selected from segments.
-				Unlike [method smooth_polygon_approx], this method always retains start and end points from the original polyline.
+				Unlike [method smooth_polyline], the resulting curve does not go through input vertices, but instead touches the segments of the original polyline.
+				Unlike [method smooth_polygon_approx], this method always retains start and end points from the original [code]polyline[/code].
 			</description>
 		</method>
 		<method name="triangulate_polygon" qualifiers="const">

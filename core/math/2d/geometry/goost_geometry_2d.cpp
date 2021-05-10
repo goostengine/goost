@@ -174,14 +174,113 @@ Vector<Point2> GoostGeometry2D::simplify_polyline(const Vector<Point2> &p_polyli
 	return ret;
 }
 
-// Approximate polygon smoothing using Chaikin algorithm.
+// Catmull-Rom interpolation. See also:
+//
+// "On the Parameterization of Catmull-Rom Curves" by Cem Yuksel, Scott Schaefer, John Keyser.
+// https://people.engr.tamu.edu/schaefer/research/catmull_rom.pdf
+//
+static Vector2 catmull_rom(const Vector2 &p0, const Vector2 &p1, const Vector2 &p2, const Vector2 &p3, float p_t, float p_alpha) {
+	Vector2 c;
+	if (p_alpha > 0.0f) {
+		// Centripetal (alpha == 0.5) or chordal (alpha > 0.5).
+#ifdef DEBUG_ENABLED
+		// Division by zero...
+		ERR_FAIL_COND_V_MSG(p0 == p1 || p1 == p2 || p2 == p3, Vector2(), "Duplicate points detected, cannot interpolate.");
+#endif
+		auto compute_t = [&](float t, float alpha, const Vector2 &v0, const Vector2 &v1) {
+			real_t a = (v1.x - v0.x) * (v1.x - v0.x) + (v1.y - v0.y) * (v1.y - v0.y);
+			real_t b = Math::pow(a, alpha * 0.5f);
+			return b + t;
+		};
+		real_t t0 = 0.0;
+		real_t t1 = compute_t(t0, p_alpha, p0, p1);
+		real_t t2 = compute_t(t1, p_alpha, p1, p2);
+		real_t t3 = compute_t(t2, p_alpha, p2, p3);
+		real_t t = Math::lerp(t1, t2, p_t);
+		Vector2 a1 = (t1 - t) / (t1 - t0) * p0 + (t - t0) / (t1 - t0) * p1;
+		Vector2 a2 = (t2 - t) / (t2 - t1) * p1 + (t - t1) / (t2 - t1) * p2;
+		Vector2 a3 = (t3 - t) / (t3 - t2) * p2 + (t - t2) / (t3 - t2) * p3;
+		Vector2 b1 = (t2 - t) / (t2 - t0) * a1 + (t - t0) / (t2 - t0) * a2;
+		Vector2 b2 = (t3 - t) / (t3 - t1) * a2 + (t - t1) / (t3 - t1) * a3;
+		c = (t2 - t) / (t2 - t1) * b1 + (t - t1) / (t2 - t1) * b2;
+	} else {
+		// Uniform, faster to compute, duplicate points allowed but not recommended...
+		real_t t2 = p_t * p_t;
+		real_t t3 = t2 * p_t;
+		c = 0.5 * (2 * p1 + (-1 * p0 + p2) * p_t + (2 * p0 - 5 * p1 + 4 * p2 - p3) * t2 + (-1 * p0 + 3 * p1 - 3 * p2 + p3) * t3);
+	}
+	return c;
+}
+
+Vector<Point2> GoostGeometry2D::smooth_polyline(const Vector<Point2> &p_polyline, float p_density, float p_alpha) {
+	ERR_FAIL_COND_V_MSG(p_polyline.size() < 3, Vector<Point2>(),
+			"Cannot smooth polyline: requires at least 3 points for interpolation.");
+
+	if (p_density <= 1.0f) {
+		return p_polyline; // No need to interpolate.
+	}
+	Vector<Point2> pts = p_polyline;
+	// Extrapolate first and last points to act as control points.
+	const Vector2 &d1 = pts[0] - pts[1];
+	pts.insert(0, pts[0] + d1);
+	const Vector2 &d2 = pts[pts.size() - 1] - pts[pts.size() - 2];
+	pts.insert(pts.size(), pts[pts.size() - 1] + d2);
+
+	const int point_count = p_polyline.size() * p_density;
+	const real_t length = polyline_length(p_polyline);
+
+	const Point2 *p = pts.ptr();
+	Vector<Point2> smoothed;
+	for (int i = 0; i < pts.size() - 3; ++i) {
+		// Weighted distribution.
+		const real_t segment_length = p[i + 1].distance_to(p[i + 2]);
+		const int pc = Math::ceil(point_count * segment_length / length);
+		for (int j = 0; j < pc; ++j) {
+			real_t t = 1.0 / pc * j;
+			smoothed.push_back(catmull_rom(
+					p[i + 0], p[i + 1], p[i + 2], p[i + 3], t, p_alpha));
+		}
+	}
+	smoothed.push_back(p[pts.size() - 2]);
+	return smoothed;
+}
+
+Vector<Point2> GoostGeometry2D::smooth_polygon(const Vector<Point2> &p_polygon, float p_density, float p_alpha) {
+	ERR_FAIL_COND_V_MSG(p_polygon.size() < 3, Vector<Point2>(), "Bad polygon!");
+
+	if (p_density <= 1.0f) {
+		return p_polygon; // No need to interpolate.
+	}
+	const int point_count = p_polygon.size() * p_density;
+	const real_t perimeter = polygon_perimeter(p_polygon);
+
+	const int s = p_polygon.size();
+	const Point2 *p = p_polygon.ptr();
+	auto pt = [&](int idx) {
+		return p[(idx % s + s) % s];
+	};
+	Vector<Point2> smoothed;
+	for (int i = 0; i < s; ++i) {
+		// Weighted distribution.
+		const real_t segment_length = pt(i + 0).distance_to(pt(i + 1));
+		const int pc = Math::ceil(point_count * segment_length / perimeter);
+		for (int j = 0; j < pc; ++j) {
+			real_t t = 1.0 / pc * j;
+			smoothed.push_back(catmull_rom(
+					pt(i - 1), pt(i + 0), pt(i + 1), pt(i + 2), t, p_alpha));
+		}
+	}
+	return smoothed;
+}
+
+// Approximate polygon smoothing using Chaikin's corner-cutting algorithm.
 // https://www.cs.unc.edu/~dm/UNC/COMP258/LECTURES/Chaikins-Algorithm.pdf
 //
-Vector<Point2> GoostGeometry2D::smooth_polygon_approx(const Vector<Point2> &p_polygon, int p_iterations, real_t p_cut_distance) {
+Vector<Point2> GoostGeometry2D::smooth_polygon_approx(const Vector<Point2> &p_polygon, int p_iterations, float p_cut_distance) {
 	ERR_FAIL_COND_V_MSG(p_polygon.size() < 3, Vector<Point2>(), "Bad polygon!");
 
 	Vector<Point2> subject = p_polygon;
-	const real_t cd = CLAMP(p_cut_distance, 0.0, 0.5);
+	const float cd = CLAMP(p_cut_distance, 0.0f, 0.5f);
 	for (int i = 0; i < p_iterations; ++i) {
 		Vector<Point2> smoothed;
 		for (int j = 0; j < subject.size(); ++j) {
@@ -195,17 +294,17 @@ Vector<Point2> GoostGeometry2D::smooth_polygon_approx(const Vector<Point2> &p_po
 	return subject;
 }
 
-// Approximate polyline smoothing using Chaikin algorithm:
+// Approximate polyline smoothing using Chaikin's corner-cutting algorithm:
 // https://www.cs.unc.edu/~dm/UNC/COMP258/LECTURES/Chaikins-Algorithm.pdf
 //
 // Unlike polygon version, the endpoints are always retained.
 //
-Vector<Point2> GoostGeometry2D::smooth_polyline_approx(const Vector<Point2> &p_polyline, int p_iterations, real_t p_cut_distance) {
+Vector<Point2> GoostGeometry2D::smooth_polyline_approx(const Vector<Point2> &p_polyline, int p_iterations, float p_cut_distance) {
 	if (p_polyline.size() <= 2) {
 		return p_polyline;
 	}
 	Vector<Point2> subject = p_polyline;
-	const real_t cd = CLAMP(p_cut_distance, 0.0, 0.5);
+	const float cd = CLAMP(p_cut_distance, 0.0f, 0.5f);
 	for (int i = 0; i < p_iterations; ++i) {
 		Vector<Point2> smoothed;
 		smoothed.push_back(subject[0]); // Always add first point.

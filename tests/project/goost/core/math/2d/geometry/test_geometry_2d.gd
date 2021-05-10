@@ -199,6 +199,34 @@ func test_simplify_polyline():
 		assert_eq(simplified[i], control[i])
 
 
+func test_smooth_polygon():
+	var input = [Vector2(26, 20), Vector2(73, 23), Vector2(72, 62), Vector2(29, 57)]
+	var control = [Vector2(26, 20), Vector2(49.311768, 15.934073), Vector2(73, 23),
+			Vector2(77.531448, 43.002853), Vector2(72, 62), Vector2(50.609352, 64.723686),
+			Vector2(29, 57), Vector2(22.657887, 38.113762)]
+	var smoothed = GoostGeometry2D.smooth_polygon(input, 1.6)
+
+	if smoothed.size() != control.size():
+		assert_eq(smoothed.size(), control.size(), "Point count mismatch")
+		return
+	for i in smoothed.size():
+		assert_eq(smoothed[i], control[i])
+		
+
+func test_smooth_polyline():
+	var input = [Vector2(26, 20), Vector2(73, 23), Vector2(72, 62), Vector2(29, 57)]
+	var control = [Vector2(26, 20), Vector2(43.531898, 19.454647), Vector2(61.063797, 18.909294),
+			Vector2(73, 23), Vector2(77.531448, 43.002853), Vector2(72, 62), Vector2(60.854603, 63.835579),
+			Vector2(44.927299, 60.417786), Vector2(29, 57)]
+	var smoothed = GoostGeometry2D.smooth_polyline(input, 1.6)
+
+	if smoothed.size() != control.size():
+		assert_eq(smoothed.size(), control.size(), "Point count mismatch")
+		return
+	for i in smoothed.size():
+		assert_eq(smoothed[i], control[i])
+
+
 func test_smooth_polygon_approx():
 	var input = [Vector2(25, 83), Vector2(49, 16), Vector2(66, 79)]
 	var control = [Vector2(31, 66.25), Vector2(43, 32.75), Vector2(53.25, 31.75), Vector2(61.75, 63.25), Vector2(55.75, 80), Vector2(35.25, 82)]
@@ -234,9 +262,21 @@ class Stress extends "res://addons/gut/test.gd":
 		var input = GoostGeometry2D.circle(1024)
 		for i in input.size():
 			input[i] += Random2D.point_in_circle(100)
-		for i in 100000:
+		for i in 10000:
 			var t1 = OS.get_ticks_msec()
-			var _simplified = GoostGeometry2D.simplify_polyline(input, 100.0)
+			var _out = GoostGeometry2D.simplify_polyline(input, 100.0)
 			var t2 = OS.get_ticks_msec()
 			time += t2 - t1
-		gut.p(time / 100000.0)
+		gut.p(time / 10000.0)
+
+	func test_smooth_polyline():
+		var time = 0
+		var input = GoostGeometry2D.regular_polygon(1024, 6)
+		for i in input.size():
+			input[i] += Random2D.point_in_circle(100)
+		for i in 100:
+			var t1 = OS.get_ticks_msec()
+			var _out = GoostGeometry2D.smooth_polyline(input, 20)
+			var t2 = OS.get_ticks_msec()
+			time += t2 - t1
+		gut.p(time / 100.0)

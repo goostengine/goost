@@ -30,9 +30,11 @@ public:
 	Array triangulate_polygon(const Vector<Point2> &p_polygon) const;
 	Array decompose_polygon(const Vector<Point2> &p_polygon) const;
 
+	Vector<Point2> smooth_polygon(const Vector<Point2> &p_polygon, float p_density, float p_alpha = 0.5f) const;
+	Vector<Point2> smooth_polyline(const Vector<Point2> &p_polyline, float p_density, float p_alpha = 0.5f) const;
+	Vector<Point2> smooth_polygon_approx(const Vector<Point2> &p_polygon, int p_iterations = 1, float cut_distance = 0.25f) const;
+	Vector<Point2> smooth_polyline_approx(const Vector<Point2> &p_polyline, int p_iterations = 1, float cut_distance = 0.25f) const;
 	Vector<Point2> simplify_polyline(const Vector<Point2> &p_polyline, real_t p_epsilon) const;
-	Vector<Point2> smooth_polygon_approx(const Vector<Point2> &p_polygon, int p_iterations = 1, real_t cut_distance = 0.25) const;
-	Vector<Point2> smooth_polyline_approx(const Vector<Point2> &p_polyline, int p_iterations = 1, real_t cut_distance = 0.25) const;
 
 	Vector2 polygon_centroid(const Vector<Vector2> &p_polygon) const;
 	real_t polygon_area(const Vector<Vector2> &p_polygon) const;
