@@ -1,0 +1,10 @@
+#!/bin/sh
+# This hooks allows to run tests before committing changes locally.
+# Use "wip", "[ci skip]" or "[skip ci]" keywords in the commit message
+# descriptions to skip running tests.
+
+if ! grep -iqE -- 'wip|[ci skip]|[skip ci]' "$1"; then
+  python run.py --windowed tests
+else
+  echo "Skipping tests."
+fi
