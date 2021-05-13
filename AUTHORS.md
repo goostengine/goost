@@ -12,6 +12,9 @@ MIT licensed source code. One of the following rough criteria is used:
 GitHub usernames are indicated in parentheses, or as sole entry when no other
 name is available.
 
+See also a full list of
+[all contributors at GitHub](https://github.com/goostengine/goost/graphs/contributors).
+
 ## Project Founder
 
     Andrii Doroshenko (Xrayez)
