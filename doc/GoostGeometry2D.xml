@@ -233,7 +233,7 @@
 			<description>
 				Smoothers the polygon using the Catmull-Rom's interpolating spline, resulting in larger number of vertices.
 				The [code]density[/code] parameter configures the desired number of vertices in the output polygon: [code]n = polygon.size() * density[/code], where [code]n[/code] is the point count computed. If [code]density &lt; 1.0[/code], returns original [code]polygon[/code]. The number of vertices is weighted per segment according to the [method polygon_perimeter].
-				The [code]alpha[/code] parameter determines the type of the Catmull-Rom's spline: uniform - [code]alpha == 0[/code], centripetal - [code]alpha == 0.5[/code], chordal - [code]alpha > 0.5[/code]. The default value of [code]0.5[/code] is recommended for eliminating self-intersections and cusps.
+				The [code]alpha[/code] parameter determines the type of the Catmull-Rom's spline: uniform - [code]alpha == 0[/code], centripetal - [code]alpha == 0.5[/code], chordal - [code]alpha &gt; 0.5[/code]. The default value of [code]0.5[/code] is recommended for eliminating self-intersections and cusps.
 				For faster, approximate smoothing method, see [method smooth_polygon_approx].
 			</description>
 		</method>
@@ -263,7 +263,7 @@
 			<description>
 				Smoothers the polyline using the Catmull-Rom's interpolating spline, resulting in larger number of vertices.
 				The [code]density[/code] parameter configures the desired number of vertices in the output polyline: [code]n = polyline.size() * density[/code], where [code]n[/code] is the point count computed. If [code]density &lt; 1.0[/code], returns original [code]polyline[/code]. The number of vertices is weighted per segment according to the [method polyline_length].
-				The [code]alpha[/code] parameter determines the type of the Catmull-Rom's spline: uniform - [code]alpha == 0[/code], centripetal - [code]alpha == 0.5[/code], chordal - [code]alpha > 0.5[/code]. The default value of [code]0.5[/code] is recommended for eliminating self-intersections and cusps.
+				The [code]alpha[/code] parameter determines the type of the Catmull-Rom's spline: uniform - [code]alpha == 0[/code], centripetal - [code]alpha == 0.5[/code], chordal - [code]alpha &gt; 0.5[/code]. The default value of [code]0.5[/code] is recommended for eliminating self-intersections and cusps.
 				For faster, approximate smoothing method, see [method smooth_polyline_approx].
 			</description>
 		</method>
