@@ -26,8 +26,7 @@ def get_engine_executable_path():
 def run(p_args, windowed=False): # Assumes the first arg is the binary path.
     args = p_args.copy()
     if not windowed:
-        if sys.platform.startswith("win"):
-            args.insert(1, "--no-window") # Only implemented on Windows.
+        args.insert(1, "--no-window")
     return subprocess.run(args).returncode
 
 
@@ -49,7 +48,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--windowed", action="store_true", default=False,
-            help="Run the tool in windowed mode, disabled by default (Windows only).")
+            help="Run the tool in windowed mode, disabled by default.")
 
     subparsers = parser.add_subparsers(dest="tool")
 
