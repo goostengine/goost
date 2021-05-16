@@ -42,7 +42,11 @@ public:
 	/* Polygon/primitives generation methods */
 	static Vector<Point2> regular_polygon(int p_edge_count, real_t p_size);
 	static Vector<Point2> circle(real_t p_radius, real_t p_max_error = 0.25);
+
 	static Vector<Point2i> bresenham_line(const Point2i &p_start, const Point2i &p_end);
+	static Vector<Point2i> pixel_circle(const Point2i &p_origin, int p_radius);
+	static Vector<Point2i> polyline_to_pixels(const Vector<Point2> &p_points);
+	static Vector<Point2i> polygon_to_pixels(const Vector<Point2> &p_points);
 };
 
 #endif // GOOST_GEOMETRY_2D_H

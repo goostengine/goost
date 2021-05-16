@@ -187,6 +187,51 @@ func test_bresenham_line():
 	assert_eq(line[15], Vector2(10, 3))
 
 
+func test_pixel_circle():
+	var circle = GoostGeometry2D.pixel_circle(Vector2(0, 0), 16)
+	# for i in circle.size():
+		# gut.p("%s: %s" % [i, circle[i]])
+	assert_eq(circle.size(), 96)
+	assert_eq(circle[0], Vector2(16, 0))
+	assert_eq(circle[3], Vector2(16, 0))
+	assert_eq(circle[50], Vector2(-15, -6))
+	assert_eq(circle[52], Vector2(6, 15))
+	assert_eq(circle[93], Vector2(-11, 12))
+	assert_eq(circle[95], Vector2(11, -12))
+
+
+func test_polyline_to_pixels():
+	var input = [Vector2(0, 0), Vector2(0.01, 0.01), Vector2(10, 10),
+			Vector2(10.001, 10.001), Vector2(20, 10), Vector2(20, 20), Vector2(20.3, 20.3)]
+	var polyline = GoostGeometry2D.polyline_to_pixels(input)
+
+	assert_eq(polyline.size(), 31)
+
+	var pixel_set = {}
+	for pixel in polyline:
+		pixel_set[pixel] = true
+	assert_eq(pixel_set.keys().size(), polyline.size(), "Should not contain duplicate points here")
+
+	assert_eq(polyline[0], input[0], "Starting point should be the same as in input")
+	assert_eq(polyline[-1], input[-2], "Ending point should be the same as in input (without last rounded duplicate)")
+
+
+func test_polygon_to_pixels():
+	var input = [Vector2(-3, -3), Vector2(3, -3), Vector2(3, 3), Vector2(-3, 3), Vector2(-3.3, -3.3)]
+	var polygon = GoostGeometry2D.polygon_to_pixels(input)
+
+	assert_eq(polygon.size(), 24)
+
+	var pixel_set = {}
+	for pixel in polygon:
+		gut.p(pixel)
+		pixel_set[pixel] = true
+	assert_eq(pixel_set.keys().size(), polygon.size(), "Should not contain duplicate points here")
+
+	assert_eq(polygon[0], input[0], "Starting point should be the same as in input")
+	assert_ne(polygon[-1], input[-2], "Ending point should NOT be the same as in input (without last rounded duplicate)")
+
+
 func test_simplify_polyline():
 	var input = [Vector2(20, 51), Vector2(32, 13), Vector2(34, 13), Vector2(37, 13), Vector2(40, 18), Vector2(47, 46)]
 	var control = [Vector2(20, 51), Vector2(32, 13), Vector2(40, 18), Vector2(47, 46)]
