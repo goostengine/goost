@@ -473,7 +473,7 @@ Vector<Point2> GoostGeometry2D::circle(real_t p_radius, real_t p_max_error) {
 // Implementation borrowed from `TileMap` editor plugin:
 // https://github.com/godotengine/godot/blob/0d819ae5f5/editor/plugins/tile_map_editor_plugin.cpp#L982-L1023
 //
-Vector<Point2i> GoostGeometry2D::bresenham_line(const Point2i &p_start, const Point2i &p_end) {
+Vector<Point2i> GoostGeometry2D::pixel_line(const Point2i &p_start, const Point2i &p_end) {
 	Vector<Point2i> points;
 
 	int dx = ABS(p_end.x - p_start.x);
@@ -566,7 +566,7 @@ Vector<Point2i> GoostGeometry2D::polyline_to_pixels(const Vector<Point2> &p_poin
 	}
 	// Produce points in between.
 	for (int i = 0; i < points.size() - 1; ++i) {
-		Vector<Point2i> line = bresenham_line(points[i], points[i + 1]);
+		Vector<Point2i> line = pixel_line(points[i], points[i + 1]);
 		// Do not add last point, but include last point on the final line.
 		const int last = i < points.size() - 2 ? 1 : 0;
 		for (int j = 0; j < line.size() - last; ++j) {
@@ -592,7 +592,7 @@ Vector<Point2i> GoostGeometry2D::polygon_to_pixels(const Vector<Point2> &p_point
 	}
 	// Produce points in between.
 	for (int i = 0; i < points.size(); ++i) {
-		Vector<Point2i> line = bresenham_line(points[i], points[(i + 1) % points.size()]);
+		Vector<Point2i> line = pixel_line(points[i], points[(i + 1) % points.size()]);
 		for (int j = 0; j < line.size() - 1; ++j) { // Do not add last point.
 			polygon.push_back(line[j]);
 		}

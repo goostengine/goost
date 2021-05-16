@@ -129,46 +129,46 @@ func test_circle():
 	assert_eq(solution.size(), 32)
 
 
-func test_bresenham_line():
-	var line = GoostGeometry2D.bresenham_line(Vector2(0, 0), Vector2(5, 0))
+func test_pixel_line():
+	var line = GoostGeometry2D.pixel_line(Vector2(0, 0), Vector2(5, 0))
 	assert_eq(line.size(), 6)
 	for x in 6:
 		assert_eq(line[x], Vector2(x, 0))
 
-	line = GoostGeometry2D.bresenham_line(Vector2(0, 0), Vector2(-10, 0))
+	line = GoostGeometry2D.pixel_line(Vector2(0, 0), Vector2(-10, 0))
 	assert_eq(line.size(), 11)
 	for x in 11:
 		assert_eq(line[x], Vector2(-x, 0))
 
-	line = GoostGeometry2D.bresenham_line(Vector2(0, 0), Vector2(0, 5))
+	line = GoostGeometry2D.pixel_line(Vector2(0, 0), Vector2(0, 5))
 	assert_eq(line.size(), 6)
 	for x in 6:
 		assert_eq(line[x], Vector2(0, x))
 
-	line = GoostGeometry2D.bresenham_line(Vector2(0, 0), Vector2(0, -10))
+	line = GoostGeometry2D.pixel_line(Vector2(0, 0), Vector2(0, -10))
 	assert_eq(line.size(), 11)
 	for x in 11:
 		assert_eq(line[x], Vector2(0, -x))
 
-	line = GoostGeometry2D.bresenham_line(Vector2(-5, -5), Vector2(5, 5))
+	line = GoostGeometry2D.pixel_line(Vector2(-5, -5), Vector2(5, 5))
 	assert_eq(line.size(), 11)
 	assert_eq(line[0], Vector2(-5, -5))
 	assert_eq(line[5], Vector2(0, 0))
 	assert_eq(line[10], Vector2(5, 5))
 
-	line = GoostGeometry2D.bresenham_line(Vector2(5, -5), Vector2(-5, 5))
+	line = GoostGeometry2D.pixel_line(Vector2(5, -5), Vector2(-5, 5))
 	assert_eq(line.size(), 11)
 	assert_eq(line[0], Vector2(5, -5))
 	assert_eq(line[5], Vector2(0, 0))
 	assert_eq(line[10], Vector2(-5, 5))
 
-	line = GoostGeometry2D.bresenham_line(Vector2(5, -5), Vector2(-5, 5))
+	line = GoostGeometry2D.pixel_line(Vector2(5, -5), Vector2(-5, 5))
 	assert_eq(line.size(), 11)
 	assert_eq(line[0], Vector2(5, -5))
 	assert_eq(line[5], Vector2(0, 0))
 	assert_eq(line[10], Vector2(-5, 5))
 
-	line = GoostGeometry2D.bresenham_line(Vector2(-5, -5), Vector2(10, 3))
+	line = GoostGeometry2D.pixel_line(Vector2(-5, -5), Vector2(10, 3))
 	assert_eq(line[0], Vector2(-5, -5))
 	assert_eq(line[1], Vector2(-4, -4))
 	assert_eq(line[2], Vector2(-3, -4))
@@ -224,7 +224,6 @@ func test_polygon_to_pixels():
 
 	var pixel_set = {}
 	for pixel in polygon:
-		gut.p(pixel)
 		pixel_set[pixel] = true
 	assert_eq(pixel_set.keys().size(), polygon.size(), "Should not contain duplicate points here")
 

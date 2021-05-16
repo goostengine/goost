@@ -155,8 +155,8 @@ Vector<Point2> _GoostGeometry2D::circle(real_t p_radius, real_t p_max_error) con
 }
 
 // Note: this can be converted to use `Vector2i` in Godot 4.x.
-Vector<Point2> _GoostGeometry2D::bresenham_line(const Point2 &p_start, const Point2 &p_end) const {
-	const Vector<Point2i> &line = GoostGeometry2D::bresenham_line(p_start, p_end);
+Vector<Point2> _GoostGeometry2D::pixel_line(const Point2 &p_start, const Point2 &p_end) const {
+	const Vector<Point2i> &line = GoostGeometry2D::pixel_line(p_start, p_end);
 	Vector<Point2> ret;
 	for (int i = 0; i < line.size(); ++i) {
 		ret.push_back(line[i]);
@@ -222,7 +222,7 @@ void _GoostGeometry2D::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("regular_polygon", "sides", "size"), &_GoostGeometry2D::regular_polygon);
 	ClassDB::bind_method(D_METHOD("circle", "radius", "max_error"), &_GoostGeometry2D::circle, DEFVAL(0.25));
-	ClassDB::bind_method(D_METHOD("bresenham_line", "start", "end"), &_GoostGeometry2D::bresenham_line);
+	ClassDB::bind_method(D_METHOD("pixel_line", "start", "end"), &_GoostGeometry2D::pixel_line);
 	ClassDB::bind_method(D_METHOD("pixel_circle", "origin", "radius"), &_GoostGeometry2D::pixel_circle);
 	ClassDB::bind_method(D_METHOD("polyline_to_pixels", "points"), &_GoostGeometry2D::polyline_to_pixels);
 	ClassDB::bind_method(D_METHOD("polygon_to_pixels", "points"), &_GoostGeometry2D::polygon_to_pixels);
