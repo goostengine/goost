@@ -513,7 +513,7 @@ Vector<Point2i> GoostGeometry2D::pixel_line(const Point2i &p_start, const Point2
 // "A Fast Bresenham Type Algorithm For Drawing Circles" by John Kennedy:
 // https://web.engr.oregonstate.edu/~sllu/bcircle.pdf
 //
-Vector<Point2i> GoostGeometry2D::pixel_circle(const Point2i &p_origin, int p_radius) {
+Vector<Point2i> GoostGeometry2D::pixel_circle(int p_radius, const Point2i &p_origin) {
 	ERR_FAIL_COND_V(p_radius < 0, Vector<Point2i>());
 
 	Vector<Point2i> circle;

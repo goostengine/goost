@@ -143,9 +143,9 @@
 		<method name="pixel_circle" qualifiers="const">
 			<return type="PoolVector2Array">
 			</return>
-			<argument index="0" name="origin" type="Vector2">
+			<argument index="0" name="radius" type="int">
 			</argument>
-			<argument index="1" name="radius" type="int">
+			<argument index="1" name="origin" type="Vector2" default="Vector2( 0, 0 )">
 			</argument>
 			<description>
 				Returns an array of 2D-dimensional raster coordinates approximating a circle using a Bresenham type algorithm.

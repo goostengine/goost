@@ -164,8 +164,8 @@ Vector<Point2> _GoostGeometry2D::pixel_line(const Point2 &p_start, const Point2 
 	return ret;
 }
 
-Vector<Point2> _GoostGeometry2D::pixel_circle(const Point2 &p_origin, int p_radius) const {
-	const Vector<Point2i> &circle = GoostGeometry2D::pixel_circle(p_origin, p_radius);
+Vector<Point2> _GoostGeometry2D::pixel_circle(int p_radius, const Point2 &p_origin) const {
+	const Vector<Point2i> &circle = GoostGeometry2D::pixel_circle(p_radius, p_origin);
 	Vector<Point2> ret;
 	for (int i = 0; i < circle.size(); ++i) {
 		ret.push_back(circle[i]);
@@ -222,8 +222,9 @@ void _GoostGeometry2D::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("regular_polygon", "sides", "size"), &_GoostGeometry2D::regular_polygon);
 	ClassDB::bind_method(D_METHOD("circle", "radius", "max_error"), &_GoostGeometry2D::circle, DEFVAL(0.25));
+
 	ClassDB::bind_method(D_METHOD("pixel_line", "start", "end"), &_GoostGeometry2D::pixel_line);
-	ClassDB::bind_method(D_METHOD("pixel_circle", "origin", "radius"), &_GoostGeometry2D::pixel_circle);
+	ClassDB::bind_method(D_METHOD("pixel_circle", "radius", "origin"), &_GoostGeometry2D::pixel_circle, DEFVAL(Vector2(0, 0)));
 	ClassDB::bind_method(D_METHOD("polyline_to_pixels", "points"), &_GoostGeometry2D::polyline_to_pixels);
 	ClassDB::bind_method(D_METHOD("polygon_to_pixels", "points"), &_GoostGeometry2D::polygon_to_pixels);
 }

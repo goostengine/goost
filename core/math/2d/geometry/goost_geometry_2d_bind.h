@@ -48,7 +48,7 @@ public:
 	Vector<Point2> circle(real_t p_radius, real_t p_max_error) const;
 
 	Vector<Point2> pixel_line(const Point2 &p_start, const Point2 &p_end) const;
-	Vector<Point2> pixel_circle(const Point2 &p_origin, int p_radius) const;
+	Vector<Point2> pixel_circle(int p_radius, const Point2 &p_origin = Point2(0, 0)) const;
 	Vector<Point2> polyline_to_pixels(const Vector<Point2> &p_points) const;
 	Vector<Point2> polygon_to_pixels(const Vector<Point2> &p_points) const;
 
