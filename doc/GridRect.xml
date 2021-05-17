@@ -73,6 +73,9 @@
 		<member name="metadata_show_tooltip" type="bool" setter="set_metadata_show_tooltip" getter="is_showing_metadata_tooltip" default="true">
 			If [code]true[/code], displays a tooltip on hover with coordinates snapped to the grid.
 		</member>
+		<member name="origin_axes_line_width" type="float" setter="set_origin_axes_line_width" getter="get_origin_axes_line_width" default="1.0">
+			The width of main axes lines (X and Y). Only relevant when [member origin_axes_visible] is set to [code]true[/code].
+		</member>
 		<member name="origin_axes_visible" type="bool" setter="set_origin_axes_visible" getter="is_origin_axes_visible" default="false">
 			If [code]true[/code], displays main axes (X and Y).
 		</member>

@@ -31,6 +31,7 @@ protected:
 	Vector2 origin_scale = Vector2(1, 1);
 	bool origin_centered = false;
 	bool origin_axes_visible = false;
+	float origin_axes_line_width = 1.0;
 
 	int subdivisions_horizontal = 8;
 	int subdivisions_vertical = 8;
@@ -59,7 +60,10 @@ public:
 	
 	void set_origin_axes_visible(bool p_visible);
 	bool is_origin_axes_visible() const { return origin_axes_visible; }
-	
+
+	void set_origin_axes_line_width(float p_width);
+	float get_origin_axes_line_width() const { return origin_axes_line_width; }
+
 	void set_subdivisions_horizontal(int p_count);
 	int get_subdivisions_horizontal() const { return subdivisions_horizontal; }
 	
@@ -85,6 +89,7 @@ protected:
 	void _notification(int p_what);
 	static void _bind_methods();
 	void _get_property_list(List<PropertyInfo> *p_list) const;
+	virtual void _validate_property(PropertyInfo &property) const;
 
 	void _gui_input(const Ref<InputEvent> &p_event);
 

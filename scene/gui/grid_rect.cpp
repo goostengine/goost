@@ -16,7 +16,7 @@ void GridRect::set_cell_origin(CellOrigin p_origin) {
 }
 
 void GridRect::set_cell_line_width(float p_width) {
-	cell_line_width = p_width;
+	cell_line_width = MAX(0.0f, p_width);
 	update();
 }
 
@@ -26,7 +26,7 @@ void GridRect::set_origin_offset(Vector2 p_offset) {
 }
 
 void GridRect::set_origin_scale(Vector2 p_scale) {
-	origin_scale = p_scale;
+	origin_scale = p_scale; // Can be negative.
 	update();
 }
 
@@ -37,21 +37,27 @@ void GridRect::set_origin_centered(bool p_centered) {
 
 void GridRect::set_origin_axes_visible(bool p_visible) {
 	origin_axes_visible = p_visible;
+	_change_notify();
+	update();
+}
+
+void GridRect::set_origin_axes_line_width(float p_width) {
+	origin_axes_line_width = MAX(0, p_width);
 	update();
 }
 
 void GridRect::set_subdivisions_horizontal(int p_count) {
-	subdivisions_horizontal = p_count;
+	subdivisions_horizontal = MAX(0, p_count);
 	update();
 }
 
 void GridRect::set_subdivisions_vertical(int p_count) {
-	subdivisions_vertical = p_count;
+	subdivisions_vertical = MAX(0, p_count);
 	update();
 }
 
 void GridRect::set_subdivisions_line_width(float p_width) {
-	subdivisions_line_width = p_width;
+	subdivisions_line_width = MAX(0.0f, p_width);
 	update();
 }
 
@@ -141,8 +147,12 @@ void GridRect::_draw_grid_vertical(int from, int to, const Vector2 &p_ofs, Line 
 			if (!should_draw) {
 				continue;
 			}
-			width = subdivisions_line_width;
+			width = origin_axes_line_width;
 			color = _axis_y_color;
+		}
+
+		if (width <= 0.0f) {
+			continue; // Has an effect of hiding lines.
 		}
 
 		Vector2 scale = origin_scale.abs();
@@ -165,12 +175,12 @@ void GridRect::_draw_grid_horizontal(int from, int to, const Vector2 &p_ofs, Lin
 	for (int i = from; i < to + 1; ++i) {
 		Color color;
 		float width;
-		
+
 		if (p_type == LINE_MINOR) {
 			width = cell_line_width;
 			color = _minor_color;
 		} else if (p_type == LINE_MAJOR) {
-			bool should_draw = subdivisions_vertical != 0 && (ABS(i) % subdivisions_vertical == 0);
+			bool should_draw = subdivisions_horizontal != 0 && (ABS(i) % subdivisions_horizontal == 0);
 			if (!should_draw) {
 				continue;
 			}
@@ -181,8 +191,12 @@ void GridRect::_draw_grid_horizontal(int from, int to, const Vector2 &p_ofs, Lin
 			if (!should_draw) {
 				continue;
 			}
-			width = subdivisions_line_width;
+			width = origin_axes_line_width;
 			color = _axis_x_color;
+		}
+
+		if (width <= 0.0f) {
+			continue; // Has an effect of hiding lines.
 		}
 
 		Vector2 scale = origin_scale.abs();
@@ -313,6 +327,14 @@ void GridRect::_get_property_list(List<PropertyInfo> *p_list) const {
 	}
 }
 
+void GridRect::_validate_property(PropertyInfo &property) const {
+	if (property.name == "origin_axes_line_width") {
+		if (!origin_axes_visible) {
+			property.usage = PROPERTY_USAGE_NOEDITOR;
+		}
+	}
+}
+
 void GridRect::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_cell_size", "size"), &GridRect::set_cell_size);
 	ClassDB::bind_method(D_METHOD("get_cell_size"), &GridRect::get_cell_size);
@@ -334,6 +356,9 @@ void GridRect::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("set_origin_axes_visible", "visible"), &GridRect::set_origin_axes_visible);
 	ClassDB::bind_method(D_METHOD("is_origin_axes_visible"), &GridRect::is_origin_axes_visible);
+
+	ClassDB::bind_method(D_METHOD("set_origin_axes_line_width", "width"), &GridRect::set_origin_axes_line_width);
+	ClassDB::bind_method(D_METHOD("get_origin_axes_line_width"), &GridRect::get_origin_axes_line_width);
 
 	ClassDB::bind_method(D_METHOD("set_subdivisions_horizontal", "count"), &GridRect::set_subdivisions_horizontal);
 	ClassDB::bind_method(D_METHOD("get_subdivisions_horizontal"), &GridRect::get_subdivisions_horizontal);
@@ -380,6 +405,7 @@ void GridRect::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "origin_scale"), "set_origin_scale", "get_origin_scale");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "origin_centered"), "set_origin_centered", "is_origin_centered");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "origin_axes_visible"), "set_origin_axes_visible", "is_origin_axes_visible");
+	ADD_PROPERTY(PropertyInfo(Variant::REAL, "origin_axes_line_width", PROPERTY_HINT_RANGE, "0.0,5.0,0.5,or_greater"), "set_origin_axes_line_width", "get_origin_axes_line_width");
 
 	ADD_GROUP("Subdivisions", "subdivisions");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "subdivisions_horizontal", PROPERTY_HINT_RANGE, "0,16,1,or_greater"), "set_subdivisions_horizontal", "get_subdivisions_horizontal");
