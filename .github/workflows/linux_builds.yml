@@ -120,7 +120,7 @@ jobs:
 
       - name: Run unit tests
         run: |
-          python run.py tests
+          python run.py --windowed tests
 
   linux-template:
     runs-on: "ubuntu-20.04"
