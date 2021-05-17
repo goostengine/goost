@@ -81,7 +81,9 @@ public:
 	Vector2 point_to_view(const Vector2 &p_point);
 
 	void set_metadata(const Vector2 &p_point, const Variant &p_metadata);
-	Variant get_metadata(const Vector2 &p_point);
+	Variant get_metadata(const Vector2 &p_point) const;
+
+	virtual String get_tooltip(const Point2 &p_pos) const;
 
 	GridRect();
 

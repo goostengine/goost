@@ -96,7 +96,7 @@ void GridRect::set_metadata(const Vector2 &p_point, const Variant &p_metadata) {
 	metadata.insert(p_point, p_metadata);
 }
 
-Variant GridRect::get_metadata(const Vector2 &p_point) {
+Variant GridRect::get_metadata(const Vector2 &p_point) const {
 	Variant ret;
 	if (metadata.has(p_point)) {
 		ret = metadata[p_point];
@@ -285,17 +285,6 @@ void GridRect::_notification(int p_what) {
 			// Draw main axes last.
 			_draw_grid_horizontal(from.y, from.y + to.y, ofs, LINE_AXIS);
 			_draw_grid_vertical(from.x, from.x + to.x, ofs, LINE_AXIS);
-
-			if (!Engine::get_singleton()->is_editor_hint() && metadata_show_tooltip) {
-				String hint_tooltip = String(_point_snapped);
-				Variant data = get_metadata(_point_snapped);
-				if (data.get_type() != Variant::NIL) {
-					String data_str;
-					VariantWriter::write_to_string(data, data_str);
-					hint_tooltip += "\n" + data_str;
-				}
-				set_tooltip(hint_tooltip);
-			}
 		} break;
 		case NOTIFICATION_THEME_CHANGED: {
 			_update_colors();
@@ -333,6 +322,20 @@ void GridRect::_validate_property(PropertyInfo &property) const {
 			property.usage = PROPERTY_USAGE_NOEDITOR;
 		}
 	}
+}
+
+String GridRect::get_tooltip(const Point2 &p_pos) const {
+	if (metadata_show_tooltip) {
+		String text = vformat("(%s, %s)", _point_snapped.x, _point_snapped.y);
+		Variant data = get_metadata(_point_snapped);
+		if (data.get_type() != Variant::NIL) {
+			String data_str;
+			VariantWriter::write_to_string(data, data_str);
+			text += "\n" + data_str;
+		}
+		return text;
+	}
+	return Control::get_tooltip(p_pos);
 }
 
 void GridRect::_bind_methods() {
