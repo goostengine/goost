@@ -125,23 +125,26 @@ void GridRect::_draw_grid_vertical(int from, int to, const Vector2 &p_ofs, Line 
 	for (int i = from; i < to + 1; ++i) {
 		Color color;
 		float width;
-		if (subdivisions_vertical != 0 && (ABS(i) % subdivisions_vertical == 0)) {
-			if (p_type != LINE_MAJOR) {
-				continue;
-			}
-			color = _major_color;
-			width = subdivisions_line_width;
-		} else {
-			if (p_type != LINE_MINOR) {
-				continue;
-			}
-			color = _minor_color;
+
+		if (p_type == LINE_MINOR) {
 			width = cell_line_width;
-		}
-		if (origin_axes_visible && i == 0) {
+			color = _minor_color;
+		} else if (p_type == LINE_MAJOR) {
+			bool should_draw = subdivisions_vertical != 0 && (ABS(i) % subdivisions_vertical == 0);
+			if (!should_draw) {
+				continue;
+			}
+			width = subdivisions_line_width;
+			color = _major_color;
+		} else if (p_type == LINE_AXIS) {
+			bool should_draw = origin_axes_visible && i == 0;
+			if (!should_draw) {
+				continue;
+			}
 			width = subdivisions_line_width;
 			color = _axis_y_color;
 		}
+
 		Vector2 scale = origin_scale.abs();
 		real_t base_ofs = i * cell_size.x * scale.x - p_ofs.x * scale.x;
 		Vector2 from_pos = Vector2(base_ofs, 0);
@@ -162,23 +165,26 @@ void GridRect::_draw_grid_horizontal(int from, int to, const Vector2 &p_ofs, Lin
 	for (int i = from; i < to + 1; ++i) {
 		Color color;
 		float width;
-		if (subdivisions_horizontal != 0 && (ABS(i) % subdivisions_horizontal == 0)) {
-			if (p_type != LINE_MAJOR) {
-				continue;
-			}
-			color = _major_color;
-			width = subdivisions_line_width;
-		} else {
-			if (p_type != LINE_MINOR) {
-				continue;
-			}
-			color = _minor_color;
+		
+		if (p_type == LINE_MINOR) {
 			width = cell_line_width;
-		}
-		if (origin_axes_visible && i == 0) {
+			color = _minor_color;
+		} else if (p_type == LINE_MAJOR) {
+			bool should_draw = subdivisions_vertical != 0 && (ABS(i) % subdivisions_vertical == 0);
+			if (!should_draw) {
+				continue;
+			}
+			width = subdivisions_line_width;
+			color = _major_color;
+		} else if (p_type == LINE_AXIS) {
+			bool should_draw = origin_axes_visible && i == 0;
+			if (!should_draw) {
+				continue;
+			}
 			width = subdivisions_line_width;
 			color = _axis_x_color;
 		}
+
 		Vector2 scale = origin_scale.abs();
 		real_t base_ofs = i * cell_size.y * scale.y - p_ofs.y * scale.y;
 		Vector2 from_pos = Vector2(0, base_ofs);
@@ -256,12 +262,15 @@ void GridRect::_notification(int p_what) {
 			const Vector2 &from = (ofs / cell_size).floor();
 			const Vector2 &to = (size / cell_size).floor() + Vector2(1, 1);
 
-			// Draw major lines first to prevent cross artifacts.
-			_draw_grid_vertical(from.x, from.x + to.x, ofs, LINE_MAJOR);
-			_draw_grid_horizontal(from.y, from.y + to.y, ofs, LINE_MAJOR);
-			// Draw minor lines last on top of major ones.
-			_draw_grid_vertical(from.x, from.x + to.x, ofs, LINE_MINOR);
+			// Draw minor lines first to prevent cross artifacts.
 			_draw_grid_horizontal(from.y, from.y + to.y, ofs, LINE_MINOR);
+			_draw_grid_vertical(from.x, from.x + to.x, ofs, LINE_MINOR);
+			// Draw major lines on top of minor ones.
+			_draw_grid_horizontal(from.y, from.y + to.y, ofs, LINE_MAJOR);
+			_draw_grid_vertical(from.x, from.x + to.x, ofs, LINE_MAJOR);
+			// Draw main axes last.
+			_draw_grid_horizontal(from.y, from.y + to.y, ofs, LINE_AXIS);
+			_draw_grid_vertical(from.x, from.x + to.x, ofs, LINE_AXIS);
 
 			if (!Engine::get_singleton()->is_editor_hint() && metadata_show_tooltip) {
 				String hint_tooltip = String(_point_snapped);
@@ -359,11 +368,12 @@ void GridRect::_bind_methods() {
 
 	BIND_ENUM_CONSTANT(LINE_MINOR);
 	BIND_ENUM_CONSTANT(LINE_MAJOR);
+	BIND_ENUM_CONSTANT(LINE_AXIS);
 
 	ADD_GROUP("Cell", "cell");
 	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "cell_size"), "set_cell_size", "get_cell_size");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "cell_origin", PROPERTY_HINT_ENUM, "Top-left,Center"), "set_cell_origin", "get_cell_origin");
-	ADD_PROPERTY(PropertyInfo(Variant::REAL, "cell_line_width", PROPERTY_HINT_RANGE, "0.0,3.0,0.5,or_greater"), "set_cell_line_width", "get_cell_line_width");
+	ADD_PROPERTY(PropertyInfo(Variant::REAL, "cell_line_width", PROPERTY_HINT_RANGE, "0.0,5.0,0.5,or_greater"), "set_cell_line_width", "get_cell_line_width");
 
 	ADD_GROUP("Origin", "origin");
 	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "origin_offset"), "set_origin_offset", "get_origin_offset");
@@ -374,7 +384,7 @@ void GridRect::_bind_methods() {
 	ADD_GROUP("Subdivisions", "subdivisions");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "subdivisions_horizontal", PROPERTY_HINT_RANGE, "0,16,1,or_greater"), "set_subdivisions_horizontal", "get_subdivisions_horizontal");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "subdivisions_vertical", PROPERTY_HINT_RANGE, "0,16,1,or_greater"), "set_subdivisions_vertical", "get_subdivisions_vertical");
-	ADD_PROPERTY(PropertyInfo(Variant::REAL, "subdivisions_line_width", PROPERTY_HINT_RANGE, "0.0,3.0,0.5,or_greater"), "set_subdivisions_line_width", "get_subdivisions_line_width");
+	ADD_PROPERTY(PropertyInfo(Variant::REAL, "subdivisions_line_width", PROPERTY_HINT_RANGE, "0.0,5.0,0.5,or_greater"), "set_subdivisions_line_width", "get_subdivisions_line_width");
 
 	ADD_GROUP("Metadata", "metadata");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "metadata_show_tooltip"), "set_metadata_show_tooltip", "is_showing_metadata_tooltip");

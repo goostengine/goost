@@ -128,5 +128,8 @@
 		<constant name="LINE_MAJOR" value="1" enum="Line">
 			Subdivision lines.
 		</constant>
+		<constant name="LINE_AXIS" value="2" enum="Line">
+			Origin axes lines (X and Y).
+		</constant>
 	</constants>
 </class>

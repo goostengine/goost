@@ -19,6 +19,7 @@ public:
 	enum Line {
 		LINE_MINOR,
 		LINE_MAJOR,
+		LINE_AXIS,
 	};
 
 protected:
