@@ -59,6 +59,7 @@ classes = [
     "GoostGeometry2D",
     "GoostImage",
     "GradientTexture2D",
+    "GridRect",
     "ImageBlender",
     "ImageIndexed",
     "InvokeState",
