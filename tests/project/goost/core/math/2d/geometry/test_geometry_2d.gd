@@ -129,46 +129,46 @@ func test_circle():
 	assert_eq(solution.size(), 32)
 
 
-func test_bresenham_line():
-	var line = GoostGeometry2D.bresenham_line(Vector2(0, 0), Vector2(5, 0))
+func test_pixel_line():
+	var line = GoostGeometry2D.pixel_line(Vector2(0, 0), Vector2(5, 0))
 	assert_eq(line.size(), 6)
 	for x in 6:
 		assert_eq(line[x], Vector2(x, 0))
 
-	line = GoostGeometry2D.bresenham_line(Vector2(0, 0), Vector2(-10, 0))
+	line = GoostGeometry2D.pixel_line(Vector2(0, 0), Vector2(-10, 0))
 	assert_eq(line.size(), 11)
 	for x in 11:
 		assert_eq(line[x], Vector2(-x, 0))
 
-	line = GoostGeometry2D.bresenham_line(Vector2(0, 0), Vector2(0, 5))
+	line = GoostGeometry2D.pixel_line(Vector2(0, 0), Vector2(0, 5))
 	assert_eq(line.size(), 6)
 	for x in 6:
 		assert_eq(line[x], Vector2(0, x))
 
-	line = GoostGeometry2D.bresenham_line(Vector2(0, 0), Vector2(0, -10))
+	line = GoostGeometry2D.pixel_line(Vector2(0, 0), Vector2(0, -10))
 	assert_eq(line.size(), 11)
 	for x in 11:
 		assert_eq(line[x], Vector2(0, -x))
 
-	line = GoostGeometry2D.bresenham_line(Vector2(-5, -5), Vector2(5, 5))
+	line = GoostGeometry2D.pixel_line(Vector2(-5, -5), Vector2(5, 5))
 	assert_eq(line.size(), 11)
 	assert_eq(line[0], Vector2(-5, -5))
 	assert_eq(line[5], Vector2(0, 0))
 	assert_eq(line[10], Vector2(5, 5))
 
-	line = GoostGeometry2D.bresenham_line(Vector2(5, -5), Vector2(-5, 5))
+	line = GoostGeometry2D.pixel_line(Vector2(5, -5), Vector2(-5, 5))
 	assert_eq(line.size(), 11)
 	assert_eq(line[0], Vector2(5, -5))
 	assert_eq(line[5], Vector2(0, 0))
 	assert_eq(line[10], Vector2(-5, 5))
 
-	line = GoostGeometry2D.bresenham_line(Vector2(5, -5), Vector2(-5, 5))
+	line = GoostGeometry2D.pixel_line(Vector2(5, -5), Vector2(-5, 5))
 	assert_eq(line.size(), 11)
 	assert_eq(line[0], Vector2(5, -5))
 	assert_eq(line[5], Vector2(0, 0))
 	assert_eq(line[10], Vector2(-5, 5))
 
-	line = GoostGeometry2D.bresenham_line(Vector2(-5, -5), Vector2(10, 3))
+	line = GoostGeometry2D.pixel_line(Vector2(-5, -5), Vector2(10, 3))
 	assert_eq(line[0], Vector2(-5, -5))
 	assert_eq(line[1], Vector2(-4, -4))
 	assert_eq(line[2], Vector2(-3, -4))
@@ -185,6 +185,50 @@ func test_bresenham_line():
 	assert_eq(line[13], Vector2(8, 2))
 	assert_eq(line[14], Vector2(9, 2))
 	assert_eq(line[15], Vector2(10, 3))
+
+
+func test_pixel_circle():
+	var circle = GoostGeometry2D.pixel_circle(16)
+	# for i in circle.size():
+		# gut.p("%s: %s" % [i, circle[i]])
+	assert_eq(circle.size(), 96)
+	assert_eq(circle[0], Vector2(16, 0))
+	assert_eq(circle[3], Vector2(16, 0))
+	assert_eq(circle[50], Vector2(-15, -6))
+	assert_eq(circle[52], Vector2(6, 15))
+	assert_eq(circle[93], Vector2(-11, 12))
+	assert_eq(circle[95], Vector2(11, -12))
+
+
+func test_polyline_to_pixels():
+	var input = [Vector2(0, 0), Vector2(0.01, 0.01), Vector2(10, 10),
+			Vector2(10.001, 10.001), Vector2(20, 10), Vector2(20, 20), Vector2(20.3, 20.3)]
+	var polyline = GoostGeometry2D.polyline_to_pixels(input)
+
+	assert_eq(polyline.size(), 31)
+
+	var pixel_set = {}
+	for pixel in polyline:
+		pixel_set[pixel] = true
+	assert_eq(pixel_set.keys().size(), polyline.size(), "Should not contain duplicate points here")
+
+	assert_eq(polyline[0], input[0], "Starting point should be the same as in input")
+	assert_eq(polyline[-1], input[-2], "Ending point should be the same as in input (without last rounded duplicate)")
+
+
+func test_polygon_to_pixels():
+	var input = [Vector2(-3, -3), Vector2(3, -3), Vector2(3, 3), Vector2(-3, 3), Vector2(-3.3, -3.3)]
+	var polygon = GoostGeometry2D.polygon_to_pixels(input)
+
+	assert_eq(polygon.size(), 24)
+
+	var pixel_set = {}
+	for pixel in polygon:
+		pixel_set[pixel] = true
+	assert_eq(pixel_set.keys().size(), polygon.size(), "Should not contain duplicate points here")
+
+	assert_eq(polygon[0], input[0], "Starting point should be the same as in input")
+	assert_ne(polygon[-1], input[-2], "Ending point should NOT be the same as in input (without last rounded duplicate)")
 
 
 func test_simplify_polyline():

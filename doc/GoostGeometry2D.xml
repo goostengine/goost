@@ -20,17 +20,6 @@
 				Computes the axis-aligned bounding rectangle of given points.
 			</description>
 		</method>
-		<method name="bresenham_line" qualifiers="const">
-			<return type="PoolVector2Array">
-			</return>
-			<argument index="0" name="start" type="Vector2">
-			</argument>
-			<argument index="1" name="end" type="Vector2">
-			</argument>
-			<description>
-				Returns an array of 2D-dimensional raster coordinates going through a segment determined by [code]start[/code] and [code]end[/code] points. The line is a close approximation to a straight line between those points.
-			</description>
-		</method>
 		<method name="circle" qualifiers="const">
 			<return type="PoolVector2Array">
 			</return>
@@ -151,6 +140,29 @@
 				Performs [constant PolyBoolean2D.OP_UNION] between individual polygons. If you need to merge multiple polygons, use [method PolyBoolean2D.merge_polygons] instead.
 			</description>
 		</method>
+		<method name="pixel_circle" qualifiers="const">
+			<return type="PoolVector2Array">
+			</return>
+			<argument index="0" name="radius" type="int">
+			</argument>
+			<argument index="1" name="origin" type="Vector2" default="Vector2( 0, 0 )">
+			</argument>
+			<description>
+				Returns an array of 2D-dimensional raster coordinates approximating a circle using a Bresenham type algorithm.
+				[b]Note:[/b] pixels are created per circle's octant for performance reasons, so you should not rely on the order of returned pixels. If you do need ordered points, consider using methods such as [method polygon_to_pixels] and [method circle] with lower values for [code]max_error[/code] parameter, but take in mind that the quality of the returned points is going to be sub-optimal in comparison.
+			</description>
+		</method>
+		<method name="pixel_line" qualifiers="const">
+			<return type="PoolVector2Array">
+			</return>
+			<argument index="0" name="start" type="Vector2">
+			</argument>
+			<argument index="1" name="end" type="Vector2">
+			</argument>
+			<description>
+				Returns an array of 2D-dimensional raster coordinates going through a segment determined by [code]start[/code] and [code]end[/code] points using a Bresenham type algorithm. The line is a close approximation to a straight line between those points.
+			</description>
+		</method>
 		<method name="point_in_polygon" qualifiers="const">
 			<return type="int">
 			</return>
@@ -189,6 +201,16 @@
 				Returns the perimeter of an arbitrary polygon. See also [method polyline_length].
 			</description>
 		</method>
+		<method name="polygon_to_pixels" qualifiers="const">
+			<return type="PoolVector2Array">
+			</return>
+			<argument index="0" name="points" type="PoolVector2Array">
+			</argument>
+			<description>
+				Returns an array of 2D-dimensional raster coordinates approximating a polygon going through [code]points[/code] using [method pixel_line]. Point coordinates in the input [code]points[/code] are rounded to nearest integer values.
+				[b]Note:[/b] this method does not fill the interior of the polygon. If you need this to raster polygons onto an image, use [method GoostImage.render_polygon] instead.
+			</description>
+		</method>
 		<method name="polyline_length" qualifiers="const">
 			<return type="float">
 			</return>
@@ -196,6 +218,15 @@
 			</argument>
 			<description>
 				Returns the total length of the segments representing the polyline. See also [method polygon_perimeter].
+			</description>
+		</method>
+		<method name="polyline_to_pixels" qualifiers="const">
+			<return type="PoolVector2Array">
+			</return>
+			<argument index="0" name="points" type="PoolVector2Array">
+			</argument>
+			<description>
+				Returns an array of 2D-dimensional raster coordinates approximating a polyline going through [code]points[/code] using [method pixel_line]. Point coordinates in the input [code]points[/code] are rounded to nearest integer values.
 			</description>
 		</method>
 		<method name="regular_polygon" qualifiers="const">

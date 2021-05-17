@@ -473,11 +473,11 @@ Vector<Point2> GoostGeometry2D::circle(real_t p_radius, real_t p_max_error) {
 // Implementation borrowed from `TileMap` editor plugin:
 // https://github.com/godotengine/godot/blob/0d819ae5f5/editor/plugins/tile_map_editor_plugin.cpp#L982-L1023
 //
-Vector<Point2i> GoostGeometry2D::bresenham_line(const Point2i &p_start, const Point2i &p_end) {
+Vector<Point2i> GoostGeometry2D::pixel_line(const Point2i &p_start, const Point2i &p_end) {
 	Vector<Point2i> points;
 
-	real_t dx = ABS(p_end.x - p_start.x);
-	real_t dy = ABS(p_end.y - p_start.y);
+	int dx = ABS(p_end.x - p_start.x);
+	int dy = ABS(p_end.y - p_start.y);
 
 	int x = p_start.x;
 	int y = p_start.y;
@@ -486,7 +486,7 @@ Vector<Point2i> GoostGeometry2D::bresenham_line(const Point2i &p_start, const Po
 	int sy = p_start.y > p_end.y ? -1 : 1;
 
 	if (dx > dy) {
-		real_t err = dx / 2;
+		int err = dx / 2;
 		for (; x != p_end.x; x += sx) {
 			points.push_back(Point2i(x, y));
 			err -= dy;
@@ -496,7 +496,7 @@ Vector<Point2i> GoostGeometry2D::bresenham_line(const Point2i &p_start, const Po
 			}
 		}
 	} else {
-		real_t err = dy / 2;
+		int err = dy / 2;
 		for (; y != p_end.y; y += sy) {
 			points.push_back(Point2i(x, y));
 			err -= dx;
@@ -508,4 +508,94 @@ Vector<Point2i> GoostGeometry2D::bresenham_line(const Point2i &p_start, const Po
 	}
 	points.push_back(Point2i(x, y));
 	return points;
+}
+
+// "A Fast Bresenham Type Algorithm For Drawing Circles" by John Kennedy:
+// https://web.engr.oregonstate.edu/~sllu/bcircle.pdf
+//
+Vector<Point2i> GoostGeometry2D::pixel_circle(int p_radius, const Point2i &p_origin) {
+	ERR_FAIL_COND_V(p_radius < 0, Vector<Point2i>());
+
+	Vector<Point2i> circle;
+	const int cx = p_origin.x;
+	const int cy = p_origin.y;
+
+	int x = p_radius;
+	int y = 0;
+	int dx = 1 - 2 * p_radius;
+	int dy = 1;
+
+	int rerr = 0;
+
+	while (x >= y) {
+		// This takes advantage of the fact that the circle is symmetrical.
+		circle.push_back(Point2i(cx + x, cy + y));
+		circle.push_back(Point2i(cx - x, cy + y));
+		circle.push_back(Point2i(cx - x, cy - y));
+		circle.push_back(Point2i(cx + x, cy - y));
+		circle.push_back(Point2i(cx + y, cy + x));
+		circle.push_back(Point2i(cx - y, cy + x));
+		circle.push_back(Point2i(cx - y, cy - x));
+		circle.push_back(Point2i(cx + y, cy - x));
+
+		y += 1;
+		rerr += dy;
+		dy += 2;
+		if (2 * rerr + dx > 0) {
+			x -= 1;
+			rerr += dx;
+			dx += 2;
+		}
+	}
+	return circle;
+}
+
+Vector<Point2i> GoostGeometry2D::polyline_to_pixels(const Vector<Point2> &p_points) {
+	ERR_FAIL_COND_V(p_points.size() < 2, Vector<Point2i>());
+
+	Vector<Point2i> polyline;
+
+	Vector<Point2i> points;
+	// Round to nearest integer.
+	for (int i = 0; i < p_points.size(); ++i) {
+		const Point2 &p = p_points[i].round();
+		if (points.size() > 0 && p.is_equal_approx(points[points.size() - 1])) {
+			continue; // Do not add duplicate points.
+		}
+		points.push_back(p);
+	}
+	// Produce points in between.
+	for (int i = 0; i < points.size() - 1; ++i) {
+		Vector<Point2i> line = pixel_line(points[i], points[i + 1]);
+		// Do not add last point, but include last point on the final line.
+		const int last = i < points.size() - 2 ? 1 : 0;
+		for (int j = 0; j < line.size() - last; ++j) {
+			polyline.push_back(line[j]);
+		}
+	}
+	return polyline;
+}
+
+Vector<Point2i> GoostGeometry2D::polygon_to_pixels(const Vector<Point2> &p_points) {
+	ERR_FAIL_COND_V(p_points.size() < 3, Vector<Point2i>());
+
+	Vector<Point2i> polygon;
+
+	Vector<Point2i> points;
+	// Round to nearest integer.
+	for (int i = 0; i < p_points.size(); ++i) {
+		const Point2 &p = p_points[i].round();
+		if (points.size() > 0 && p.is_equal_approx(points[points.size() - 1])) {
+			continue; // Do not add duplicate points.
+		}
+		points.push_back(p);
+	}
+	// Produce points in between.
+	for (int i = 0; i < points.size(); ++i) {
+		Vector<Point2i> line = pixel_line(points[i], points[(i + 1) % points.size()]);
+		for (int j = 0; j < line.size() - 1; ++j) { // Do not add last point.
+			polygon.push_back(line[j]);
+		}
+	}
+	return polygon;
 }
