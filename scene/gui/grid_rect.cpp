@@ -67,7 +67,7 @@ void GridRect::set_metadata_show_tooltip(bool p_enabled) {
 }
 
 Vector2 GridRect::_get_final_offset(CellOrigin p_cell_origin) {
-	Vector2 ofs = origin_offset;
+	Vector2 ofs = -origin_offset;
 	if (origin_centered) {
 		ofs += -get_size() / 2;
 	}
@@ -269,7 +269,7 @@ void GridRect::_notification(int p_what) {
 				draw_rect(Rect2(Vector2(), get_size()), Color::html("#2C2A32"));
 			}
 			const Vector2 &size = get_size() / origin_scale.abs();
-			Vector2 ofs = origin_offset / origin_scale.abs();
+			Vector2 ofs = -origin_offset / origin_scale.abs();
 			if (origin_centered) {
 				ofs += -size / 2;
 			}

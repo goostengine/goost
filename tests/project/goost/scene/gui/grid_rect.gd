@@ -17,7 +17,7 @@ func _ready():
 	yield(test(data), "completed")
 
 	# Offset.
-	$grid.origin_offset = Vector2(-32, -32)
+	$grid.origin_offset = Vector2(32, 32)
 	data = {
 		Vector2(0, 0) : [ Vector2(-1, -1), Vector2(0, 0) ],
 		Vector2(32, 32) : [ Vector2(0, 0), Vector2(32, 32) ],
@@ -45,7 +45,7 @@ func _ready():
 	yield(test(data), "completed")
 
 	# Offset + Scale.
-	$grid.origin_offset = Vector2(-146, -246)
+	$grid.origin_offset = Vector2(146, 246)
 	$grid.origin_scale = Vector2(1.5, 0.5)
 	data = {
 		Vector2(106, 153) : [ Vector2(-1, -6), Vector2(98, 150) ],
@@ -65,7 +65,7 @@ func _ready():
 
 	# Centered origin + origin_offset + origin_scale.
 	$grid.origin_centered = true
-	$grid.origin_offset = Vector2(100, 200)
+	$grid.origin_offset = Vector2(-100, -200)
 	$grid.origin_scale = Vector2(0.74, 1.33)
 	data = {
 		Vector2(1048, 681) : [ Vector2(8, 8), Vector2(1049.439941, 680.47998) ],
@@ -77,7 +77,7 @@ func _ready():
 	# Centered origin + origin_offset + cell_origin
 	$grid.cell_origin = GridRect.CELL_ORIGIN_CENTER
 	$grid.origin_centered = true
-	$grid.origin_offset = Vector2(100, 200)
+	$grid.origin_offset = Vector2(-100, -200)
 	data = {
 		Vector2(985, 374) : [ Vector2(3, 1), Vector2(972, 388) ],
 		Vector2(669, 214) : [ Vector2(-6, -4), Vector2(684, 228) ],
