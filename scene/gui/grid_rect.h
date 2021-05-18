@@ -17,8 +17,8 @@ public:
 		AXIS_Y,
 	};
 	enum Line {
-		LINE_MINOR,
-		LINE_MAJOR,
+		LINE_CELL,
+		LINE_DIVISION,
 		LINE_AXIS,
 	};
 
@@ -108,8 +108,8 @@ private:
 
 	Vector2 _point_snapped;
 
-	Color _minor_color;
-	Color _major_color;
+	Color _cell_color;
+	Color _division_color;
 	Color _axis_x_color;
 	Color _axis_y_color;
 };

@@ -130,16 +130,16 @@ void GridRect::_draw_grid_vertical(int from, int to, const Vector2 &p_ofs, Line 
 		Color color;
 		float width;
 
-		if (p_type == LINE_MINOR) {
+		if (p_type == LINE_CELL) {
 			width = cell_line_width;
-			color = _minor_color;
-		} else if (p_type == LINE_MAJOR) {
+			color = _cell_color;
+		} else if (p_type == LINE_DIVISION) {
 			bool should_draw = divisions_vertical != 0 && (ABS(i) % divisions_vertical == 0);
 			if (!should_draw) {
 				continue;
 			}
 			width = divisions_line_width;
-			color = _major_color;
+			color = _division_color;
 		} else if (p_type == LINE_AXIS) {
 			bool should_draw = origin_axes_visible && i == 0;
 			if (!should_draw) {
@@ -174,16 +174,16 @@ void GridRect::_draw_grid_horizontal(int from, int to, const Vector2 &p_ofs, Lin
 		Color color;
 		float width;
 
-		if (p_type == LINE_MINOR) {
+		if (p_type == LINE_CELL) {
 			width = cell_line_width;
-			color = _minor_color;
-		} else if (p_type == LINE_MAJOR) {
+			color = _cell_color;
+		} else if (p_type == LINE_DIVISION) {
 			bool should_draw = divisions_horizontal != 0 && (ABS(i) % divisions_horizontal == 0);
 			if (!should_draw) {
 				continue;
 			}
 			width = divisions_line_width;
-			color = _major_color;
+			color = _division_color;
 		} else if (p_type == LINE_AXIS) {
 			bool should_draw = origin_axes_visible && i == 0;
 			if (!should_draw) {
@@ -214,22 +214,22 @@ void GridRect::_draw_grid_horizontal(int from, int to, const Vector2 &p_ofs, Lin
 }
 
 void GridRect::_update_colors() {
-	if (has_color_override("line_minor")) {
-		_minor_color = get_color("line_minor");
+	if (has_color_override("cell")) {
+		_cell_color = get_color("cell");
 	} else if (has_color("grid_minor", "GraphEdit")) {
 		// Reuse grid colors from GraphEdit.
-		_minor_color = get_color("grid_minor", "GraphEdit");
+		_cell_color = get_color("grid_minor", "GraphEdit");
 	} else {
-		_minor_color = Color(1, 1, 1, 0.07);
+		_cell_color = Color(1, 1, 1, 0.07);
 	}
 
-	if (has_color_override("line_major")) {
-		_major_color = get_color("line_major");
+	if (has_color_override("division")) {
+		_division_color = get_color("division");
 	} else if (has_color("grid_major", "GraphEdit")) {
 		// Reuse grid colors from GraphEdit.
-		_major_color = get_color("grid_major", "GraphEdit");
+		_division_color = get_color("grid_major", "GraphEdit");
 	} else {
-		_major_color = Color(1, 1, 1, 0.15);
+		_division_color = Color(1, 1, 1, 0.15);
 	}
 
 	if (origin_axes_visible) {
@@ -274,12 +274,12 @@ void GridRect::_notification(int p_what) {
 			const Vector2 &from = (ofs / cell_size).floor();
 			const Vector2 &to = (size / cell_size).floor() + Vector2(1, 1);
 
-			// Draw minor lines first to prevent cross artifacts.
-			_draw_grid_horizontal(from.y, from.y + to.y, ofs, LINE_MINOR);
-			_draw_grid_vertical(from.x, from.x + to.x, ofs, LINE_MINOR);
-			// Draw major lines on top of minor ones.
-			_draw_grid_horizontal(from.y, from.y + to.y, ofs, LINE_MAJOR);
-			_draw_grid_vertical(from.x, from.x + to.x, ofs, LINE_MAJOR);
+			// Draw cells first to prevent cross artifacts.
+			_draw_grid_horizontal(from.y, from.y + to.y, ofs, LINE_CELL);
+			_draw_grid_vertical(from.x, from.x + to.x, ofs, LINE_CELL);
+			// Draw division lines on top of cells.
+			_draw_grid_horizontal(from.y, from.y + to.y, ofs, LINE_DIVISION);
+			_draw_grid_vertical(from.x, from.x + to.x, ofs, LINE_DIVISION);
 			// Draw main axes last.
 			_draw_grid_horizontal(from.y, from.y + to.y, ofs, LINE_AXIS);
 			_draw_grid_vertical(from.x, from.x + to.x, ofs, LINE_AXIS);
@@ -293,8 +293,8 @@ void GridRect::_notification(int p_what) {
 void GridRect::_get_property_list(List<PropertyInfo> *p_list) const {
 	// Reuse overriding mechanism.
 	Vector<String> props;
-	props.push_back("line_minor");
-	props.push_back("line_major");
+	props.push_back("cell");
+	props.push_back("division");
 	props.push_back("axis_x");
 	props.push_back("axis_y");
 	props.push_back("background");
@@ -392,8 +392,8 @@ void GridRect::_bind_methods() {
 	BIND_ENUM_CONSTANT(AXIS_X);
 	BIND_ENUM_CONSTANT(AXIS_Y);
 
-	BIND_ENUM_CONSTANT(LINE_MINOR);
-	BIND_ENUM_CONSTANT(LINE_MAJOR);
+	BIND_ENUM_CONSTANT(LINE_CELL);
+	BIND_ENUM_CONSTANT(LINE_DIVISION);
 	BIND_ENUM_CONSTANT(LINE_AXIS);
 
 	ADD_GROUP("Cell", "cell");
@@ -421,9 +421,4 @@ void GridRect::_bind_methods() {
 
 GridRect::GridRect() {
 	set_clip_contents(true);
-
-	// add_color_override("line_minor", get_color("grid_minor", "GraphEdit"));
-	// add_color_override("line_major", get_color("grid_major", "GraphEdit"));
-	// add_color_override("axis_x", Color(0.96, 0.20, 0.32));
-	// add_color_override("axis_y", Color(0.53, 0.84, 0.01));
 }

@@ -62,7 +62,7 @@
 	</methods>
 	<members>
 		<member name="cell_line_width" type="float" setter="set_cell_line_width" getter="get_cell_line_width" default="1.0">
-			The width of minor lines.
+			The width of cell lines.
 		</member>
 		<member name="cell_origin" type="int" setter="set_cell_origin" getter="get_cell_origin" enum="GridRect.CellOrigin" default="0">
 			Determines the cell's origin offset for drawing and snapping.
@@ -74,7 +74,7 @@
 			The number of horizontal divisions along the [constant AXIS_X].
 		</member>
 		<member name="divisions_line_width" type="float" setter="set_divisions_line_width" getter="get_divisions_line_width" default="1.0">
-			The width of major lines.
+			The width of division lines.
 		</member>
 		<member name="divisions_vertical" type="int" setter="set_divisions_vertical" getter="get_divisions_vertical" default="8">
 			The number of horizontal divisions along the [constant AXIS_Y].
@@ -125,10 +125,10 @@
 		<constant name="AXIS_Y" value="1" enum="Axis">
 			Vertical axis.
 		</constant>
-		<constant name="LINE_MINOR" value="0" enum="Line">
+		<constant name="LINE_CELL" value="0" enum="Line">
 			Cell lines.
 		</constant>
-		<constant name="LINE_MAJOR" value="1" enum="Line">
+		<constant name="LINE_DIVISION" value="1" enum="Line">
 			Division lines.
 		</constant>
 		<constant name="LINE_AXIS" value="2" enum="Line">
