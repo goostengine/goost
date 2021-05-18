@@ -50,6 +50,7 @@ void GridRect::set_origin_centered(bool p_centered) {
 
 void GridRect::set_origin_axes_visible(bool p_visible) {
 	origin_axes_visible = p_visible;
+	_update_colors(); // Only updated when enabled.
 	_change_notify();
 	update();
 }
