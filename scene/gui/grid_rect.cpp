@@ -129,7 +129,7 @@ bool GridRect::_draw_line(const Vector2 &p_from, const Vector2 &p_to, const Colo
 void GridRect::_draw_grid_vertical(int from, int to, const Vector2 &p_ofs, Line p_type) {
 	for (int i = from; i < to + 1; ++i) {
 		Color color;
-		float width;
+		float width = 0.0f;
 
 		if (p_type == LINE_CELL) {
 			width = cell_line_width;
@@ -173,7 +173,7 @@ void GridRect::_draw_grid_vertical(int from, int to, const Vector2 &p_ofs, Line 
 void GridRect::_draw_grid_horizontal(int from, int to, const Vector2 &p_ofs, Line p_type) {
 	for (int i = from; i < to + 1; ++i) {
 		Color color;
-		float width;
+		float width = 0.0f;
 
 		if (p_type == LINE_CELL) {
 			width = cell_line_width;
