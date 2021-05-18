@@ -1,8 +1,8 @@
 #ifndef GRID_RECT_H
 #define GRID_RECT_H
 
-#include "scene/gui/control.h"
 #include "core/color.h"
+#include "scene/gui/control.h"
 
 class GridRect : public Control {
 	GDCLASS(GridRect, Control);
@@ -27,51 +27,51 @@ protected:
 	CellOrigin cell_origin = CELL_ORIGIN_TOP_LEFT;
 	float cell_line_width = 1.0;
 
+	int divisions_horizontal = 8;
+	int divisions_vertical = 8;
+	float divisions_line_width = 1.0;
 	Vector2 origin_offset;
 	Vector2 origin_scale = Vector2(1, 1);
+
 	bool origin_centered = false;
 	bool origin_axes_visible = false;
 	float origin_axes_line_width = 1.0;
-
-	int subdivisions_horizontal = 8;
-	int subdivisions_vertical = 8;
-	float subdivisions_line_width = 1.0;
 
 	bool metadata_show_tooltip = true;
 
 public:
 	void set_cell_size(const Vector2 &p_size);
 	Vector2 get_cell_size() const { return cell_size; }
-	
+
 	void set_cell_origin(CellOrigin p_origin);
 	CellOrigin get_cell_origin() const { return cell_origin; }
-	
+
 	void set_cell_line_width(float p_width);
 	float get_cell_line_width() const { return cell_line_width; }
-	
+
+	void set_divisions_horizontal(int p_count);
+	int get_divisions_horizontal() const { return divisions_horizontal; }
+
+	void set_divisions_vertical(int p_count);
+	int get_divisions_vertical() const { return divisions_vertical; }
+
+	void set_divisions_line_width(float p_width);
+	float get_divisions_line_width() const { return divisions_line_width; }
+
 	void set_origin_offset(Vector2 p_offset);
 	Vector2 get_origin_offset() const { return origin_offset; }
-	
+
 	void set_origin_scale(Vector2 p_scale);
 	Vector2 get_origin_scale() const { return origin_scale; }
-	
+
 	void set_origin_centered(bool p_centered);
 	bool is_origin_centered() const { return origin_centered; }
-	
+
 	void set_origin_axes_visible(bool p_visible);
 	bool is_origin_axes_visible() const { return origin_axes_visible; }
 
 	void set_origin_axes_line_width(float p_width);
 	float get_origin_axes_line_width() const { return origin_axes_line_width; }
-
-	void set_subdivisions_horizontal(int p_count);
-	int get_subdivisions_horizontal() const { return subdivisions_horizontal; }
-	
-	void set_subdivisions_vertical(int p_count);
-	int get_subdivisions_vertical() const { return subdivisions_vertical; }
-	
-	void set_subdivisions_line_width(float p_width);
-	float get_subdivisions_line_width() const { return subdivisions_line_width; }
 
 	void set_metadata_show_tooltip(bool p_enable);
 	bool is_showing_metadata_tooltip() const { return metadata_show_tooltip; }

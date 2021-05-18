@@ -4,8 +4,8 @@
 		Draws a rectangular grid.
 	</brief_description>
 	<description>
-		A control which allows to draw rectangular grid. Provides basic methods for converting between grid and view coordinates with or without snapping.
-		The drawing can be customized via virtual [method _draw_line] method.
+		A control which allows to draw a rectangular grid of any size. Provides basic methods for converting between grid and view coordinates with or without snapping, see methods [method view_to_point] and [method point_to_view]. The drawing can be completely customized by overriding [method _draw_line] method.
+		[b]Note[/b]: the scope of this class is mostly limited to drawing, and does not provide additional features like dragging, scrolling or zooming as seen in classes like [GraphEdit], but nonetheless possible to implement via script by modifying [member origin_offset] and [member origin_scale] properties.
 	</description>
 	<tutorials>
 	</tutorials>
@@ -70,6 +70,15 @@
 		<member name="cell_size" type="Vector2" setter="set_cell_size" getter="get_cell_size" default="Vector2( 32, 32 )">
 			The size of individual cells drawn via grid line intersections.
 		</member>
+		<member name="divisions_horizontal" type="int" setter="set_divisions_horizontal" getter="get_divisions_horizontal" default="8">
+			The number of horizontal divisions along the [constant AXIS_X].
+		</member>
+		<member name="divisions_line_width" type="float" setter="set_divisions_line_width" getter="get_divisions_line_width" default="1.0">
+			The width of major lines.
+		</member>
+		<member name="divisions_vertical" type="int" setter="set_divisions_vertical" getter="get_divisions_vertical" default="8">
+			The number of horizontal divisions along the [constant AXIS_Y].
+		</member>
 		<member name="metadata_show_tooltip" type="bool" setter="set_metadata_show_tooltip" getter="is_showing_metadata_tooltip" default="true">
 			If [code]true[/code], displays a tooltip on hover with coordinates snapped to the grid.
 		</member>
@@ -89,15 +98,6 @@
 			The scale that zoom in or out the grid coordinates.
 		</member>
 		<member name="rect_clip_content" type="bool" setter="set_clip_contents" getter="is_clipping_contents" override="true" default="true" />
-		<member name="subdivisions_horizontal" type="int" setter="set_subdivisions_horizontal" getter="get_subdivisions_horizontal" default="8">
-			The number of horizontal subdivisions along the [constant AXIS_X].
-		</member>
-		<member name="subdivisions_line_width" type="float" setter="set_subdivisions_line_width" getter="get_subdivisions_line_width" default="1.0">
-			The width of major lines.
-		</member>
-		<member name="subdivisions_vertical" type="int" setter="set_subdivisions_vertical" getter="get_subdivisions_vertical" default="8">
-			The number of horizontal subdivisions along the [constant AXIS_Y].
-		</member>
 	</members>
 	<signals>
 		<signal name="point_clicked">
@@ -129,7 +129,7 @@
 			Cell lines.
 		</constant>
 		<constant name="LINE_MAJOR" value="1" enum="Line">
-			Subdivision lines.
+			Division lines.
 		</constant>
 		<constant name="LINE_AXIS" value="2" enum="Line">
 			Origin axes lines (X and Y).
