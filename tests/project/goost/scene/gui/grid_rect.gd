@@ -1,5 +1,7 @@
 extends Control
 
+signal finished
+
 
 func _ready():
 	$grid.show_behind_parent = true
@@ -91,6 +93,8 @@ func _ready():
 		Vector2(1051, 630) : [ Vector2(-3, -3), Vector2(1056, 636) ],
 	}
 	yield(test(data), "completed")
+
+	emit_signal("finished")
 
 
 func reset_to_default():
