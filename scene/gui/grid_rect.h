@@ -76,12 +76,14 @@ public:
 	void set_metadata_show_tooltip(bool p_enable);
 	bool is_showing_metadata_tooltip() const { return metadata_show_tooltip; }
 
-	Vector2 view_to_point(const Vector2 &p_position);
-	Vector2 view_to_point_snapped(const Vector2 &p_position);
-	Vector2 point_to_view(const Vector2 &p_point);
+	Vector2 view_to_point(const Vector2 &p_position) const;
+	Vector2 view_to_point_snapped(const Vector2 &p_position) const;
+	Vector2 point_to_view(const Vector2 &p_point) const;
 
-	void set_metadata(const Vector2 &p_point, const Variant &p_metadata);
-	Variant get_metadata(const Vector2 &p_point) const;
+	// Should use Vector2i in Godot 4.x.
+	void set_cell_metadata(const Vector2 &p_cell, const Variant &p_metadata);
+	Variant get_cell_metadata(const Vector2 &p_cell) const;
+	void clear_cell_metadata() { metadata.clear(); }
 
 	virtual String get_tooltip(const Point2 &p_pos) const;
 
@@ -92,12 +94,11 @@ protected:
 	static void _bind_methods();
 	void _get_property_list(List<PropertyInfo> *p_list) const;
 	virtual void _validate_property(PropertyInfo &property) const;
-
 	void _gui_input(const Ref<InputEvent> &p_event);
 
-	Vector2 _get_final_offset(CellOrigin p_cell_origin);
 	virtual bool _draw_line(const Vector2 &p_from, const Vector2 &p_to, const Color &p_color, float p_width, const Dictionary &p_line);
 
+	Vector2 _get_final_offset(CellOrigin p_cell_origin) const;
 	void _draw_grid_vertical(int from, int to, const Vector2 &p_ofs, Line p_type);
 	void _draw_grid_horizontal(int from, int to, const Vector2 &p_ofs, Line p_type);
 	void _update_colors();

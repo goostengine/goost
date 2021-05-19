@@ -65,7 +65,7 @@ void GridRect::set_metadata_show_tooltip(bool p_enabled) {
 	update();
 }
 
-Vector2 GridRect::_get_final_offset(CellOrigin p_cell_origin) {
+Vector2 GridRect::_get_final_offset(CellOrigin p_cell_origin) const {
 	Vector2 ofs = -origin_offset;
 	if (origin_centered) {
 		ofs += -get_size() / 2;
@@ -76,29 +76,29 @@ Vector2 GridRect::_get_final_offset(CellOrigin p_cell_origin) {
 	return ofs;
 }
 
-Vector2 GridRect::view_to_point(const Vector2 &p_position) {
+Vector2 GridRect::view_to_point(const Vector2 &p_position) const {
 	const Vector2 &ofs = _get_final_offset(cell_origin);
 	return (p_position + ofs) / (cell_size * origin_scale);
 }
 
-Vector2 GridRect::view_to_point_snapped(const Vector2 &p_position) {
+Vector2 GridRect::view_to_point_snapped(const Vector2 &p_position) const {
 	const Vector2 &ofs = _get_final_offset(cell_origin);
 	return ((p_position + ofs) / (cell_size * origin_scale)).snapped(Vector2(1, 1));
 }
 
-Vector2 GridRect::point_to_view(const Vector2 &p_point) {
+Vector2 GridRect::point_to_view(const Vector2 &p_point) const {
 	const Vector2 &ofs = _get_final_offset(cell_origin);
 	return p_point * cell_size * origin_scale - ofs;
 }
 
-void GridRect::set_metadata(const Vector2 &p_point, const Variant &p_metadata) {
-	metadata.insert(p_point, p_metadata);
+void GridRect::set_cell_metadata(const Vector2 &p_cell, const Variant &p_metadata) {
+	metadata.insert(p_cell, p_metadata);
 }
 
-Variant GridRect::get_metadata(const Vector2 &p_point) const {
+Variant GridRect::get_cell_metadata(const Vector2 &p_cell) const {
 	Variant ret;
-	if (metadata.has(p_point)) {
-		ret = metadata[p_point];
+	if (metadata.has(p_cell)) {
+		ret = metadata[p_cell];
 	}
 	return ret;
 }
@@ -215,8 +215,8 @@ void GridRect::_draw_grid_horizontal(int from, int to, const Vector2 &p_ofs, Lin
 }
 
 void GridRect::_update_colors() {
-	if (has_color_override("cell")) {
-		_cell_color = get_color("cell");
+	if (has_color_override("line_cell")) {
+		_cell_color = get_color("line_cell");
 	} else if (has_color("grid_minor", "GraphEdit")) {
 		// Reuse grid colors from GraphEdit.
 		_cell_color = get_color("grid_minor", "GraphEdit");
@@ -224,8 +224,8 @@ void GridRect::_update_colors() {
 		_cell_color = Color(1, 1, 1, 0.07);
 	}
 
-	if (has_color_override("division")) {
-		_division_color = get_color("division");
+	if (has_color_override("line_division")) {
+		_division_color = get_color("line_division");
 	} else if (has_color("grid_major", "GraphEdit")) {
 		// Reuse grid colors from GraphEdit.
 		_division_color = get_color("grid_major", "GraphEdit");
@@ -234,16 +234,16 @@ void GridRect::_update_colors() {
 	}
 
 	if (origin_axes_visible) {
-		if (has_color_override("axis_x")) {
-			_axis_x_color = get_color("axis_x");
+		if (has_color_override("line_axis_x")) {
+			_axis_x_color = get_color("line_axis_x");
 		} else if (has_color("axis_x_color", "Editor")) {
 			_axis_x_color = get_color("axis_x_color", "Editor");
 		} else {
 			_axis_x_color = Color(0.96, 0.20, 0.32);
 		}
 
-		if (has_color_override("axis_y")) {
-			_axis_y_color = get_color("axis_y");
+		if (has_color_override("line_axis_y")) {
+			_axis_y_color = get_color("line_axis_y");
 		} else if (has_color("axis_y_color", "Editor")) {
 			_axis_y_color = get_color("axis_y_color", "Editor");
 		} else {
@@ -293,24 +293,19 @@ void GridRect::_notification(int p_what) {
 
 void GridRect::_get_property_list(List<PropertyInfo> *p_list) const {
 	// Reuse overriding mechanism.
-	Vector<String> props;
-	props.push_back("cell");
-	props.push_back("division");
-	props.push_back("axis_x");
-	props.push_back("axis_y");
-	props.push_back("background");
+	Vector<String> color_props;
+	color_props.push_back("line_cell");
+	color_props.push_back("line_division");
+	color_props.push_back("line_axis_x");
+	color_props.push_back("line_axis_y");
+	color_props.push_back("background");
 
-	for (int i = 0; i < props.size(); ++i) {
-		const String &prop = props[i];
+	for (int i = 0; i < color_props.size(); ++i) {
 		uint32_t usage = PROPERTY_USAGE_EDITOR | PROPERTY_USAGE_CHECKABLE;
-		if (has_color_override(prop)) {
+		if (has_color_override(color_props[i])) {
 			usage |= PROPERTY_USAGE_STORAGE | PROPERTY_USAGE_CHECKED;
 		}
-		PropertyInfo pi;
-		pi.name = "custom_colors/" + prop;
-		pi.type = Variant::COLOR;
-		pi.hint = PROPERTY_HINT_NONE;
-		pi.usage = usage;
+		auto pi = PropertyInfo(Variant::COLOR, "custom_colors/" + color_props[i], PROPERTY_HINT_NONE, "", usage);
 		p_list->push_back(pi);
 	}
 }
@@ -326,7 +321,7 @@ void GridRect::_validate_property(PropertyInfo &property) const {
 String GridRect::get_tooltip(const Point2 &p_pos) const {
 	if (metadata_show_tooltip) {
 		String text = vformat("(%s, %s)", _point_snapped.x, _point_snapped.y);
-		Variant data = get_metadata(_point_snapped);
+		Variant data = get_cell_metadata(_point_snapped);
 		if (data.get_type() != Variant::NIL) {
 			String data_str;
 			VariantWriter::write_to_string(data, data_str);
@@ -377,6 +372,10 @@ void GridRect::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("view_to_point", "position"), &GridRect::view_to_point);
 	ClassDB::bind_method(D_METHOD("view_to_point_snapped", "position"), &GridRect::view_to_point_snapped);
 	ClassDB::bind_method(D_METHOD("point_to_view", "point"), &GridRect::point_to_view);
+
+	ClassDB::bind_method(D_METHOD("set_cell_metadata", "cell", "metadata"), &GridRect::set_cell_metadata);
+	ClassDB::bind_method(D_METHOD("get_cell_metadata", "cell"), &GridRect::get_cell_metadata);
+	ClassDB::bind_method(D_METHOD("clear_cell_metadata"), &GridRect::clear_cell_metadata);
 
 	ClassDB::bind_method(D_METHOD("_gui_input"), &GridRect::_gui_input);
 
