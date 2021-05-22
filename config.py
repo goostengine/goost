@@ -38,7 +38,7 @@ def configure(env):
     for name in disabled:
         children = goost.get_child_components(name)
         for child_name in children:
-            print("Goost: disabling `%s` component (%s)." % (child_name, name))
+            print("Goost: Disabling `%s` component (part of `%s`)." % (child_name, name))
             env["goost_%s_enabled" % (child_name)] = False
 
     def help_format(env, opt, help, default, actual, aliases):

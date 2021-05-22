@@ -16,9 +16,9 @@ void register_scene_types() {
 	goost::register_class<GradientTexture2D>();
 	goost::register_class<LightTexture>();
 
-// #ifdef GOOST_GUI_ENABLED
+#ifdef GOOST_GUI_ENABLED
 	goost::register_class<GridRect>();
-// #endif
+#endif
 
 #if defined(TOOLS_ENABLED) && defined(GOOST_EDITOR_ENABLED)
 #if defined(GOOST_CORE_ENABLED) && defined(GOOST_PolyNode2D)
@@ -28,6 +28,7 @@ void register_scene_types() {
 	EditorPlugins::add_by_type<VisualShape2DEditorPlugin>();
 #endif
 #endif
+
 #ifdef GOOST_PHYSICS_ENABLED
 	register_physics_types();
 #endif

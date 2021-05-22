@@ -9,6 +9,7 @@ components = [
     "core/image",
     "core/math",
     "scene/physics",
+    "scene/gui",
     "editor",
 ]
 
@@ -39,13 +40,7 @@ def get_child_components(parent):
             comp_list.append(p)
     
     return comp_list
-#
-# Complete list of all classes currently implemented in the extension,
-# excluding any classes provided from within `modules/` directory.
-# 
-# This is used by config.py::get_doc_classes(), and potentially allow to disable
-# each of the class in the future.
-#
+
 class GoostClass:
    def __init__(self, name, deps=[]):
       self.name = name
@@ -54,6 +49,12 @@ class GoostClass:
    def add_depencency(self, goost_class):
       self.deps.append(goost_class)
 
+# A list of classes currently implemented in the extension, excluding any
+# classes provided from within `modules/` directory.
+# 
+# This is used by `config.py::get_doc_classes()` and to disable each of the
+# class via user-defined `custom.py::goost_classes_disabled` array of classes.
+#
 classes = [
     "GoostEngine",
     "GoostGeometry2D",
@@ -91,7 +92,7 @@ for c in classes:
     _classes[c] = GoostClass(c)
 classes = _classes
 
-# Define dependencies.
+# Define dependencies explicitly.
 classes["GoostEngine"].add_depencency(classes["InvokeState"])
 classes["GoostGeometry2D"].add_depencency(classes["PolyBoolean2D"])
 classes["GoostGeometry2D"].add_depencency(classes["PolyDecomp2D"])
