@@ -17,7 +17,7 @@
 ![🍏 iOS](https://github.com/goostengine/goost/workflows/%F0%9F%8D%8F%20iOS/badge.svg)
 ![🌐 JavaScript](https://github.com/goostengine/goost/workflows/%F0%9F%8C%90%20JavaScript/badge.svg)
 
-This is a [Godot Engine](https://github.com/godotengine/godot) 3.2+ extension
+This is a [Godot Engine](https://github.com/godotengine/godot) 3.3+ extension
 implemented as a
 [C++ module](https://docs.godotengine.org/en/latest/development/cpp/custom_modules_in_cpp.html).
 

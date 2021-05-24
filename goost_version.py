@@ -5,5 +5,5 @@ website = "https://goostengine.github.io/"
 major = 1
 minor = 0
 patch = 0
-status = "beta"
+status = "stable"
 year = 2021
