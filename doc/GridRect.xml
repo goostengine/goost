@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="GridRect" inherits="Control" version="3.4">
+	<brief_description>
+		Draws a rectangular grid.
+	</brief_description>
+	<description>
+		A control which allows to draw a rectangular grid of any size. Provides basic methods for converting between grid and view coordinates with or without snapping, see methods [method view_to_point] and [method point_to_view]. The drawing can be completely customized by overriding [method _draw_line] method.
+		[b]Note[/b]: the scope of this class is mostly limited to drawing, and does not provide additional features like dragging, scrolling or zooming as seen in classes like [GraphEdit], but nonetheless possible to implement via script by modifying [member origin_offset] and [member origin_scale] properties.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="_draw_line" qualifiers="virtual">
+			<return type="bool">
+			</return>
+			<argument index="0" name="from" type="Vector2">
+			</argument>
+			<argument index="1" name="to" type="Vector2">
+			</argument>
+			<argument index="2" name="color" type="Color">
+			</argument>
+			<argument index="3" name="width" type="float">
+			</argument>
+			<argument index="4" name="line" type="Dictionary">
+			</argument>
+			<description>
+				Called before drawing a grid line. The first four parameters match the interface of [method CanvasItem.draw_line].
+				The [code]line[/code] parameter is a [Dictionary] which contains the following fields:
+				[code]step[/code]: The line's step, which describes the current grid integer coordinate along the axis (can be negative or positive).
+				[code]axis[/code]: The line's axis along which it's drawn, one of [enum Axis] values.
+				[code]type[/code]: The line's type, one of [enum Line] values.
+				Return [code]true[/code] to draw the current line using default parameters, or [code]false[/code] to discard it. You can still draw the line using [method CanvasItem.draw_line] method, or any other drawing method.
+			</description>
+		</method>
+		<method name="clear_cell_metadata">
+			<return type="void">
+			</return>
+			<description>
+				Clears all cell metadata from the grid previously assigned with [method set_cell_metadata].
+			</description>
+		</method>
+		<method name="get_cell_metadata" qualifiers="const">
+			<return type="Variant">
+			</return>
+			<argument index="0" name="cell" type="Vector2">
+			</argument>
+			<description>
+				Returns metadata for individual cell on the grid previously assigned with [method set_cell_metadata] (only integer coordinates are accepted). See also [member metadata_show_tooltip].
+			</description>
+		</method>
+		<method name="point_to_view" qualifiers="const">
+			<return type="Vector2">
+			</return>
+			<argument index="0" name="point" type="Vector2">
+			</argument>
+			<description>
+				Converts a point specified in grid coordinates to local position of this control.
+			</description>
+		</method>
+		<method name="set_cell_metadata">
+			<return type="void">
+			</return>
+			<argument index="0" name="cell" type="Vector2">
+			</argument>
+			<argument index="1" name="metadata" type="Variant">
+			</argument>
+			<description>
+				Assigns metadata for individual cell on the grid (only integer coordinates are accepted). See also [member metadata_show_tooltip].
+			</description>
+		</method>
+		<method name="view_to_point" qualifiers="const">
+			<return type="Vector2">
+			</return>
+			<argument index="0" name="position" type="Vector2">
+			</argument>
+			<description>
+				Converts a local position of this control to grid coordinates. See also [method view_to_point_snapped].
+			</description>
+		</method>
+		<method name="view_to_point_snapped" qualifiers="const">
+			<return type="Vector2">
+			</return>
+			<argument index="0" name="position" type="Vector2">
+			</argument>
+			<description>
+				Converts a point specified in grid coordinates to local position of this control. The point is snapped to grid line intersections when [member cell_origin] is set to [constant CELL_ORIGIN_TOP_LEFT], or snapped to grid cell center if [member cell_origin] is set to [constant CELL_ORIGIN_CENTER]. See also [method view_to_point].
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="cell_line_width" type="float" setter="set_cell_line_width" getter="get_cell_line_width" default="1.0">
+			The width of cell lines.
+		</member>
+		<member name="cell_origin" type="int" setter="set_cell_origin" getter="get_cell_origin" enum="GridRect.CellOrigin" default="0">
+			Determines the cell's origin offset for drawing and snapping.
+		</member>
+		<member name="cell_size" type="Vector2" setter="set_cell_size" getter="get_cell_size" default="Vector2( 32, 32 )">
+			The size of individual cells drawn via grid line intersections.
+		</member>
+		<member name="divisions_horizontal" type="int" setter="set_divisions_horizontal" getter="get_divisions_horizontal" default="8">
+			The number of horizontal divisions along the [constant AXIS_X].
+		</member>
+		<member name="divisions_line_width" type="float" setter="set_divisions_line_width" getter="get_divisions_line_width" default="1.0">
+			The width of division lines.
+		</member>
+		<member name="divisions_vertical" type="int" setter="set_divisions_vertical" getter="get_divisions_vertical" default="8">
+			The number of horizontal divisions along the [constant AXIS_Y].
+		</member>
+		<member name="metadata_show_tooltip" type="bool" setter="set_metadata_show_tooltip" getter="is_showing_metadata_tooltip" default="true">
+			If [code]true[/code], displays a tooltip on hover with coordinates snapped to the grid.
+		</member>
+		<member name="origin_axes_line_width" type="float" setter="set_origin_axes_line_width" getter="get_origin_axes_line_width" default="1.0">
+			The width of main axes lines (X and Y). Only relevant when [member origin_axes_visible] is set to [code]true[/code].
+		</member>
+		<member name="origin_axes_visible" type="bool" setter="set_origin_axes_visible" getter="is_origin_axes_visible" default="false">
+			If [code]true[/code], displays main axes (X and Y).
+		</member>
+		<member name="origin_centered" type="bool" setter="set_origin_centered" getter="is_origin_centered" default="false">
+			If [code]true[/code], the origin is centered to this control's center. The [member origin_offset] will additionally shift the origin away from the center.
+		</member>
+		<member name="origin_offset" type="Vector2" setter="set_origin_offset" getter="get_origin_offset" default="Vector2( 0, 0 )">
+			The offset that shifts the origin. Can be interpreted as a scroll offset.
+		</member>
+		<member name="origin_scale" type="Vector2" setter="set_origin_scale" getter="get_origin_scale" default="Vector2( 1, 1 )">
+			The scale that zoom in or out the grid coordinates.
+		</member>
+		<member name="rect_clip_content" type="bool" setter="set_clip_contents" getter="is_clipping_contents" override="true" default="true" />
+	</members>
+	<signals>
+		<signal name="point_clicked">
+			<argument index="0" name="point" type="Vector2">
+			</argument>
+			<argument index="1" name="point_snapped" type="Vector2">
+			</argument>
+			<argument index="2" name="local_position" type="Vector2">
+			</argument>
+			<description>
+				Emitted when the grid is clicked. The [code]point[/code] and [code]point_snapped[/code] are specified in grid coordinates and are computed with [method view_to_point] and [method view_to_point_snapped] respectively. The [code]local_position[/code] is the position in pixels relative to this control.
+			</description>
+		</signal>
+	</signals>
+	<constants>
+		<constant name="CELL_ORIGIN_TOP_LEFT" value="0" enum="CellOrigin">
+			Cell's top-left offset, corresponds to [code]Vector2(0, 0)[/code].
+		</constant>
+		<constant name="CELL_ORIGIN_CENTER" value="1" enum="CellOrigin">
+			Cell's center offset, corresponds to [code]cell_size * Vector2(0.5, 0.5)[/code].
+		</constant>
+		<constant name="AXIS_X" value="0" enum="Axis">
+			Horizontal axis.
+		</constant>
+		<constant name="AXIS_Y" value="1" enum="Axis">
+			Vertical axis.
+		</constant>
+		<constant name="LINE_CELL" value="0" enum="Line">
+			Cell lines.
+		</constant>
+		<constant name="LINE_DIVISION" value="1" enum="Line">
+			Division lines.
+		</constant>
+		<constant name="LINE_AXIS" value="2" enum="Line">
+			Origin axes lines (X and Y).
+		</constant>
+	</constants>
+</class>

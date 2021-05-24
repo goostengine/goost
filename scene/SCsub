@@ -7,6 +7,9 @@ SConscript("2d/SCsub", exports="env_goost")
 if not env["disable_3d"]:
     SConscript("3d/SCsub", exports="env_goost")
 
+if env["goost_gui_enabled"]:
+    SConscript("gui/SCsub", exports="env_goost")
+
 if env["goost_physics_enabled"]:
     SConscript("physics/SCsub", exports="env_goost")
 
