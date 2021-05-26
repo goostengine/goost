@@ -5,10 +5,10 @@ on:
       - '*'
   push:
     branches:
-      - 'gd3'
+      - '1.0-gd3'
 
 env:
-  GOOST_BASE_BRANCH: gd3
+  GOOST_BASE_BRANCH: 1.0-gd3
   SCONSFLAGS: godot_modules_enabled=no --jobs=4
   SCONS_CACHE_LIMIT: 4096
 
