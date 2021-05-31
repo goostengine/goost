@@ -22,7 +22,7 @@ godot_modules = {
     "dds" : False,
     "enet" : False,
     "etc" : False,
-    "gdnative" : True, # FIXME: still required to run GUT tests...
+    "gdnative" : True, # TODO: still required to run GUT tests...
     "gridmap" : False,
     "hdr" : False,
     "jpg" : False,
@@ -48,7 +48,7 @@ godot_modules = {
     "vorbis" : False,
     "webm" : False,
     "webp" : False,
-    "webrtc" : True, # FIXME: required by GDNative, see above...
+    "webrtc" : True, # TODO: required by GDNative, see above...
     "websocket" : False,
     "xatlas_unwrap" : False,
 }
