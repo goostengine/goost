@@ -1,8 +1,8 @@
 diff --git a/editor/filesystem_dock.cpp b/editor/filesystem_dock.cpp
-index 6ad65e1231..35c48a98fd 100644
+index dc3b597ec6..e91e576a22 100644
 --- a/editor/filesystem_dock.cpp
 +++ b/editor/filesystem_dock.cpp
-@@ -2638,7 +2638,15 @@ FileSystemDock::FileSystemDock(EditorNode *p_editor) {
+@@ -2656,7 +2656,15 @@ FileSystemDock::FileSystemDock(EditorNode *p_editor) {
  	// `KEY_MASK_CMD | KEY_C` conflicts with other editor shortcuts.
  	ED_SHORTCUT("filesystem_dock/copy_path", TTR("Copy Path"), KEY_MASK_CMD | KEY_MASK_SHIFT | KEY_C);
  	ED_SHORTCUT("filesystem_dock/duplicate", TTR("Duplicate..."), KEY_MASK_CMD | KEY_D);
@@ -16,5 +16,5 @@ index 6ad65e1231..35c48a98fd 100644
 +#endif
 +
  	ED_SHORTCUT("filesystem_dock/rename", TTR("Rename..."), KEY_F2);
+ 	ED_SHORTCUT("filesystem_dock/open_search", TTR("Focus the search box"), KEY_MASK_CMD | KEY_F);
  
- 	VBoxContainer *top_vbc = memnew(VBoxContainer);
