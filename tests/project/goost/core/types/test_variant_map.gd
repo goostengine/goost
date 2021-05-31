@@ -17,7 +17,6 @@ func test_create_clear():
 func test_create_from_data():
 	var map = VariantMap.new()
 	map.create_from_data(2, 3, [0, 1, 2, 3, 4, 5])
-	gut.p(map)
 
 	assert_eq(map.get_element(0, 0), 0)
 	assert_eq(map.get_element(1, 0), 1)
@@ -114,7 +113,6 @@ func test_custom_iterator():
 		for x in map.get_width():
 			map.set_element(x, y, n)
 			n += 1
-	gut.p(map)
 
 	n = 0
 	for element in map:

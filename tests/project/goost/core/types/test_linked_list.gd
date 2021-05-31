@@ -85,8 +85,6 @@ func test_push_pop_front():
 
 func test_get_nodes():
 	var test_nodes = populate_test_data(list)
-	for node in list.get_nodes():
-		gut.p(node)
 	var nodes = list.get_nodes()
 	assert_eq(nodes[0], test_nodes[0])
 	assert_eq(nodes[1], test_nodes[1])
@@ -97,8 +95,6 @@ func test_get_nodes():
 func test_get_elements():
 	# Alias for `get_nodes`.
 	var test_nodes = populate_test_data(list)
-	for node in list.get_elements():
-		gut.p(node)
 	var nodes = list.get_elements()
 	assert_eq(nodes[0], test_nodes[0])
 	assert_eq(nodes[1], test_nodes[1])
@@ -357,7 +353,7 @@ func test_swap_random():
 	var nodes = populate_test_data_integers(list, size)
 	assert_eq(nodes.size(), size)
 	seed(0)
-	for _i in 1000:
+	for _i in 100:
 		var a = nodes[randi() % size]
 		var b = nodes[randi() % size]
 		var va = a.value
