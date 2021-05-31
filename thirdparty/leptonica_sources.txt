@@ -46,6 +46,7 @@ gplot.c
 graphics.c
 graymorph.c
 grayquant.c
+hashmap.c
 heap.c
 jp2kheaderstub.c
 jp2kiostub.c

@@ -781,7 +781,8 @@ PIX  *pix1, *pixd;
     if (!pixs || pixGetDepth(pixs) != 8)
         return (PIX *)ERROR_PTR("pixs undefined or not 8 bpp", procName, NULL);
 
-    pix1 = pixBackgroundNormSimple(pixs, pixm, NULL);
+    if ((pix1 = pixBackgroundNormSimple(pixs, pixm, NULL)) == NULL)
+        return (PIX *)ERROR_PTR("pix1 not made", procName, NULL);
     pixGammaTRC(pix1, pix1, gamma, blackval, whiteval);
     pixd = pixThresholdToBinary(pix1, thresh);
     pixDestroy(&pix1);
@@ -2383,7 +2384,7 @@ PIXCMAP   *cmap;
         pixGetDimensions(pixm, &wm, &hm, NULL);
         if (w != wm || h != hm) {  /* resize the mask */
             L_WARNING("mask and dest sizes not equal\n", procName);
-            pixmr = pixCreateNoInit(w, h, 1);
+            pixmr = pixCreate(w, h, 1);
             pixRasterop(pixmr, 0, 0, wm, hm, PIX_SRC, pixm, 0, 0);
             pixRasterop(pixmr, wm, 0, w - wm, h, PIX_SET, NULL, 0, 0);
             pixRasterop(pixmr, 0, hm, wm, h - hm, PIX_SET, NULL, 0, 0);

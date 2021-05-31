@@ -20,7 +20,7 @@ The following lists C/C++ libraries which are bundled and used by Goost.
 
 ## Leptonica
 - Upstream: https://github.com/DanBloomberg/leptonica
-- Version: git (187250b), file structure differs (extracted `src`)
+- Version: git (2bb50cb34b8dc6243c4e82d227bc903d83b59f04, 2021), file structure differs (extracted `src`)
 - License: [BSD-2-Clause](leptonica/leptonica-license.txt)
 
 ### Notes
