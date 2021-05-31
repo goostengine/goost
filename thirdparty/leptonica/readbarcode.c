@@ -120,7 +120,7 @@ static l_int32 numaEvalSyncError(NUMA *nas, l_int32 ifirst, l_int32 ilast,
 
 
 #ifndef  NO_CONSOLE_IO
-#define  DEBUG_DESKEW     1
+#define  DEBUG_DESKEW     0
 #define  DEBUG_WIDTHS     0
 #endif  /* ~NO_CONSOLE_IO */
 
@@ -238,7 +238,7 @@ PIXA      *pixa;
 
 #if  DEBUG_DESKEW
     pix3 = pixaDisplayTiledInRows(pixa, 8, 1000, 1.0, 0, 30, 2);
-    pixWrite("lept/pix3.png", pix3, IFF_PNG);
+    pixWrite("/tmp/lept/pix3.png", pix3, IFF_PNG);
     pixDestroy(&pix3);
 #endif  /* DEBUG_DESKEW */
 
@@ -650,11 +650,14 @@ NUMA  *nac, *nad;
 
     PROCNAME("pixExtractBarcodeWidths1");
 
+    if (pnaehist) *pnaehist = NULL;
+    if (pnaohist) *pnaehist = NULL;
     if (!pixs || pixGetDepth(pixs) != 8)
         return (NUMA *)ERROR_PTR("pixs undefined or not 8 bpp", procName, NULL);
 
         /* Get the best estimate of the crossings, in pixel units */
-    nac = pixExtractBarcodeCrossings(pixs, thresh, debugflag);
+    if ((nac = pixExtractBarcodeCrossings(pixs, thresh, debugflag)) == NULL)
+        return (NUMA *)ERROR_PTR("nac not made", procName, NULL);
 
         /* Get the array of bar widths, starting with a black bar  */
     nad = numaQuantizeCrossingsByWidth(nac, binfract, pnaehist,
@@ -698,19 +701,23 @@ pixExtractBarcodeWidths2(PIX        *pixs,
                          NUMA      **pnac,
                          l_int32     debugflag)
 {
-NUMA  *nacp, *nad;
+l_int32  width;
+NUMA    *nac, *nacp, *nad;
 
     PROCNAME("pixExtractBarcodeWidths2");
 
+    if (pwidth) *pwidth = 0;
+    if (pnac) *pnac = NULL;
     if (!pixs || pixGetDepth(pixs) != 8)
         return (NUMA *)ERROR_PTR("pixs undefined or not 8 bpp", procName, NULL);
 
         /* Get the best estimate of the crossings, in pixel units */
-    nacp = pixExtractBarcodeCrossings(pixs, thresh, debugflag);
+    if ((nacp = pixExtractBarcodeCrossings(pixs, thresh, debugflag)) == NULL)
+        return (NUMA *)ERROR_PTR("nacp not made", procName, NULL);
 
         /* Quantize the crossings to get actual windowed data */
-    nad = numaQuantizeCrossingsByWindow(nacp, 2.0, pwidth, NULL, pnac, debugflag);
-
+    nad = numaQuantizeCrossingsByWindow(nacp, 2.0, pwidth, NULL,
+                                        pnac, debugflag);
     numaDestroy(&nacp);
     return nad;
 }
@@ -724,6 +731,11 @@ NUMA  *nacp, *nad;
  *                           white <--> black; typ. ~120
  * \param[in]    debugflag   use 1 to generate debug output
  * \return  numa   of crossings, in pixel units, or NULL on error
+ *
+ * <pre>
+ * Notes:
+ *      (1) Require at least 10 crossings.
+ * </pre>
  */
 NUMA *
 pixExtractBarcodeCrossings(PIX       *pixs,
@@ -765,10 +777,14 @@ NUMA      *nas, *nax, *nay, *nad;
 
         /* Get the crossings with the best threshold. */
     nad = numaCrossingsByThreshold(nax, nay, bestthresh);
-
     numaDestroy(&nas);
     numaDestroy(&nax);
     numaDestroy(&nay);
+
+    if (numaGetCount(nad) < 10) {
+        L_ERROR("Only %d crossings; failure\n", procName, numaGetCount(nad));
+        numaDestroy(&nad);
+    }
     return nad;
 }
 
@@ -866,18 +882,26 @@ NUMA      *naerange, *naorange, *naelut, *naolut, *nad;
 
     PROCNAME("numaQuantizeCrossingsByWidth");
 
+    if (pnaehist) *pnaehist = NULL;
+    if (pnaohist) *pnaohist = NULL;
     if (!nas)
         return (NUMA *)ERROR_PTR("nas not defined", procName, NULL);
     n = numaGetCount(nas);
-    if (n < 2)
-        return (NUMA *)ERROR_PTR("n < 2", procName, NULL);
+    if (n < 10)
+        return (NUMA *)ERROR_PTR("n < 10", procName, NULL);
     if (binfract <= 0.0)
         return (NUMA *)ERROR_PTR("binfract <= 0.0", procName, NULL);
 
-        /* Get even and odd crossing distances */
+        /* Get even and odd crossing distances, and determine the rank
+         * widths for rank 0.1 (minsize) and 0.9 (maxsize). */
     ret = numaGetCrossingDistances(nas, &naedist, &naodist, &minsize, &maxsize);
-    if (ret)
-        return (NUMA *)ERROR_PTR("crossing data not found", procName, NULL);
+    if (ret || minsize < 1.0 || maxsize / minsize > 8.0) {
+        L_ERROR("bad data, or minsize = %5.2f < 1.0 or max/min = %f > 4.0\n",
+                procName, minsize, maxsize / minsize);
+        numaDestroy(&naedist);
+        numaDestroy(&naodist);
+        return NULL;
+    }
 
         /* Bin the spans in units of binfract * minsize.  These
          * units are convenient because they scale to make at least
@@ -1005,9 +1029,9 @@ numaGetCrossingDistances(NUMA       *nas,
                          l_float32  *pmindist,
                          l_float32  *pmaxdist)
 {
-l_int32    i, n;
+l_int32    i, n, nspan;
 l_float32  val, newval, mindist, maxdist, dist;
-NUMA      *naedist, *naodist;
+NUMA      *na1, *na2, *naedist, *naodist;
 
     PROCNAME("numaGetCrossingDistances");
 
@@ -1036,13 +1060,15 @@ NUMA      *naedist, *naodist;
         val = newval;
     }
 
-        /* The mindist and maxdist of the spans are in pixel units. */
-    numaGetMin(naedist, &mindist, NULL);
-    numaGetMin(naodist, &dist, NULL);
-    mindist = L_MIN(dist, mindist);
-    numaGetMax(naedist, &maxdist, NULL);
-    numaGetMax(naodist, &dist, NULL);
-    maxdist = L_MAX(dist, maxdist);
+        /* The min and max rank distances of the spans are in pixel units. */
+    na1 = numaCopy(naedist);
+    numaJoin(na1, naodist, 0, -1);  /* use both bars and spaces */
+    nspan = numaGetCount(na1);
+    na2 = numaMakeHistogram(na1, 100, NULL, NULL);
+    numaHistogramGetValFromRank(na2, 0.1, &mindist);
+    numaHistogramGetValFromRank(na2, 0.9, &maxdist);
+    numaDestroy(&na1);
+    numaDestroy(&na2);
     L_INFO("mindist = %7.3f, maxdist = %7.3f\n", procName, mindist, maxdist);
 
     if (pnaedist)
