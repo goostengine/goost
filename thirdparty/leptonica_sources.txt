@@ -4,9 +4,6 @@ affinecompose.c
 arrayaccess.c
 baseline.c
 bbuffer.c
-bilateral.c
-bilinear.c
-binarize.c
 binexpand.c
 binreduce.c
 blend.c
@@ -20,9 +17,7 @@ boxfunc4.c
 boxfunc5.c
 bytearray.c
 ccbord.c
-ccthin.c
 colorcontent.c
-colorfill.c
 coloring.c
 colormap.c
 colormorph.c
@@ -42,9 +37,6 @@ dwacomblow.2.c
 edge.c
 encoding.c
 enhance.c
-flipdetect.c
-fliphmtgen.c
-fmorphauto.c
 fmorphgen.1.c
 fmorphgenlow.1.c
 fpix1.c
