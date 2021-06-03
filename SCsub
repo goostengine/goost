@@ -10,11 +10,6 @@ import goost
 Import("env")
 env_goost = env.Clone()
 
-# Make include paths independent of Goost location.
-# The module's name should not be changed as include paths depend on it.
-# This avoids potential ambiguity with Godot's own include paths.
-env_goost.Prepend(CPPPATH=[os.path.dirname(os.path.realpath(os.curdir))])
-
 # Define components to build.
 for name in goost.get_components():
     opt = "goost_%s_enabled" % (name)
@@ -74,12 +69,6 @@ with open("core/version.gen.h", "w") as f:
     f.write("#define GOOST_VERSION_YEAR " + str(goost.version["year"]) + "\n")
 
 env_goost.Prepend(CPPDEFINES={"SCALE_FACTOR" : env["goost_scale_factor"]})
-
-# Workaround issues.
-if os.path.basename(env["CC"]) in ["clang", "clang++", "emcc", "em++"]:
-    # Produces false-positives in Godot 3.x with
-    # GDCLASS macro expansion in inherited classes.
-    env_goost.Append(CCFLAGS=["-Wno-inconsistent-missing-override"])
 
 # Build subdirs, the build order is dependent on the link order.
 subdirs = [
