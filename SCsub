@@ -4,6 +4,7 @@ import os
 import re
 import glob
 
+from compat import isbasestring
 import goost
 
 Import("env")
