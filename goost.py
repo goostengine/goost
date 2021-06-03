@@ -1,5 +1,16 @@
-# Complete list of functional components used by this extension.
-#
+# General informational properties of the project, including version.
+name = "Goost: Godot Engine Extension"
+short_name = "goost"
+url = "https://github.com/goostengine/goost"
+website = "https://goostengine.github.io/"
+version = {
+    "major": 1,
+    "minor": 1,
+    "patch": 0,
+    "status": "beta",
+    "year": 2021,
+}
+# The following is a complete list of components this extension provides.
 # Components can be disabled with build options matching `goost_*_enabled=no`.
 # A branch of components can be disabled as well, like: `goost_core_enabled=no`.
 #
@@ -92,13 +103,18 @@ for c in classes:
     _classes[c] = GoostClass(c)
 classes = _classes
 
-# Define dependencies explicitly.
+# Class dependencies. If disabling classes above cause build errors,
+# it's likely a dependency issue. If so, define them here explicitly.
+#
 classes["GoostEngine"].add_depencency(classes["InvokeState"])
+
 classes["GoostGeometry2D"].add_depencency(classes["PolyBoolean2D"])
 classes["GoostGeometry2D"].add_depencency(classes["PolyDecomp2D"])
 classes["GoostGeometry2D"].add_depencency(classes["PolyOffset2D"])
+
 classes["LightTexture"].add_depencency(classes["GradientTexture2D"])
 classes["LinkedList"].add_depencency(classes["ListNode"])
+
 classes["PolyBoolean2D"].add_depencency(classes["PolyBooleanParameters2D"])
 classes["PolyBoolean2D"].add_depencency(classes["PolyNode2D"])
 classes["PolyDecomp2D"].add_depencency(classes["PolyDecompParameters2D"])
@@ -107,6 +123,7 @@ classes["PolyCircle2D"].add_depencency(classes["PolyNode2D"])
 classes["PolyRectangle2D"].add_depencency(classes["PolyNode2D"])
 classes["PolyShape2D"].add_depencency(classes["PolyNode2D"])
 classes["PolyCollisionShape2D"].add_depencency(classes["PolyNode2D"])
+
 classes["Random2D"].add_depencency(classes["Random"])
 
 def resolve_dependency(goost_class):

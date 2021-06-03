@@ -1,12 +1,10 @@
 #!/usr/bin/env python
 
 import os
-import glob
 import re
+import glob
 
-from compat import isbasestring
 import goost
-import goost_version
 
 Import("env")
 env_goost = env.Clone()
@@ -45,13 +43,13 @@ if len(goost.classes_disabled) > 0:
 
 # Generate version header.
 with open("core/version.gen.h", "w") as f:
-    f.write('#define GOOST_VERSION_SHORT_NAME "' + str(goost_version.short_name) + '"\n')
-    f.write('#define GOOST_VERSION_NAME "' + str(goost_version.name) + '"\n')
-    f.write('#define GOOST_VERSION_URL "' + str(goost_version.url) + '"\n')
-    f.write('#define GOOST_VERSION_WEBSITE "' + str(goost_version.website) + '"\n')
-    f.write("#define GOOST_VERSION_MAJOR " + str(goost_version.major) + "\n")
-    f.write("#define GOOST_VERSION_MINOR " + str(goost_version.minor) + "\n")
-    f.write("#define GOOST_VERSION_PATCH " + str(goost_version.patch) + "\n")
+    f.write('#define GOOST_VERSION_SHORT_NAME "' + str(goost.short_name) + '"\n')
+    f.write('#define GOOST_VERSION_NAME "' + str(goost.name) + '"\n')
+    f.write('#define GOOST_VERSION_URL "' + str(goost.url) + '"\n')
+    f.write('#define GOOST_VERSION_WEBSITE "' + str(goost.website) + '"\n')
+    f.write("#define GOOST_VERSION_MAJOR " + str(goost.version["major"]) + "\n")
+    f.write("#define GOOST_VERSION_MINOR " + str(goost.version["minor"]) + "\n")
+    f.write("#define GOOST_VERSION_PATCH " + str(goost.version["patch"]) + "\n")
 
     githash = ""
     gitfolder = ".git"
@@ -71,14 +69,14 @@ with open("core/version.gen.h", "w") as f:
             githash = head
 
     f.write('#define GOOST_VERSION_HASH "' + githash + '"' + "\n")
-    f.write('#define GOOST_VERSION_STATUS "' + str(goost_version.status) + '"\n')
-    f.write("#define GOOST_VERSION_YEAR " + str(goost_version.year) + "\n")
+    f.write('#define GOOST_VERSION_STATUS "' + str(goost.version["status"]) + '"\n')
+    f.write("#define GOOST_VERSION_YEAR " + str(goost.version["year"]) + "\n")
 
 env_goost.Prepend(CPPDEFINES={"SCALE_FACTOR" : env["goost_scale_factor"]})
 
 # Workaround issues.
 if os.path.basename(env["CC"]) in ["clang", "clang++", "emcc", "em++"]:
-    # Produces false-positives in Godot 3.2 with
+    # Produces false-positives in Godot 3.x with
     # GDCLASS macro expansion in inherited classes.
     env_goost.Append(CCFLAGS=["-Wno-inconsistent-missing-override"])
 
