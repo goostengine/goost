@@ -20,11 +20,20 @@ env.CommandNoCache(
     ["classes_enabled.gen.h", "classes_enabled.gen.cpp"], "goost.py",
     builders.make_classes_enabled,
 )
-
 # Generate version header.
 env.CommandNoCache(
     "core/version.gen.h", "goost.py",
     builders.make_version_header,
+)
+# Authors.
+env.CommandNoCache(
+    "core/authors.gen.h", "AUTHORS.md",
+    builders.make_authors_header,
+)
+# License.
+env.CommandNoCache(
+    "core/license.gen.h", ["COPYRIGHT.txt", "LICENSE.txt"],
+    builders.make_license_header,
 )
 
 env_goost.Prepend(CPPDEFINES={"SCALE_FACTOR" : env["goost_scale_factor"]})

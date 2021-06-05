@@ -28,6 +28,11 @@ public:
 	static GoostEngine *get_singleton() { return singleton; }
 
 	Dictionary get_version_info() const;
+	Dictionary get_author_info() const;
+	Array get_copyright_info() const;
+	Dictionary get_license_info() const;
+	String get_license_text() const;
+
 	Dictionary get_color_constants() const;
 
 	void defer_call(Object *p_obj, StringName p_method, VARIANT_ARG_LIST);
