@@ -2,6 +2,9 @@
 
 #include "core/color_names.inc"
 #include "core/os/os.h"
+
+#include "authors.gen.h"
+#include "license.gen.h"
 #include "version.gen.h"
 
 GoostEngine *GoostEngine::singleton = nullptr;
@@ -25,6 +28,65 @@ Dictionary GoostEngine::get_version_info() const {
 	dict["string"] = stringver;
 
 	return dict;
+}
+
+static Array array_from_info(const char *const *info_list) {
+	Array arr;
+	for (int i = 0; info_list[i] != NULL; i++) {
+		arr.push_back(info_list[i]);
+	}
+	return arr;
+}
+
+static Array array_from_info_count(const char *const *info_list, int info_count) {
+	Array arr;
+	for (int i = 0; i < info_count; i++) {
+		arr.push_back(info_list[i]);
+	}
+	return arr;
+}
+
+Dictionary GoostEngine::get_author_info() const {
+	Dictionary dict;
+	dict["lead_developers"] = array_from_info(AUTHORS_LEAD_DEVELOPERS);
+	dict["project_managers"] = array_from_info(AUTHORS_PROJECT_MANAGERS);
+	dict["founders"] = array_from_info(AUTHORS_FOUNDERS);
+	dict["developers"] = array_from_info(AUTHORS_DEVELOPERS);
+	return dict;
+}
+
+Array GoostEngine::get_copyright_info() const {
+	Array components;
+	for (int component_index = 0; component_index < COPYRIGHT_INFO_COUNT; component_index++) {
+		const ComponentCopyright &cp_info = COPYRIGHT_INFO[component_index];
+		Dictionary component_dict;
+		component_dict["name"] = cp_info.name;
+		Array parts;
+		for (int i = 0; i < cp_info.part_count; i++) {
+			const ComponentCopyrightPart &cp_part = cp_info.parts[i];
+			Dictionary part_dict;
+			part_dict["files"] = array_from_info_count(cp_part.files, cp_part.file_count);
+			part_dict["copyright"] = array_from_info_count(cp_part.copyright_statements, cp_part.copyright_count);
+			part_dict["license"] = cp_part.license;
+			parts.push_back(part_dict);
+		}
+		component_dict["parts"] = parts;
+
+		components.push_back(component_dict);
+	}
+	return components;
+}
+
+Dictionary GoostEngine::get_license_info() const {
+	Dictionary licenses;
+	for (int i = 0; i < LICENSE_COUNT; i++) {
+		licenses[LICENSE_NAMES[i]] = LICENSE_BODIES[i];
+	}
+	return licenses;
+}
+
+String GoostEngine::get_license_text() const {
+	return String(GOOST_LICENSE_TEXT);
 }
 
 Dictionary GoostEngine::get_color_constants() const {
@@ -177,6 +239,11 @@ void GoostEngine::flush_calls() {
 
 void GoostEngine::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_version_info"), &GoostEngine::get_version_info);
+	ClassDB::bind_method(D_METHOD("get_author_info"), &GoostEngine::get_author_info);
+	ClassDB::bind_method(D_METHOD("get_copyright_info"), &GoostEngine::get_copyright_info);
+	ClassDB::bind_method(D_METHOD("get_license_info"), &GoostEngine::get_license_info);
+	ClassDB::bind_method(D_METHOD("get_license_text"), &GoostEngine::get_license_text);
+
 	ClassDB::bind_method(D_METHOD("get_color_constants"), &GoostEngine::get_color_constants);
 	{
 		MethodInfo mi;

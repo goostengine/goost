@@ -26,6 +26,26 @@ func test_get_version_info():
 	assert_false(v.has("build"), "This should not be defined, as it relates to the engine.")
 
 
+func test_get_author_info():
+	var author = GoostEngine.get_author_info()
+	assert_typeof(author, TYPE_DICTIONARY)
+
+
+func test_get_copyright_info():
+	var copyright = GoostEngine.get_copyright_info()
+	assert_typeof(copyright, TYPE_ARRAY)
+
+
+func test_get_license_info():
+	var license = GoostEngine.get_license_info()
+	assert_typeof(license, TYPE_DICTIONARY)
+
+
+func test_get_license_text():
+	var license_text = GoostEngine.get_license_text()
+	assert_typeof(license_text, TYPE_STRING)
+
+
 func test_get_color_constants():
 	var colors = GoostEngine.get_color_constants()
 	assert_true(not colors.empty())

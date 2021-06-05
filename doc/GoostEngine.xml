@@ -32,6 +32,17 @@
 				Calls the [code]method[/code] on the [code]object[/code] during idle time. Whether a call is unique is determined by the number and type of arguments passed, and any consecutive calls are not scheduled, unlike [method Object.call_deferred].
 			</description>
 		</method>
+		<method name="get_author_info" qualifiers="const">
+			<return type="Dictionary">
+			</return>
+			<description>
+				Returns Goost author information in a [Dictionary].
+				[code]lead_developers[/code]    - [Array] of [String], lead developer names
+				[code]founders[/code]           - [Array] of [String], founder names
+				[code]project_managers[/code]   - [Array] of [String], project manager names
+				[code]developers[/code]         - [Array] of [String], developer names
+			</description>
+		</method>
 		<method name="get_color_constants" qualifiers="const">
 			<return type="Dictionary">
 			</return>
@@ -47,6 +58,15 @@
 				[/codeblock]
 			</description>
 		</method>
+		<method name="get_copyright_info" qualifiers="const">
+			<return type="Array">
+			</return>
+			<description>
+				Returns an [Array] of [Dictionary] including copyright information.
+				[code]name[/code]    - [String], component name
+				[code]parts[/code]   - [Array] of [Dictionary] {[code]files[/code], [code]copyright[/code], [code]license[/code]} describing subsections of the component
+			</description>
+		</method>
 		<method name="get_invokes" qualifiers="const">
 			<return type="Array">
 			</return>
@@ -57,6 +77,20 @@
 				    if state.is_repeating():
 				        state.cancel()
 				[/codeblock]
+			</description>
+		</method>
+		<method name="get_license_info" qualifiers="const">
+			<return type="Dictionary">
+			</return>
+			<description>
+				Returns [Dictionary] of licenses used by Goost and included third-party components.
+			</description>
+		</method>
+		<method name="get_license_text" qualifiers="const">
+			<return type="String">
+			</return>
+			<description>
+				Returns Goost license text.
 			</description>
 		</method>
 		<method name="get_version_info" qualifiers="const">
