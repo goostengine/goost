@@ -1,11 +1,10 @@
 #!/usr/bin/env python
 
-import os
 import re
 import glob
 
-from compat import isbasestring
 import goost
+import builders
 
 Import("env")
 env_goost = env.Clone()
@@ -16,57 +15,17 @@ for name in goost.get_components():
     if env_goost[opt]:
         env_goost.Prepend(CPPDEFINES=[opt.upper()])
 
-# Generate header with classes enabled.
-with open("classes_enabled.gen.h", "w") as f:
-    f.write("#pragma once\n")
-    for c in goost.classes_enabled:
-        f.write("#define GOOST_%s\n" % c)
-    f.write("\n")
-    f.write("namespace goost {\n")
-    for c in goost.classes_disabled:
-        f.write("template <> void register_class<%s>();\n" % c)
-    f.write("}\n")
-
-if len(goost.classes_disabled) > 0:
-    with open("classes_enabled.gen.cpp", "w") as f:
-        f.write("#include \"register_types.h\"\n")
-        f.write("#include \"classes_enabled.gen.h\"\n")
-        f.write("\n")
-        f.write("namespace goost {\n")
-        for c in goost.classes_disabled:
-            f.write("template <> void register_class<%s>() {}\n" % c)
-        f.write("}\n")
+# Generate sources with a list of enabled and disabled classes.
+env.CommandNoCache(
+    ["classes_enabled.gen.h", "classes_enabled.gen.cpp"], "goost.py",
+    builders.make_classes_enabled,
+)
 
 # Generate version header.
-with open("core/version.gen.h", "w") as f:
-    f.write('#define GOOST_VERSION_SHORT_NAME "' + str(goost.short_name) + '"\n')
-    f.write('#define GOOST_VERSION_NAME "' + str(goost.name) + '"\n')
-    f.write('#define GOOST_VERSION_URL "' + str(goost.url) + '"\n')
-    f.write('#define GOOST_VERSION_WEBSITE "' + str(goost.website) + '"\n')
-    f.write("#define GOOST_VERSION_MAJOR " + str(goost.version["major"]) + "\n")
-    f.write("#define GOOST_VERSION_MINOR " + str(goost.version["minor"]) + "\n")
-    f.write("#define GOOST_VERSION_PATCH " + str(goost.version["patch"]) + "\n")
-
-    githash = ""
-    gitfolder = ".git"
-
-    if os.path.isfile(".git"):
-        module_folder = open(".git", "r").readline().strip()
-        if module_folder.startswith("gitdir: "):
-            gitfolder = module_folder[8:]
-
-    if os.path.isfile(os.path.join(gitfolder, "HEAD")):
-        head = open(os.path.join(gitfolder, "HEAD"), "r").readline().strip()
-        if head.startswith("ref: "):
-            head = os.path.join(gitfolder, head[5:])
-            if os.path.isfile(head):
-                githash = open(head, "r").readline().strip()
-        else:
-            githash = head
-
-    f.write('#define GOOST_VERSION_HASH "' + githash + '"' + "\n")
-    f.write('#define GOOST_VERSION_STATUS "' + str(goost.version["status"]) + '"\n')
-    f.write("#define GOOST_VERSION_YEAR " + str(goost.version["year"]) + "\n")
+env.CommandNoCache(
+    "core/version.gen.h", "goost.py",
+    builders.make_version_header,
+)
 
 env_goost.Prepend(CPPDEFINES={"SCALE_FACTOR" : env["goost_scale_factor"]})
 
@@ -85,6 +44,7 @@ subdirs = [
 godot_add_source_files = env_goost.__class__.add_source_files
 
 def goost_add_source_files(self, sources, files, warn_duplicates=True):
+    from compat import isbasestring
     # Convert string to list of absolute paths (including expanding wildcard)
     if isbasestring(files):
         # Keep SCons project-absolute path as they are (no wildcard support)
