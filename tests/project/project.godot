@@ -36,7 +36,7 @@ gdscript/warnings/unsafe_call_argument=true
 
 [editor_plugins]
 
-enabled=PoolStringArray( "gut" )
+enabled=PoolStringArray( "res://addons/gut/plugin.cfg" )
 
 [rendering]
 
