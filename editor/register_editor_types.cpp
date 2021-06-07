@@ -6,10 +6,17 @@
 namespace goost {
 
 void editor_init() {
-	auto about = memnew(EditorAbout);
+	auto about = memnew(GoostEditorAbout);
 
 	auto *gui_base = EditorNode::get_singleton()->get_gui_base();
 	gui_base->add_child(about);
+
+	// Must override panel style ourselves, because the theme won't recognize
+	// `GoostEditorAbout` class. It's possible to rename `GoostEditorAbout`
+	// to `EditorAbout` and that will make the theme pick up the style automatically,
+	// but then instantiating `EditorAbout` above will shadow the implementation
+	// of Godot's own `EditorAbout` dialog, replacing it with Goost... ;)
+	about->add_style_override("panel", gui_base->get_theme()->get_stylebox("panel", "EditorAbout"));
 
 	// Use https://github.com/Zylann/godot_editor_debugger_plugin if this breaks at some point.
 	auto *main_vbox = Object::cast_to<VBoxContainer>(gui_base->get_child(1));
@@ -22,7 +29,7 @@ void editor_init() {
 		if (mb && mb->get_text() == TTR("Help")) {
 			PopupMenu *p = mb->get_popup();
 			p->add_separator();
-			p->add_icon_item(gui_base->get_icon("GoostEngine", "EditorIcons"), TTR("About Goost"), EditorAbout::HELP_ABOUT);
+			p->add_icon_item(gui_base->get_icon("GoostEngine", "EditorIcons"), TTR("About Goost"), GoostEditorAbout::HELP_ABOUT);
 			p->connect("id_pressed", about, "_help_menu_pressed");
 			break;
 		}
