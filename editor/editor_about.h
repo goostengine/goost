@@ -15,8 +15,8 @@
 
 #include "editor/editor_scale.h"
 
-class GoostEditorAbout : public AcceptDialog {
-	GDCLASS(GoostEditorAbout, AcceptDialog);
+class EditorAbout : public AcceptDialog {
+	GDCLASS(EditorAbout, AcceptDialog);
 
 private:
 	void _license_tree_selected();
@@ -45,7 +45,7 @@ public:
 	};
 	TextureRect *get_logo() const;
 
-	GoostEditorAbout();
+	EditorAbout();
 };
 
 #endif // GOOST_EDITOR_ABOUT_H

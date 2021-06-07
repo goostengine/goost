@@ -10,7 +10,7 @@
 // Implementation based on EditorAbout:
 // https://github.com/godotengine/godot/blob/master/editor/editor_about.cpp
 
-void GoostEditorAbout::_notification(int p_what) {
+void EditorAbout::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_ENTER_TREE:
 		case NOTIFICATION_THEME_CHANGED: {
@@ -24,27 +24,27 @@ void GoostEditorAbout::_notification(int p_what) {
 	}
 }
 
-void GoostEditorAbout::_license_tree_selected() {
+void EditorAbout::_license_tree_selected() {
 	TreeItem *selected = _tpl_tree->get_selected();
 	_tpl_text->scroll_to_line(0);
 	_tpl_text->set_text(selected->get_metadata(0));
 }
 
-void GoostEditorAbout::_version_button_pressed() {
+void EditorAbout::_version_button_pressed() {
 	OS::get_singleton()->set_clipboard(version_btn->get_meta("text_to_copy"));
 }
 
-void GoostEditorAbout::_bind_methods() {
-	ClassDB::bind_method("_version_button_pressed", &GoostEditorAbout::_version_button_pressed);
-	ClassDB::bind_method(D_METHOD("_license_tree_selected"), &GoostEditorAbout::_license_tree_selected);
-    ClassDB::bind_method(D_METHOD("_help_menu_pressed"), &GoostEditorAbout::_help_menu_pressed);
+void EditorAbout::_bind_methods() {
+	ClassDB::bind_method("_version_button_pressed", &EditorAbout::_version_button_pressed);
+	ClassDB::bind_method(D_METHOD("_license_tree_selected"), &EditorAbout::_license_tree_selected);
+	ClassDB::bind_method(D_METHOD("_help_menu_pressed"), &EditorAbout::_help_menu_pressed);
 }
 
-TextureRect *GoostEditorAbout::get_logo() const {
+TextureRect *EditorAbout::get_logo() const {
 	return _logo;
 }
 
-ScrollContainer *GoostEditorAbout::_populate_list(const String &p_name, const List<String> &p_sections, const char *const *const p_src[], const int p_flag_single_column) {
+ScrollContainer *EditorAbout::_populate_list(const String &p_name, const List<String> &p_sections, const char *const *const p_src[], const int p_flag_single_column) {
 	ScrollContainer *sc = memnew(ScrollContainer);
 	sc->set_name(p_name);
 	sc->set_v_size_flags(Control::SIZE_EXPAND);
@@ -81,7 +81,7 @@ ScrollContainer *GoostEditorAbout::_populate_list(const String &p_name, const Li
 	return sc;
 }
 
-GoostEditorAbout::GoostEditorAbout() {
+EditorAbout::EditorAbout() {
 	set_title(TTR("Thanks from the Goost community!"));
 	set_hide_on_ok(true);
 	set_resizable(true);
@@ -105,11 +105,12 @@ GoostEditorAbout::GoostEditorAbout() {
 	version_btn = memnew(LinkButton);
 	String hash = String(GOOST_VERSION_HASH);
 	if (hash.length() != 0) {
-		hash = "." + hash.left(9);
+		hash = " " + hash.left(9);
 	}
-    Dictionary version_info = GoostEngine::get_singleton()->get_version_info();
-    String strver = version_info["string"];
-    String version = vformat("Goost v%s", strver + hash);
+	Dictionary version_info = GoostEngine::get_singleton()->get_version_info();
+	String strver = version_info["string"];
+	String version = vformat("Goost v%s", strver + hash);
+	String year = itos(GOOST_VERSION_YEAR);
 
 	version_btn->set_text(version);
 	version_btn->set_meta("text_to_copy", version);
@@ -120,8 +121,10 @@ GoostEditorAbout::GoostEditorAbout() {
 
 	Label *about_text = memnew(Label);
 	about_text->set_v_size_flags(Control::SIZE_SHRINK_CENTER);
-	about_text->set_text(String::utf8("\xc2\xa9 2019-2021 Andrii Doroshenko.\n\xc2\xa9 2020-2021 ") +
-						 TTR("Goost contributors") + "\n");
+	String c = String::utf8("\xc2\xa9");
+	String c_founder = vformat("%s 2019-%s Andrii Doroshenko", c, year);
+	String c_contributors = vformat("%s 2020-%s %s", c, year, TTR("Goost contributors"));
+	about_text->set_text(c_founder + ".\n" + c_contributors + ".\n");
 	version_info_vbc->add_child(about_text);
 
 	hbc->add_child(version_info_vbc);
