@@ -42,10 +42,10 @@ def make_version_header(target, source, env):
     f.write("#define GOOST_VERSION_PATCH " + str(goost.version["patch"]) + "\n")
 
     githash = ""
-    gitfolder = ".git"
+    gitfolder = os.path.join(os.path.dirname(os.path.realpath(__file__)), ".git")
 
-    if os.path.isfile(".git"):
-        module_folder = open(".git", "r").readline().strip()
+    if os.path.isfile(gitfolder):
+        module_folder = open(gitfolder, "r").readline().strip()
         if module_folder.startswith("gitdir: "):
             gitfolder = module_folder[8:]
 
