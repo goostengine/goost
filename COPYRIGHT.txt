@@ -42,6 +42,11 @@ Comment: Leptonica: Image processing and image analysis library
 Copyright: 2001-2021, Dan Bloomberg
 License: BSD-2-clause
 
+Files: ./modules/gif/thirdparty/giflib/
+Comment: GIFLIB: A library and utilities for processing GIFs
+Copyright: 1997, Eric S. Raymond
+License: Expat
+
 
 
 License: Apache-2.0
