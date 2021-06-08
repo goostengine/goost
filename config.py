@@ -8,18 +8,6 @@ def can_build(env, platform):
 def configure(env):
     from SCons.Script import Variables, BoolVariable, Help, Exit
 
-    # Check dependencies.
-    dependencies_satisfied = True
-    for c in goost.classes_enabled:
-        resolved = goost.resolve_dependency(goost.classes[c])
-        for cr in resolved:
-            if cr not in goost.classes_enabled:
-                dependencies_satisfied = False
-                print("Goost: Cannot disable `%s` class, because `%s` class depends on it." % (cr, c))
-
-    if not dependencies_satisfied:
-        Exit(255)
-
     opts = Variables()
     for name in goost.get_components():
         opts.Add(BoolVariable("goost_%s_enabled" % (name), "Build %s component." % (name), True))
@@ -29,13 +17,13 @@ def configure(env):
     opts.Update(env)
 
     # Get a list of components which got disabled.
-    disabled = []
+    components_disabled = []
     for name in goost.get_components():
         if not env["goost_%s_enabled" % (name)]:
-            disabled.append(name)
+            components_disabled.append(name)
 
     # Implicitly disable child components.
-    for name in disabled:
+    for name in components_disabled:
         children = goost.get_child_components(name)
         for child_name in children:
             print("Goost: Disabling `%s` component (part of `%s`)." % (child_name, name))

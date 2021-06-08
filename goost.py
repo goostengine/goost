@@ -52,6 +52,7 @@ def get_child_components(parent):
     
     return comp_list
 
+
 class GoostClass:
    def __init__(self, name, deps=[]):
       self.name = name
@@ -137,22 +138,58 @@ def resolve_dependency(goost_class):
     for c in resolved:
         resolved_list.append(c.name)
     return resolved_list
-    
+
 classes_enabled = []
+classes_disabled = []
 for c in classes:
     classes_enabled.append(c)
+    classes_disabled.append(c)
 
-classes_disabled = []
+import sys
 
+custom_configured = False
 try:
     import custom
-    try:
-        classes_disabled = custom.goost_classes_disabled
-        for c in classes_disabled:
-            if not c in classes:
-                raise NameError("Goost: Requested to disable non-existing class.")
-            classes_enabled.remove(c)
-    except AttributeError:
-        pass
+    # Determine whether classes are enabled or disabled initially.
+    classes_enabled_by_default = True
+    if hasattr(custom, "classes_enabled_by_default"):
+        classes_enabled_by_default = custom.classes_enabled_by_default
+
+    if classes_enabled_by_default:
+        classes_disabled.clear()
+        for name, enabled in custom.classes.items():
+            if not enabled:
+                if not name in classes:
+                    raise NameError("Goost: Requested to disable non-existing class `%s`" % name)
+                classes_enabled.remove(name)
+                classes_disabled.append(name)
+    else:
+        classes_enabled.clear()
+        for name, enabled in custom.classes.items():
+            if enabled:
+                if not name in classes:
+                    raise NameError("Goost: Requested to enable non-existing class `%s`" % name)
+                classes_enabled.append(name)
+                classes_disabled.remove(name)
+
+    custom_configured = True
+
 except ImportError:
     pass
+
+except NameError as e:
+    print(e)
+    sys.exit(255)
+
+if not custom_configured:
+    # All classes are enabled by default.
+    classes_disabled.clear()
+
+# Check dependencies.
+for c in classes_enabled:
+    resolved = resolve_dependency(classes[c])
+    for cr in resolved:
+        if cr in classes_disabled:
+            # Implicitly enable `cr` class because `c` depends on it.
+            classes_enabled.append(cr)
+            classes_disabled.remove(cr)
