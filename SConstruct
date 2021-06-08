@@ -215,4 +215,7 @@ if not skip_build:
     print("Building Godot with %s ..." % module_name.capitalize())
 
 # Run SCons to build Godot with the module, check the build configuration etc.
-run(env.build_args, godot_dir.abspath)
+try:
+    run(env.build_args, godot_dir.abspath)
+except:
+    Exit(255)
