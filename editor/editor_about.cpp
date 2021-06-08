@@ -105,7 +105,7 @@ GoostEditorAbout::GoostEditorAbout() {
 	version_btn = memnew(LinkButton);
 	String hash = String(GOOST_VERSION_HASH);
 	if (hash.length() != 0) {
-		hash = " " + hash.left(9);
+		hash = " " + vformat("[%s]", hash.left(9));
 	}
 	Dictionary version_info = GoostEngine::get_singleton()->get_version_info();
 	String strver = version_info["string"];
@@ -113,7 +113,7 @@ GoostEditorAbout::GoostEditorAbout() {
 	String year = itos(GOOST_VERSION_YEAR);
 
 	version_btn->set_text(version);
-	version_btn->set_meta("text_to_copy", version);
+	version_btn->set_meta("text_to_copy", strver + hash);
 	version_btn->set_underline_mode(LinkButton::UNDERLINE_MODE_ON_HOVER);
 	version_btn->set_tooltip(TTR("Click to copy."));
 	version_btn->connect("pressed", this, "_version_button_pressed");
