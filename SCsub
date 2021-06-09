@@ -1,19 +1,16 @@
 #!/usr/bin/env python
-
 import re
 import glob
 
-import goost
 import builders
 
 Import("env")
 env_goost = env.Clone()
 
 # Define components to build.
-for name in goost.get_components():
+for name in env["goost_components_enabled"]:
     opt = "goost_%s_enabled" % (name)
-    if env_goost[opt]:
-        env_goost.Prepend(CPPDEFINES=[opt.upper()])
+    env_goost.Prepend(CPPDEFINES=[opt.upper()])
 
 # Generate sources with a list of enabled and disabled classes.
 env.CommandNoCache(
@@ -85,7 +82,7 @@ def goost_add_source_files(self, sources, files, warn_duplicates=True):
     for path in files:
         # Skip compiling sources of disabled Goost classes.
         skip = False
-        for c in goost.classes_disabled:
+        for c in self["goost_classes_disabled"]:
             n = "%s.*\.cpp" % to_snake_case(c)
             if re.search(n, path):
                 skip = True

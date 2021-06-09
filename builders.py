@@ -9,11 +9,11 @@ def make_classes_enabled(target, source, env):
 
     h.write("// THIS FILE IS GENERATED, DO NOT EDIT!\n\n")
     h.write("#pragma once\n\n")
-    for c in goost.classes_enabled:
+    for c in env["goost_classes_enabled"]:
         h.write("#define GOOST_%s\n" % c)
     h.write("\n")
     h.write("namespace goost {\n")
-    for c in goost.classes_disabled:
+    for c in env["goost_classes_disabled"]:
         h.write("template <> void register_class<%s>();\n" % c)
     h.write("}\n")
     h.close()
@@ -27,7 +27,7 @@ def make_classes_enabled(target, source, env):
     cpp.write("#include \"classes_enabled.gen.h\"\n")
     cpp.write("\n")
     cpp.write("namespace goost {\n")
-    for c in goost.classes_disabled:
+    for c in env["goost_classes_disabled"]:
         cpp.write("template <> void register_class<%s>() {}\n" % c)
     cpp.write("}\n")
     cpp.close()

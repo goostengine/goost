@@ -6,28 +6,99 @@ def can_build(env, platform):
 
 
 def configure(env):
-    from SCons.Script import Variables, BoolVariable, Help, Exit
+    from SCons.Script import Variables, BoolVariable, Help, Exit, ARGUMENTS
 
     opts = Variables()
-    for name in goost.get_components():
+
+    components_config = {}
+    components_enabled_by_default = True
+    classes_config = {}
+    classes_enabled_by_default = True
+
+    # From `custom.py` file.
+    try:
+        import custom
+        if hasattr(custom, "components"):
+            components_config = custom.components
+        if hasattr(custom, "components_enabled_by_default"):
+            components_enabled_by_default = custom.components_enabled_by_default
+        if hasattr(custom, "classes"):
+            classes_config = custom.classes
+        if hasattr(custom, "classes_enabled_by_default"):
+            classes_enabled_by_default = custom.classes_enabled_by_default
+    except ImportError:
+        pass
+
+    # From command-line.
+    # Command-line arguments override arguments specified via file.
+
+    opts.Add(BoolVariable("goost_components_enabled_by_default",
+            "Set to `no` to disable all components by default, and enable each component of interest manually", True))
+
+    # Get a list of all components and add them, regardless of configuration.
+    all_components = goost.get_components()["enabled"] # All enabled by default.
+    for name in all_components:
         opts.Add(BoolVariable("goost_%s_enabled" % (name), "Build %s component." % (name), True))
 
-    opts.Add("goost_scale_factor", "The precision used for converting between integer and float coordinates.", "1e5")
-
+    # Must update environment to override `components_config` from command-line.
     opts.Update(env)
 
-    # Get a list of components which got disabled.
-    components_disabled = []
-    for name in goost.get_components():
-        if not env["goost_%s_enabled" % (name)]:
-            components_disabled.append(name)
+    if "goost_components_enabled_by_default" in ARGUMENTS:
+        # Override from command-line.
+        components_enabled_by_default = env["goost_components_enabled_by_default"]
 
-    # Implicitly disable child components.
-    for name in components_disabled:
-        children = goost.get_child_components(name)
-        for child_name in children:
-            print("Goost: Disabling `%s` component (part of `%s`)." % (child_name, name))
-            env["goost_%s_enabled" % (child_name)] = False
+    for name in all_components:
+        c = "goost_%s_enabled" % name
+        if c in ARGUMENTS:
+            # Override from command-line.
+            components_config[name] = env[c]
+
+    # Get both enabled and disabled components based on configuration now,
+    # which were collected from either file or command-line interface.
+    components = goost.get_components(components_config, components_enabled_by_default)
+    for name in components["enabled"]:
+        env["goost_%s_enabled" % name] = True
+    for name in components["disabled"]:
+        env["goost_%s_enabled" % name] = False
+
+    if components_enabled_by_default:
+        # Disable child components, if any.
+        to_disable = components["disabled"]
+
+        for name in components["disabled"]:
+            for child_name in goost.get_child_components(name):
+                print("Goost: Disabling `%s` component (part of `%s`)." % (child_name, name))
+                env["goost_%s_enabled" % child_name] = False
+                to_disable.append(child_name)
+                components["enabled"].remove(child_name)
+
+        components["disabled"] = to_disable
+    else:
+        # Enable parent components, if any.
+        to_enable = components["enabled"]
+
+        for name in components["enabled"]:
+            for parent_name in goost.get_parent_components(name):
+                print("Goost: Enabling `%s` component (parent of `%s`)." % (parent_name, name))
+                env["goost_%s_enabled" % parent_name] = True
+                to_enable.append(parent_name)
+                components["disabled"].remove(parent_name)
+
+        components["enabled"] = to_enable
+
+    # Finally, define all enabled and disabled components
+    # in the environment for easier parsing in SCsub.
+    env["goost_components_enabled"] = components["enabled"]
+    env["goost_components_disabled"] = components["disabled"]
+
+    # Individual classes (for when configuring components is not enough).
+    # Can only be configured via `custom.py` file.
+    classes = goost.get_classes(classes_config, classes_enabled_by_default)
+    env["goost_classes_enabled"] = classes["enabled"]
+    env["goost_classes_disabled"] = classes["disabled"]
+
+    # Math/Geometry.
+    opts.Add("goost_scale_factor", "The precision used for converting between integer and float coordinates.", "1e5")
 
     def help_format(env, opt, help, default, actual, aliases):
         if opt == "goost_scale_factor":
@@ -37,6 +108,10 @@ def configure(env):
         return fmt % (opt, help, default, actual)
 
     opts.FormatVariableHelpText = help_format
+
+    # Update environment from file/command line.
+    opts.Update(env)
+
     Help(opts.GenerateHelpText(env))
 
 

@@ -24,22 +24,59 @@ components = [
     "editor",
 ]
 
-def get_components():
-    comp = set()
+def get_components(config={}, enabled_by_default=True):
+    import sys
+
+    components_set = set()
 
     for n in components:
         parts = n.split("/")
-        comp.update(parts)
+        components_set.update(parts)
 
-    comp_list = list(comp)
-    comp_list.sort()
+    components_list = list(components_set)
+    components_list.sort()
 
-    return comp_list
+    components_enabled = []
+    components_disabled = []
+    components_enabled = components_list.copy()
+    components_disabled = components_list.copy()
+
+    try:
+        if config:
+            if enabled_by_default:
+                components_disabled.clear()
+                for name, enabled in config.items():
+                    if not enabled:
+                        if not name in components_set:
+                            raise NameError("Goost: Requested to disable non-existing component `%s`" % name)
+                        components_enabled.remove(name)
+                        components_disabled.append(name)
+            else:
+                components_enabled.clear()
+                for name, enabled in config.items():
+                    if enabled:
+                        if not name in components_set:
+                            raise NameError("Goost: Requested to enable non-existing component `%s`" % name)
+                        components_enabled.append(name)
+                        components_disabled.remove(name)
+    except NameError as e:
+        print(e)
+        sys.exit(255)
+
+    if not config:
+        # All components are enabled by default.
+        components_disabled.clear()
+
+    ret = {
+        "enabled": components_enabled,
+        "disabled": components_disabled,
+    }
+    return ret
 
 
 def get_child_components(parent):
     comp_list = []
-    
+
     for n in components:
         parts = n.split("/")
         if not parent in parts:
@@ -49,7 +86,22 @@ def get_child_components(parent):
             if p == parent:
                 break
             comp_list.append(p)
-    
+
+    return comp_list
+
+
+def get_parent_components(child):
+    comp_list = []
+
+    for n in components:
+        parts = n.split("/")
+        if not child in parts:
+            continue
+        for p in parts:
+            if p == child:
+                break
+            comp_list.append(p)
+
     return comp_list
 
 
@@ -127,6 +179,7 @@ classes["PolyCollisionShape2D"].add_depencency(classes["PolyNode2D"])
 
 classes["Random2D"].add_depencency(classes["Random"])
 
+
 def resolve_dependency(goost_class):
     resolved = set()
     def resolve(c, r_resolved):
@@ -139,57 +192,51 @@ def resolve_dependency(goost_class):
         resolved_list.append(c.name)
     return resolved_list
 
-classes_enabled = []
-classes_disabled = []
-for c in classes:
-    classes_enabled.append(c)
-    classes_disabled.append(c)
 
-import sys
+def get_classes(config={}, enabled_by_default=True):
+    import sys
 
-custom_configured = False
-try:
-    import custom
-    # Determine whether classes are enabled or disabled initially.
-    classes_enabled_by_default = True
-    if hasattr(custom, "classes_enabled_by_default"):
-        classes_enabled_by_default = custom.classes_enabled_by_default
+    classes_enabled = []
+    classes_disabled = []
+    for c in classes:
+        classes_enabled.append(c)
+        classes_disabled.append(c)
+    try:
+        if config:
+            if enabled_by_default:
+                classes_disabled.clear()
+                for name, enabled in config.items():
+                    if not enabled:
+                        if not name in classes:
+                            raise NameError("Goost: Requested to disable non-existing class `%s`" % name)
+                        classes_enabled.remove(name)
+                        classes_disabled.append(name)
+            else:
+                classes_enabled.clear()
+                for name, enabled in config.items():
+                    if enabled:
+                        if not name in classes:
+                            raise NameError("Goost: Requested to enable non-existing class `%s`" % name)
+                        classes_enabled.append(name)
+                        classes_disabled.remove(name)
+    except NameError as e:
+        print(e)
+        sys.exit(255)
 
-    if classes_enabled_by_default:
+    if not config:
+        # All classes are enabled by default.
         classes_disabled.clear()
-        for name, enabled in custom.classes.items():
-            if not enabled:
-                if not name in classes:
-                    raise NameError("Goost: Requested to disable non-existing class `%s`" % name)
-                classes_enabled.remove(name)
-                classes_disabled.append(name)
-    else:
-        classes_enabled.clear()
-        for name, enabled in custom.classes.items():
-            if enabled:
-                if not name in classes:
-                    raise NameError("Goost: Requested to enable non-existing class `%s`" % name)
-                classes_enabled.append(name)
-                classes_disabled.remove(name)
 
-    custom_configured = True
-
-except ImportError:
-    pass
-
-except NameError as e:
-    print(e)
-    sys.exit(255)
-
-if not custom_configured:
-    # All classes are enabled by default.
-    classes_disabled.clear()
-
-# Check dependencies.
-for c in classes_enabled:
-    resolved = resolve_dependency(classes[c])
-    for cr in resolved:
-        if cr in classes_disabled:
-            # Implicitly enable `cr` class because `c` depends on it.
-            classes_enabled.append(cr)
-            classes_disabled.remove(cr)
+    # Check dependencies.
+    for c in classes_enabled:
+        resolved = resolve_dependency(classes[c])
+        for cr in resolved:
+            if cr in classes_disabled:
+                # Implicitly enable `cr` class because `c` depends on it.
+                classes_enabled.append(cr)
+                classes_disabled.remove(cr)
+    ret = {
+        "enabled": classes_enabled,
+        "disabled": classes_disabled,
+    }
+    return ret
