@@ -6,7 +6,7 @@ def can_build(env, platform):
 
 
 def configure(env):
-    from SCons.Script import Variables, BoolVariable, Help
+    from SCons.Script import Variables, BoolVariable, Help, Exit
 
     opts = Variables()
 
@@ -36,8 +36,7 @@ def configure(env):
             "Set to `no` to disable all components by default, and enable each component of interest manually", True))
 
     # Get a list of all components and add them, regardless of configuration.
-    all_components = goost.get_components()["enabled"] # All enabled by default.
-    for name in all_components:
+    for name in goost.get_components()["enabled"]: # All enabled by default.
         opts.Add(BoolVariable("goost_%s_enabled" % (name), "Build %s component." % (name), True))
 
     # Math/Geometry.
@@ -58,8 +57,14 @@ def configure(env):
     # components/classes, add them above.
     opts.Update(env)
 
-    configure_components(env, components_config, components_enabled_by_default)
-    configure_classes(env, classes_config, classes_enabled_by_default)
+    components = configure_components(env, components_config, components_enabled_by_default)
+    classes = configure_classes(env, classes_config, classes_enabled_by_default)
+    
+    for class_name in classes["enabled"]:
+        for component_name in goost.get_class_components(class_name):
+            if component_name in components["disabled"]:
+                print("Goost: Cannot enable class `%s`, because component `%s` is disabled, skipping."
+                        % (class_name, component_name))
 
     # Generate help text.
     Help(opts.GenerateHelpText(env))
@@ -72,8 +77,7 @@ def configure_components(env, config, enabled_by_default):
         # Override from command-line.
         enabled_by_default = env["goost_components_enabled_by_default"]
 
-    all_components = goost.get_components()["enabled"] # All enabled by default.
-    for name in all_components:
+    for name in goost.get_components()["enabled"]: # All enabled by default.
         c = "goost_%s_enabled" % name
         if c in ARGUMENTS:
             # Override from command-line.
@@ -117,13 +121,18 @@ def configure_components(env, config, enabled_by_default):
     env["goost_components_enabled"] = components["enabled"]
     env["goost_components_disabled"] = components["disabled"]
 
+    return components
+
 
 def configure_classes(env, config, enabled_by_default):
     # Individual classes (for when configuring components is not enough).
     # Can only be configured via `custom.py` file.
     classes = goost.get_classes(config, enabled_by_default)
+
     env["goost_classes_enabled"] = classes["enabled"]
     env["goost_classes_disabled"] = classes["disabled"]
+
+    return classes
 
 
 def get_doc_classes():
