@@ -6,10 +6,11 @@ def can_build(env, platform):
 
 
 def configure(env):
-    from SCons.Script import Variables, BoolVariable, Help, Exit, ARGUMENTS
+    from SCons.Script import Variables, BoolVariable, Help
 
     opts = Variables()
 
+    # Config.
     components_config = {}
     components_enabled_by_default = True
     classes_config = {}
@@ -29,8 +30,7 @@ def configure(env):
     except ImportError:
         pass
 
-    # From command-line.
-    # Command-line arguments override arguments specified via file.
+    # From command-line (CLI arguments override arguments specified via file).
 
     opts.Add(BoolVariable("goost_components_enabled_by_default",
             "Set to `no` to disable all components by default, and enable each component of interest manually", True))
@@ -40,28 +40,54 @@ def configure(env):
     for name in all_components:
         opts.Add(BoolVariable("goost_%s_enabled" % (name), "Build %s component." % (name), True))
 
-    # Must update environment to override `components_config` from command-line.
+    # Math/Geometry.
+    opts.Add("goost_scale_factor", "The precision used for converting between integer and float coordinates.", "1e5")
+
+    def help_format(env, opt, help, default, actual, aliases):
+        if opt == "goost_scale_factor":
+            fmt = "\n%s: %s.\n    default: %s (based on CMP_EPSILON)\n    actual: %s\n"
+        else:
+            fmt = "\n%s: %s.\n    default: %s\n    actual: %s\n"
+        return fmt % (opt, help, default, actual)
+
+    opts.FormatVariableHelpText = help_format
+
+    # Must update environment to override `components_config` from CLI/file.
+    # Do not call this method afterwards as the environment is going to be
+    # updated manually. If you need to add more options not related to
+    # components/classes, add them above.
     opts.Update(env)
+
+    configure_components(env, components_config, components_enabled_by_default)
+    configure_classes(env, classes_config, classes_enabled_by_default)
+
+    # Generate help text.
+    Help(opts.GenerateHelpText(env))
+
+
+def configure_components(env, config, enabled_by_default):
+    from SCons.Script import ARGUMENTS
 
     if "goost_components_enabled_by_default" in ARGUMENTS:
         # Override from command-line.
-        components_enabled_by_default = env["goost_components_enabled_by_default"]
+        enabled_by_default = env["goost_components_enabled_by_default"]
 
+    all_components = goost.get_components()["enabled"] # All enabled by default.
     for name in all_components:
         c = "goost_%s_enabled" % name
         if c in ARGUMENTS:
             # Override from command-line.
-            components_config[name] = env[c]
+            config[name] = env[c]
 
     # Get both enabled and disabled components based on configuration now,
     # which were collected from either file or command-line interface.
-    components = goost.get_components(components_config, components_enabled_by_default)
+    components = goost.get_components(config, enabled_by_default)
     for name in components["enabled"]:
         env["goost_%s_enabled" % name] = True
     for name in components["disabled"]:
         env["goost_%s_enabled" % name] = False
 
-    if components_enabled_by_default:
+    if enabled_by_default:
         # Disable child components, if any.
         to_disable = components["disabled"]
 
@@ -91,28 +117,13 @@ def configure(env):
     env["goost_components_enabled"] = components["enabled"]
     env["goost_components_disabled"] = components["disabled"]
 
+
+def configure_classes(env, config, enabled_by_default):
     # Individual classes (for when configuring components is not enough).
     # Can only be configured via `custom.py` file.
-    classes = goost.get_classes(classes_config, classes_enabled_by_default)
+    classes = goost.get_classes(config, enabled_by_default)
     env["goost_classes_enabled"] = classes["enabled"]
     env["goost_classes_disabled"] = classes["disabled"]
-
-    # Math/Geometry.
-    opts.Add("goost_scale_factor", "The precision used for converting between integer and float coordinates.", "1e5")
-
-    def help_format(env, opt, help, default, actual, aliases):
-        if opt == "goost_scale_factor":
-            fmt = "\n%s: %s.\n    default: %s (based on CMP_EPSILON)\n    actual: %s\n"
-        else:
-            fmt = "\n%s: %s.\n    default: %s\n    actual: %s\n"
-        return fmt % (opt, help, default, actual)
-
-    opts.FormatVariableHelpText = help_format
-
-    # Update environment from file/command line.
-    opts.Update(env)
-
-    Help(opts.GenerateHelpText(env))
 
 
 def get_doc_classes():

@@ -29,12 +29,16 @@ def get_components(config={}, enabled_by_default=True):
 
     components_set = set()
 
-    for n in components:
-        parts = n.split("/")
+    for name in components:
+        parts = name.split("/")
         components_set.update(parts)
 
     components_list = list(components_set)
     components_list.sort()
+
+    if not config:
+        for name in components_list:
+            config[name] = enabled_by_default
 
     components_enabled = []
     components_disabled = []
@@ -42,30 +46,25 @@ def get_components(config={}, enabled_by_default=True):
     components_disabled = components_list.copy()
 
     try:
-        if config:
-            if enabled_by_default:
-                components_disabled.clear()
-                for name, enabled in config.items():
-                    if not enabled:
-                        if not name in components_set:
-                            raise NameError("Goost: Requested to disable non-existing component `%s`" % name)
-                        components_enabled.remove(name)
-                        components_disabled.append(name)
-            else:
-                components_enabled.clear()
-                for name, enabled in config.items():
-                    if enabled:
-                        if not name in components_set:
-                            raise NameError("Goost: Requested to enable non-existing component `%s`" % name)
-                        components_enabled.append(name)
-                        components_disabled.remove(name)
+        if enabled_by_default:
+            components_disabled.clear()
+            for name, enabled in config.items():
+                if not enabled:
+                    if not name in components_set:
+                        raise NameError("Goost: Requested to disable non-existing component `%s`" % name)
+                    components_enabled.remove(name)
+                    components_disabled.append(name)
+        else:
+            components_enabled.clear()
+            for name, enabled in config.items():
+                if enabled:
+                    if not name in components_set:
+                        raise NameError("Goost: Requested to enable non-existing component `%s`" % name)
+                    components_enabled.append(name)
+                    components_disabled.remove(name)
     except NameError as e:
         print(e)
         sys.exit(255)
-
-    if not config:
-        # All components are enabled by default.
-        components_disabled.clear()
 
     ret = {
         "enabled": components_enabled,
@@ -196,36 +195,35 @@ def resolve_dependency(goost_class):
 def get_classes(config={}, enabled_by_default=True):
     import sys
 
+    if not config:
+        for c in classes:
+            config[c] = enabled_by_default
+
     classes_enabled = []
     classes_disabled = []
     for c in classes:
         classes_enabled.append(c)
         classes_disabled.append(c)
     try:
-        if config:
-            if enabled_by_default:
-                classes_disabled.clear()
-                for name, enabled in config.items():
-                    if not enabled:
-                        if not name in classes:
-                            raise NameError("Goost: Requested to disable non-existing class `%s`" % name)
-                        classes_enabled.remove(name)
-                        classes_disabled.append(name)
-            else:
-                classes_enabled.clear()
-                for name, enabled in config.items():
-                    if enabled:
-                        if not name in classes:
-                            raise NameError("Goost: Requested to enable non-existing class `%s`" % name)
-                        classes_enabled.append(name)
-                        classes_disabled.remove(name)
+        if enabled_by_default:
+            classes_disabled.clear()
+            for name, enabled in config.items():
+                if not enabled:
+                    if not name in classes:
+                        raise NameError("Goost: Requested to disable non-existing class `%s`" % name)
+                    classes_enabled.remove(name)
+                    classes_disabled.append(name)
+        else:
+            classes_enabled.clear()
+            for name, enabled in config.items():
+                if enabled:
+                    if not name in classes:
+                        raise NameError("Goost: Requested to enable non-existing class `%s`" % name)
+                    classes_enabled.append(name)
+                    classes_disabled.remove(name)
     except NameError as e:
         print(e)
         sys.exit(255)
-
-    if not config:
-        # All classes are enabled by default.
-        classes_disabled.clear()
 
     # Check dependencies.
     for c in classes_enabled:
