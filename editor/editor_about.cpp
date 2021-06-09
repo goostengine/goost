@@ -1,8 +1,6 @@
 #include "editor_about.h"
 #include "editor/editor_node.h"
 
-#include "goost/core/goost_engine.h"
-
 #include "goost/core/authors.gen.h"
 #include "goost/core/license.gen.h"
 #include "goost/core/version.gen.h"
@@ -103,12 +101,15 @@ GoostEditorAbout::GoostEditorAbout() {
 	version_info_vbc->add_child(v_spacer);
 
 	version_btn = memnew(LinkButton);
+	String strver = itos(GOOST_VERSION_MAJOR) + "." + itos(GOOST_VERSION_MINOR);
+	if (GOOST_VERSION_PATCH != 0) {
+		strver += "." + itos(GOOST_VERSION_PATCH);
+	}
+	strver += "-" + String(GOOST_VERSION_STATUS);
 	String hash = String(GOOST_VERSION_HASH);
 	if (hash.length() != 0) {
 		hash = " " + vformat("[%s]", hash.left(9));
 	}
-	Dictionary version_info = GoostEngine::get_singleton()->get_version_info();
-	String strver = version_info["string"];
 	String version = vformat("Goost v%s", strver + hash);
 	String year = itos(GOOST_VERSION_YEAR);
 
