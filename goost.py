@@ -256,3 +256,42 @@ def get_class_components(name):
     components = get_parent_components(classes[name].component)
     components.append(classes[name].component)
     return components
+
+
+config_template = """# custom.py
+
+components_enabled_by_default = True
+components = {
+    # "editor": False,
+}
+
+classes_enabled_by_default = True
+classes = {
+    # "LinkedList": False,
+}
+"""
+
+if __name__ == "__main__":
+    import os
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--generate-config", action="store_true", required=True,
+            help="Generates `custom.py` file to configure Goost components and classes.")
+    args = parser.parse_args()
+
+    def write_config():
+        with open("custom.py", "w") as f:
+            f.write(config_template)
+
+    if args.generate_config:
+        if os.path.exists("custom.py"):
+            print("Goost: The `custom.py` file already exists!")
+            try:
+                overwrite = input("Overwrite anyway? (y/N): ")
+                if overwrite.lower() == "y":
+                    write_config()
+            except KeyboardInterrupt:
+                print("n")
+        else:
+            write_config()
