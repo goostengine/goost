@@ -1,7 +1,7 @@
 #ifndef GOOST_RANDOM_2D_H
 #define GOOST_RANDOM_2D_H
 
-#include "../random.h"
+#include "goost/core/math/random.h"
 
 class Random2D : public Random {
 	GDCLASS(Random2D, Random);

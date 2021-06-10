@@ -1,7 +1,7 @@
 #ifndef POLY_SHAPE_2D_H
 #define POLY_SHAPE_2D_H
 
-#include "goost/core/math/2d/geometry/poly/poly_node_2d.h"
+#include "goost/core/math/geometry/2d/poly/poly_node_2d.h"
 
 class PolyShape2D : public Node2D {
 	GDCLASS(PolyShape2D, Node2D);

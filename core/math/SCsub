@@ -2,10 +2,7 @@
 Import("env")
 Import("env_goost")
 
-SConscript("2d/SCsub", exports="env_goost")
-
-if not env["disable_3d"]:
-    env_goost.add_source_files(env.modules_sources, "3d/*.cpp")
-    SConscript("3d/SCsub", exports="env_goost")
+if env["goost_geometry_enabled"]:
+    SConscript("geometry/SCsub", exports="env_goost")
 
 env_goost.add_source_files(env.modules_sources, "*.cpp")

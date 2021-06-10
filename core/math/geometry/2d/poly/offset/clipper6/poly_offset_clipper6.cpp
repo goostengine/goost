@@ -1,14 +1,14 @@
-#include "poly_offset_clipper10.h"
-#include "goost/core/math/2d/geometry/poly/utils/godot_clipper10_path_convert.h"
+#include "poly_offset_clipper6.h"
+#include "goost/core/math/geometry/2d/poly/utils/godot_clipper6_path_convert.h"
 
-Vector<Vector<Point2>> PolyOffset2DClipper10::offset_polypaths(const Vector<Vector<Point2>> &p_polypaths, real_t p_delta) {
-	clipperlib::ClipperOffset clp = configure(parameters);
+Vector<Vector<Point2>> PolyOffset2DClipper6::offset_polypaths(const Vector<Vector<Point2>> &p_polypaths, real_t p_delta) {
+	ClipperLib::ClipperOffset clp = configure(parameters);
 
-	clipperlib::Paths subject;
+	ClipperLib::Paths subject;
 	GodotClipperUtils::scale_up_polypaths(p_polypaths, subject);
 	clp.AddPaths(subject, join_type, end_type);
 
-	clipperlib::Paths solution;
+	ClipperLib::Paths solution;
 	clp.Execute(solution, p_delta * SCALE_FACTOR);
 
 	Vector<Vector<Point2>> ret;
@@ -17,35 +17,35 @@ Vector<Vector<Point2>> PolyOffset2DClipper10::offset_polypaths(const Vector<Vect
 	return ret;
 }
 
-clipperlib::ClipperOffset PolyOffset2DClipper10::configure(const Ref<PolyOffsetParameters2D> &p_parameters) {
-	using namespace clipperlib;
+ClipperLib::ClipperOffset PolyOffset2DClipper6::configure(const Ref<PolyOffsetParameters2D> &p_parameters) {
+	using namespace ClipperLib;
 
 	switch (p_parameters->join_type) {
 		case PolyOffsetParameters2D::JOIN_SQUARE:
-			join_type = kSquare;
+			join_type = jtSquare;
 			break;
 		case PolyOffsetParameters2D::JOIN_ROUND:
-			join_type = kRound;
+			join_type = jtRound;
 			break;
 		case PolyOffsetParameters2D::JOIN_MITER:
-			join_type = kMiter;
+			join_type = jtMiter;
 			break;
 	}
 	switch (p_parameters->end_type) {
 		case PolyOffsetParameters2D::END_POLYGON:
-			end_type = kPolygon;
+			end_type = etClosedPolygon;
 			break;
 		case PolyOffsetParameters2D::END_JOINED:
-			end_type = kOpenJoined;
+			end_type = etClosedLine;
 			break;
 		case PolyOffsetParameters2D::END_BUTT:
-			end_type = kOpenButt;
+			end_type = etOpenButt;
 			break;
 		case PolyOffsetParameters2D::END_SQUARE:
-			end_type = kOpenSquare;
+			end_type = etOpenSquare;
 			break;
 		case PolyOffsetParameters2D::END_ROUND:
-			end_type = kOpenRound;
+			end_type = etOpenRound;
 			break;
 	}
 	return ClipperOffset(p_parameters->miter_limit, p_parameters->arc_tolerance * SCALE_FACTOR);

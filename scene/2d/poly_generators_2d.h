@@ -1,7 +1,7 @@
 #ifndef GOOST_POLY_GENERATORS_2D_H
 #define GOOST_POLY_GENERATORS_2D_H
 
-#include "goost/core/math/2d/geometry/poly/poly_node_2d.h"
+#include "goost/core/math/geometry/2d/poly/poly_node_2d.h"
 
 class PolyCircle2D : public PolyNode2D {
 	GDCLASS(PolyCircle2D, PolyNode2D);
