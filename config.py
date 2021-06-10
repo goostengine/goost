@@ -6,7 +6,7 @@ def can_build(env, platform):
 
 
 def configure(env):
-    from SCons.Script import Variables, BoolVariable, Help, Exit
+    from SCons.Script import Variables, BoolVariable, Help
 
     opts = Variables()
 
@@ -59,12 +59,13 @@ def configure(env):
 
     components = configure_components(env, components_config, components_enabled_by_default)
     classes = configure_classes(env, classes_config, classes_enabled_by_default)
-    
-    for class_name in classes["enabled"]:
-        for component_name in goost.get_class_components(class_name):
-            if component_name in components["disabled"]:
-                print("Goost: Cannot enable class `%s`, because component `%s` is disabled, skipping."
-                        % (class_name, component_name))
+
+    if env["verbose"]:
+        for class_name in classes["enabled"]:
+            for component_name in goost.get_class_components(class_name):
+                if component_name in components["disabled"]:
+                    print("Goost: Skipping class `%s`, because component `%s` is disabled."
+                            % (class_name, component_name))
 
     # Generate help text.
     Help(opts.GenerateHelpText(env))
