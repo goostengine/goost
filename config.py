@@ -98,6 +98,8 @@ def configure_components(env, config, enabled_by_default):
 
     def disable_child_components(name):
         for child_name in goost.get_child_components(name):
+            if child_name in to_disable:
+                continue
             print("Goost: Disabling `%s` component (part of `%s`)." % (child_name, name))
             env["goost_%s_enabled" % child_name] = False
             to_disable.append(child_name)
@@ -105,6 +107,8 @@ def configure_components(env, config, enabled_by_default):
  
     def enable_parent_components(name):
         for parent_name in goost.get_parent_components(name):
+            if parent_name in to_enable:
+                continue
             print("Goost: Enabling `%s` component (parent of `%s`)." % (parent_name, name))
             env["goost_%s_enabled" % parent_name] = True
             to_enable.append(parent_name)
@@ -118,6 +122,7 @@ def configure_components(env, config, enabled_by_default):
         components["disabled"] = to_disable
     else:
         # Enable parent components, if any.
+        # This is needed because otherwise child components won't build at all.
         to_enable = components["enabled"]
         for name in components["enabled"]:
             enable_parent_components(name)
