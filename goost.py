@@ -149,7 +149,7 @@ classes = {
     "PolyCircle2D": "scene",
     "PolyRectangle2D": "scene",
     "PolyShape2D": "scene",
-    "PolyCollisionShape2D": "scene",
+    "PolyCollisionShape2D": "physics",
     "Random": "math",
     "Random2D": "geometry",
     "ShapeCast2D": "physics",
@@ -186,6 +186,8 @@ classes["PolyOffset2D"].add_depencency(classes["PolyOffsetParameters2D"])
 classes["PolyCircle2D"].add_depencency(classes["PolyNode2D"])
 classes["PolyRectangle2D"].add_depencency(classes["PolyNode2D"])
 classes["PolyShape2D"].add_depencency(classes["PolyNode2D"])
+
+classes["PolyCollisionShape2D"].add_depencency(classes["PolyShape2D"])
 classes["PolyCollisionShape2D"].add_depencency(classes["PolyNode2D"])
 
 classes["Random2D"].add_depencency(classes["GoostGeometry2D"])

@@ -10,7 +10,6 @@ void register_scene_types() {
 	goost::register_class<PolyCircle2D>();
 	goost::register_class<PolyRectangle2D>();
 	goost::register_class<PolyShape2D>();
-	goost::register_class<PolyCollisionShape2D>();
 #endif
 	goost::register_class<VisualShape2D>();
 	goost::register_class<GradientTexture2D>();
