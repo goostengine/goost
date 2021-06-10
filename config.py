@@ -32,7 +32,7 @@ def configure(env):
 
     # From command-line (CLI arguments override arguments specified via file).
 
-    opts.Add(BoolVariable("goost_components_enabled_by_default",
+    opts.Add(BoolVariable("goost_components_enabled",
             "Set to `no` to disable all components by default, and enable each component of interest manually", True))
 
     # Get a list of all components and add them, regardless of configuration.
@@ -73,9 +73,9 @@ def configure(env):
 def configure_components(env, config, enabled_by_default):
     from SCons.Script import ARGUMENTS
 
-    if "goost_components_enabled_by_default" in ARGUMENTS:
+    if "goost_components_enabled" in ARGUMENTS:
         # Override from command-line.
-        enabled_by_default = env["goost_components_enabled_by_default"]
+        enabled_by_default = env["goost_components_enabled"]
 
     for name in goost.get_components()["enabled"]: # All enabled by default.
         c = "goost_%s_enabled" % name
