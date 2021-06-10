@@ -31,7 +31,6 @@ def configure(env):
         pass
 
     # From command-line (CLI arguments override arguments specified via file).
-
     opts.Add(BoolVariable("goost_components_enabled",
             "Set to `no` to disable all components by default, and enable each component of interest manually", True))
 
@@ -62,10 +61,15 @@ def configure(env):
 
     if env["verbose"]:
         for class_name in classes["enabled"]:
-            for component_name in goost.get_class_components(class_name):
+            # Report rightmost child components only.
+            for component_name in reversed(goost.get_class_components(class_name)):
+                skip = False
                 if component_name in components["disabled"]:
                     print("Goost: Skipping class `%s`, because component `%s` is disabled."
                             % (class_name, component_name))
+                    skip = True
+                if skip:
+                    break
 
     # Generate help text.
     Help(opts.GenerateHelpText(env))
@@ -92,29 +96,31 @@ def configure_components(env, config, enabled_by_default):
     for name in components["disabled"]:
         env["goost_%s_enabled" % name] = False
 
+    def disable_child_components(name):
+        for child_name in goost.get_child_components(name):
+            print("Goost: Disabling `%s` component (part of `%s`)." % (child_name, name))
+            env["goost_%s_enabled" % child_name] = False
+            to_disable.append(child_name)
+            components["enabled"].remove(child_name)
+ 
+    def enable_parent_components(name):
+        for parent_name in goost.get_parent_components(name):
+            print("Goost: Enabling `%s` component (parent of `%s`)." % (parent_name, name))
+            env["goost_%s_enabled" % parent_name] = True
+            to_enable.append(parent_name)
+            components["disabled"].remove(parent_name)
+
     if enabled_by_default:
         # Disable child components, if any.
         to_disable = components["disabled"]
-
         for name in components["disabled"]:
-            for child_name in goost.get_child_components(name):
-                print("Goost: Disabling `%s` component (part of `%s`)." % (child_name, name))
-                env["goost_%s_enabled" % child_name] = False
-                to_disable.append(child_name)
-                components["enabled"].remove(child_name)
-
+            disable_child_components(name)
         components["disabled"] = to_disable
     else:
         # Enable parent components, if any.
         to_enable = components["enabled"]
-
         for name in components["enabled"]:
-            for parent_name in goost.get_parent_components(name):
-                print("Goost: Enabling `%s` component (parent of `%s`)." % (parent_name, name))
-                env["goost_%s_enabled" % parent_name] = True
-                to_enable.append(parent_name)
-                components["disabled"].remove(parent_name)
-
+            enable_parent_components(name)
         components["enabled"] = to_enable
 
     # Finally, define all enabled and disabled components
