@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #
 # Upstream: https://github.com/goostengine/goost
-# Version: 2.1 (Godot Engine 3.3+)
+# Version: 2.1.1 (Godot Engine 3.3+)
 # License: MIT
 #
 # `SConstruct` which allows to build any C++ module just like Godot Engine.
