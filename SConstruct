@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #
 # Upstream: https://github.com/goostengine/goost
-# Version: 2.1 (Godot Engine 3.3+)
+# Version: 2.1.1 (Godot Engine 3.3+)
 # License: MIT
 #
 # `SConstruct` which allows to build any C++ module just like Godot Engine.
@@ -215,4 +215,7 @@ if not skip_build:
     print("Building Godot with %s ..." % module_name.capitalize())
 
 # Run SCons to build Godot with the module, check the build configuration etc.
-run(env.build_args, godot_dir.abspath)
+try:
+    run(env.build_args, godot_dir.abspath)
+except:
+    Exit(255)

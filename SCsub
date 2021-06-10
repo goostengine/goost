@@ -1,23 +1,25 @@
 #!/usr/bin/env python
-
 import re
 import glob
 
-import goost
 import builders
 
 Import("env")
 env_goost = env.Clone()
 
 # Define components to build.
-for name in goost.get_components():
+for name in env["goost_components_enabled"]:
     opt = "goost_%s_enabled" % (name)
-    if env_goost[opt]:
-        env_goost.Prepend(CPPDEFINES=[opt.upper()])
+    env_goost.Prepend(CPPDEFINES=[opt.upper()])
 
 # Generate sources with a list of enabled and disabled classes.
+classgen_sources = ["goost.py"]
+if File("custom.py").exists():
+    # Can be configured via `custom.py`, track changes there as well.
+    classgen_sources.append("custom.py")
+
 env.CommandNoCache(
-    ["classes_enabled.gen.h", "classes_enabled.gen.cpp"], "goost.py",
+    ["classes_enabled.gen.h", "classes_enabled.gen.cpp"], classgen_sources,
     builders.make_classes_enabled,
 )
 # Generate version header.
@@ -37,15 +39,6 @@ env.CommandNoCache(
 )
 
 env_goost.Prepend(CPPDEFINES={"SCALE_FACTOR" : env["goost_scale_factor"]})
-
-# Build subdirs, the build order is dependent on the link order.
-subdirs = [
-    "core",
-    "scene",
-    "editor",
-    "thirdparty",
-    # "modules", # Built automatically if `custom_modules_recursive=yes` (default).
-]
 
 # Inject our own version of `add_source_files` (found in methods.py in Godot).
 # This is needed to filter out the sources of disabled classes without
@@ -85,7 +78,7 @@ def goost_add_source_files(self, sources, files, warn_duplicates=True):
     for path in files:
         # Skip compiling sources of disabled Goost classes.
         skip = False
-        for c in goost.classes_disabled:
+        for c in self["goost_classes_disabled"]:
             n = "%s.*\.cpp" % to_snake_case(c)
             if re.search(n, path):
                 skip = True
@@ -104,7 +97,19 @@ def goost_add_source_files(self, sources, files, warn_duplicates=True):
 env_goost.__class__.add_source_files = goost_add_source_files
 
 # Add sources.
-SConscript(dirs=subdirs, name="SCsub", exports="env_goost")
+Export("env_goost")
+
+if env["goost_core_enabled"]:
+    SConscript("core/SCsub")
+
+if env["goost_scene_enabled"]:
+    SConscript("scene/SCsub")
+
+if env["goost_editor_enabled"]:
+    SConscript("editor/SCsub")
+
+SConscript("thirdparty/SCsub")
+
 env_goost.add_source_files(env.modules_sources, "*.cpp")
 
 # Restore the method back (not sure if needed, but good for consistency).
