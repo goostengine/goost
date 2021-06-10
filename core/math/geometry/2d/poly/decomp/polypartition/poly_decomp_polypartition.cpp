@@ -1,5 +1,5 @@
 #include "poly_decomp_polypartition.h"
-#include "goost/core/math/2d/geometry/goost_geometry_2d.h"
+#include "goost/core/math/geometry/2d/goost_geometry_2d.h"
 #include "thirdparty/misc/triangulator.h"
 
 List<TriangulatorPoly> configure(PolyDecomp2DPolyPartition::Decomposition p_type, const Vector<Vector<Point2>> &p_polygons) {

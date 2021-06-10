@@ -1,6 +1,7 @@
 #include "random_2d.h"
-#include "goost/core/math/2d/geometry/poly/decomp/poly_decomp.h"
-#include "goost/core/math/2d/geometry/goost_geometry_2d.h"
+
+#include "goost/core/math/geometry/2d/poly/decomp/poly_decomp.h"
+#include "goost/core/math/geometry/2d/goost_geometry_2d.h"
 
 #include "core/method_bind_ext.gen.inc"
 

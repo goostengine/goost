@@ -2,9 +2,8 @@
 Import("env")
 Import("env_goost")
 
-subdirs = [
-    "geometry",
-]
-SConscript(dirs=subdirs, name="SCsub", exports="env_goost")
+Export("env_goost")
+
+SConscript("2d/SCsub")
 
 env_goost.add_source_files(env.modules_sources, "*.cpp")

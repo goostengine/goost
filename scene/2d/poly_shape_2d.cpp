@@ -3,8 +3,8 @@
 #include "core/engine.h"
 #include "core/math/geometry.h"
 
-#include "goost/core/math/2d/geometry/goost_geometry_2d.h"
-#include "goost/core/math/2d/geometry/poly/decomp/poly_decomp.h"
+#include "goost/core/math/geometry/2d/goost_geometry_2d.h"
+#include "goost/core/math/geometry/2d/poly/decomp/poly_decomp.h"
 
 Vector<Vector<Point2>> PolyShape2D::_collect_outlines() {
 	Vector<Vector<Point2>> ret;

@@ -2,7 +2,7 @@
 #include "boolean/poly_boolean.h"
 #include "decomp/poly_decomp.h"
 
-#include "goost/core/math/2d/geometry/goost_geometry_2d.h"
+#include "goost/core/math/geometry/2d/goost_geometry_2d.h"
 
 void draw_polyline_open(PolyNode2D *p_node, const Vector<Point2> &p_polyline, const Color &p_color, real_t p_line_width = 1.0) {
 	ERR_FAIL_COND(p_polyline.size() < 2);

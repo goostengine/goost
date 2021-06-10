@@ -18,7 +18,7 @@ version = {
 #
 components = [
     "core/image",
-    "core/math",
+    "core/math/geometry",
     "scene/physics",
     "scene/gui",
     "editor",
@@ -126,10 +126,10 @@ class GoostClass:
 # class via user-defined `custom.py::goost_classes_disabled` array of classes.
 #
 # The key is the class name, and value is component that this class is part of.
-# If applicable, only rightmost components are specified here.
+# Only rightmost child components are specified here.
 classes = {
     "GoostEngine": "core",
-    "GoostGeometry2D": "math",
+    "GoostGeometry2D": "geometry",
     "GoostImage": "image",
     "GradientTexture2D": "scene",
     "GridRect": "gui",
@@ -139,19 +139,19 @@ classes = {
     "LightTexture": "scene",
     "LinkedList": "core",
     "ListNode": "core",
-    "PolyBoolean2D": "math",
-    "PolyBooleanParameters2D": "math",
-    "PolyDecomp2D": "math",
-    "PolyDecompParameters2D": "math",
-    "PolyOffset2D": "math",
-    "PolyOffsetParameters2D": "math",
-    "PolyNode2D": "core",
+    "PolyBoolean2D": "geometry",
+    "PolyBooleanParameters2D": "geometry",
+    "PolyDecomp2D": "geometry",
+    "PolyDecompParameters2D": "geometry",
+    "PolyOffset2D": "geometry",
+    "PolyOffsetParameters2D": "geometry",
+    "PolyNode2D": "geometry",
     "PolyCircle2D": "scene",
     "PolyRectangle2D": "scene",
     "PolyShape2D": "scene",
     "PolyCollisionShape2D": "scene",
     "Random": "math",
-    "Random2D": "math",
+    "Random2D": "geometry",
     "ShapeCast2D": "physics",
     "VariantMap": "core",
     "VariantResource": "core",
@@ -188,6 +188,7 @@ classes["PolyRectangle2D"].add_depencency(classes["PolyNode2D"])
 classes["PolyShape2D"].add_depencency(classes["PolyNode2D"])
 classes["PolyCollisionShape2D"].add_depencency(classes["PolyNode2D"])
 
+classes["Random2D"].add_depencency(classes["GoostGeometry2D"])
 classes["Random2D"].add_depencency(classes["Random"])
 
 
