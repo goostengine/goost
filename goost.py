@@ -14,8 +14,7 @@ version = {
 # Components can be disabled with build options matching `goost_*_enabled=no`.
 # A branch of components can be disabled as well, like: `goost_core_enabled=no`.
 #
-# NOTE: Components may not necessarily have structural meaning.
-#
+# Components may not necessarily have structural meaning.
 components = [
     "core/image",
     "core/math/geometry",
@@ -122,9 +121,9 @@ class GoostClass:
 # Classes currently implemented in the extension.
 # 
 # This is used by `config.py::get_doc_classes()` and to configure each class of
-# interest the via user-defined `custom.py::classes` dictionary.
+# interest via user-defined `custom.py::classes` dictionary.
 #
-# The key is the class name, and value is component that this class is part of.
+# Key is the class name, and value is the component that this class is part of.
 # The list can contain classes provided by `modules/` directory, but they are
 # only listed for documentation purposes here.
 #
@@ -170,31 +169,28 @@ for name in classes:
     _classes[name].component = classes[name]
 classes = _classes
 
-# Class dependencies. If disabling classes above cause build errors,
-# it's likely a dependency issue. If so, define them here explicitly.
-
-classes["GoostEngine"].add_depencency(classes["InvokeState"])
-
-classes["GoostGeometry2D"].add_depencency(classes["PolyBoolean2D"])
-classes["GoostGeometry2D"].add_depencency(classes["PolyDecomp2D"])
-classes["GoostGeometry2D"].add_depencency(classes["PolyOffset2D"])
-
-classes["LightTexture"].add_depencency(classes["GradientTexture2D"])
-classes["LinkedList"].add_depencency(classes["ListNode"])
-
-classes["PolyBoolean2D"].add_depencency(classes["PolyBooleanParameters2D"])
-classes["PolyBoolean2D"].add_depencency(classes["PolyNode2D"])
-classes["PolyDecomp2D"].add_depencency(classes["PolyDecompParameters2D"])
-classes["PolyOffset2D"].add_depencency(classes["PolyOffsetParameters2D"])
-classes["PolyCircle2D"].add_depencency(classes["PolyNode2D"])
-classes["PolyRectangle2D"].add_depencency(classes["PolyNode2D"])
-classes["PolyShape2D"].add_depencency(classes["PolyNode2D"])
-
-classes["PolyCollisionShape2D"].add_depencency(classes["PolyShape2D"])
-classes["PolyCollisionShape2D"].add_depencency(classes["PolyNode2D"])
-
-classes["Random2D"].add_depencency(classes["GoostGeometry2D"])
-classes["Random2D"].add_depencency(classes["Random"])
+# Class dependencies. If disabling classes above using `custom.py` cause
+# compile/link errors or failing unit tests, it's likely a dependency issue.
+# If so, define them here explicitly so that they're automatically enabled.
+class_dependencies = {
+    "GoostEngine" : "InvokeState",
+    "GoostGeometry2D" : ["PolyBoolean2D", "PolyDecomp2D", "PolyOffset2D"],
+    "LightTexture" : "GradientTexture2D",
+    "LinkedList" : "ListNode",
+    "PolyBoolean2D" : ["PolyBooleanParameters2D", "PolyNode2D"],
+    "PolyDecomp2D" : "PolyDecompParameters2D",
+    "PolyOffset2D" : "PolyOffsetParameters2D",
+    "PolyCircle2D" : "PolyNode2D",
+    "PolyRectangle2D" : "PolyNode2D",
+    "PolyShape2D" : "PolyNode2D",
+    "PolyCollisionShape2D" : ["PolyShape2D", "PolyNode2D"],
+    "Random2D" : ["Random", "GoostGeometry2D"],
+}
+for name, dependencies in class_dependencies.items():
+    if isinstance(dependencies, str):
+        dependencies = [dependencies]
+    for d in dependencies:
+        classes[name].add_depencency(classes[d])
 
 
 def resolve_dependency(goost_class):
