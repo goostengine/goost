@@ -397,6 +397,8 @@ if __name__ == "__main__":
             f.write(":github_url: hide\n")
             f.write("\n")
             write_comment_warning(f)
+            f.write(".. _goost_api:\n")
+            f.write("\n")
             f.write("Goost API\n")
             f.write("=========\n")
             f.write("\n")
