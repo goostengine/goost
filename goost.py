@@ -268,19 +268,6 @@ def get_component_classes(component):
     return class_list
 
 
-config_template = """# custom.py
-
-components_enabled_by_default = True
-components = {
-    # "editor": False,
-}
-
-classes_enabled_by_default = True
-classes = {
-    # "LinkedList": False,
-}
-"""
-
 if __name__ == "__main__":
     import os
     import sys
@@ -289,30 +276,88 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--generate-config", action="store_true",
-            help="Generates `custom.py` file to configure Goost components and classes.")
+    parser.add_argument("--configure", action="store_true",
+            help="Generates `custom.py` file to configure Goost components and classes. "
+            "Can be called multiple times to update the existing file while preserving overridden options.")
 
     parser.add_argument("--generate-doc-api", metavar="<path>",
             help="Generates a list of classes per component in `.rst` format.")
 
     args = parser.parse_args()
 
-    if args.generate_config:
-        # Generate custom.py.
+    if args.configure:
+        # Generate or update custom.py.
         def write_config():
-            with open("custom.py", "w") as f:
-                f.write(config_template)
-
-        if os.path.exists("custom.py"):
-            print("Goost: The `custom.py` file already exists!")
+            scons_options = {} # The ones defined in SConstruct.
+            components_config = {}
+            components_enabled_by_default = True
+            classes_config = {}
+            classes_enabled_by_default = True
             try:
-                overwrite = input("Overwrite anyway? (y/N): ")
-                if overwrite.lower() == "y":
-                    write_config()
-            except KeyboardInterrupt:
-                print("n")
+                import custom
+                custom_attributes = [item for item in dir(custom) if not item.startswith("__")]
+                for attr in custom_attributes:
+                    if attr in ["components", "components_enabled_by_default", "classes", "classes_enabled_by_default"]:
+                        continue
+                    scons_options[attr] = getattr(custom, attr)
+
+                if hasattr(custom, "components"):
+                    components_config = custom.components
+                if hasattr(custom, "components_enabled_by_default"):
+                    components_enabled_by_default = custom.components_enabled_by_default
+                if hasattr(custom, "classes"):
+                    classes_config = custom.classes
+                if hasattr(custom, "classes_enabled_by_default"):
+                    classes_enabled_by_default = custom.classes_enabled_by_default
+            except ImportError:
+                pass
+
+            for name in get_component_list():
+                if name in components_config:
+                    continue
+                print("Goost: Adding new component: %s" % name)
+                components_config[name] = True
+
+            for name in classes:
+                if name in classes_config:
+                    continue
+                print("Goost: Adding new class: %s" % name)
+                classes_config[name] = True
+
+            with open("custom.py", "w") as f:
+                f.write("# custom.py\n")
+                for name, value in sorted(scons_options.items()):
+                    f.write('%s = "%s"\n' % (name, value))
+                f.write("\n")
+                f.write("components_enabled_by_default = %s\n" % components_enabled_by_default)
+                f.write("components = {\n")
+                for name, enabled in sorted(components_config.items()):
+                    f.write('    "%s": %s,\n' % (name, enabled))
+                f.write("}\n")
+                f.write("\n")
+                f.write("classes_enabled_by_default = %s\n" % classes_enabled_by_default)
+                f.write("classes = {\n")
+                for name, enabled in sorted(classes_config.items()):
+                    f.write('    "%s": %s,\n' % (name, enabled))
+                f.write("}\n")
+
+        custom_exists = os.path.exists("custom.py")
+        if not custom_exists:
+            print("Goost: Generating `custom.py` file ...")
         else:
-            write_config()
+            print("Goost: The `custom.py` file already exists, updating ...")
+
+        write_config()
+
+        if not custom_exists:
+            print()
+            print("Goost: Done configuring. Open `./custom.py` to customize components and classes to build.")
+            print("       You can run this command several times to update existing configuration.")
+            print("       Once done, run `scons` to start building Godot with Goost.")
+            print()
+            print("       If you'd like to know more, refer to official Goost documentation:")
+            print("         - https://goost.readthedocs.io/en/gd3/")
+            print()
 
     if args.generate_doc_api:
         output_path = args.generate_doc_api
