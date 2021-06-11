@@ -312,17 +312,21 @@ if __name__ == "__main__":
             except ImportError:
                 pass
 
+            update_count = 0
+
             for name in get_component_list():
                 if name in components_config:
                     continue
-                print("Goost: Adding new component: %s" % name)
-                components_config[name] = True
+                print("Goost: Adding new component: `%s`" % name)
+                update_count += 1
+                components_config[name] = components_enabled_by_default
 
             for name in classes:
                 if name in classes_config:
                     continue
-                print("Goost: Adding new class: %s" % name)
-                classes_config[name] = True
+                print("Goost: Adding new class: `%s`" % name)
+                update_count += 1
+                classes_config[name] = classes_enabled_by_default
 
             with open("custom.py", "w") as f:
                 f.write("# custom.py\n")
@@ -341,13 +345,17 @@ if __name__ == "__main__":
                     f.write('    "%s": %s,\n' % (name, enabled))
                 f.write("}\n")
 
+            return update_count
+
         custom_exists = os.path.exists("custom.py")
         if not custom_exists:
             print("Goost: Generating `custom.py` file ...")
         else:
-            print("Goost: The `custom.py` file already exists, updating ...")
+            print("Goost: Updating `custom.py` file ...")
 
-        write_config()
+        update_count = write_config()
+        if update_count == 0:
+            print("Goost: Already up-to-date.")
 
         if not custom_exists:
             print()
