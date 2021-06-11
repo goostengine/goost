@@ -119,14 +119,16 @@ class GoostClass:
     def add_depencency(self, goost_class):
         self.deps.append(goost_class)
 
-# A dictionary of classes currently implemented in the extension, excluding any
-# classes provided from within `modules/` directory.
+# Classes currently implemented in the extension.
 # 
-# This is used by `config.py::get_doc_classes()` and to disable each of the
-# class via user-defined `custom.py::goost_classes_disabled` array of classes.
+# This is used by `config.py::get_doc_classes()` and to configure each class of
+# interest the via user-defined `custom.py::classes` dictionary.
 #
 # The key is the class name, and value is component that this class is part of.
-# Only rightmost child components are specified here.
+# The list can contain classes provided by `modules/` directory, but they are
+# only listed for documentation purposes here.
+#
+# Only rightmost child components are specified.
 classes = {
     "GoostEngine": "core",
     "GoostGeometry2D": "geometry",
@@ -134,6 +136,7 @@ classes = {
     "GradientTexture2D": "scene",
     "GridRect": "gui",
     "ImageBlender": "image",
+    "ImageFrames": "image",  # modules/gif
     "ImageIndexed": "image",
     "InvokeState": "core",
     "LightTexture": "scene",
@@ -261,6 +264,14 @@ def get_class_components(name):
     return components
 
 
+def get_component_classes(component):
+    class_list = []
+    for n, c in classes.items():
+        if c.component == component:
+            class_list.append(n)
+    return class_list
+
+
 config_template = """# custom.py
 
 components_enabled_by_default = True
@@ -276,18 +287,26 @@ classes = {
 
 if __name__ == "__main__":
     import os
+    import sys
     import argparse
+    import subprocess
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--generate-config", action="store_true", required=True,
+
+    parser.add_argument("--generate-config", action="store_true",
             help="Generates `custom.py` file to configure Goost components and classes.")
+
+    parser.add_argument("--generate-doc-api", metavar="<path>",
+            help="Generates a list of classes per component in `.rst` format.")
+
     args = parser.parse_args()
 
-    def write_config():
-        with open("custom.py", "w") as f:
-            f.write(config_template)
-
     if args.generate_config:
+        # Generate custom.py.
+        def write_config():
+            with open("custom.py", "w") as f:
+                f.write(config_template)
+
         if os.path.exists("custom.py"):
             print("Goost: The `custom.py` file already exists!")
             try:
@@ -298,3 +317,92 @@ if __name__ == "__main__":
                 print("n")
         else:
             write_config()
+
+    if args.generate_doc_api:
+        output_path = args.generate_doc_api
+        if not os.path.exists(output_path):
+            os.makedirs(output_path)
+
+        def write_comment_warning(f):
+            f.write(".. THIS FILE IS GENERATED, DO NOT EDIT!\n")
+            f.write(".. Use `python goost.py --generate-doc-api` at Goost's source tree instead.\n\n")
+
+        # Generate Goost class reference.
+        if not os.path.exists("godot"):
+            print("Error: Cannot find `godot` repository at Goost's source tree.")
+            print("Please run `scons` command first.")
+            sys.exit(255)
+
+        subprocess.run([sys.executable,
+            "godot/doc/tools/makerst.py",
+            "godot/doc/classes",
+            "godot/modules",
+            "doc",
+            "modules",
+            "--output", output_path,
+            "--filter", "^(?!.*godot)",
+        ])
+
+        print("Generating Goost API per component... ")
+        with open(os.path.join(output_path, "index.rst"), "w") as f:
+            f.write(":github_url: hide\n")
+            f.write("\n")
+            write_comment_warning(f)
+            f.write("Goost API\n")
+            f.write("=========\n")
+            f.write("\n")
+            f.write("This is a list of all classes provided by Goost components.\n")
+            f.write("\n")
+            f.write("All components are enabled by default, unless overridden via command-line or\n"
+                    "configuration file, please refer to :ref:`doc_configuring_the_build` page for\n"
+                    "further instructions.\n")
+            f.write("\n")
+            for component in sorted(get_component_list()):
+                class_list = sorted(get_component_classes(component))
+                if not class_list:
+                    continue
+                f.write(".. toctree::\n")
+                f.write("    :maxdepth: 1\n")
+                f.write("    :caption: %s\n" % component.capitalize())
+                f.write("    :name: toc-component-%s\n" % component)
+                f.write("\n")
+                for class_name in class_list:
+                    f.write("    class_%s.rst\n" % class_name.lower())
+                f.write("\n")
+                parents = get_parent_components(component)
+                parents.reverse()
+                if parents:
+                    f.write("**%s** is part of: " % component.capitalize())
+                    for i in range(len(parents)):
+                        f.write(":ref:`toc-component-%s`" % parents[i])
+                        if i < len(parents) - 1:
+                            f.write(" **>** ")
+                    f.write("\n\n")
+
+        # User-facing component info to be included in `Components` sections.
+        # This includes a list of classes per component and CLI usage examples.
+        for component in sorted(get_component_list()):
+            class_list = sorted(get_component_classes(component))
+            # Using `rsti` extension to denote that it's not an actual document,
+            # but an include file used in other docs (prevent toctree warnings).
+            with open(os.path.join(output_path, "component_" + component + ".rsti"), "w") as f:
+                write_comment_warning(f)
+                f.write("Classes\n")
+                f.write("-------\n")
+                f.write("\n")
+                for class_name in class_list:
+                    f.write("* :ref:`%s<class_%s>`\n" % (class_name, class_name))
+                f.write("\n")
+                f.write("Usage\n")
+                f.write("-----\n")
+                f.write("\n")
+                f.write(".. code-block:: shell\n")
+                f.write("\n")
+                f.write("    # Disable %s component.\n" % component)
+                f.write("    scons goost_%s_enabled=no\n" % component)
+                f.write("\n")
+                f.write("    # Enable %s component, disable all others.\n" % component)
+                f.write("    scons goost_components_enabled=no goost_%s_enabled=yes\n" % component)
+                f.write("\n")
+
+        print("Done. You can find generated files at `%s`" % os.path.abspath(output_path))

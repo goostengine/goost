@@ -1,6 +1,7 @@
 # Auto generated files
 *.gen.*
 *_gen.*
+/doc/components
 
 # Compiled Object files
 *.slo
