@@ -14,6 +14,10 @@ def make_classes_enabled(target, source, env):
     h.write("\n")
     h.write("namespace goost {\n")
     for c in env["goost_classes_disabled"]:
+        if c in goost.module_classes:
+            # Modules are self-contained just like Goost,
+            # we cannot disable individual classes from there.
+            continue
         h.write("template <> void register_class<%s>();\n" % c)
     h.write("}\n")
     h.close()
@@ -28,6 +32,10 @@ def make_classes_enabled(target, source, env):
     cpp.write("\n")
     cpp.write("namespace goost {\n")
     for c in env["goost_classes_disabled"]:
+        if c in goost.module_classes:
+            # Modules are self-contained just like Goost,
+            # we cannot disable individual classes from there.
+            continue
         cpp.write("template <> void register_class<%s>() {}\n" % c)
     cpp.write("}\n")
     cpp.close()

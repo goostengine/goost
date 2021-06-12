@@ -163,6 +163,13 @@ classes = {
     "VisualShape2D": "scene",
 }
 
+# This is a list of all classes registered from within `modules/` directory.
+# These cannot be disabled via `custom.py` configuration file.
+module_classes = [
+    "ImageFrames",
+    "GDScriptTranspiler",
+]
+
 # Instantiate `GoostClass` nodes.
 _classes = {}
 for name in classes:
@@ -363,6 +370,10 @@ if __name__ == "__main__":
 
             for name in classes:
                 if name in classes_config:
+                    continue
+                if name in module_classes:
+                    # Modules are self-contained just like Goost,
+                    # we cannot enable/disable individual classes from there.
                     continue
                 if must_update_config or not custom_exists:
                     print("Goost: Adding new class: `%s`" % name)
