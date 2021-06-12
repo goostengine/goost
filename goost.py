@@ -1,15 +1,18 @@
 # General informational properties of the project, including version.
 name = "Goost: Godot Engine Extension"
 short_name = "goost"
-url = "https://github.com/goostengine/goost"
-website = "https://goostengine.github.io/"
 version = {
     "major": 1,
     "minor": 1,
     "patch": 0,
+    "branch": "gd3",
     "status": "beta",
     "year": 2021,
 }
+url = "https://github.com/goostengine/goost"
+doc_url = "https://goost.readthedocs.io/en/%s/" % version["branch"]
+website = "https://goostengine.github.io/"
+
 # The following is a complete list of components this extension provides.
 # Components can be disabled with build options matching `goost_*_enabled=no`.
 # A branch of components can be disabled as well, like: `goost_core_enabled=no`.
@@ -274,57 +277,95 @@ if __name__ == "__main__":
     import argparse
     import subprocess
 
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(prog="goost")
+    sub = parser.add_subparsers(dest="tool")
 
-    parser.add_argument("--configure", action="store_true",
-            help="Generates `custom.py` file to configure Goost components and classes. "
-            "Can be called multiple times to update the existing file while preserving overridden options.")
+    parser_config = sub.add_parser("config",
+            help="Configure Goost components and classes.")
+    config_action = parser_config.add_mutually_exclusive_group()
 
-    parser.add_argument("--generate-doc-api", metavar="<path>",
+    config_action.add_argument("--enable", action="store_true",
+            help="Enable all components and classes by default.")
+
+    config_action.add_argument("--disable", action="store_true",
+            help="Disable all components and classes by default.")
+
+    config_action.add_argument("--update", action="store_true",
+            help="Update existing configuration (default).")
+
+    parser_doc = sub.add_parser("doc", help="Generate Goost API documentation.")
+    parser_doc.add_argument("--generate-api", metavar="<path>", required=True,
             help="Generates a list of classes per component in `.rst` format.")
 
     args = parser.parse_args()
 
-    if args.configure:
+    if args.tool == "config":
         # Generate or update custom.py.
+        must_overwrite_config = args.enable or args.disable
+        must_update_config = not must_overwrite_config
+
+        enable_by_default = True
+        if args.enable:
+            enable_by_default = True
+        elif args.disable:
+            enable_by_default = False
+
+        custom_exists = os.path.exists("custom.py")
+
         def write_config():
             scons_options = {} # The ones defined in SConstruct.
             components_config = {}
-            components_enabled_by_default = True
+            components_enabled_by_default = enable_by_default
             classes_config = {}
-            classes_enabled_by_default = True
-            try:
-                import custom
-                custom_attributes = [item for item in dir(custom) if not item.startswith("__")]
-                for attr in custom_attributes:
-                    if attr in ["components", "components_enabled_by_default", "classes", "classes_enabled_by_default"]:
-                        continue
-                    scons_options[attr] = getattr(custom, attr)
+            classes_enabled_by_default = enable_by_default
 
-                if hasattr(custom, "components"):
-                    components_config = custom.components
-                if hasattr(custom, "components_enabled_by_default"):
-                    components_enabled_by_default = custom.components_enabled_by_default
-                if hasattr(custom, "classes"):
-                    classes_config = custom.classes
-                if hasattr(custom, "classes_enabled_by_default"):
-                    classes_enabled_by_default = custom.classes_enabled_by_default
-            except ImportError:
-                pass
+            if must_update_config:
+                try:
+                    import custom
+                    custom_attributes = [item for item in dir(custom) if not item.startswith("__")]
+                    for attr in custom_attributes:
+                        if attr in ["components", "components_enabled_by_default", "classes", "classes_enabled_by_default"]:
+                            continue
+                        scons_options[attr] = getattr(custom, attr)
+
+                    if hasattr(custom, "components"):
+                        components_config = custom.components
+                    if hasattr(custom, "components_enabled_by_default"):
+                        components_enabled_by_default = custom.components_enabled_by_default
+                    if hasattr(custom, "classes"):
+                        classes_config = custom.classes
+                    if hasattr(custom, "classes_enabled_by_default"):
+                        classes_enabled_by_default = custom.classes_enabled_by_default
+                except ImportError:
+                    pass # Does not exist yet.
+                except SyntaxError as e:
+                    print("Goost: " + str(e))
+                    def skip_and_exit():
+                        print("Goost: Skipping configuration.")
+                        sys.exit(255)
+                    try:
+                        answer = input("Would you like to overwrite `custom.py`? (y/N): ")
+                        if not answer or answer.lower() == "n":
+                            skip_and_exit()
+                    except KeyboardInterrupt:
+                        print("n")
+                        skip_and_exit()
 
             update_count = 0
 
             for name in get_component_list():
                 if name in components_config:
                     continue
-                print("Goost: Adding new component: `%s`" % name)
+                if must_update_config or not custom_exists:
+                    print("Goost: Adding new component: `%s`" % name)
                 update_count += 1
                 components_config[name] = components_enabled_by_default
 
             for name in classes:
                 if name in classes_config:
                     continue
-                print("Goost: Adding new class: `%s`" % name)
+                if must_update_config or not custom_exists:
+                    print("Goost: Adding new class: `%s`" % name)
                 update_count += 1
                 classes_config[name] = classes_enabled_by_default
 
@@ -333,42 +374,76 @@ if __name__ == "__main__":
                 for name, value in sorted(scons_options.items()):
                     f.write('%s = "%s"\n' % (name, value))
                 f.write("\n")
+
                 f.write("components_enabled_by_default = %s\n" % components_enabled_by_default)
                 f.write("components = {\n")
+                components_max_length = len(max(components_config.keys(), key=len))
                 for name, enabled in sorted(components_config.items()):
-                    f.write('    "%s": %s,\n' % (name, enabled))
+                    # Write aligned, makes it easier to edit.
+                    f.write('    %-0*s %s,\n' % (components_max_length + 3, '"%s":' %  name, enabled))
                 f.write("}\n")
                 f.write("\n")
+
                 f.write("classes_enabled_by_default = %s\n" % classes_enabled_by_default)
                 f.write("classes = {\n")
+                classes_max_length = len(max(classes_config.keys(), key=len))
                 for name, enabled in sorted(classes_config.items()):
-                    f.write('    "%s": %s,\n' % (name, enabled))
+                    class_components = get_class_components(name)
+                    class_components.reverse()
+                    comps = ""
+                    for i in range(len(class_components)):
+                        comps += class_components[i]
+                        if i < len(class_components) - 1:
+                            comps += " > "
+                    # Write aligned, makes it easier to edit.
+                    f.write('    %-0*s %s,  # %s\n' % (classes_max_length + 3, '"%s":' %  name, enabled, comps))
                 f.write("}\n")
+
+                # Add links to each of the class in the Goost API documentation.
+                def write_row_line(f):
+                    f.write("#" + "=" * 119 + "\n")
+                f.write("\n")
+                write_row_line(f)
+                f.write("# Goost API:\n")
+                write_row_line(f)
+                for name in classes_config:
+                    f.write("# %-0*s" % (classes_max_length + 1, name) + doc_url + "classes/class_%s.html\n" % name.lower())
+                write_row_line(f)
 
             return update_count
 
-        custom_exists = os.path.exists("custom.py")
         if not custom_exists:
             print("Goost: Generating `custom.py` file ...")
+        elif args.enable:
+            print("Goost: Enabling all components and classes in `custom.py` by default ...")
+        elif args.disable:
+            print("Goost: Disabling all components and classes in `custom.py` by default ...")
         else:
             print("Goost: Updating `custom.py` file ...")
 
         update_count = write_config()
-        if update_count == 0:
+        if update_count == 0 and must_update_config:
             print("Goost: Already up-to-date.")
 
         if not custom_exists:
+            print("Done generating Goost configuration file.")
+            print("Edit `./custom.py` to customize components and classes to build.")
+            print("You can run this command several times to update existing configuration.")
             print()
-            print("Goost: Done configuring. Open `./custom.py` to customize components and classes to build.")
-            print("       You can run this command several times to update existing configuration.")
-            print("       Once done, run `scons` to start building Godot with Goost.")
+            if args.enable:
+                print("All components/classes are enabled by default. If you'd like to disable")
+                print("them all by default, run the following command:")
+                print()
+                print("    python goost.py config --disable")
+                print()
+            print("Once done, run `scons` to start building Godot with Goost.")
             print()
-            print("       If you'd like to know more, refer to official Goost documentation:")
-            print("         - https://goost.readthedocs.io/en/gd3/")
+            print("If you'd like to know more, refer to official Goost documentation:")
+            print("  - https://goost.readthedocs.io/en/gd3/")
             print()
 
-    if args.generate_doc_api:
-        output_path = args.generate_doc_api
+    elif args.tool == "doc" and args.generate_api:
+        output_path = args.generate_api
         if not os.path.exists(output_path):
             os.makedirs(output_path)
 

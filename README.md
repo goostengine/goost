@@ -88,7 +88,7 @@ proceed to [GitHub Actions tab](https://github.com/goostengine/goost/actions) (h
 ```sh
 git clone https://github.com/goostengine/goost
 cd goost
-python goost.py --configure # Optional, pick components to build.
+python goost.py config # Optional, pick components to build.
 scons
 ```
 
