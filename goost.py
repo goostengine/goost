@@ -336,13 +336,25 @@ if __name__ == "__main__":
                         scons_options[attr] = getattr(custom, attr)
 
                     if hasattr(custom, "components"):
-                        components_config = custom.components
+                        for name, enabled in custom.components.items():
+                            if not name in get_component_list():
+                                print("Goost: Removing non-existing component: %s" % name)
+                                continue
+                            components_config[name] = enabled
+
                     if hasattr(custom, "components_enabled_by_default"):
                         components_enabled_by_default = custom.components_enabled_by_default
+
                     if hasattr(custom, "classes"):
-                        classes_config = custom.classes
+                        for name, enabled in custom.classes.items():
+                            if not name in classes:
+                                print("Goost: Removing non-existing class: %s" % name)
+                                continue
+                            classes_config[name] = enabled
+
                     if hasattr(custom, "classes_enabled_by_default"):
                         classes_enabled_by_default = custom.classes_enabled_by_default
+
                 except ImportError:
                     pass # Does not exist yet.
                 except SyntaxError as e:
