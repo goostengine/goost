@@ -14,6 +14,7 @@
 #include "scene/resources/gradient_texture_2d.h"
 #include "scene/resources/light_texture.h"
 
+#include "core/script/multiscript/multiscript.h"
 #include "core/goost_engine.h"
 #include "core/image/goost_image.h"
 #include "core/image/goost_image_bind.h"

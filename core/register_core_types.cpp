@@ -1,12 +1,14 @@
 #include "register_core_types.h"
-#include "goost/register_types.h"
+
 #include "goost/classes_enabled.gen.h"
+#include "goost/register_types.h"
 
 #include "core/engine.h"
 #include "scene/main/scene_tree.h"
 
 #include "image/register_image_types.h"
 #include "math/register_math_types.h"
+#include "script/register_script_types.h"
 
 #ifdef TOOLS_ENABLED
 #include "editor/editor_node.h"
@@ -47,6 +49,9 @@ void register_core_types() {
 #ifdef GOOST_MATH_ENABLED
 	register_math_types();
 #endif
+#ifdef GOOST_SCRIPT_ENABLED
+	register_script_types();
+#endif
 }
 
 void unregister_core_types() {
@@ -58,6 +63,9 @@ void unregister_core_types() {
 #endif
 #ifdef GOOST_MATH_ENABLED
 	unregister_math_types();
+#endif
+#ifdef GOOST_SCRIPT_ENABLED
+	unregister_script_types();
 #endif
 }
 

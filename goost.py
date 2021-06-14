@@ -19,6 +19,7 @@ website = "https://goostengine.github.io/"
 #
 # Components may not necessarily have structural meaning.
 components = [
+    "core/script",
     "core/image",
     "core/math/geometry",
     "scene/physics",
@@ -144,6 +145,7 @@ classes = {
     "LightTexture": "scene",
     "LinkedList": "core",
     "ListNode": "core",
+    "MultiScript": "script",
     "PolyBoolean2D": "geometry",
     "PolyBooleanParameters2D": "geometry",
     "PolyDecomp2D": "geometry",
