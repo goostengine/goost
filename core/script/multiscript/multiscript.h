@@ -19,6 +19,8 @@ class Owner : public Object {
 public:
 	static void _bind_methods();
 
+	Object* get_owner() const { return real_owner; }
+
 	virtual Variant call(const StringName &p_method, const Variant **p_args, int p_argcount, Variant::CallError &r_error);
 	virtual void call_multilevel(const StringName &p_method, const Variant **p_args, int p_argcount);
 	virtual void call_multilevel_reversed(const StringName &p_method, const Variant **p_args, int p_argcount);
@@ -91,10 +93,10 @@ public:
 
 	virtual String get_node_type() const { return ""; }
 
-	void set_script(int p_idx, const Ref<Script> &p_script);
-	Ref<Script> get_script(int p_idx) const;
-	void remove_script(int p_idx);
-	void add_script(const Ref<Script> &p_script);
+	void add_owner_script(const Ref<Script> &p_script);
+	void remove_owner_script(int p_idx);
+	void set_owner_script(int p_idx, const Ref<Script> &p_script);
+	Ref<Script> get_owner_script(int p_idx) const;
 
 	virtual ScriptLanguage *get_language() const;
 

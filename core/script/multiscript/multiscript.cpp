@@ -236,15 +236,15 @@ bool MultiScript::_set(const StringName &p_name, const Variant &p_value) {
 
 		if (idx < scripts.size()) {
 			if (s.is_null()) {
-				remove_script(idx);
+				remove_owner_script(idx);
 			} else {
-				set_script(idx, s);
+				set_owner_script(idx, s);
 			}
 		} else if (idx == scripts.size()) {
 			if (s.is_null()) {
 				return false;
 			}
-			add_script(s);
+			add_owner_script(s);
 		} else {
 			return false;
 		}
@@ -267,7 +267,7 @@ bool MultiScript::_get(const StringName &p_name, Variant &r_ret) const {
 		ERR_FAIL_COND_V(idx < 0, false);
 
 		if (idx < scripts.size()) {
-			r_ret = get_script(idx);
+			r_ret = get_owner_script(idx);
 			return true;
 		} else if (idx == scripts.size()) {
 			r_ret = Ref<Script>();
@@ -288,7 +288,7 @@ void MultiScript::_get_property_list(List<PropertyInfo> *p_list) const {
 	}
 }
 
-void MultiScript::set_script(int p_idx, const Ref<Script> &p_script) {
+void MultiScript::set_owner_script(int p_idx, const Ref<Script> &p_script) {
 	_THREAD_SAFE_METHOD_
 
 	ERR_FAIL_INDEX(p_idx, scripts.size());
@@ -310,14 +310,14 @@ void MultiScript::set_script(int p_idx, const Ref<Script> &p_script) {
 	}
 }
 
-Ref<Script> MultiScript::get_script(int p_idx) const {
+Ref<Script> MultiScript::get_owner_script(int p_idx) const {
 	_THREAD_SAFE_METHOD_
 	ERR_FAIL_INDEX_V(p_idx, scripts.size(), Ref<Script>());
 
 	return scripts[p_idx];
 }
 
-void MultiScript::add_script(const Ref<Script> &p_script) {
+void MultiScript::add_owner_script(const Ref<Script> &p_script) {
 	_THREAD_SAFE_METHOD_
 
 	ERR_FAIL_COND(p_script.is_null());
@@ -340,7 +340,7 @@ void MultiScript::add_script(const Ref<Script> &p_script) {
 	_change_notify();
 }
 
-void MultiScript::remove_script(int p_idx) {
+void MultiScript::remove_owner_script(int p_idx) {
 	_THREAD_SAFE_METHOD_
 
 	ERR_FAIL_INDEX(p_idx, scripts.size());
@@ -406,7 +406,10 @@ Error MultiScript::reload(bool p_keep_state) {
 }
 
 void MultiScript::_bind_methods() {
-	// Nothing to do.
+	ClassDB::bind_method(D_METHOD("add_owner_script", "script"), &MultiScript::add_owner_script);
+	ClassDB::bind_method(D_METHOD("remove_owner_script", "index"), &MultiScript::remove_owner_script);
+	ClassDB::bind_method(D_METHOD("set_owner_script", "index", "script"), &MultiScript::set_owner_script);
+	ClassDB::bind_method(D_METHOD("get_owner_script", "index"), &MultiScript::get_owner_script);
 }
 
 ScriptLanguage *MultiScript::get_language() const {
@@ -513,9 +516,8 @@ MultiScriptLanguage::MultiScriptLanguage() {
 MultiScriptLanguage::~MultiScriptLanguage() {}
 
 void Owner::_bind_methods() {
-	// ClassDB::bind_method("call", &Owner::call);
-	// ClassDB::bind_method("call_multilevel", &Owner::call_multilevel);
-	// ClassDB::bind_method("call_multilevel_reversed", &Owner::call_multilevel_reversed);
+	ClassDB::bind_method("get_owner", &Owner::get_owner);
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "owner"), "", "get_owner");
 }
 
 Variant Owner::call(const StringName &p_method, const Variant **p_args, int p_argcount, Variant::CallError &r_error) {

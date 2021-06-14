@@ -11,6 +11,8 @@ class ScriptB extends Owner:
 	var foo_b = "Foo B"
 	func bar_b():
 		return "Bar B"
+	func test_get_owner():
+		return owner
 
 
 func test_two_scripts():
@@ -18,9 +20,11 @@ func test_two_scripts():
 	ms.script_a = ScriptA
 	ms.script_b = ScriptB
 
-	var n = Node.new()
+	var n = Node.new() # Object *p_this
 	n.set_script(ms)
 	add_child_autofree(n)
+
+	assert_true(n.test_get_owner() == n)
 
 	assert_eq(n.foo_a, "Foo A")
 	assert_eq(n.bar_a(), "Bar A")
