@@ -138,10 +138,6 @@ void MultiScriptInstance::notification(int p_notification) {
 	}
 }
 
-Ref<Script> MultiScriptInstance::get_script() const {
-	return owner;
-}
-
 ScriptLanguage *MultiScriptInstance::get_language() {
 	return MultiScriptLanguage::get_singleton();
 }
@@ -368,10 +364,6 @@ void MultiScript::remove_instance(Object *p_object) {
 	instances.erase(p_object);
 }
 
-bool MultiScript::can_instance() const {
-	return true;
-}
-
 StringName MultiScript::get_instance_base_type() const {
 	return StringName();
 }
@@ -405,28 +397,12 @@ bool MultiScript::instance_has(const Object *p_this) const {
 	return instances.has((Object *)p_this);
 }
 
-bool MultiScript::has_source_code() const {
-	return false;
-}
-
-String MultiScript::get_source_code() const {
-	return "";
-}
-
-void MultiScript::set_source_code(const String &p_code) {
-	// Nothing to do.
-}
-
 Error MultiScript::reload(bool p_keep_state) {
 	for (int i = 0; i < scripts.size(); i++) {
 		Ref<Script> script = scripts[i];
 		script->reload(p_keep_state);
 	}
 	return OK;
-}
-
-String MultiScript::get_node_type() const {
-	return "";
 }
 
 void MultiScript::_bind_methods() {
@@ -439,8 +415,7 @@ ScriptLanguage *MultiScript::get_language() const {
 
 ///////////////
 
-MultiScript::MultiScript() {
-}
+MultiScript::MultiScript() {}
 
 MultiScript::~MultiScript() {
 	for (int i = 0; i < script_instances.size(); i++) {
@@ -517,36 +492,6 @@ void MultiScript::update_exports() {
 
 MultiScriptLanguage *MultiScriptLanguage::singleton = nullptr;
 
-MultiScriptLanguage *MultiScriptLanguage::get_singleton() {
-	return singleton;
-}
-
-String MultiScriptLanguage::get_name() const {
-	return "MultiScript";
-}
-
-void MultiScriptLanguage::init() {}
-
-String MultiScriptLanguage::get_type() const {
-	return "MultiScript";
-}
-
-String MultiScriptLanguage::get_extension() const {
-	return "";
-}
-
-Error MultiScriptLanguage::execute_file(const String &p_path) {
-	return OK;
-}
-
-void MultiScriptLanguage::finish() {}
-
-void MultiScriptLanguage::get_reserved_words(List<String> *p_words) const {}
-
-void MultiScriptLanguage::get_comment_delimiters(List<String> *p_delimiters) const {}
-
-void MultiScriptLanguage::get_string_delimiters(List<String> *p_delimiters) const {}
-
 Ref<Script> MultiScriptLanguage::get_template(const String &p_class_name, const String &p_base_class_name) const {
 	MultiScript *s = memnew(MultiScript);
 	s->base_class_name = p_base_class_name;
@@ -555,48 +500,6 @@ Ref<Script> MultiScriptLanguage::get_template(const String &p_class_name, const 
 
 Script *MultiScriptLanguage::create_script() const {
 	return memnew(MultiScript);
-}
-
-bool MultiScriptLanguage::has_named_classes() const {
-	return false;
-}
-
-int MultiScriptLanguage::find_function(const String &p_function, const String &p_code) const {
-	return -1;
-}
-
-String MultiScriptLanguage::make_function(const String &p_class, const String &p_name, const PoolStringArray &p_args) const {
-	return "";
-}
-
-String MultiScriptLanguage::debug_get_error() const {
-	return "";
-}
-
-int MultiScriptLanguage::debug_get_stack_level_count() const {
-	return 0;
-}
-
-int MultiScriptLanguage::debug_get_stack_level_line(int p_level) const {
-	return 0;
-}
-
-String MultiScriptLanguage::debug_get_stack_level_function(int p_level) const {
-	return "";
-}
-
-String MultiScriptLanguage::debug_get_stack_level_source(int p_level) const {
-	return "";
-}
-
-void MultiScriptLanguage::debug_get_stack_level_locals(int p_level, List<String> *p_locals, List<Variant> *p_values, int p_max_subitems, int p_max_depth) {}
-
-void MultiScriptLanguage::debug_get_stack_level_members(int p_level, List<String> *p_members, List<Variant> *p_values, int p_max_subitems, int p_max_depth) {}
-
-void MultiScriptLanguage::debug_get_globals(List<String> *p_locals, List<Variant> *p_values, int p_max_subitems, int p_max_depth) {}
-
-String MultiScriptLanguage::debug_parse_stack_level_expression(int p_level, const String &p_expression, int p_max_subitems, int p_max_depth) {
-	return "";
 }
 
 void MultiScriptLanguage::get_recognized_extensions(List<String> *p_extensions) const {}
@@ -608,35 +511,6 @@ MultiScriptLanguage::MultiScriptLanguage() {
 }
 
 MultiScriptLanguage::~MultiScriptLanguage() {}
-
-void MultiScriptLanguage::auto_indent_code(String &p_code, int p_from_line, int p_to_line) const {
-}
-
-void MultiScriptLanguage::add_global_constant(const StringName &p_variable, const Variant &p_value) {
-}
-
-void MultiScriptLanguage::reload_all_scripts() {
-}
-
-void MultiScriptLanguage::reload_tool_script(const Ref<Script> &p_script, bool p_soft_reload) {
-}
-
-void MultiScriptLanguage::get_public_constants(List<Pair<String, Variant>> *p_constants) const {
-}
-
-void MultiScriptLanguage::profiling_start() {
-}
-
-void MultiScriptLanguage::profiling_stop() {
-}
-
-int MultiScriptLanguage::profiling_get_accumulated_data(ScriptLanguage::ProfilingInfo *p_info_arr, int p_info_max) {
-	return 0;
-}
-
-int MultiScriptLanguage::profiling_get_frame_data(ScriptLanguage::ProfilingInfo *p_info_arr, int p_info_max) {
-	return 0;
-}
 
 void Owner::_bind_methods() {
 	// ClassDB::bind_method("call", &Owner::call);
