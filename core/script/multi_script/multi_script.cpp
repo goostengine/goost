@@ -389,6 +389,7 @@ ScriptInstance *MultiScript::instance_create(Object *p_this) {
 	}
 	instances[p_this] = msi;
 	p_this->_change_notify();
+
 	return msi;
 }
 

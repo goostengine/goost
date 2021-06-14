@@ -43,7 +43,7 @@ public:
 	virtual void call_multilevel(const StringName &p_method, const Variant **p_args, int p_argcount);
 	virtual void notification(int p_notification);
 
-	virtual Ref<Script> get_script() const { return owner; }
+	virtual Ref<Script> get_script() const { return Ref<MultiScript>(owner); }
 
 	virtual ScriptLanguage *get_language();
 	virtual ~MultiScriptInstance();
