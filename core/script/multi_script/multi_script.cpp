@@ -1,4 +1,4 @@
-#include "multiscript.h"
+#include "multi_script.h"
 
 bool MultiScriptInstance::set(const StringName &p_name, const Variant &p_value) {
 	ScriptInstance *const *sarr = instances.ptr();

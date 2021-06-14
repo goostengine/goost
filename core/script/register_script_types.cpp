@@ -3,7 +3,7 @@
 #include "goost/register_types.h"
 #include "goost/classes_enabled.gen.h"
 
-#include "multiscript/multiscript.h"
+#include "multi_script/multi_script.h"
 
 #include "core/script_language.h"
 
