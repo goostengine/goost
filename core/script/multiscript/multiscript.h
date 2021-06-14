@@ -1,37 +1,11 @@
-/*************************************************************************/
-/*  multiscript.h                                                        */
-/*************************************************************************/
-/*                       This file is part of:                           */
-/*                           GODOT ENGINE                                */
-/*                    http://www.godotengine.org                         */
-/*************************************************************************/
-/* Copyright (c) 2007-2017 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2017 Godot Engine contributors (cf. AUTHORS.md)    */
-/*                                                                       */
-/* Permission is hereby granted, free of charge, to any person obtaining */
-/* a copy of this software and associated documentation files (the       */
-/* "Software"), to deal in the Software without restriction, including   */
-/* without limitation the rights to use, copy, modify, merge, publish,   */
-/* distribute, sublicense, and/or sell copies of the Software, and to    */
-/* permit persons to whom the Software is furnished to do so, subject to */
-/* the following conditions:                                             */
-/*                                                                       */
-/* The above copyright notice and this permission notice shall be        */
-/* included in all copies or substantial portions of the Software.       */
-/*                                                                       */
-/* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,       */
-/* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF    */
-/* MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.*/
-/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY  */
-/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,  */
-/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE     */
-/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
-/*************************************************************************/
-#ifndef MULTISCRIPT_H
-#define MULTISCRIPT_H
+#ifndef GOOST_MULTISCRIPT_H
+#define GOOST_MULTISCRIPT_H
 
-#include "os/thread_safe.h"
-#include "script_language.h"
+// Based on unreleased and subsequently removed MultiScript support
+// in previous versions of Godot: https://github.com/godotengine/godot/pull/8718
+
+#include "core/os/thread_safe.h"
+#include "core/script_language.h"
 
 class MultiScript;
 
@@ -52,9 +26,9 @@ public:
 
 class MultiScriptInstance : public ScriptInstance {
 	friend class MultiScript;
-	mutable Vector<ScriptInstance *> instances;
+	Vector<ScriptInstance *> instances;
 	Object *object;
-	mutable MultiScript *owner;
+	MultiScript *owner;
 
 public:
 	virtual bool set(const StringName &p_name, const Variant &p_value);
@@ -75,8 +49,8 @@ public:
 	// ScriptInstance interface
 public:
 	Variant::Type get_property_type(const StringName &p_name, bool *r_is_valid) const;
-	RPCMode get_rpc_mode(const StringName &p_method) const;
-	RPCMode get_rset_mode(const StringName &p_variable) const;
+	virtual MultiplayerAPI::RPCMode get_rpc_mode(const StringName &p_method) const;
+	virtual MultiplayerAPI::RPCMode get_rset_mode(const StringName &p_variable) const;
 };
 
 class MultiScript : public Script {
@@ -114,6 +88,7 @@ public:
 	virtual Error reload(bool p_keep_state = false);
 
 	virtual bool is_tool() const;
+	virtual bool is_valid() const;
 
 	virtual String get_node_type() const;
 
@@ -155,17 +130,18 @@ public:
 
 	/* EDITOR FUNCTIONS */
 	virtual void get_reserved_words(List<String> *p_words) const;
+	virtual bool is_control_flow_keyword(String p_keyword) const { return false; }
 	virtual void get_comment_delimiters(List<String> *p_delimiters) const;
 	virtual void get_string_delimiters(List<String> *p_delimiters) const;
 	virtual Ref<Script> get_template(const String &p_class_name, const String &p_base_class_name) const;
-	virtual bool validate(const String &p_script, int &r_line_error, int &r_col_error, String &r_test_error, const String &p_path = "", List<String> *r_fn = NULL) const;
+	virtual bool validate(const String &p_script, int &r_line_error, int &r_col_error, String &r_test_error, const String &p_path = "", List<String> *r_fn = nullptr, List<ScriptLanguage::Warning> *r_warnings = nullptr, Set<int> *r_safe_lines = nullptr) const { return true; }
 	virtual Script *create_script() const;
 	virtual bool has_named_classes() const;
+	virtual bool supports_builtin_mode() const { return true; }
 	virtual int find_function(const String &p_function, const String &p_code) const;
 	virtual String make_function(const String &p_class, const String &p_name, const PoolStringArray &p_args) const;
 
 	/* DEBUGGER FUNCTIONS */
-
 	virtual String debug_get_error() const;
 	virtual int debug_get_stack_level_count() const;
 	virtual int debug_get_stack_level_line(int p_level) const;
@@ -197,4 +173,4 @@ public:
 	int profiling_get_frame_data(ProfilingInfo *p_info_arr, int p_info_max);
 };
 
-#endif // MULTISCRIPT_H
+#endif // GOOST_MULTISCRIPT_H
