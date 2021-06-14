@@ -9,8 +9,8 @@
 
 class MultiScript;
 
-class Multi : public Object {
-	GDCLASS(Multi, Object)
+class Owner : public Object {
+	GDCLASS(Owner, Object)
 
 	friend class MultiScript;
 
@@ -46,7 +46,6 @@ public:
 	virtual ScriptLanguage *get_language();
 	virtual ~MultiScriptInstance();
 
-	// ScriptInstance interface
 public:
 	Variant::Type get_property_type(const StringName &p_name, bool *r_is_valid) const;
 	virtual MultiplayerAPI::RPCMode get_rpc_mode(const StringName &p_method) const;
@@ -63,7 +62,7 @@ class MultiScript : public Script {
 	StringName base_class_name;
 
 	Vector<Ref<Script> > scripts;
-	Vector<Multi *> script_instances;
+	Vector<Owner *> script_instances;
 
 	Map<Object *, MultiScriptInstance *> instances;
 
@@ -160,7 +159,6 @@ public:
 	MultiScriptLanguage();
 	virtual ~MultiScriptLanguage();
 
-	// ScriptLanguage interface
 public:
 	void auto_indent_code(String &p_code, int p_from_line, int p_to_line) const;
 	void add_global_constant(const StringName &p_variable, const Variant &p_value);
