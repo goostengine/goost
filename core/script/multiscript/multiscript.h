@@ -9,8 +9,8 @@
 
 class MultiScript;
 
-class Owner : public Object {
-	GDCLASS(Owner, Object)
+class MultiScriptOwner : public Object {
+	GDCLASS(MultiScriptOwner, Object)
 
 	friend class MultiScript;
 
@@ -64,7 +64,7 @@ class MultiScript : public Script {
 	StringName base_class_name;
 
 	Vector<Ref<Script> > scripts;
-	Vector<Owner *> script_instances;
+	Vector<MultiScriptOwner *> script_instances;
 
 	Map<Object *, MultiScriptInstance *> instances;
 

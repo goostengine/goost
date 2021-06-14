@@ -15,8 +15,7 @@ void register_script_types() {
 	script_multi_script = memnew(MultiScriptLanguage);
 	ScriptServer::register_language(script_multi_script);
 	ClassDB::register_class<MultiScript>();
-
-	ClassDB::register_class<Owner>();
+	ClassDB::register_class<MultiScriptOwner>();
 }
 
 void unregister_script_types() {

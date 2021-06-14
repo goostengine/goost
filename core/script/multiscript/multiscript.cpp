@@ -321,7 +321,7 @@ void MultiScript::add_owner_script(const Ref<Script> &p_script) {
 	_THREAD_SAFE_METHOD_
 
 	ERR_FAIL_COND(p_script.is_null());
-	Owner *script_owner = memnew(Owner);
+	MultiScriptOwner *script_owner = memnew(MultiScriptOwner);
 	script_instances.push_back(script_owner);
 	scripts.push_back(p_script);
 	Ref<Script> s = p_script;
@@ -515,25 +515,25 @@ MultiScriptLanguage::MultiScriptLanguage() {
 
 MultiScriptLanguage::~MultiScriptLanguage() {}
 
-void Owner::_bind_methods() {
-	ClassDB::bind_method("get_owner", &Owner::get_owner);
+void MultiScriptOwner::_bind_methods() {
+	ClassDB::bind_method("get_owner", &MultiScriptOwner::get_owner);
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "owner"), "", "get_owner");
 }
 
-Variant Owner::call(const StringName &p_method, const Variant **p_args, int p_argcount, Variant::CallError &r_error) {
+Variant MultiScriptOwner::call(const StringName &p_method, const Variant **p_args, int p_argcount, Variant::CallError &r_error) {
 	if (real_owner) {
 		return real_owner->call(p_method, p_args, p_argcount, r_error);
 	}
 	return Variant();
 }
 
-void Owner::call_multilevel(const StringName &p_method, const Variant **p_args, int p_argcount) {
+void MultiScriptOwner::call_multilevel(const StringName &p_method, const Variant **p_args, int p_argcount) {
 	if (real_owner) {
 		real_owner->call_multilevel(p_method, p_args, p_argcount);
 	}
 }
 
-void Owner::call_multilevel_reversed(const StringName &p_method, const Variant **p_args, int p_argcount) {
+void MultiScriptOwner::call_multilevel_reversed(const StringName &p_method, const Variant **p_args, int p_argcount) {
 	if (real_owner) {
 		real_owner->call_multilevel_reversed(p_method, p_args, p_argcount);
 	}

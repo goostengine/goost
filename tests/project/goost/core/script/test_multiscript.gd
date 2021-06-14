@@ -1,12 +1,12 @@
 extends "res://addons/gut/test.gd"
 
-class ScriptA extends Owner:
+class ScriptA extends MultiScriptOwner:
 	# warning-ignore:unused_class_variable
 	var foo_a = "Foo A"
 	func bar_a():
 		return "Bar A"
 
-class ScriptB extends Owner:
+class ScriptB extends MultiScriptOwner:
 	# warning-ignore:unused_class_variable
 	var foo_b = "Foo B"
 	func bar_b():
