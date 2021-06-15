@@ -95,10 +95,11 @@ public:
 
 	virtual String get_node_type() const { return ""; }
 
-	void add_owner_script(const Ref<Script> &p_script);
-	void remove_owner_script(int p_idx);
-	void set_owner_script(int p_idx, const Ref<Script> &p_script);
-	Ref<Script> get_owner_script(int p_idx) const;
+	void add_script(const Ref<Script> &p_script);
+	void remove_script(int p_idx);
+	void set_script_at_index(int p_idx, const Ref<Script> &p_script);
+	Ref<Script> get_script_at_index(int p_idx) const;
+	int get_script_count() const { return scripts.size(); };
 
 	virtual ScriptLanguage *get_language() const;
 

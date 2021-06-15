@@ -236,15 +236,15 @@ bool MixinScript::_set(const StringName &p_name, const Variant &p_value) {
 
 		if (idx < scripts.size()) {
 			if (s.is_null()) {
-				remove_owner_script(idx);
+				remove_script(idx);
 			} else {
-				set_owner_script(idx, s);
+				set_script_at_index(idx, s);
 			}
 		} else if (idx == scripts.size()) {
 			if (s.is_null()) {
 				return false;
 			}
-			add_owner_script(s);
+			add_script(s);
 		} else {
 			return false;
 		}
@@ -267,7 +267,7 @@ bool MixinScript::_get(const StringName &p_name, Variant &r_ret) const {
 		ERR_FAIL_COND_V(idx < 0, false);
 
 		if (idx < scripts.size()) {
-			r_ret = get_owner_script(idx);
+			r_ret = get_script_at_index(idx);
 			return true;
 		} else if (idx == scripts.size()) {
 			r_ret = Ref<Script>();
@@ -288,7 +288,7 @@ void MixinScript::_get_property_list(List<PropertyInfo> *p_list) const {
 	}
 }
 
-void MixinScript::set_owner_script(int p_idx, const Ref<Script> &p_script) {
+void MixinScript::set_script_at_index(int p_idx, const Ref<Script> &p_script) {
 	_THREAD_SAFE_METHOD_
 
 	ERR_FAIL_INDEX(p_idx, scripts.size());
@@ -299,25 +299,23 @@ void MixinScript::set_owner_script(int p_idx, const Ref<Script> &p_script) {
 
 	for (Map<Object *, MixinScriptInstance *>::Element *E = instances.front(); E; E = E->next()) {
 		MixinScriptInstance *msi = E->get();
-		ScriptInstance **si = msi->instances.ptrw();
-		if (si[p_idx]) {
-			si[p_idx] = nullptr;
-			memdelete(si);
-		}
+		// Looks like there's no need to explicitly free a previous
+		// script instance in `msi->instances`, because `s->instance_create`
+		// will free it by itself, otherwise this leads to random crashes.
 		if (p_script->can_instance()) {
-			si[p_idx] = s->instance_create(msi->object);
+			msi->instances.set(p_idx, s->instance_create(script_instances[p_idx]));
 		}
 	}
 }
 
-Ref<Script> MixinScript::get_owner_script(int p_idx) const {
+Ref<Script> MixinScript::get_script_at_index(int p_idx) const {
 	_THREAD_SAFE_METHOD_
 	ERR_FAIL_INDEX_V(p_idx, scripts.size(), Ref<Script>());
 
 	return scripts[p_idx];
 }
 
-void MixinScript::add_owner_script(const Ref<Script> &p_script) {
+void MixinScript::add_script(const Ref<Script> &p_script) {
 	_THREAD_SAFE_METHOD_
 
 	ERR_FAIL_COND(p_script.is_null());
@@ -340,21 +338,21 @@ void MixinScript::add_owner_script(const Ref<Script> &p_script) {
 	_change_notify();
 }
 
-void MixinScript::remove_owner_script(int p_idx) {
+void MixinScript::remove_script(int p_idx) {
 	_THREAD_SAFE_METHOD_
 
 	ERR_FAIL_INDEX(p_idx, scripts.size());
 
 	scripts.remove(p_idx);
+	Mixin *m = script_instances.get(p_idx);
+	if (m) {
+		memdelete(m);
+	}
 	script_instances.remove(p_idx);
 
 	for (Map<Object *, MixinScriptInstance *>::Element *E = instances.front(); E; E = E->next()) {
 		MixinScriptInstance *msi = E->get();
-		ScriptInstance *si = msi->instances[p_idx];
 		msi->instances.remove(p_idx);
-		if (si) {
-			memdelete(si);
-		}
 		msi->object->_change_notify();
 	}
 }
@@ -407,10 +405,11 @@ Error MixinScript::reload(bool p_keep_state) {
 }
 
 void MixinScript::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("add_owner_script", "script"), &MixinScript::add_owner_script);
-	ClassDB::bind_method(D_METHOD("remove_owner_script", "index"), &MixinScript::remove_owner_script);
-	ClassDB::bind_method(D_METHOD("set_owner_script", "index", "script"), &MixinScript::set_owner_script);
-	ClassDB::bind_method(D_METHOD("get_owner_script", "index"), &MixinScript::get_owner_script);
+	ClassDB::bind_method(D_METHOD("add_script", "script"), &MixinScript::add_script);
+	ClassDB::bind_method(D_METHOD("remove_script", "index"), &MixinScript::remove_script);
+	ClassDB::bind_method(D_METHOD("set_script_at_index", "index", "script"), &MixinScript::set_script_at_index);
+	ClassDB::bind_method(D_METHOD("get_script_at_index", "index"), &MixinScript::get_script_at_index);
+	ClassDB::bind_method(D_METHOD("get_script_count"), &MixinScript::get_script_count);
 }
 
 ScriptLanguage *MixinScript::get_language() const {
