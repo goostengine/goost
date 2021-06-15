@@ -55,11 +55,13 @@ public:
 };
 
 class MultiScript : public Script {
+	GDCLASS(MultiScript, Script)
+	RES_BASE_EXTENSION("ms");
+
 	_THREAD_SAFE_CLASS_
 
 	friend class MultiScriptInstance;
 	friend class MultiScriptLanguage;
-	GDCLASS(MultiScript, Script)
 
 	StringName base_class_name;
 
@@ -125,7 +127,7 @@ public:
 	/* LANGUAGE FUNCTIONS */
 	virtual void init() {}
 	virtual String get_type() const { return "MultiScript"; }
-	virtual String get_extension() const { return ""; }
+	virtual String get_extension() const { return "ms"; }
 	virtual Error execute_file(const String &p_path) { return OK; }
 	virtual void finish() {}
 

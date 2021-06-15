@@ -365,7 +365,7 @@ void MultiScript::remove_instance(Object *p_object) {
 }
 
 StringName MultiScript::get_instance_base_type() const {
-	return StringName();
+	return base_class_name;
 }
 
 ScriptInstance *MultiScript::instance_create(Object *p_this) {
@@ -506,7 +506,9 @@ Script *MultiScriptLanguage::create_script() const {
 	return memnew(MultiScript);
 }
 
-void MultiScriptLanguage::get_recognized_extensions(List<String> *p_extensions) const {}
+void MultiScriptLanguage::get_recognized_extensions(List<String> *p_extensions) const {
+	p_extensions->push_back("ms");
+}
 
 void MultiScriptLanguage::get_public_functions(List<MethodInfo> *p_functions) const {}
 
