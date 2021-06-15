@@ -1,18 +1,18 @@
 #ifndef GOOST_MULTISCRIPT_H
 #define GOOST_MULTISCRIPT_H
 
-// Based on unreleased and subsequently removed MultiScript support
+// Based on unreleased and subsequently removed MixinScript support
 // in previous versions of Godot: https://github.com/godotengine/godot/pull/8718
 
 #include "core/os/thread_safe.h"
 #include "core/script_language.h"
 
-class MultiScript;
+class MixinScript;
 
-class MultiScriptOwner : public Object {
-	GDCLASS(MultiScriptOwner, Object)
+class Mixin : public Object {
+	GDCLASS(Mixin, Object)
 
-	friend class MultiScript;
+	friend class MixinScript;
 
 	Object *real_owner;
 
@@ -26,11 +26,11 @@ public:
 	virtual void call_multilevel_reversed(const StringName &p_method, const Variant **p_args, int p_argcount);
 };
 
-class MultiScriptInstance : public ScriptInstance {
-	friend class MultiScript;
+class MixinScriptInstance : public ScriptInstance {
+	friend class MixinScript;
 	Vector<ScriptInstance *> instances;
 	Object *object;
-	MultiScript *owner;
+	MixinScript *owner;
 
 public:
 	virtual bool set(const StringName &p_name, const Variant &p_value);
@@ -43,10 +43,10 @@ public:
 	virtual void call_multilevel(const StringName &p_method, const Variant **p_args, int p_argcount);
 	virtual void notification(int p_notification);
 
-	virtual Ref<Script> get_script() const { return Ref<MultiScript>(owner); }
+	virtual Ref<Script> get_script() const { return Ref<MixinScript>(owner); }
 
 	virtual ScriptLanguage *get_language();
-	virtual ~MultiScriptInstance();
+	virtual ~MixinScriptInstance();
 
 public:
 	Variant::Type get_property_type(const StringName &p_name, bool *r_is_valid) const;
@@ -54,21 +54,21 @@ public:
 	virtual MultiplayerAPI::RPCMode get_rset_mode(const StringName &p_variable) const;
 };
 
-class MultiScript : public Script {
-	GDCLASS(MultiScript, Script)
+class MixinScript : public Script {
+	GDCLASS(MixinScript, Script)
 	RES_BASE_EXTENSION("ms");
 
 	_THREAD_SAFE_CLASS_
 
-	friend class MultiScriptInstance;
-	friend class MultiScriptLanguage;
+	friend class MixinScriptInstance;
+	friend class MixinScriptLanguage;
 
 	StringName base_class_name;
 
 	Vector<Ref<Script> > scripts;
-	Vector<MultiScriptOwner *> script_instances;
+	Vector<Mixin *> script_instances;
 
-	Map<Object *, MultiScriptInstance *> instances;
+	Map<Object *, MixinScriptInstance *> instances;
 
 protected:
 	bool _set(const StringName &p_name, const Variant &p_value);
@@ -102,8 +102,8 @@ public:
 
 	virtual ScriptLanguage *get_language() const;
 
-	MultiScript();
-	~MultiScript();
+	MixinScript();
+	~MixinScript();
 
 	virtual Ref<Script> get_base_script() const;
 	virtual bool has_method(const StringName &p_method) const;
@@ -116,17 +116,17 @@ public:
 	virtual void update_exports();
 };
 
-class MultiScriptLanguage : public ScriptLanguage {
+class MixinScriptLanguage : public ScriptLanguage {
 
-	static MultiScriptLanguage *singleton;
+	static MixinScriptLanguage *singleton;
 
 public:
-	static _FORCE_INLINE_ MultiScriptLanguage *get_singleton() { return singleton; }
-	virtual String get_name() const { return "MultiScript"; }
+	static _FORCE_INLINE_ MixinScriptLanguage *get_singleton() { return singleton; }
+	virtual String get_name() const { return "MixinScript"; }
 
 	/* LANGUAGE FUNCTIONS */
 	virtual void init() {}
-	virtual String get_type() const { return "MultiScript"; }
+	virtual String get_type() const { return "MixinScript"; }
 	virtual String get_extension() const { return "ms"; }
 	virtual Error execute_file(const String &p_path) { return OK; }
 	virtual void finish() {}
@@ -159,8 +159,8 @@ public:
 	virtual void get_recognized_extensions(List<String> *p_extensions) const;
 	virtual void get_public_functions(List<MethodInfo> *p_functions) const;
 
-	MultiScriptLanguage();
-	virtual ~MultiScriptLanguage();
+	MixinScriptLanguage();
+	virtual ~MixinScriptLanguage();
 
 public:
 	void auto_indent_code(String &p_code, int p_from_line, int p_to_line) const {}

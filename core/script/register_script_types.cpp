@@ -3,25 +3,25 @@
 #include "goost/register_types.h"
 #include "goost/classes_enabled.gen.h"
 
-#include "multi_script/multi_script.h"
+#include "mixin_script/mixin_script.h"
 
 #include "core/script_language.h"
 
 namespace goost {
 
-static MultiScriptLanguage *script_multi_script = NULL;
+static MixinScriptLanguage *script_mixin_script = NULL;
 
 void register_script_types() {
-	script_multi_script = memnew(MultiScriptLanguage);
-	ScriptServer::register_language(script_multi_script);
-	ClassDB::register_class<MultiScript>();
-	ClassDB::register_class<MultiScriptOwner>();
+	script_mixin_script = memnew(MixinScriptLanguage);
+	ScriptServer::register_language(script_mixin_script);
+	ClassDB::register_class<MixinScript>();
+	ClassDB::register_class<Mixin>();
 }
 
 void unregister_script_types() {
-	if (script_multi_script) {
-		ScriptServer::unregister_language(script_multi_script);
-		memdelete(script_multi_script);
+	if (script_mixin_script) {
+		ScriptServer::unregister_language(script_mixin_script);
+		memdelete(script_mixin_script);
 	}
 }
 

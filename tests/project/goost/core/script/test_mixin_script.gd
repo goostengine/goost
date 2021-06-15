@@ -1,12 +1,12 @@
 extends "res://addons/gut/test.gd"
 
-class ScriptA extends MultiScriptOwner:
+class ScriptA extends Mixin:
 	# warning-ignore:unused_class_variable
 	var foo_a = "Foo A"
 	func bar_a():
 		return "Bar A"
 
-class ScriptB extends MultiScriptOwner:
+class ScriptB extends Mixin:
 	# warning-ignore:unused_class_variable
 	var foo_b = "Foo B"
 	func bar_b():
@@ -16,7 +16,7 @@ class ScriptB extends MultiScriptOwner:
 
 
 func test_two_scripts():
-	var ms = MultiScript.new()
+	var ms = MixinScript.new()
 	ms.script_a = ScriptA
 	ms.script_b = ScriptB
 
