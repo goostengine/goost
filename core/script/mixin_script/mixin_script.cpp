@@ -1,6 +1,13 @@
 #include "mixin_script.h"
 
 bool MixinScriptInstance::set(const StringName &p_name, const Variant &p_value) {
+	if (main_instance) {
+		bool found = main_instance->set(p_name, p_value);
+		if (found) {
+			return true;
+		}
+	}
+	// Mixins.
 	ScriptInstance *const *sarr = instances.ptr();
 
 	for (int i = 0; i < instances.size(); i++) {
@@ -20,6 +27,13 @@ bool MixinScriptInstance::set(const StringName &p_name, const Variant &p_value) 
 }
 
 bool MixinScriptInstance::get(const StringName &p_name, Variant &r_ret) const {
+	if (main_instance) {
+		bool found = main_instance->get(p_name, r_ret);
+		if (found) {
+			return true;
+		}
+	}
+	// Mixins.
 	ScriptInstance *const *sarr = instances.ptr();
 
 	for (int i = 0; i < instances.size(); i++) {
@@ -39,6 +53,10 @@ bool MixinScriptInstance::get(const StringName &p_name, Variant &r_ret) const {
 }
 
 void MixinScriptInstance::get_property_list(List<PropertyInfo> *p_properties) const {
+	if (main_instance) {
+		main_instance->get_property_list(p_properties);
+	}
+	// Mixins.
 	ScriptInstance *const *sarr = instances.ptr();
 
 	Set<String> existing;
@@ -69,6 +87,10 @@ void MixinScriptInstance::get_property_list(List<PropertyInfo> *p_properties) co
 }
 
 void MixinScriptInstance::get_method_list(List<MethodInfo> *p_list) const {
+	if (main_instance) {
+		main_instance->get_method_list(p_list);
+	}
+	// Mixins.
 	ScriptInstance *const *sarr = instances.ptr();
 
 	Set<StringName> existing;
@@ -91,6 +113,10 @@ void MixinScriptInstance::get_method_list(List<MethodInfo> *p_list) const {
 }
 
 bool MixinScriptInstance::has_method(const StringName &p_method) const {
+	if (main_instance && main_instance->has_method(p_method)) {
+		return true;
+	}
+	// Mixins.
 	ScriptInstance *const *sarr = instances.ptr();
 
 	for (int i = 0; i < instances.size(); i++) {
@@ -102,6 +128,16 @@ bool MixinScriptInstance::has_method(const StringName &p_method) const {
 }
 
 Variant MixinScriptInstance::call(const StringName &p_method, const Variant **p_args, int p_argcount, Variant::CallError &r_error) {
+	// Main script.
+	if (main_instance) {
+		Variant r = main_instance->call(p_method, p_args, p_argcount, r_error);
+		if (r_error.error == Variant::CallError::CALL_OK)
+			return r;
+		else if (r_error.error != Variant::CallError::CALL_ERROR_INVALID_METHOD)
+			return r;
+		r_error.error = Variant::CallError::CALL_ERROR_INVALID_METHOD;
+	}
+	// Mixins.
 	ScriptInstance *const *sarr = instances.ptr();
 
 	for (int i = 0; i < instances.size(); i++) {
@@ -120,6 +156,10 @@ Variant MixinScriptInstance::call(const StringName &p_method, const Variant **p_
 }
 
 void MixinScriptInstance::call_multilevel(const StringName &p_method, const Variant **p_args, int p_argcount) {
+	if (main_instance) {
+		main_instance->call_multilevel(p_method, p_args, p_argcount);
+	}
+	// Mixins.
 	ScriptInstance *const *sarr = instances.ptr();
 
 	for (int i = 0; i < instances.size(); i++) {
@@ -130,6 +170,10 @@ void MixinScriptInstance::call_multilevel(const StringName &p_method, const Vari
 }
 
 void MixinScriptInstance::notification(int p_notification) {
+	if (main_instance) {
+		main_instance->notification(p_notification);
+	}
+	// Mixins.
 	for (int i = 0; i < instances.size(); i++) {
 		ScriptInstance *instance = instances[i];
 		if (instance) {
@@ -150,6 +194,14 @@ Variant::Type MixinScriptInstance::get_property_type(const StringName &p_name, b
 	bool valid = false;
 	Variant::Type type;
 
+	if (main_instance) {
+		type = main_instance->get_property_type(p_name, &valid);
+		if (valid) {
+			*r_is_valid = valid;
+			return type;
+		}
+	}
+	// Mixins.
 	ScriptInstance *const *sarr = instances.ptr();
 
 	for (int i = 0; i < instances.size(); i++) {
@@ -168,19 +220,32 @@ Variant::Type MixinScriptInstance::get_property_type(const StringName &p_name, b
 }
 
 MultiplayerAPI::RPCMode MixinScriptInstance::get_rpc_mode(const StringName &p_method) const {
+	if (main_instance && main_instance->has_method(p_method)) {
+		return main_instance->get_rpc_mode(p_method);
+	}
+	// Mixins.
 	ScriptInstance *const *sarr = instances.ptr();
 
 	for (int i = 0; i < instances.size(); i++) {
-		if (sarr[i]) {
-			if (sarr[i]->has_method(p_method)) {
-				return sarr[i]->get_rpc_mode(p_method);
-			}
+		if (sarr[i] && sarr[i]->has_method(p_method)) {
+			return sarr[i]->get_rpc_mode(p_method);
 		}
 	}
 	return MultiplayerAPI::RPC_MODE_DISABLED;
 }
 
 MultiplayerAPI::RPCMode MixinScriptInstance::get_rset_mode(const StringName &p_variable) const {
+	if (main_instance) {
+		List<PropertyInfo> properties;
+		main_instance->get_property_list(&properties);
+
+		for (List<PropertyInfo>::Element *P = properties.front(); P; P = P->next()) {
+			if (P->get().name == p_variable) {
+				return main_instance->get_rset_mode(p_variable);
+			}
+		}
+	}
+	// Mixins.
 	ScriptInstance *const *sarr = instances.ptr();
 
 	for (int i = 0; i < instances.size(); i++) {
@@ -201,7 +266,16 @@ MultiplayerAPI::RPCMode MixinScriptInstance::get_rset_mode(const StringName &p_v
 
 ///////////////////
 
+void MixinScript::set_main_script(const Ref<Script> &p_script) {
+	main_script = p_script;
+}
+
 bool MixinScript::is_tool() const {
+	if (main_script.is_valid()) {
+		if (main_script->is_tool()) {
+			return true;
+		}
+	}
 	for (int i = 0; i < scripts.size(); i++) {
 		if (scripts[i]->is_tool()) {
 			return true;
@@ -211,6 +285,11 @@ bool MixinScript::is_tool() const {
 }
 
 bool MixinScript::is_valid() const {
+	if (main_script.is_valid()) {
+		if (main_script->is_valid()) {
+			return true;
+		}
+	}
 	for (int i = 0; i < scripts.size(); i++) {
 		if (scripts[i]->is_valid()) {
 			return true;
@@ -373,8 +452,16 @@ ScriptInstance *MixinScript::instance_create(Object *p_this) {
 	msi->object = p_this;
 	msi->owner = this;
 
+	// Main script.
+	if (main_script.is_valid()) {
+		if (main_script->can_instance()) {
+			msi->main_object = ClassDB::instance(p_this->get_class());
+			msi->main_instance = main_script->instance_create(msi->main_object);
+		}
+	}
+	// Mixins scripts.
 	for (int i = 0; i < scripts.size(); i++) {
-		ScriptInstance *si;
+		ScriptInstance *si = nullptr;
 		Ref<Script> script = scripts[i];
 
 		if (script->can_instance()) {
@@ -397,6 +484,9 @@ bool MixinScript::instance_has(const Object *p_this) const {
 }
 
 Error MixinScript::reload(bool p_keep_state) {
+	if (main_script.is_valid()) {
+		main_script->reload();
+	}
 	for (int i = 0; i < scripts.size(); i++) {
 		Ref<Script> script = scripts[i];
 		script->reload(p_keep_state);
@@ -405,11 +495,16 @@ Error MixinScript::reload(bool p_keep_state) {
 }
 
 void MixinScript::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("set_main_script", "script"), &MixinScript::set_main_script);
+	ClassDB::bind_method(D_METHOD("get_main_script"), &MixinScript::get_main_script);
+
 	ClassDB::bind_method(D_METHOD("add_script", "script"), &MixinScript::add_script);
 	ClassDB::bind_method(D_METHOD("remove_script", "index"), &MixinScript::remove_script);
 	ClassDB::bind_method(D_METHOD("set_script_at_index", "index", "script"), &MixinScript::set_script_at_index);
 	ClassDB::bind_method(D_METHOD("get_script_at_index", "index"), &MixinScript::get_script_at_index);
 	ClassDB::bind_method(D_METHOD("get_script_count"), &MixinScript::get_script_count);
+
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "main_script", PROPERTY_HINT_RESOURCE_TYPE, "Script"), "set_main_script", "get_main_script");
 }
 
 ScriptLanguage *MixinScript::get_language() const {
@@ -433,6 +528,11 @@ Ref<Script> MixinScript::get_base_script() const {
 }
 
 bool MixinScript::has_method(const StringName &p_method) const {
+	if (main_script.is_valid()) {
+		if (main_script->has_method(p_method)) {
+			return true;
+		}
+	}
 	for (int i = 0; i < scripts.size(); i++) {
 		if (scripts[i]->has_method(p_method)) {
 			return true;
@@ -442,6 +542,11 @@ bool MixinScript::has_method(const StringName &p_method) const {
 }
 
 MethodInfo MixinScript::get_method_info(const StringName &p_method) const {
+	if (main_script.is_valid()) {
+		if (main_script->has_method(p_method)) {
+			return main_script->get_method_info(p_method);
+		}
+	}
 	for (int i = 0; i < scripts.size(); i++) {
 		if (scripts[i]->has_method(p_method)) {
 			return scripts[i]->get_method_info(p_method);
@@ -451,6 +556,11 @@ MethodInfo MixinScript::get_method_info(const StringName &p_method) const {
 }
 
 bool MixinScript::has_script_signal(const StringName &p_signal) const {
+	if (main_script.is_valid()) {
+		if (main_script->has_script_signal(p_signal)) {
+			return true;
+		}
+	}
 	for (int i = 0; i < scripts.size(); i++) {
 		if (scripts[i]->has_script_signal(p_signal)) {
 			return true;
@@ -460,12 +570,20 @@ bool MixinScript::has_script_signal(const StringName &p_signal) const {
 }
 
 void MixinScript::get_script_signal_list(List<MethodInfo> *r_signals) const {
+	if (main_script.is_valid()) {
+		main_script->get_script_signal_list(r_signals);
+	}
 	for (int i = 0; i < scripts.size(); i++) {
 		scripts[i]->get_script_signal_list(r_signals);
 	}
 }
 
 bool MixinScript::get_property_default_value(const StringName &p_property, Variant &r_value) const {
+	if (main_script.is_valid()) {
+		if (main_script->get_property_default_value(p_property, r_value)) {
+			return true;
+		}
+	}
 	for (int i = 0; i < scripts.size(); i++) {
 		if (scripts[i]->get_property_default_value(p_property, r_value)) {
 			return true;
@@ -475,18 +593,27 @@ bool MixinScript::get_property_default_value(const StringName &p_property, Varia
 }
 
 void MixinScript::get_script_method_list(List<MethodInfo> *p_list) const {
+	if (main_script.is_valid()) {
+		main_script->get_script_method_list(p_list);
+	}
 	for (int i = 0; i < scripts.size(); i++) {
 		scripts[i]->get_script_method_list(p_list);
 	}
 }
 
 void MixinScript::get_script_property_list(List<PropertyInfo> *p_list) const {
+	if (main_script.is_valid()) {
+		main_script->get_script_property_list(p_list);
+	}
 	for (int i = 0; i < scripts.size(); i++) {
 		scripts[i]->get_script_property_list(p_list);
 	}
 }
 
 void MixinScript::update_exports() {
+	if (main_script.is_valid()) {
+		main_script->update_exports();
+	}
 	for (int i = 0; i < scripts.size(); i++) {
 		Ref<Script> script = scripts[i];
 		script->update_exports();
@@ -508,8 +635,6 @@ Script *MixinScriptLanguage::create_script() const {
 void MixinScriptLanguage::get_recognized_extensions(List<String> *p_extensions) const {
 	p_extensions->push_back("ms");
 }
-
-void MixinScriptLanguage::get_public_functions(List<MethodInfo> *p_functions) const {}
 
 MixinScriptLanguage::MixinScriptLanguage() {
 	singleton = this;

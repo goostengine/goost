@@ -14,7 +14,7 @@ class Mixin : public Object {
 
 	friend class MixinScript;
 
-	Object *real_owner;
+	Object *real_owner = nullptr;
 
 public:
 	static void _bind_methods();
@@ -28,9 +28,12 @@ public:
 
 class MixinScriptInstance : public ScriptInstance {
 	friend class MixinScript;
+
+	ScriptInstance *main_instance = nullptr;
 	Vector<ScriptInstance *> instances;
-	Object *object;
-	MixinScript *owner;
+	Object *object = nullptr;
+	Object *main_object = nullptr;
+	MixinScript *owner = nullptr;
 
 public:
 	virtual bool set(const StringName &p_name, const Variant &p_value);
@@ -65,9 +68,10 @@ class MixinScript : public Script {
 
 	StringName base_class_name;
 
+	Ref<Script> main_script;
 	Vector<Ref<Script> > scripts;
-	Vector<Mixin *> script_instances;
 
+	Vector<Mixin *> script_instances;
 	Map<Object *, MixinScriptInstance *> instances;
 
 protected:
@@ -94,6 +98,9 @@ public:
 	virtual bool is_valid() const;
 
 	virtual String get_node_type() const { return ""; }
+
+	void set_main_script(const Ref<Script> &p_script);
+	Ref<Script> get_main_script() const { return main_script; }
 
 	void add_script(const Ref<Script> &p_script);
 	void remove_script(int p_idx);
@@ -158,7 +165,7 @@ public:
 
 	/* LOADER FUNCTIONS */
 	virtual void get_recognized_extensions(List<String> *p_extensions) const;
-	virtual void get_public_functions(List<MethodInfo> *p_functions) const;
+	virtual void get_public_functions(List<MethodInfo> *p_functions) const {};
 
 	MixinScriptLanguage();
 	virtual ~MixinScriptLanguage();
