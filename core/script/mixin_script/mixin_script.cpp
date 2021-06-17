@@ -267,6 +267,11 @@ MultiplayerAPI::RPCMode MixinScriptInstance::get_rset_mode(const StringName &p_v
 ///////////////////
 
 void MixinScript::set_main_script(const Ref<Script> &p_script) {
+	Ref<MixinScript> ms = p_script;
+	if (ms == Ref<MixinScript>(this)) {
+		ERR_FAIL_MSG("Cannot set a main script pointing to itself");
+		return;
+	}
 	main_script = p_script;
 }
 
@@ -455,8 +460,10 @@ ScriptInstance *MixinScript::instance_create(Object *p_this) {
 	// Main script.
 	if (main_script.is_valid()) {
 		if (main_script->can_instance()) {
+			// We still have to create dummy node to reflect main instance.
 			msi->main_object = ClassDB::instance(p_this->get_class());
 			msi->main_instance = main_script->instance_create(msi->main_object);
+			base_class_name = p_this->get_class();
 		}
 	}
 	// Mixins scripts.

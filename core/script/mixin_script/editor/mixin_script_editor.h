@@ -4,13 +4,21 @@
 #include "../mixin_script.h"
 
 #include "editor/plugins/script_editor_plugin.h"
+#include "scene/gui/button.h"
+#include "scene/gui/center_container.h"
 
 class MixinScriptEditor : public ScriptEditorBase {
 	GDCLASS(MixinScriptEditor, ScriptEditorBase);
 
 	Ref<Script> script;
 
+	CenterContainer *container = nullptr;
+	Button *attach_main_script_button = nullptr;
+
 	void _on_editor_script_changed(Ref<Script> p_script);
+	void _on_attach_main_script_pressed();
+	void _on_main_script_created(Ref<Script> p_script);
+	void _on_main_script_creation_closed();
 
 protected:
 	void _notification(int p_what);
