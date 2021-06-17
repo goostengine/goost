@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="Mixin" inherits="Object" version="3.4">
+	<brief_description>
+		Adds functionality to [MixinScript] objects.
+	</brief_description>
+	<description>
+		A class which extends the run-time functionality of objects that use [MixinScript]. All scripts added to [MixinScript] must inherit from [Mixin].
+		Mixin objects are instantiated internally and cannot be used as a [Node] in the scene tree.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+	</methods>
+	<members>
+		<member name="owner" type="Object" setter="" getter="get_owner">
+			The object that uses this mixin to drive its own behavior. You can reference the [code]owner[/code] from within a mixin, use properties and call methods on the [code]owner[/code] that are defined in other mixin scripts.
+		</member>
+	</members>
+	<constants>
+	</constants>
+</class>
