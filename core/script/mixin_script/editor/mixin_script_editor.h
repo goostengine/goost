@@ -11,6 +11,7 @@ class MixinScriptEditor : public ScriptEditorBase {
 	GDCLASS(MixinScriptEditor, ScriptEditorBase);
 
 	Ref<Script> script;
+	bool autoswitch_to_main_script = true;
 
 	CenterContainer *container = nullptr;
 	Button *attach_main_script_button = nullptr;
@@ -60,7 +61,9 @@ public:
 	virtual bool can_lose_focus_on_node_selection() { return false; }
 	virtual void validate();
 
-	static void register_editor();
+	// Editor API
+	void set_autoswitch_to_main_script_enabled(bool p_enable) { autoswitch_to_main_script = p_enable; }
+	bool is_autoswitch_to_main_script_enabled() { return autoswitch_to_main_script; }
 
 	MixinScriptEditor();
 	~MixinScriptEditor();

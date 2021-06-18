@@ -5,6 +5,7 @@
 
 #include "mixin_script/mixin_script.h"
 #include "mixin_script/editor/mixin_script_editor.h"
+#include "mixin_script/editor/mixin_script_editor_plugin.h"
 
 #include "core/script_language.h"
 #include "editor/editor_node.h"
@@ -33,9 +34,10 @@ void register_script_types() {
 	ScriptServer::register_language(script_mixin_script);
 	ClassDB::register_class<MixinScript>();
 	ClassDB::register_class<Mixin>();
-	
+
 #ifdef TOOLS_ENABLED
 	EditorNode::add_plugin_init_callback(mixin_script_register_editor_callback);
+	EditorPlugins::add_by_type<MixinScriptEditorPlugin>();
 #endif
 #endif // GOOST_MixinScript
 }

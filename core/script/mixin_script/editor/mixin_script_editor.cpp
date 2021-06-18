@@ -142,11 +142,21 @@ void MixinScriptEditor::_notification(int p_what) {
 }
 
 void MixinScriptEditor::_on_editor_script_changed(Ref<Script> p_script) {
+	// Edit `MixinScript` itself if requested explicitly via editor inspector.
+	if (ScriptEditor::get_singleton()->has_meta("_edit_mixin")) {
+		bool edit = (bool)ScriptEditor::get_singleton()->get_meta("_edit_mixin");
+		if (edit) {
+			// TODO: restore to delegating main script when you press edit
+			// button in the MixinScript editor itself.
+			ScriptEditor::get_singleton()->set_meta("_edit_mixin", false);
+			return;
+		}
+	}
+	// Otherwise, delegate editing to other script editors automatically.
 	Ref<MixinScript> ms = p_script;
 	if (ms.is_valid()) {
 		Ref<Script> main_script = ms->get_main_script();
 		if (main_script.is_valid()) {
-			// Delegate editing to other script editors automatically.
 			ScriptEditor::get_singleton()->edit(main_script);
 		}
 	}
