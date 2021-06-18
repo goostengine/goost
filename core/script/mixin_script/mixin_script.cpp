@@ -273,6 +273,7 @@ void MixinScript::set_main_script(const Ref<Script> &p_script) {
 		return;
 	}
 	main_script = p_script;
+	emit_changed();
 }
 
 bool MixinScript::is_tool() const {
@@ -390,6 +391,7 @@ void MixinScript::set_script_at_index(int p_idx, const Ref<Script> &p_script) {
 			msi->instances.set(p_idx, s->instance_create(script_instances[p_idx]));
 		}
 	}
+	emit_changed();
 }
 
 Ref<Script> MixinScript::get_script_at_index(int p_idx) const {
@@ -420,6 +422,7 @@ void MixinScript::add_script(const Ref<Script> &p_script) {
 		msi->object->_change_notify();
 	}
 	_change_notify();
+	emit_changed();
 }
 
 void MixinScript::remove_script(int p_idx) {
@@ -439,6 +442,7 @@ void MixinScript::remove_script(int p_idx) {
 		msi->instances.remove(p_idx);
 		msi->object->_change_notify();
 	}
+	emit_changed();
 }
 
 void MixinScript::remove_instance(Object *p_object) {

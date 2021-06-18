@@ -10,16 +10,40 @@
 class MixinScriptEditor : public ScriptEditorBase {
 	GDCLASS(MixinScriptEditor, ScriptEditorBase);
 
-	Ref<Script> script;
-	bool autoswitch_to_main_script = true;
+	enum {
+		BUTTON_EDIT,
+		BUTTON_MOVE_UP,
+		BUTTON_MOVE_DOWN,
+		BUTTON_REMOVE,
+	};
 
-	CenterContainer *container = nullptr;
+	Ref<MixinScript> script;
+	bool autoswitch_to_main_script = true;
+	
+	VBoxContainer *vbox = nullptr;
+
 	Button *attach_main_script_button = nullptr;
+	Tree *tree_main_script = nullptr;
+	PanelContainer *panel_main_script = nullptr;
+
+	Button *add_mixin_button = nullptr;
+	Tree *tree_mixins = nullptr;
+	PanelContainer *panel_mixins = nullptr;
+
+	bool update_queued = false;
+	void _update_list();
 
 	void _on_editor_script_changed(Ref<Script> p_script);
+
 	void _on_attach_main_script_pressed();
 	void _on_main_script_created(Ref<Script> p_script);
 	void _on_main_script_creation_closed();
+	void _on_main_script_button_pressed(Object *p_item, int p_column, int p_button);
+
+	void _on_add_mixin_pressed();
+	void _on_mixin_created(Ref<Script> p_script);
+	void _on_mixin_creation_closed();
+	void _on_mixin_button_pressed(Object *p_item, int p_column, int p_button);
 
 protected:
 	void _notification(int p_what);
@@ -64,6 +88,8 @@ public:
 	// Editor API
 	void set_autoswitch_to_main_script_enabled(bool p_enable) { autoswitch_to_main_script = p_enable; }
 	bool is_autoswitch_to_main_script_enabled() { return autoswitch_to_main_script; }
+
+	void queue_update();
 
 	MixinScriptEditor();
 	~MixinScriptEditor();
