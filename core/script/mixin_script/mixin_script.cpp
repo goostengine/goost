@@ -18,11 +18,6 @@ bool MixinScriptInstance::set(const StringName &p_name, const Variant &p_value) 
 			}
 		}
 	}
-	if (String(p_name).begins_with("script_")) {
-		bool valid;
-		owner->set(p_name, p_value, &valid);
-		return valid;
-	}
 	return false;
 }
 
@@ -43,11 +38,6 @@ bool MixinScriptInstance::get(const StringName &p_name, Variant &r_ret) const {
 				return true;
 			}
 		}
-	}
-	if (String(p_name).begins_with("script_")) {
-		bool valid;
-		r_ret = owner->get(p_name, &valid);
-		return valid;
 	}
 	return false;
 }
@@ -75,14 +65,6 @@ void MixinScriptInstance::get_property_list(List<PropertyInfo> *p_properties) co
 			p_properties->push_back(E->get());
 			existing.insert(E->get().name);
 		}
-	}
-	p_properties->push_back(PropertyInfo(Variant::NIL, "Scripts", PROPERTY_HINT_NONE, String(), PROPERTY_USAGE_CATEGORY));
-
-	for (int i = 0; i < owner->scripts.size(); i++) {
-		p_properties->push_back(PropertyInfo(Variant::OBJECT, "script_" + String::chr('a' + i), PROPERTY_HINT_RESOURCE_TYPE, "Script", PROPERTY_USAGE_EDITOR));
-	}
-	if (owner->scripts.size() < 25) {
-		p_properties->push_back(PropertyInfo(Variant::OBJECT, "script_" + String::chr('a' + (owner->scripts.size())), PROPERTY_HINT_RESOURCE_TYPE, "Script", PROPERTY_USAGE_EDITOR));
 	}
 }
 
@@ -304,73 +286,27 @@ bool MixinScript::is_valid() const {
 	return false;
 }
 
-bool MixinScript::_set(const StringName &p_name, const Variant &p_value) {
-	_THREAD_SAFE_METHOD_
-
-	String s = String(p_name);
-	if (s.begins_with("script_")) {
-		int idx = s[7];
-		if (idx == 0) {
-			return false;
-		}
-		idx -= 'a';
-
-		ERR_FAIL_COND_V(idx < 0, false);
-
-		Ref<Script> s = p_value;
-
-		if (idx < scripts.size()) {
-			if (s.is_null()) {
-				remove_script(idx);
-			} else {
-				set_script_at_index(idx, s);
-			}
-		} else if (idx == scripts.size()) {
-			if (s.is_null()) {
-				return false;
-			}
-			add_script(s);
-		} else {
-			return false;
-		}
-		return true;
+void MixinScript::clear_scripts() {
+	while (scripts.size()) {
+		remove_script(0);
 	}
-	return false;
 }
 
-bool MixinScript::_get(const StringName &p_name, Variant &r_ret) const {
-	_THREAD_SAFE_METHOD_
-
-	String s = String(p_name);
-	if (s.begins_with("script_")) {
-		int idx = s[7];
-		if (idx == 0) {
-			return false;
-		}
-		idx -= 'a';
-
-		ERR_FAIL_COND_V(idx < 0, false);
-
-		if (idx < scripts.size()) {
-			r_ret = get_script_at_index(idx);
-			return true;
-		} else if (idx == scripts.size()) {
-			r_ret = Ref<Script>();
-			return true;
-		}
+void MixinScript::set_mixins(const Array &p_mixins) {
+	clear_scripts();
+	for (int i = 0; i < p_mixins.size(); ++i) {
+		Ref<Script> m = p_mixins[i];
+		ERR_CONTINUE_MSG(m.is_null(), "Not a script.");
+		add_script(m);
 	}
-	return false;
 }
 
-void MixinScript::_get_property_list(List<PropertyInfo> *p_list) const {
-	_THREAD_SAFE_METHOD_
-
-	for (int i = 0; i < scripts.size(); i++) {
-		p_list->push_back(PropertyInfo(Variant::OBJECT, "script_" + String::chr('a' + i), PROPERTY_HINT_RESOURCE_TYPE, "Script"));
+Array MixinScript::get_mixins() const {
+	Array ret;
+	for (int i = 0; i < scripts.size(); ++i) {
+		ret.push_back(scripts[i]);
 	}
-	if (scripts.size() < 25) {
-		p_list->push_back(PropertyInfo(Variant::OBJECT, "script_" + String::chr('a' + (scripts.size())), PROPERTY_HINT_RESOURCE_TYPE, "Script"));
-	}
+	return ret;
 }
 
 void MixinScript::set_script_at_index(int p_idx, const Ref<Script> &p_script) {
@@ -566,8 +502,18 @@ void MixinScript::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_script_at_index", "index", "script"), &MixinScript::set_script_at_index);
 	ClassDB::bind_method(D_METHOD("get_script_at_index", "index"), &MixinScript::get_script_at_index);
 	ClassDB::bind_method(D_METHOD("get_script_count"), &MixinScript::get_script_count);
+	ClassDB::bind_method(D_METHOD("clear_scripts"), &MixinScript::clear_scripts);
 
+	// The `main_script` property could be hidden in the editor since there's
+	// `MixinScriptEditor` which can edit the main script, but doing so also
+	// removes the "Edit" button from the EditorInspector, which is necessary
+	// to have because editor will delegate editing to main script automatically.
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "main_script", PROPERTY_HINT_RESOURCE_TYPE, "Script"), "set_main_script", "get_main_script");
+
+	// Mixins.
+	ClassDB::bind_method(D_METHOD("set_mixins", "mixins"), &MixinScript::set_mixins);
+	ClassDB::bind_method(D_METHOD("get_mixins"), &MixinScript::get_mixins);
+	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "mixins", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_STORAGE), "set_mixins", "get_mixins");
 }
 
 ScriptLanguage *MixinScript::get_language() const {

@@ -17,8 +17,7 @@ class MixinB extends Mixin:
 
 func test_two_scripts():
 	var ms = MixinScript.new()
-	ms.script_a = MixinA
-	ms.script_b = MixinB
+	ms.mixins = [MixinA, MixinB]
 
 	var n = Node.new()
 	n.set_script(ms)
@@ -65,6 +64,23 @@ func test_add_remove():
 
 	assert_eq(n.foo_b, "Foo B")
 	assert_eq(n.bar_b(), "Bar B")
+
+
+func test_clear_scripts():
+	var ms = MixinScript.new()
+	ms.mixins = [MixinA, MixinB]
+
+	var n = Node.new()
+	n.set_script(ms)
+	add_child_autofree(n)
+
+	assert_eq(n.foo_a, "Foo A")
+	assert_eq(n.foo_b, "Foo B")
+
+	ms.clear_scripts()
+
+	assert_false("foo_a" in n)
+	assert_false("foo_b" in n)
 
 
 func test_setget_scripts():

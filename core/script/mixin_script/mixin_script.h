@@ -75,10 +75,6 @@ class MixinScript : public Script {
 	Map<Object *, MixinScriptInstance *> instances;
 
 protected:
-	bool _set(const StringName &p_name, const Variant &p_value);
-	bool _get(const StringName &p_name, Variant &r_ret) const;
-	void _get_property_list(List<PropertyInfo> *p_list) const;
-
 	static void _bind_methods();
 
 public:
@@ -109,6 +105,10 @@ public:
 	void insert_script(int p_pos, const Ref<Script> &p_script);
 	Ref<Script> get_script_at_index(int p_idx) const;
 	int get_script_count() const { return scripts.size(); };
+	void clear_scripts();
+
+	void set_mixins(const Array &p_mixins);
+	Array get_mixins() const;
 
 	virtual ScriptLanguage *get_language() const;
 

@@ -22,6 +22,13 @@
 				Adds a new script to extend the behavior of the owner.
 			</description>
 		</method>
+		<method name="clear_scripts">
+			<return type="void">
+			</return>
+			<description>
+				Removes all mixins from this script.
+			</description>
+		</method>
 		<method name="get_script_at_index" qualifiers="const">
 			<return type="Script">
 			</return>
@@ -84,6 +91,9 @@
 	<members>
 		<member name="main_script" type="Script" setter="set_main_script" getter="get_main_script">
 			The main script which extends the base class, just like other [Script] resources. An object extended with [MixinScript]'s main script will act as if it uses an ordinary script.
+		</member>
+		<member name="mixins" type="Array" setter="set_mixins" getter="get_mixins" default="[  ]">
+			An array of all mixin scripts used by this script.
 		</member>
 	</members>
 	<constants>
