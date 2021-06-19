@@ -336,6 +336,7 @@ void MixinScriptEditor::_update_list() {
 		String main_script_path = main_script->get_path();
 		String main_script_name = main_script_path.get_file();
 
+		main_script_item->set_icon(0, Control::get_icon(main_script->get_language()->get_type(), "EditorIcons"));
 		main_script_item->set_text(0, main_script_name);
 		main_script_item->set_text(1, main_script_path);
 
@@ -366,7 +367,10 @@ void MixinScriptEditor::_update_list() {
 		String mixin_name = mixin_path.get_file();
 
 		mixin_item->set_text(0, itos(i + 1));
+
+		mixin_item->set_icon(1, Control::get_icon(mixin->get_language()->get_type(), "EditorIcons"));
 		mixin_item->set_text(1, mixin_name);
+
 		mixin_item->set_text(2, mixin_path);
 
 		mixin_item->add_button(3, Control::get_icon("Edit", "EditorIcons"), BUTTON_EDIT);
