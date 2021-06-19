@@ -133,7 +133,7 @@ void MixinScriptEditor::set_syntax_highlighter(SyntaxHighlighter *p_highlighter)
 }
 
 void MixinScriptEditor::_notification(int p_what) {
-	if (p_what == NOTIFICATION_THEME_CHANGED || p_what == NOTIFICATION_ENTER_TREE || EditorSettings::NOTIFICATION_EDITOR_SETTINGS_CHANGED) {
+	if (p_what == NOTIFICATION_THEME_CHANGED || p_what == NOTIFICATION_ENTER_TREE || p_what == EditorSettings::NOTIFICATION_EDITOR_SETTINGS_CHANGED) {
 		attach_main_script_button->set_icon(Control::get_icon("ScriptCreate", "EditorIcons"));
 		add_mixin_button->set_icon(Control::get_icon("ScriptCreate", "EditorIcons"));
 
@@ -230,7 +230,6 @@ void MixinScriptEditor::_on_main_script_creation_closed() {
 }
 
 void MixinScriptEditor::_on_main_script_button_pressed(Object *p_item, int p_column, int p_button) {
-	TreeItem *ti = Object::cast_to<TreeItem>(p_item);
 	switch (p_button) {
 		case BUTTON_EDIT: {
 			EditorNode::get_singleton()->push_item(script->get_main_script().ptr());
@@ -278,7 +277,6 @@ static void shift_mixin(Ref<MixinScript> p_script, const Ref<Script> &p_mixin, i
 }
 
 void MixinScriptEditor::_on_mixin_button_pressed(Object *p_item, int p_column, int p_button) {
-	TreeItem *ti = Object::cast_to<TreeItem>(p_item);
 	Ref<Script> mixin = p_item->get_meta("script");
 
 	switch (p_button) {
