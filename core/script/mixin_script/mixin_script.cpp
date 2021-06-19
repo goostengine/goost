@@ -264,8 +264,8 @@ bool MixinScript::is_tool() const {
 			return true;
 		}
 	}
-	for (int i = 0; i < scripts.size(); i++) {
-		if (scripts[i]->is_tool()) {
+	for (int i = 0; i < mixins.size(); i++) {
+		if (mixins[i]->is_tool()) {
 			return true;
 		}
 	}
@@ -278,44 +278,44 @@ bool MixinScript::is_valid() const {
 			return true;
 		}
 	}
-	for (int i = 0; i < scripts.size(); i++) {
-		if (scripts[i]->is_valid()) {
+	for (int i = 0; i < mixins.size(); i++) {
+		if (mixins[i]->is_valid()) {
 			return true;
 		}
 	}
 	return false;
 }
 
-void MixinScript::clear_scripts() {
-	while (scripts.size()) {
-		remove_script(0);
+void MixinScript::clear_mixins() {
+	while (mixins.size()) {
+		remove_mixin(0);
 	}
 }
 
 void MixinScript::set_mixins(const Array &p_mixins) {
-	clear_scripts();
+	clear_mixins();
 	for (int i = 0; i < p_mixins.size(); ++i) {
 		Ref<Script> m = p_mixins[i];
 		ERR_CONTINUE_MSG(m.is_null(), "Not a script.");
-		add_script(m);
+		add_mixin(m);
 	}
 }
 
 Array MixinScript::get_mixins() const {
 	Array ret;
-	for (int i = 0; i < scripts.size(); ++i) {
-		ret.push_back(scripts[i]);
+	for (int i = 0; i < mixins.size(); ++i) {
+		ret.push_back(mixins[i]);
 	}
 	return ret;
 }
 
-void MixinScript::set_script_at_index(int p_idx, const Ref<Script> &p_script) {
+void MixinScript::set_mixin(int p_idx, const Ref<Script> &p_script) {
 	_THREAD_SAFE_METHOD_
 
-	ERR_FAIL_INDEX(p_idx, scripts.size());
+	ERR_FAIL_INDEX(p_idx, mixins.size());
 	ERR_FAIL_COND(p_script.is_null());
 
-	scripts.set(p_idx, p_script);
+	mixins.set(p_idx, p_script);
 	Ref<Script> s = p_script;
 
 	for (Map<Object *, MixinScriptInstance *>::Element *E = instances.front(); E; E = E->next()) {
@@ -324,7 +324,7 @@ void MixinScript::set_script_at_index(int p_idx, const Ref<Script> &p_script) {
 		// script instance in `msi->instances`, because `s->instance_create`
 		// will free it by itself, otherwise this leads to random crashes.
 		if (s->can_instance()) {
-			msi->instances.set(p_idx, s->instance_create(script_instances[p_idx]));
+			msi->instances.set(p_idx, s->instance_create(mixin_instances[p_idx]));
 		} else {
 			msi->instances.set(p_idx, nullptr);
 		}
@@ -332,14 +332,14 @@ void MixinScript::set_script_at_index(int p_idx, const Ref<Script> &p_script) {
 	emit_changed();
 }
 
-void MixinScript::move_script(int p_to_pos, const Ref<Script> &p_script) {
+void MixinScript::move_mixin(int p_to_pos, const Ref<Script> &p_script) {
 	int to_pos = p_to_pos;
-	if (to_pos == scripts.size()) {
+	if (to_pos == mixins.size()) {
 		to_pos--;
 	}
 	int from_pos = -1;
-	for (int i = 0; i < scripts.size(); ++i) {
-		const Ref<Script> &s = scripts[i];
+	for (int i = 0; i < mixins.size(); ++i) {
+		const Ref<Script> &s = mixins[i];
 		if (s == p_script) {
 			from_pos = i;
 			break;
@@ -350,24 +350,24 @@ void MixinScript::move_script(int p_to_pos, const Ref<Script> &p_script) {
 	if (from_pos == to_pos) {
 		return;
 	}
-	remove_script(from_pos);
-	insert_script(to_pos, p_script);
+	remove_mixin(from_pos);
+	insert_mixin(to_pos, p_script);
 }
 
-Ref<Script> MixinScript::get_script_at_index(int p_idx) const {
+Ref<Script> MixinScript::get_mixin(int p_idx) const {
 	_THREAD_SAFE_METHOD_
-	ERR_FAIL_INDEX_V(p_idx, scripts.size(), Ref<Script>());
+	ERR_FAIL_INDEX_V(p_idx, mixins.size(), Ref<Script>());
 
-	return scripts[p_idx];
+	return mixins[p_idx];
 }
 
-void MixinScript::add_script(const Ref<Script> &p_script) {
+void MixinScript::add_mixin(const Ref<Script> &p_script) {
 	_THREAD_SAFE_METHOD_
 
 	ERR_FAIL_COND(p_script.is_null());
 	Mixin *script_owner = memnew(Mixin);
-	script_instances.push_back(script_owner);
-	scripts.push_back(p_script);
+	mixin_instances.push_back(script_owner);
+	mixins.push_back(p_script);
 	Ref<Script> s = p_script;
 
 	for (Map<Object *, MixinScriptInstance *>::Element *E = instances.front(); E; E = E->next()) {
@@ -385,17 +385,17 @@ void MixinScript::add_script(const Ref<Script> &p_script) {
 	emit_changed();
 }
 
-void MixinScript::remove_script(int p_idx) {
+void MixinScript::remove_mixin(int p_idx) {
 	_THREAD_SAFE_METHOD_
 
-	ERR_FAIL_INDEX(p_idx, scripts.size());
+	ERR_FAIL_INDEX(p_idx, mixins.size());
 
-	scripts.remove(p_idx);
-	Mixin *m = script_instances.get(p_idx);
+	mixins.remove(p_idx);
+	Mixin *m = mixin_instances.get(p_idx);
 	if (m) {
 		memdelete(m);
 	}
-	script_instances.remove(p_idx);
+	mixin_instances.remove(p_idx);
 
 	for (Map<Object *, MixinScriptInstance *>::Element *E = instances.front(); E; E = E->next()) {
 		MixinScriptInstance *msi = E->get();
@@ -405,15 +405,15 @@ void MixinScript::remove_script(int p_idx) {
 	emit_changed();
 }
 
-void MixinScript::insert_script(int p_pos, const Ref<Script> &p_script) {
+void MixinScript::insert_mixin(int p_pos, const Ref<Script> &p_script) {
 	_THREAD_SAFE_METHOD_
 
 	ERR_FAIL_COND(p_script.is_null());
-	ERR_FAIL_INDEX(p_pos, scripts.size() + 1);
+	ERR_FAIL_INDEX(p_pos, mixins.size() + 1);
 
 	Mixin *script_owner = memnew(Mixin);
-	script_instances.insert(p_pos, script_owner);
-	scripts.insert(p_pos, p_script);
+	mixin_instances.insert(p_pos, script_owner);
+	mixins.insert(p_pos, p_script);
 	Ref<Script> s = p_script;
 	
 	for (Map<Object *, MixinScriptInstance *>::Element *E = instances.front(); E; E = E->next()) {
@@ -456,14 +456,14 @@ ScriptInstance *MixinScript::instance_create(Object *p_this) {
 			base_class_name = p_this->get_class();
 		}
 	}
-	// Mixins scripts.
-	for (int i = 0; i < scripts.size(); i++) {
+	// Mixins.
+	for (int i = 0; i < mixins.size(); i++) {
 		ScriptInstance *si = nullptr;
-		Ref<Script> script = scripts[i];
+		Ref<Script> script = mixins[i];
 
 		if (script->can_instance()) {
-			script_instances[i]->real_owner = p_this;
-			si = script->instance_create(script_instances[i]);
+			mixin_instances[i]->real_owner = p_this;
+			si = script->instance_create(mixin_instances[i]);
 		} else {
 			si = nullptr;
 		}
@@ -484,8 +484,8 @@ Error MixinScript::reload(bool p_keep_state) {
 	if (main_script.is_valid()) {
 		main_script->reload();
 	}
-	for (int i = 0; i < scripts.size(); i++) {
-		Ref<Script> script = scripts[i];
+	for (int i = 0; i < mixins.size(); i++) {
+		Ref<Script> script = mixins[i];
 		script->reload(p_keep_state);
 	}
 	return OK;
@@ -495,14 +495,14 @@ void MixinScript::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_main_script", "script"), &MixinScript::set_main_script);
 	ClassDB::bind_method(D_METHOD("get_main_script"), &MixinScript::get_main_script);
 
-	ClassDB::bind_method(D_METHOD("add_script", "script"), &MixinScript::add_script);
-	ClassDB::bind_method(D_METHOD("remove_script", "index"), &MixinScript::remove_script);
-	ClassDB::bind_method(D_METHOD("move_script", "position", "script"), &MixinScript::move_script);
-	ClassDB::bind_method(D_METHOD("insert_script", "position", "script"), &MixinScript::insert_script);
-	ClassDB::bind_method(D_METHOD("set_script_at_index", "index", "script"), &MixinScript::set_script_at_index);
-	ClassDB::bind_method(D_METHOD("get_script_at_index", "index"), &MixinScript::get_script_at_index);
-	ClassDB::bind_method(D_METHOD("get_script_count"), &MixinScript::get_script_count);
-	ClassDB::bind_method(D_METHOD("clear_scripts"), &MixinScript::clear_scripts);
+	ClassDB::bind_method(D_METHOD("add_mixin", "script"), &MixinScript::add_mixin);
+	ClassDB::bind_method(D_METHOD("remove_mixin", "index"), &MixinScript::remove_mixin);
+	ClassDB::bind_method(D_METHOD("move_mixin", "position", "script"), &MixinScript::move_mixin);
+	ClassDB::bind_method(D_METHOD("insert_mixin", "position", "script"), &MixinScript::insert_mixin);
+	ClassDB::bind_method(D_METHOD("set_mixin", "index", "script"), &MixinScript::set_mixin);
+	ClassDB::bind_method(D_METHOD("get_mixin", "index"), &MixinScript::get_mixin);
+	ClassDB::bind_method(D_METHOD("get_mixin_count"), &MixinScript::get_mixin_count);
+	ClassDB::bind_method(D_METHOD("clear_mixins"), &MixinScript::clear_mixins);
 
 	// The `main_script` property could be hidden in the editor since there's
 	// `MixinScriptEditor` which can edit the main script, but doing so also
@@ -525,10 +525,10 @@ ScriptLanguage *MixinScript::get_language() const {
 MixinScript::MixinScript() {}
 
 MixinScript::~MixinScript() {
-	for (int i = 0; i < script_instances.size(); i++) {
-		memdelete(script_instances[i]);
+	for (int i = 0; i < mixin_instances.size(); i++) {
+		memdelete(mixin_instances[i]);
 	}
-	script_instances.resize(0);
+	mixin_instances.resize(0);
 }
 
 Ref<Script> MixinScript::get_base_script() const {
@@ -542,8 +542,8 @@ bool MixinScript::has_method(const StringName &p_method) const {
 			return true;
 		}
 	}
-	for (int i = 0; i < scripts.size(); i++) {
-		if (scripts[i]->has_method(p_method)) {
+	for (int i = 0; i < mixins.size(); i++) {
+		if (mixins[i]->has_method(p_method)) {
 			return true;
 		}
 	}
@@ -556,9 +556,9 @@ MethodInfo MixinScript::get_method_info(const StringName &p_method) const {
 			return main_script->get_method_info(p_method);
 		}
 	}
-	for (int i = 0; i < scripts.size(); i++) {
-		if (scripts[i]->has_method(p_method)) {
-			return scripts[i]->get_method_info(p_method);
+	for (int i = 0; i < mixins.size(); i++) {
+		if (mixins[i]->has_method(p_method)) {
+			return mixins[i]->get_method_info(p_method);
 		}
 	}
 	return MethodInfo();
@@ -570,8 +570,8 @@ bool MixinScript::has_script_signal(const StringName &p_signal) const {
 			return true;
 		}
 	}
-	for (int i = 0; i < scripts.size(); i++) {
-		if (scripts[i]->has_script_signal(p_signal)) {
+	for (int i = 0; i < mixins.size(); i++) {
+		if (mixins[i]->has_script_signal(p_signal)) {
 			return true;
 		}
 	}
@@ -582,8 +582,8 @@ void MixinScript::get_script_signal_list(List<MethodInfo> *r_signals) const {
 	if (main_script.is_valid()) {
 		main_script->get_script_signal_list(r_signals);
 	}
-	for (int i = 0; i < scripts.size(); i++) {
-		scripts[i]->get_script_signal_list(r_signals);
+	for (int i = 0; i < mixins.size(); i++) {
+		mixins[i]->get_script_signal_list(r_signals);
 	}
 }
 
@@ -593,8 +593,8 @@ bool MixinScript::get_property_default_value(const StringName &p_property, Varia
 			return true;
 		}
 	}
-	for (int i = 0; i < scripts.size(); i++) {
-		if (scripts[i]->get_property_default_value(p_property, r_value)) {
+	for (int i = 0; i < mixins.size(); i++) {
+		if (mixins[i]->get_property_default_value(p_property, r_value)) {
 			return true;
 		}
 	}
@@ -605,8 +605,8 @@ void MixinScript::get_script_method_list(List<MethodInfo> *p_list) const {
 	if (main_script.is_valid()) {
 		main_script->get_script_method_list(p_list);
 	}
-	for (int i = 0; i < scripts.size(); i++) {
-		scripts[i]->get_script_method_list(p_list);
+	for (int i = 0; i < mixins.size(); i++) {
+		mixins[i]->get_script_method_list(p_list);
 	}
 }
 
@@ -614,8 +614,8 @@ void MixinScript::get_script_property_list(List<PropertyInfo> *p_list) const {
 	if (main_script.is_valid()) {
 		main_script->get_script_property_list(p_list);
 	}
-	for (int i = 0; i < scripts.size(); i++) {
-		scripts[i]->get_script_property_list(p_list);
+	for (int i = 0; i < mixins.size(); i++) {
+		mixins[i]->get_script_property_list(p_list);
 	}
 }
 
@@ -623,8 +623,8 @@ void MixinScript::update_exports() {
 	if (main_script.is_valid()) {
 		main_script->update_exports();
 	}
-	for (int i = 0; i < scripts.size(); i++) {
-		Ref<Script> script = scripts[i];
+	for (int i = 0; i < mixins.size(); i++) {
+		Ref<Script> script = mixins[i];
 		script->update_exports();
 	}
 }

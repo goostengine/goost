@@ -69,9 +69,9 @@ class MixinScript : public Script {
 	StringName base_class_name;
 
 	Ref<Script> main_script;
-	Vector<Ref<Script> > scripts;
+	Vector<Ref<Script> > mixins;
 
-	Vector<Mixin *> script_instances;
+	Vector<Mixin *> mixin_instances;
 	Map<Object *, MixinScriptInstance *> instances;
 
 protected:
@@ -98,14 +98,14 @@ public:
 	void set_main_script(const Ref<Script> &p_script);
 	Ref<Script> get_main_script() const { return main_script; }
 
-	void add_script(const Ref<Script> &p_script);
-	void remove_script(int p_idx);
-	void set_script_at_index(int p_idx, const Ref<Script> &p_script);
-	void move_script(int p_pos, const Ref<Script> &p_script);
-	void insert_script(int p_pos, const Ref<Script> &p_script);
-	Ref<Script> get_script_at_index(int p_idx) const;
-	int get_script_count() const { return scripts.size(); };
-	void clear_scripts();
+	void add_mixin(const Ref<Script> &p_script);
+	void remove_mixin(int p_idx);
+	void set_mixin(int p_idx, const Ref<Script> &p_script);
+	void move_mixin(int p_pos, const Ref<Script> &p_script);
+	void insert_mixin(int p_pos, const Ref<Script> &p_script);
+	Ref<Script> get_mixin(int p_idx) const;
+	int get_mixin_count() const { return mixins.size(); };
+	void clear_mixins();
 
 	void set_mixins(const Array &p_mixins);
 	Array get_mixins() const;

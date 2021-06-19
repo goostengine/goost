@@ -33,8 +33,8 @@ func test_two_scripts():
 
 func test_add_remove():
 	var ms = MixinScript.new()
-	ms.add_script(MixinA)
-	ms.add_script(MixinB)
+	ms.add_mixin(MixinA)
+	ms.add_mixin(MixinB)
 
 	var n = Node.new()
 	n.set_script(ms)
@@ -46,21 +46,21 @@ func test_add_remove():
 	assert_eq(n.bar_b(), "Bar B")
 
 	ms = n.get_script()
-	ms.remove_script(0)
+	ms.remove_mixin(0)
 
 	assert_false("foo_a" in n)
 	assert_false(n.has_method("bar_a"))
 	assert_true("foo_b" in n)
 	assert_true(n.has_method("bar_b"))
 
-	ms.remove_script(0)
+	ms.remove_mixin(0)
 
 	assert_false("foo_a" in n)
 	assert_false(n.has_method("bar_a"))
 	assert_false("foo_b" in n)
 	assert_false(n.has_method("bar_b"))
 
-	ms.add_script(MixinB)
+	ms.add_mixin(MixinB)
 
 	assert_eq(n.foo_b, "Foo B")
 	assert_eq(n.bar_b(), "Bar B")
@@ -77,7 +77,7 @@ func test_clear_scripts():
 	assert_eq(n.foo_a, "Foo A")
 	assert_eq(n.foo_b, "Foo B")
 
-	ms.clear_scripts()
+	ms.clear_mixins()
 
 	assert_false("foo_a" in n)
 	assert_false("foo_b" in n)
@@ -88,18 +88,18 @@ func test_setget_scripts():
 	var mixins = [MixinA, MixinB]
 
 	for m in mixins:
-		ms.add_script(m)
+		ms.add_mixin(m)
 
 	var n = Node.new()
 	n.set_script(ms)
 	add_child_autofree(n)
 
-	for idx in ms.get_script_count():
-		var m = ms.get_script_at_index(idx)
+	for idx in ms.get_mixin_count():
+		var m = ms.get_mixin(idx)
 		assert_eq(m, mixins[idx])
 
-	ms.set_script_at_index(0, MixinB)
-	assert_eq(MixinB, ms.get_script_at_index(0))
+	ms.set_mixin(0, MixinB)
+	assert_eq(MixinB, ms.get_mixin(0))
 
 	
 class MixinFirst extends Mixin:
@@ -113,15 +113,15 @@ class MixinSecond extends Mixin:
 
 func test_move_script():
 	var ms = MixinScript.new()
-	ms.add_script(MixinFirst)
-	ms.add_script(MixinSecond)
+	ms.add_mixin(MixinFirst)
+	ms.add_mixin(MixinSecond)
 
 	var n = Node.new()
 	n.set_script(ms)
 	add_child_autofree(n)
 
 	assert_eq(n.tell(), "First")
-	ms.move_script(0, MixinFirst)
+	ms.move_mixin(0, MixinFirst)
 	assert_eq(n.tell(), "First", "Did not move")
-	ms.move_script(1, MixinFirst)
+	ms.move_mixin(1, MixinFirst)
 	assert_eq(n.tell(), "Second")

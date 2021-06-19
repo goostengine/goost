@@ -249,14 +249,14 @@ void MixinScriptEditor::_on_main_script_button_pressed(Object *p_item, int p_col
 
 void MixinScriptEditor::_on_mixin_created(Ref<Script> p_script) {
 	if (p_script.is_valid()) {
-		for (int i = 0; i < script->get_script_count(); ++i) {
-			Ref<Script> m = script->get_script_at_index(i);
+		for (int i = 0; i < script->get_mixin_count(); ++i) {
+			Ref<Script> m = script->get_mixin(i);
 			if (m == p_script) {
 				EditorNode::get_singleton()->show_warning(TTR("MixinScript already has the script to be added, skipping."));
 				return;
 			}
 		}
-		script->add_script(p_script);
+		script->add_mixin(p_script);
 		EditorNode::get_singleton()->save_resource(script);
 		queue_update();
 	}
@@ -269,15 +269,15 @@ void MixinScriptEditor::_on_mixin_creation_closed() {
 
 static void shift_mixin(Ref<MixinScript> p_script, const Ref<Script> &p_mixin, int step) {
 	int mixin_pos = -1;
-	for (int i = 0; i < p_script->get_script_count(); ++i) {
-		const Ref<Script> &s = p_script->get_script_at_index(i);
+	for (int i = 0; i < p_script->get_mixin_count(); ++i) {
+		const Ref<Script> &s = p_script->get_mixin(i);
 		if (s == p_mixin) {
 			mixin_pos = i;
 			break;
 		}
 	}
 	ERR_FAIL_COND(mixin_pos == -1);
-	p_script->move_script(CLAMP(mixin_pos + step, 0, p_script->get_script_count() - 1), p_mixin);
+	p_script->move_mixin(CLAMP(mixin_pos + step, 0, p_script->get_mixin_count() - 1), p_mixin);
 }
 
 void MixinScriptEditor::_on_mixin_button_pressed(Object *p_item, int p_column, int p_button) {
@@ -295,10 +295,10 @@ void MixinScriptEditor::_on_mixin_button_pressed(Object *p_item, int p_column, i
 			shift_mixin(script, mixin, +1);
 		} break;
 		case BUTTON_REMOVE: {
-			for (int i = 0; i < script->get_script_count(); ++i) {
-				Ref<Script> m = script->get_script_at_index(i);
+			for (int i = 0; i < script->get_mixin_count(); ++i) {
+				Ref<Script> m = script->get_mixin(i);
 				if (m == mixin) {
-					script->remove_script(i);
+					script->remove_mixin(i);
 					break;
 				}
 			}
@@ -347,8 +347,8 @@ void MixinScriptEditor::_update_list() {
 	tree_mixins->clear();
 	TreeItem *mixin_root = tree_mixins->create_item();
 	
-	for (int i = 0; i < script->get_script_count(); ++i) {
-		Ref<Script> mixin = script->get_script_at_index(i);
+	for (int i = 0; i < script->get_mixin_count(); ++i) {
+		Ref<Script> mixin = script->get_mixin(i);
 
 		TreeItem *mixin_item = tree_mixins->create_item(mixin_root);
 		String mixin_path = mixin->get_path();
@@ -365,7 +365,7 @@ void MixinScriptEditor::_update_list() {
 
 		mixin_item->set_meta("script", mixin);
 	}
-	if (script->get_script_count() > 0) {
+	if (script->get_mixin_count() > 0) {
 		tree_mixins->show();
 		panel_mixins->hide();
 	} else {
