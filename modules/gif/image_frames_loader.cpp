@@ -23,7 +23,7 @@ Error ImageFramesLoader::load_image_frames(String p_file, Ref<ImageFrames> p_ima
 		Error err;
 		f = FileAccess::open(p_file, FileAccess::READ, &err);
 		if (!f) {
-			ERR_PRINTS("Error opening file '" + p_file + "'.");
+			ERR_PRINT("Error opening file '" + p_file + "'.");
 			return err;
 		}
 	}
@@ -35,10 +35,10 @@ Error ImageFramesLoader::load_image_frames(String p_file, Ref<ImageFrames> p_ima
 		}
 		Error err = loader[i]->load_image_frames(p_image_frames, f);
 		if (err != OK) {
-			ERR_PRINTS("Error loading image: " + p_file);
+			ERR_PRINT("Error loading image: " + p_file);
 		}
 		if (p_image_frames->get_frame_count() == 0) {
-			ERR_PRINTS("Images frames should contain at least one frame to be loaded.");
+			ERR_PRINT("Images frames should contain at least one frame to be loaded.");
 			if (!p_custom) {
 				memdelete(f);
 			}

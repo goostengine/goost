@@ -9,7 +9,7 @@ Error ImageFrames::load(const String &p_path, int max_frames) {
 		Ref<ImageFrames> image_frames = Ref<ImageFrames>(this);
 		return load_gif_func(image_frames, p_path, max_frames);
 	} else {
-		ERR_PRINTS("Unrecognized image: " + p_path);
+		ERR_PRINT("Unrecognized image: " + p_path);
 		return ERR_FILE_UNRECOGNIZED;
 	}
 }
@@ -20,7 +20,7 @@ Error ImageFrames::load_gif_from_buffer(const PoolByteArray &p_data, int max_fra
 		Ref<ImageFrames> image_frames = Ref<ImageFrames>(this);
 		return load_gif_func(image_frames, p_data, max_frames);
 	} else {
-		ERR_PRINTS("Unrecognized image.");
+		ERR_PRINT("Unrecognized image.");
 		return ERR_FILE_UNRECOGNIZED;
 	}
 }
