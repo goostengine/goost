@@ -450,8 +450,9 @@ ScriptInstance *MixinScript::instance_create(Object *p_this) {
 	// Main script.
 	if (main_script.is_valid()) {
 		if (main_script->can_instance()) {
-			// We still have to create dummy node to reflect main instance.
-			msi->main_object = ClassDB::instance(p_this->get_class());
+			Mixin *m = memnew(Mixin);
+			msi->main_object = m;
+			m->real_owner = p_this;
 			msi->main_instance = main_script->instance_create(msi->main_object);
 			base_class_name = p_this->get_class();
 		}

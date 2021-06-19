@@ -155,8 +155,6 @@ void MixinScriptEditor::_on_editor_script_changed(Ref<Script> p_script) {
 	if (ScriptEditor::get_singleton()->has_meta("_edit_mixin")) {
 		bool edit = (bool)ScriptEditor::get_singleton()->get_meta("_edit_mixin");
 		if (edit) {
-			// TODO: restore to delegating main script when you press edit
-			// button in the MixinScript editor itself.
 			ScriptEditor::get_singleton()->set_meta("_edit_mixin", false);
 			return;
 		}
@@ -183,19 +181,9 @@ void MixinScriptEditor::_on_attach_main_script_pressed() {
 			queue_update();
 			return;
 		}
-		// Base name.
-		String base_name = script->get_instance_base_type();
-		if (base_name.empty()) {
-			Node *root = get_tree()->get_edited_scene_root();
-			if (root) {
-				base_name = root->get_class();
-			}
-		}
-		if (base_name.empty()) {
-			base_name = "Node";
-		}
-		// Base path.
+		String base_name = "Mixin";
 		String base_path = script->get_path().get_basename();
+
 		if (base_path.empty()) {
 			EditorNode::get_singleton()->show_warning(TTR("The MixinScript is not yet saved to disk.\nPlease save the MixinScript first."));
 			return;
@@ -457,7 +445,7 @@ MixinScriptEditor::MixinScriptEditor() {
 	panel_main_script->set_custom_minimum_size(Vector2(0, 75));
 	CenterContainer *center_main_script = memnew(CenterContainer);
 	Label *label_main_script = memnew(Label);
-	label_main_script->set_text(TTR("Press \"Attach Main Script\" button to create new or load existing script."));
+	label_main_script->set_text(TTR("Press \"Attach Main Script\" button to create new or load existing Mixin script."));
 	center_main_script->add_child(label_main_script);
 	panel_main_script->add_child(center_main_script);
 
