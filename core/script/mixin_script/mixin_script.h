@@ -105,6 +105,8 @@ public:
 	void add_script(const Ref<Script> &p_script);
 	void remove_script(int p_idx);
 	void set_script_at_index(int p_idx, const Ref<Script> &p_script);
+	void move_script(int p_pos, const Ref<Script> &p_script);
+	void insert_script(int p_pos, const Ref<Script> &p_script);
 	Ref<Script> get_script_at_index(int p_idx) const;
 	int get_script_count() const { return scripts.size(); };
 

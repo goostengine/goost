@@ -267,6 +267,19 @@ void MixinScriptEditor::_on_mixin_creation_closed() {
 	sc->disconnect("script_created", this, "_on_mixin_created");
 }
 
+static void shift_mixin(Ref<MixinScript> p_script, const Ref<Script> &p_mixin, int step) {
+	int mixin_pos = -1;
+	for (int i = 0; i < p_script->get_script_count(); ++i) {
+		const Ref<Script> &s = p_script->get_script_at_index(i);
+		if (s == p_mixin) {
+			mixin_pos = i;
+			break;
+		}
+	}
+	ERR_FAIL_COND(mixin_pos == -1);
+	p_script->move_script(CLAMP(mixin_pos + step, 0, p_script->get_script_count() - 1), p_mixin);
+}
+
 void MixinScriptEditor::_on_mixin_button_pressed(Object *p_item, int p_column, int p_button) {
 	TreeItem *ti = Object::cast_to<TreeItem>(p_item);
 	Ref<Script> mixin = p_item->get_meta("script");
@@ -276,10 +289,10 @@ void MixinScriptEditor::_on_mixin_button_pressed(Object *p_item, int p_column, i
 			EditorNode::get_singleton()->push_item(mixin.ptr());
 		} break;
 		case BUTTON_MOVE_UP: {
-			// TODO
+			shift_mixin(script, mixin, -1);
 		} break;
 		case BUTTON_MOVE_DOWN: {
-			// TODO
+			shift_mixin(script, mixin, +1);
 		} break;
 		case BUTTON_REMOVE: {
 			for (int i = 0; i < script->get_script_count(); ++i) {
@@ -438,7 +451,7 @@ MixinScriptEditor::MixinScriptEditor() {
 	vbox->add_child(add_mixin_button);
 	add_mixin_button->connect("pressed", this, "_on_add_mixin_pressed");
 	add_mixin_button->set_text(TTR("Add Mixin"));
-	add_mixin_button->set_tooltip(TTR("Create a partial Script to extend the runtime functionality of the host Node."))
+	add_mixin_button->set_tooltip(TTR("Create a partial Script to extend the runtime functionality of the host object."));
 	add_mixin_button->set_custom_minimum_size(Vector2(150, 30));
 	add_mixin_button->set_h_size_flags(0);
 

@@ -387,11 +387,35 @@ void MixinScript::set_script_at_index(int p_idx, const Ref<Script> &p_script) {
 		// Looks like there's no need to explicitly free a previous
 		// script instance in `msi->instances`, because `s->instance_create`
 		// will free it by itself, otherwise this leads to random crashes.
-		if (p_script->can_instance()) {
+		if (s->can_instance()) {
 			msi->instances.set(p_idx, s->instance_create(script_instances[p_idx]));
+		} else {
+			msi->instances.set(p_idx, nullptr);
 		}
 	}
 	emit_changed();
+}
+
+void MixinScript::move_script(int p_to_pos, const Ref<Script> &p_script) {
+	int to_pos = p_to_pos;
+	if (to_pos == scripts.size()) {
+		to_pos--;
+	}
+	int from_pos = -1;
+	for (int i = 0; i < scripts.size(); ++i) {
+		const Ref<Script> &s = scripts[i];
+		if (s == p_script) {
+			from_pos = i;
+			break;
+		}
+	}
+	ERR_FAIL_COND_MSG(from_pos == -1, "Cannot move script: not part of MixinScript.")
+
+	if (from_pos == to_pos) {
+		return;
+	}
+	remove_script(from_pos);
+	insert_script(to_pos, p_script);
 }
 
 Ref<Script> MixinScript::get_script_at_index(int p_idx) const {
@@ -442,6 +466,32 @@ void MixinScript::remove_script(int p_idx) {
 		msi->instances.remove(p_idx);
 		msi->object->_change_notify();
 	}
+	emit_changed();
+}
+
+void MixinScript::insert_script(int p_pos, const Ref<Script> &p_script) {
+	_THREAD_SAFE_METHOD_
+
+	ERR_FAIL_COND(p_script.is_null());
+	ERR_FAIL_INDEX(p_pos, scripts.size() + 1);
+
+	Mixin *script_owner = memnew(Mixin);
+	script_instances.insert(p_pos, script_owner);
+	scripts.insert(p_pos, p_script);
+	Ref<Script> s = p_script;
+	
+	for (Map<Object *, MixinScriptInstance *>::Element *E = instances.front(); E; E = E->next()) {
+		MixinScriptInstance *msi = E->get();
+
+		if (s->can_instance()) {
+			script_owner->real_owner = msi->object;
+			msi->instances.insert(p_pos, s->instance_create(script_owner));
+		} else {
+			msi->instances.insert(p_pos, nullptr);
+		}
+		msi->object->_change_notify();
+	}
+	_change_notify();
 	emit_changed();
 }
 
@@ -511,6 +561,8 @@ void MixinScript::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("add_script", "script"), &MixinScript::add_script);
 	ClassDB::bind_method(D_METHOD("remove_script", "index"), &MixinScript::remove_script);
+	ClassDB::bind_method(D_METHOD("move_script", "position", "script"), &MixinScript::move_script);
+	ClassDB::bind_method(D_METHOD("insert_script", "position", "script"), &MixinScript::insert_script);
 	ClassDB::bind_method(D_METHOD("set_script_at_index", "index", "script"), &MixinScript::set_script_at_index);
 	ClassDB::bind_method(D_METHOD("get_script_at_index", "index"), &MixinScript::get_script_at_index);
 	ClassDB::bind_method(D_METHOD("get_script_count"), &MixinScript::get_script_count);

@@ -84,3 +84,28 @@ func test_setget_scripts():
 
 	ms.set_script_at_index(0, MixinB)
 	assert_eq(MixinB, ms.get_script_at_index(0))
+
+	
+class MixinFirst extends Mixin:
+	func tell():
+		return "First"
+
+class MixinSecond extends Mixin:
+	func tell():
+		return "Second"
+
+
+func test_move_script():
+	var ms = MixinScript.new()
+	ms.add_script(MixinFirst)
+	ms.add_script(MixinSecond)
+
+	var n = Node.new()
+	n.set_script(ms)
+	add_child_autofree(n)
+
+	assert_eq(n.tell(), "First")
+	ms.move_script(0, MixinFirst)
+	assert_eq(n.tell(), "First", "Did not move")
+	ms.move_script(1, MixinFirst)
+	assert_eq(n.tell(), "Second")
