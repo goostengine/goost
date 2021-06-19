@@ -15,7 +15,7 @@ namespace goost {
 
 static MixinScriptLanguage *script_mixin_script = NULL;
 
-#ifdef GOOST_MixinScript
+#if defined(TOOLS_ENABLED) && defined(GOOST_MixinScript)
 static ScriptEditorBase *create_editor(const RES &p_resource) {
 	if (Object::cast_to<MixinScript>(*p_resource)) {
 		return memnew(MixinScriptEditor);
