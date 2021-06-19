@@ -136,6 +136,10 @@ void MixinScriptEditor::_notification(int p_what) {
 	if (p_what == NOTIFICATION_THEME_CHANGED || p_what == NOTIFICATION_ENTER_TREE || EditorSettings::NOTIFICATION_EDITOR_SETTINGS_CHANGED) {
 		attach_main_script_button->set_icon(Control::get_icon("ScriptCreate", "EditorIcons"));
 		add_mixin_button->set_icon(Control::get_icon("ScriptCreate", "EditorIcons"));
+
+		if (script.is_valid() && script->get_main_script().is_valid()) {
+			attach_main_script_button->set_icon(Control::get_icon("ScriptRemove", "EditorIcons"));
+		}
 		panel_main_script->add_style_override("panel", get_stylebox("bg", "Tree"));
 		panel_mixins->add_style_override("panel", get_stylebox("bg", "Tree"));
 	}
@@ -172,8 +176,13 @@ void MixinScriptEditor::_on_attach_main_script_pressed() {
 
 	if (script.is_valid()) {
 		Ref<Script> main_script = script->get_main_script();
-		ERR_FAIL_COND_MSG(main_script.is_valid(), "Main script is already attached.");
-
+		if (main_script.is_valid()) {
+			// Main script is already attached, detach now.
+			script->set_main_script(Ref<Script>());
+			EditorNode::get_singleton()->save_resource(script);
+			queue_update();
+			return;
+		}
 		// Base name.
 		String base_name = script->get_instance_base_type();
 		if (base_name.empty()) {
@@ -335,18 +344,20 @@ void MixinScriptEditor::_update_list() {
 
 		tree_main_script->show();
 		panel_main_script->hide();
-		attach_main_script_button->set_disabled(true);
-		attach_main_script_button->set_tooltip(TTR("Main script is already attached."));
+		attach_main_script_button->set_icon(Control::get_icon("ScriptRemove", "EditorIcons"));
+		attach_main_script_button->set_text(TTR("Detach Main Script"));
+		attach_main_script_button->set_tooltip(TTR("Detach main script from the object."));
 	} else {
 		tree_main_script->hide();
 		panel_main_script->show();
-		attach_main_script_button->set_disabled(false);
+		attach_main_script_button->set_icon(Control::get_icon("ScriptCreate", "EditorIcons"));
+		attach_main_script_button->set_text(TTR("Attach Main Script"));
 		attach_main_script_button->set_tooltip(TTR("Attach main script to edit this script like a regular script."));
 	}
 	// Mixins.
 	tree_mixins->clear();
 	TreeItem *mixin_root = tree_mixins->create_item();
-	
+
 	for (int i = 0; i < script->get_mixin_count(); ++i) {
 		Ref<Script> mixin = script->get_mixin(i);
 
