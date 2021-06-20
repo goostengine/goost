@@ -10,7 +10,7 @@ static Error _load_gif(Ref<ImageFrames> &r_image_frames, const Variant &source, 
 		Error err;
 		FileAccess *f = FileAccess::open(source, FileAccess::READ, &err);
 		if (!f) {
-			ERR_PRINTS("Error opening file '" + String(source) + "'.");
+			ERR_PRINT("Error opening file '" + String(source) + "'.");
 			return err;
 		}
 		err = gif.load_from_file_access(r_image_frames, f, max_frames);
@@ -70,7 +70,7 @@ int readFromBuffer(GifFileType *gif, GifByteType *data, int length) {
 }
 
 Error GifLoader::parse_error(Error err, const String &message) {
-	ERR_PRINTS(message);
+	ERR_PRINT(message);
 	return err;
 }
 
