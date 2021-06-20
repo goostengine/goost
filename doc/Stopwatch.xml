@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="Stopwatch" inherits="Node" version="3.4">
+	<brief_description>
+		A stopwatch to measure time intervals.
+	</brief_description>
+	<description>
+		A stopwatch allows to measure time intervals. It can measure elapsed time for one interval, or the total of elapsed time across multiple time intervals. To start measuring a time interval, call [method start], then eventually call [method stop], and then check [member time_elapsed].
+		[codeblock]
+		extends Node
+
+		func _ready():
+		    var stopwatch = Stopwatch.new()
+		    add_child(stopwatch)
+		    stopwatch.start()
+		    yield(get_tree().create_timer(1))
+		    stopwatch.stop()
+		    print(stopwatch.time_elapsed) # Prints 1.0
+		[/codeblock]
+		Measurement can be resumed with successive [method start] calls. Each call to [method stop] ends the current interval measurement and freezes the cumulative elapsed time value, which also emits the [signal interval_measured] signal. Use method [method reset] to clear the elapsed time to zero in order to measure new time intervals.
+		Since the class is used to measure time intervals between existing events of interest, the stopwatch does not have a notion of maximum elapsed time, nor does have a timeout signal. Use [Timer] node for this purpose instead.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="is_stopped" qualifiers="const">
+			<return type="bool">
+			</return>
+			<description>
+				Returns [code]true[/code] if the stopwatch is stopped (or inactive).
+			</description>
+		</method>
+		<method name="reset">
+			<return type="void">
+			</return>
+			<description>
+				Stops time interval measurement and resets the [member time_elapsed] to zero. The stopwatch cannot be reset if it's already running. In that case, call [method stop] before resetting the stopwatch.
+			</description>
+		</method>
+		<method name="start">
+			<return type="void">
+			</return>
+			<description>
+				Starts (or resumes) measuring elapsed time for an interval.
+			</description>
+		</method>
+		<method name="stop">
+			<return type="void">
+			</return>
+			<description>
+				Stops measuring elapsed time for an interval. Emits the [signal interval_measured]. You can reset the stopwatch to zero by calling [method reset] manually.
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="autostart" type="bool" setter="set_autostart" getter="has_autostart" default="false">
+			If [code]true[/code], the stopwatch will automatically start when entering the [SceneTree].
+			[b]Note:[/b] This property is automatically set to [code]false[/code] after the stopwatch enters the [SceneTree] and starts.
+		</member>
+		<member name="process_mode" type="int" setter="set_process_mode" getter="get_process_mode" enum="Stopwatch.ProcessMode" default="1">
+			Processing mode. See [enum ProcessMode].
+		</member>
+		<member name="time_elapsed" type="float" setter="" getter="get_time_elapsed">
+			The cumulative measured time interval. Returns [code]0.0[/code] if the stopwatch has not been started yet with [method start] or reset to zero with [method reset].
+		</member>
+	</members>
+	<signals>
+		<signal name="interval_measured">
+			<argument index="0" name="time_interval" type="float">
+			</argument>
+			<argument index="1" name="time_start" type="float">
+			</argument>
+			<argument index="2" name="time_stop" type="float">
+			</argument>
+			<description>
+				Emitted when the stopwatch stops the measurement of a time interval. The [code]time_interval[/code] is the difference between elapsed times between [method start] and [method stop] calls. The signal also provides the start and stop times via [code]time_start[/code] and [code]time_stop[/code] respectively.
+				If the stopwatch is started and then immediately stopped, the signal is not emitted.
+			</description>
+		</signal>
+	</signals>
+	<constants>
+		<constant name="PROCESS_PHYSICS" value="0" enum="ProcessMode">
+			Update the stopwatch during the physics step at each frame (fixed framerate processing).
+		</constant>
+		<constant name="PROCESS_IDLE" value="1" enum="ProcessMode">
+			Update the stopwatch during the idle time at each frame.
+		</constant>
+	</constants>
+</class>

@@ -13,5 +13,6 @@ if env["goost_gui_enabled"]:
 if env["goost_physics_enabled"]:
     SConscript("physics/SCsub", exports="env_goost")
 
+env_goost.add_source_files(env.modules_sources, "main/*.cpp")
 env_goost.add_source_files(env.modules_sources, "resources/*.cpp")
 env_goost.add_source_files(env.modules_sources, "*.cpp")

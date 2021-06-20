@@ -1,7 +1,9 @@
 #include "register_scene_types.h"
-#include "goost/register_types.h"
-#include "physics/register_physics_types.h"
+
 #include "goost/classes_enabled.gen.h"
+#include "goost/register_types.h"
+
+#include "physics/register_physics_types.h"
 
 namespace goost {
 
@@ -11,6 +13,7 @@ void register_scene_types() {
 	goost::register_class<PolyRectangle2D>();
 	goost::register_class<PolyShape2D>();
 #endif
+	goost::register_class<Stopwatch>();
 	goost::register_class<VisualShape2D>();
 	goost::register_class<GradientTexture2D>();
 	goost::register_class<LightTexture>();
