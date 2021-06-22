@@ -161,6 +161,7 @@ classes = {
     "Random": "math",
     "Random2D": "geometry",
     "ShapeCast2D": "physics",
+    "Stopwatch": "scene",
     "VariantMap": "core",
     "VariantResource": "core",
     "VisualShape2D": "scene",
