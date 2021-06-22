@@ -12,12 +12,14 @@ func test_start_stop_idle():
 	stopwatch.start()
 	yield(get_tree().create_timer(0.5), "timeout")
 
+	assert_true(stopwatch.is_running(), "Should still be running until stop() is called.")
 	assert_gt(stopwatch.time_elapsed, 0.49, "Should start.")
 
 	stopwatch.stop()
 	yield(get_tree().create_timer(0.5), "timeout")
-	
-	assert_gt(stopwatch.time_elapsed, 0.49, "Should stop.")
+
+	assert_true(stopwatch.is_stopped(), "Should be stopped by now.")
+	assert_gt(stopwatch.time_elapsed, 0.49, "Should stop measuring time interval.")
 
 	stopwatch.start()
 	assert_gt(stopwatch.time_elapsed, 0.49, "Should resume, not reset.")
@@ -44,7 +46,7 @@ func test_autostart_stop_physics():
 	stopwatch.stop()
 	yield(get_tree().create_timer(0.5), "timeout")
 
-	assert_gt(stopwatch.time_elapsed, 0.35, "Should stop.")
+	assert_gt(stopwatch.time_elapsed, 0.35, "Should stop measuring time interval.")
 
 	stopwatch.reset()
 	yield(get_tree().create_timer(0.5), "timeout")

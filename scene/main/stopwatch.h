@@ -7,9 +7,7 @@ class Stopwatch : public Node {
 	GDCLASS(Stopwatch, Node);
 
 	bool autostart = false;
-	bool processing = false;
-	bool paused = false;
-    bool stopped = true;
+    bool running = false;
 
 	double time_elapsed = 0.0;
     double time_start = 0.0;
@@ -31,9 +29,10 @@ public:
 	bool has_autostart() const { return autostart; }
 
 	void start();
+	bool is_running() const { return running; }
 
 	void stop();
-	bool is_stopped() const { return stopped; }
+	bool is_stopped() const { return !running; }
 
     void reset();
 
@@ -41,7 +40,7 @@ public:
 
 private:
 	ProcessMode process_mode = PROCESS_IDLE;
-	void _set_process(bool p_process, bool p_force = false);
+	void _set_process(bool p_process);
 };
 
 VARIANT_ENUM_CAST(Stopwatch::ProcessMode);

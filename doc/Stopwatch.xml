@@ -17,16 +17,23 @@
 		    print(stopwatch.time_elapsed) # Prints 1.0
 		[/codeblock]
 		Measurement can be resumed with successive [method start] calls. Each call to [method stop] ends the current interval measurement and freezes the cumulative elapsed time value, which also emits the [signal interval_measured] signal. Use method [method reset] to clear the elapsed time to zero in order to measure new time intervals.
-		Since the class is used to measure time intervals between existing events of interest, the stopwatch does not have a notion of maximum elapsed time, nor does have a timeout signal. Use [Timer] node for this purpose instead.
+		Since the class is used to measure time intervals between existing events of interest, the stopwatch does not have a notion of maximum elapsed time, nor has a timeout signal. Use [Timer] node for this purpose instead.
 	</description>
 	<tutorials>
 	</tutorials>
 	<methods>
+		<method name="is_running" qualifiers="const">
+			<return type="bool">
+			</return>
+			<description>
+				Returns [code]true[/code] if the stopwatch is in the process of measuring a time interval. The opposite of [method is_stopped].
+			</description>
+		</method>
 		<method name="is_stopped" qualifiers="const">
 			<return type="bool">
 			</return>
 			<description>
-				Returns [code]true[/code] if the stopwatch is stopped (or inactive).
+				Returns [code]true[/code] if the stopwatch is inactive (or hasn't been started yet). The opposite of [method is_running].
 			</description>
 		</method>
 		<method name="reset">

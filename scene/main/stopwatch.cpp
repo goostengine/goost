@@ -16,13 +16,13 @@ void Stopwatch::_notification(int p_what) {
 			}
 		} break;
 		case NOTIFICATION_INTERNAL_PROCESS: {
-			if (!processing || process_mode == PROCESS_PHYSICS || !is_processing_internal()) {
+			if (!running || process_mode == PROCESS_PHYSICS || !is_processing_internal()) {
 				return;
 			}
 			time_elapsed += get_process_delta_time();
 		} break;
 		case NOTIFICATION_INTERNAL_PHYSICS_PROCESS: {
-			if (!processing || process_mode == PROCESS_IDLE || !is_physics_processing_internal()) {
+			if (!running || process_mode == PROCESS_IDLE || !is_physics_processing_internal()) {
 				return;
 			}
 			time_elapsed += get_physics_process_delta_time();
@@ -32,16 +32,13 @@ void Stopwatch::_notification(int p_what) {
 
 void Stopwatch::start() {
 	ERR_FAIL_COND_MSG(!is_inside_tree(), "Stopwatch was not added to the SceneTree. Either add it or set autostart to true.");
-	ERR_FAIL_COND_MSG(!stopped, "Stopwatch is already running. Stop it with stop() first.");
-	stopped = false;
+	ERR_FAIL_COND_MSG(is_running(), "Stopwatch is already running. Finish measuring the current time interval with stop() first.");
 	time_start = time_elapsed;
 	_set_process(true);
 }
 
 void Stopwatch::stop() {
 	_set_process(false);
-	autostart = false;
-	stopped = true;
 	time_stop = time_elapsed;
 	double time_interval = time_stop - time_start;
 	if (time_interval > 0) {
@@ -50,7 +47,7 @@ void Stopwatch::stop() {
 }
 
 void Stopwatch::reset() {
-	ERR_FAIL_COND_MSG(!stopped, "Stopwatch is already running. Stop it with stop() first.");
+	ERR_FAIL_COND_MSG(is_running(), "Stopwatch is currently running. Finish measuring the current time interval with stop() first.");
 	time_elapsed = 0.0;
 	time_start = 0.0;
 	time_stop = 0.0;
@@ -77,16 +74,16 @@ void Stopwatch::set_process_mode(ProcessMode p_mode) {
 	process_mode = p_mode;
 }
 
-void Stopwatch::_set_process(bool p_process, bool p_force) {
+void Stopwatch::_set_process(bool p_process) {
 	switch (process_mode) {
-		case PROCESS_PHYSICS:
+		case PROCESS_PHYSICS: {
 			set_physics_process_internal(p_process);
-			break;
-		case PROCESS_IDLE:
+		} break;
+		case PROCESS_IDLE: {
 			set_process_internal(p_process);
-			break;
+		} break;
 	}
-	processing = p_process;
+	running = p_process;
 }
 
 void Stopwatch::_bind_methods() {
@@ -94,6 +91,7 @@ void Stopwatch::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("has_autostart"), &Stopwatch::has_autostart);
 
 	ClassDB::bind_method(D_METHOD("start"), &Stopwatch::start);
+	ClassDB::bind_method(D_METHOD("is_running"), &Stopwatch::is_running);
 
 	ClassDB::bind_method(D_METHOD("stop"), &Stopwatch::stop);
 	ClassDB::bind_method(D_METHOD("is_stopped"), &Stopwatch::is_stopped);
