@@ -6,10 +6,7 @@ bool EditorInspectorPluginMixinScript::can_handle(Object *p_object) {
 	return Object::cast_to<MixinScript>(p_object) != nullptr;
 }
 
-void EditorInspectorPluginMixinScript::parse_category(Object *p_object, const String &p_parse_category) {
-	if (p_parse_category != "MixinScript") {
-		return;
-	}
+void EditorInspectorPluginMixinScript::parse_begin(Object *p_object) {
 	MixinScript *ms = Object::cast_to<MixinScript>(p_object);
 	if (!ms) {
 		return;
@@ -27,7 +24,6 @@ void EditorInspectorPluginMixinScript::parse_category(Object *p_object, const St
 void EditorInspectorPluginMixinScript::_on_edit_pressed() {
 	ERR_FAIL_COND(script.is_null());
 	
-	// script->set_meta("_edit_via_inspector_requested", true);
 	ScriptEditor::get_singleton()->set_meta("_edit_mixin", true);
 	ScriptEditor::get_singleton()->edit(script);
 }

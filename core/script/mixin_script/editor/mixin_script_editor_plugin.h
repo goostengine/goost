@@ -18,7 +18,7 @@ protected:
 
 public:
 	virtual bool can_handle(Object *p_object);
-	virtual void parse_category(Object *p_object, const String &p_parse_category);
+	virtual void parse_begin(Object *p_object);
 };
 
 class MixinScriptEditorPlugin : public EditorPlugin {

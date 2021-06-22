@@ -29,10 +29,8 @@ public:
 class MixinScriptInstance : public ScriptInstance {
 	friend class MixinScript;
 
-	ScriptInstance *main_instance = nullptr;
 	Vector<ScriptInstance *> instances;
 	Object *object = nullptr;
-	Object *main_object = nullptr;
 	MixinScript *owner = nullptr;
 
 public:
@@ -68,9 +66,7 @@ class MixinScript : public Script {
 
 	StringName base_class_name;
 
-	Ref<Script> main_script;
 	Vector<Ref<Script> > mixins;
-
 	Vector<Mixin *> mixin_instances;
 	Map<Object *, MixinScriptInstance *> instances;
 
@@ -94,9 +90,6 @@ public:
 	virtual bool is_valid() const;
 
 	virtual String get_node_type() const { return ""; }
-
-	void set_main_script(const Ref<Script> &p_script);
-	Ref<Script> get_main_script() const { return main_script; }
 
 	void add_mixin(const Ref<Script> &p_script);
 	void remove_mixin(int p_idx);

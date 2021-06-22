@@ -134,13 +134,7 @@ void MixinScriptEditor::set_syntax_highlighter(SyntaxHighlighter *p_highlighter)
 
 void MixinScriptEditor::_notification(int p_what) {
 	if (p_what == NOTIFICATION_THEME_CHANGED || p_what == NOTIFICATION_ENTER_TREE || p_what == EditorSettings::NOTIFICATION_EDITOR_SETTINGS_CHANGED) {
-		attach_main_script_button->set_icon(Control::get_icon("ScriptCreate", "EditorIcons"));
 		add_mixin_button->set_icon(Control::get_icon("ScriptCreate", "EditorIcons"));
-
-		if (script.is_valid() && script->get_main_script().is_valid()) {
-			attach_main_script_button->set_icon(Control::get_icon("ScriptRemove", "EditorIcons"));
-		}
-		panel_main_script->add_style_override("panel", get_stylebox("bg", "Tree"));
 		panel_mixins->add_style_override("panel", get_stylebox("bg", "Tree"));
 	}
 	switch (p_what) {
@@ -161,38 +155,11 @@ void MixinScriptEditor::_on_editor_script_changed(Ref<Script> p_script) {
 	}
 	// Otherwise, delegate editing to other script editors automatically.
 	Ref<MixinScript> ms = p_script;
-	if (ms.is_valid()) {
-		Ref<Script> main_script = ms->get_main_script();
-		if (main_script.is_valid()) {
-			ScriptEditor::get_singleton()->edit(main_script);
+	if (ms.is_valid() && ms->get_mixin_count() > 0) {
+		Ref<Script> first_script = ms->get_mixin(0);
+		if (first_script.is_valid()) {
+			ScriptEditor::get_singleton()->edit(first_script);
 		}
-	}
-}
-
-void MixinScriptEditor::_on_attach_main_script_pressed() {
-	ERR_FAIL_COND(script.is_null());
-
-	if (script.is_valid()) {
-		Ref<Script> main_script = script->get_main_script();
-		if (main_script.is_valid()) {
-			// Main script is already attached, detach now.
-			script->set_main_script(Ref<Script>());
-			EditorNode::get_singleton()->save_resource(script);
-			queue_update();
-			return;
-		}
-		String base_name = "Mixin";
-		String base_path = script->get_path().get_basename();
-
-		if (base_path.empty()) {
-			EditorNode::get_singleton()->show_warning(TTR("The MixinScript is not yet saved to disk.\nPlease save the MixinScript first."));
-			return;
-		}
-		ScriptCreateDialog *sc = EditorNode::get_singleton()->get_script_create_dialog();
-		sc->config(base_name, base_path);
-		sc->popup_centered();
-		sc->connect("script_created", this, "_on_main_script_created");
-		sc->connect("popup_hide", this, "_on_main_script_creation_closed", varray(), CONNECT_ONESHOT);
 	}
 }
 
@@ -210,37 +177,6 @@ void MixinScriptEditor::_on_add_mixin_pressed() {
 	sc->popup_centered();
 	sc->connect("script_created", this, "_on_mixin_created");
 	sc->connect("popup_hide", this, "_on_mixin_creation_closed", varray(), CONNECT_ONESHOT);
-}
-
-void MixinScriptEditor::_on_main_script_created(Ref<Script> p_script) {
-	if (p_script.is_valid()) {
-		if (p_script == script) {
-			EditorNode::get_singleton()->show_warning(TTR("Cannot set a main script pointing to itself."));
-			return;
-		}
-		script->set_main_script(p_script);
-		EditorNode::get_singleton()->save_resource(script);
-		queue_update();
-	}
-}
-
-void MixinScriptEditor::_on_main_script_creation_closed() {
-	ScriptCreateDialog *sc = EditorNode::get_singleton()->get_script_create_dialog();
-	sc->disconnect("script_created", this, "_on_main_script_created");
-}
-
-void MixinScriptEditor::_on_main_script_button_pressed(Object *p_item, int p_column, int p_button) {
-	switch (p_button) {
-		case BUTTON_EDIT: {
-			EditorNode::get_singleton()->push_item(script->get_main_script().ptr());
-		} break;
-		case BUTTON_REMOVE: {
-			script->set_main_script(Ref<Script>());
-		} break;
-		default: {
-		}
-	}
-	queue_update();
 }
 
 void MixinScriptEditor::_on_mixin_created(Ref<Script> p_script) {
@@ -311,37 +247,6 @@ void MixinScriptEditor::queue_update() {
 }
 
 void MixinScriptEditor::_update_list() {
-	// Main script.
-	tree_main_script->clear();
-	Ref<Script> main_script = script->get_main_script();
-
-	if (main_script.is_valid()) {
-		TreeItem *root = tree_main_script->create_item();
-
-		TreeItem *main_script_item = tree_main_script->create_item(root);
-		String main_script_path = main_script->get_path();
-		String main_script_name = main_script_path.get_file();
-
-		main_script_item->set_icon(0, Control::get_icon(main_script->get_language()->get_type(), "EditorIcons"));
-		main_script_item->set_text(0, main_script_name);
-		main_script_item->set_text(1, main_script_path);
-
-		main_script_item->add_button(2, Control::get_icon("Edit", "EditorIcons"), BUTTON_EDIT);
-		main_script_item->add_button(2, Control::get_icon("ScriptRemove", "EditorIcons"), BUTTON_REMOVE);
-
-		tree_main_script->show();
-		panel_main_script->hide();
-		attach_main_script_button->set_icon(Control::get_icon("ScriptRemove", "EditorIcons"));
-		attach_main_script_button->set_text(TTR("Detach Main Script"));
-		attach_main_script_button->set_tooltip(TTR("Detach main script from the object."));
-	} else {
-		tree_main_script->hide();
-		panel_main_script->show();
-		attach_main_script_button->set_icon(Control::get_icon("ScriptCreate", "EditorIcons"));
-		attach_main_script_button->set_text(TTR("Attach Main Script"));
-		attach_main_script_button->set_tooltip(TTR("Attach main script to edit this script like a regular script."));
-	}
-	// Mixins.
 	tree_mixins->clear();
 	TreeItem *mixin_root = tree_mixins->create_item();
 
@@ -384,11 +289,6 @@ void MixinScriptEditor::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("_on_editor_script_changed"), &MixinScriptEditor::_on_editor_script_changed);
 
-	ClassDB::bind_method(D_METHOD("_on_attach_main_script_pressed"), &MixinScriptEditor::_on_attach_main_script_pressed);
-	ClassDB::bind_method(D_METHOD("_on_main_script_created"), &MixinScriptEditor::_on_main_script_created);
-	ClassDB::bind_method(D_METHOD("_on_main_script_creation_closed"), &MixinScriptEditor::_on_main_script_creation_closed);
-	ClassDB::bind_method(D_METHOD("_on_main_script_button_pressed"), &MixinScriptEditor::_on_main_script_button_pressed);
-
 	ClassDB::bind_method(D_METHOD("_on_add_mixin_pressed"), &MixinScriptEditor::_on_add_mixin_pressed);
 	ClassDB::bind_method(D_METHOD("_on_mixin_created"), &MixinScriptEditor::_on_mixin_created);
 	ClassDB::bind_method(D_METHOD("_on_mixin_creation_closed"), &MixinScriptEditor::_on_mixin_creation_closed);
@@ -401,59 +301,13 @@ MixinScriptEditor::MixinScriptEditor() {
 	vbox->set_v_size_flags(Control::SIZE_EXPAND_FILL);
 	vbox->set_anchors_and_margins_preset(Control::PRESET_WIDE);
 
-	// Attach main script button.
-	attach_main_script_button = memnew(Button);
-	vbox->add_child(attach_main_script_button);
-	attach_main_script_button->set_text(TTR("Attach Main Script"));
-	attach_main_script_button->set_custom_minimum_size(Vector2(150, 30));
-	attach_main_script_button->set_h_size_flags(0);
-	attach_main_script_button->connect("pressed", this, "_on_attach_main_script_pressed");
-
-	// Main script (only one).
-	tree_main_script = memnew(Tree);
-	vbox->add_child(tree_main_script);
-
-	// tree_main_script->connect("cell_selected", this, "_on_main_script_selected");
-	// tree_main_script->connect("item_edited", this, "_on_main_script_edited");
-	tree_main_script->connect("button_pressed", this, "_on_main_script_button_pressed");
-	// tree_main_script->connect("item_activated", this, "_on_main_script_activated");
-
-	tree_main_script->set_column_titles_visible(true);
-	tree_main_script->set_hide_root(true);
-	tree_main_script->set_columns(3);
-
-	tree_main_script->set_column_title(0, "Script");
-	tree_main_script->set_column_expand(0, false);
-	tree_main_script->set_column_min_width(0, 200);
-
-	tree_main_script->set_column_title(1, "Path");
-	tree_main_script->set_column_expand(1, true);
-
-	tree_main_script->set_column_title(2, "Edit");
-	tree_main_script->set_column_expand(2, false);
-	tree_main_script->set_column_min_width(2, 100);
-
-	tree_main_script->set_custom_minimum_size(Vector2(0, 75));
-	tree_main_script->set_h_size_flags(Control::SIZE_EXPAND_FILL);
-	tree_main_script->hide(); // Hide initially.
-
-	// Main script placeholder.
-	panel_main_script = memnew(PanelContainer);
-	vbox->add_child(panel_main_script);
-	panel_main_script->set_custom_minimum_size(Vector2(0, 75));
-	CenterContainer *center_main_script = memnew(CenterContainer);
-	Label *label_main_script = memnew(Label);
-	label_main_script->set_text(TTR("Press \"Attach Main Script\" button to create new or load existing Mixin script."));
-	center_main_script->add_child(label_main_script);
-	panel_main_script->add_child(center_main_script);
-
 	// Add mixin button.
 	add_mixin_button = memnew(Button);
 	vbox->add_child(add_mixin_button);
 	add_mixin_button->connect("pressed", this, "_on_add_mixin_pressed");
 	add_mixin_button->set_text(TTR("Add Mixin"));
 	add_mixin_button->set_tooltip(TTR("Create a partial Script to extend the runtime functionality of the host object."));
-	add_mixin_button->set_custom_minimum_size(Vector2(150, 30));
+	add_mixin_button->set_custom_minimum_size(Vector2(150, 0));
 	add_mixin_button->set_h_size_flags(0);
 
 	// A list of mixins.
