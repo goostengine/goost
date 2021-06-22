@@ -7,7 +7,7 @@
 		[MixinScript] is a [Script] which allows to simulate a new class by fusing other [Script] resources into one. [MixinScript] is a cross-language implementation of the [url=https://en.wikipedia.org/wiki/Mixin]Mixin[/url] programming concept.
 		All objects that use [MixinScript] can have properties, methods and signals to be available in the same instance.
 		Mixin scripts are added either via editor or code using [method add_mixin]. All mixin scripts added to [MixinScript] must inherit from [Mixin] class. [MixinScript] use internal [Mixin] instances to extend the behavior of the owner. You can treat [Mixin] objects as if they were the owners themselves, since all properties, methods and signals are going to be available in the owner at run-time, and are allowed to override virtual methods such as [method Node._ready], even if they don't exist in the [Mixin] class. But do note that some languages like [GDScript] won't be able to provide features like autocompletion, because in most cases, [Mixin] class may not represent the owner's real base class.
-		If scripts share the same properties, methods or signals, only the first occurrence of those will be used throughout scripts, including the main script. This means that name conflict resolution is implicit, so you may want to change the order of mixin scripts via editor or using [method move_mixin] method at run-time.
+		If scripts share the same properties, methods or signals, only the first occurrence of those will be used throughout scripts. This means that name conflict resolution is implicit, so you may want to change the order of mixin scripts via editor or using [method move_mixin] method at run-time.
 		Depending on the language, properties, methods and signals may not be directly available in the [Mixin] classes, but an [b]instance[/b] of the class. Due to the nature of cross-language implementation, those languages might not be aware of the mixin mechanism used by [MixinScript], leading to parse errors as seen in [GDScript].
 	</description>
 	<tutorials>
@@ -89,9 +89,6 @@
 		</method>
 	</methods>
 	<members>
-		<member name="main_script" type="Script" setter="set_main_script" getter="get_main_script">
-			The main script which extends the base class, just like other [Script] resources. An object extended with [MixinScript]'s main script will act as if it uses an ordinary script.
-		</member>
 		<member name="mixins" type="Array" setter="set_mixins" getter="get_mixins" default="[  ]">
 			An array of all [Script] mixins used by this script.
 		</member>
