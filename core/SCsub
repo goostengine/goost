@@ -8,6 +8,9 @@ if env["goost_image_enabled"]:
 if env["goost_math_enabled"]:
     SConscript("math/SCsub", exports="env_goost")
 
+if env["goost_script_enabled"]:
+    SConscript("script/SCsub", exports="env_goost")
+
 env_goost.add_source_files(env.modules_sources, "*.cpp")
 env_goost.add_source_files(env.modules_sources, "types/*.cpp")
 

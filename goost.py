@@ -19,6 +19,7 @@ website = "https://goostengine.github.io/"
 #
 # Components may not necessarily have structural meaning.
 components = [
+    "core/script",
     "core/image",
     "core/math/geometry",
     "scene/physics",
@@ -144,6 +145,8 @@ classes = {
     "LightTexture": "scene",
     "LinkedList": "core",
     "ListNode": "core",
+    "MixinScript": "script",
+    "Mixin": "script",
     "PolyBoolean2D": "geometry",
     "PolyBooleanParameters2D": "geometry",
     "PolyDecomp2D": "geometry",
@@ -187,6 +190,7 @@ class_dependencies = {
     "GoostGeometry2D" : ["PolyBoolean2D", "PolyDecomp2D", "PolyOffset2D"],
     "LightTexture" : "GradientTexture2D",
     "LinkedList" : "ListNode",
+    "MixinScript" : "Mixin",
     "PolyBoolean2D" : ["PolyBooleanParameters2D", "PolyNode2D"],
     "PolyDecomp2D" : "PolyDecompParameters2D",
     "PolyOffset2D" : "PolyOffsetParameters2D",
