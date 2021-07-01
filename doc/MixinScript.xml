@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="MixinScript" inherits="Script" version="3.4">
 	<brief_description>
-		A script which combines several other [Script] resources to extend object's run-time functionality.
+		[b]Experimental![/b] A script which combines several other [Script] resources to extend object's run-time functionality.
 	</brief_description>
 	<description>
 		[MixinScript] is a [Script] which allows to simulate a new class by fusing other [Script] resources into one. [MixinScript] is a cross-language implementation of the [url=https://en.wikipedia.org/wiki/Mixin]Mixin[/url] programming concept.
