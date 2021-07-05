@@ -59,9 +59,6 @@ if not env["godot_modules_enabled"]:
     for name, enabled in godot_modules.items():
         f.write("module_%s_enabled = \"%s\"\n" % (name, "yes" if enabled else "no"))
 
-if ARGUMENTS.get("goost_image_enabled", "yes") == "no":
-    f.write("module_gif_enabled = \"no\"\n")
-
 f.close()
 
 if "profile" in ARGUMENTS:
