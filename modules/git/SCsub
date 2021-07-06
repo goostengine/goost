@@ -71,19 +71,19 @@ if env["platform"] == "windows":
             "NO_RECURSE",
             "HAVE_LONG_LONG",
             "HAVE_UNSIGNED_LONG_LONG",
-            "NEWLINE=10",
-            "POSIX_MALLOC_THRESHOLD=10",
-            "LINK_SIZE=2",
-            "PARENS_NEST_LIMIT=250",
-            "MATCH_LIMIT=10000000",
-            "MATCH_LIMIT_RECURSION=10000000",
+            ("NEWLINE", "10"),
+            ("POSIX_MALLOC_THRESHOLD", "10"),
+            ("LINK_SIZE", "2"),
+            ("PARENS_NEST_LIMIT", "250"),
+            ("MATCH_LIMIT", "10000000"),
+            ("MATCH_LIMIT_RECURSION", "10000000"),
             "PCREGREP_BUFSIZE",
-            "MAX_NAME_SIZE=32",
-            "MAX_NAME_COUNT=10000",
+            ("MAX_NAME_SIZE", "32"),
+            ("MAX_NAME_COUNT", "10000"),
         ]
     )
 
-if env["platform"] == "linux":
+if env["platform"] in ["linux", "osx"]:
     env_pcre.Prepend(
         CPPDEFINES=[
 			"HAVE_DIRENT_H",
@@ -101,15 +101,15 @@ if env["platform"] == "linux":
             "NO_RECURSE",
             "HAVE_LONG_LONG",
             "HAVE_UNSIGNED_LONG_LONG",
-            "NEWLINE=10",
-            "POSIX_MALLOC_THRESHOLD=10",
-            "LINK_SIZE=2",
-            "PARENS_NEST_LIMIT=250",
-            "MATCH_LIMIT=10000000",
-            "MATCH_LIMIT_RECURSION=10000000",
+            ("NEWLINE", "10"),
+            ("POSIX_MALLOC_THRESHOLD", "10"),
+            ("LINK_SIZE", "2"),
+            ("PARENS_NEST_LIMIT", "250"),
+            ("MATCH_LIMIT", "10000000"),
+            ("MATCH_LIMIT_RECURSION", "10000000"),
             "PCREGREP_BUFSIZE",
-            "MAX_NAME_SIZE=32",
-            "MAX_NAME_COUNT=10000"
+            ("MAX_NAME_SIZE", "32"),
+            ("MAX_NAME_COUNT", "10000"),
         ]
     )
 
