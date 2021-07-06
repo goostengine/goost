@@ -83,7 +83,7 @@ if env["platform"] == "windows":
         ]
     )
 
-if env["platform"] in ["linux", "osx"]:
+if env["platform"] in ["x11", "osx"]:
     env_pcre.Prepend(
         CPPDEFINES=[
 			"HAVE_DIRENT_H",
