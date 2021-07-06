@@ -221,6 +221,9 @@ Dictionary EditorVCSInterfaceGit::_get_modified_files_data() {
 			case GIT_STATUS_WT_TYPECHANGE: {
 				diff[path] = 4;
 			} break;
+			default: {
+				// Not handled, or not currently implemented.
+			}
 		}
 	}
 	git_status_list_free(statuses);

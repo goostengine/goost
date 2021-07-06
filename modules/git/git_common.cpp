@@ -9,7 +9,7 @@ void check_git2_errors(int error, const char *message, const char *extra) {
 		return;
 	}
 
-	if ((lg2err = git_error_last()) != NULL && lg2err->message != NULL) {
+	if ((lg2err = git_error_last()) != nullptr && lg2err->message != nullptr) {
 		lg2msg = lg2err->message;
 		lg2spacer = " - ";
 	}
@@ -22,10 +22,9 @@ void check_git2_errors(int error, const char *message, const char *extra) {
 }
 
 extern "C" int diff_line_callback_function(const git_diff_delta *delta, const git_diff_hunk *hunk, const git_diff_line *line, void *payload) {
-	// First we NULL terminate the line text incoming
+	// First we nullptr terminate the line text incoming
 	char *content = new char[line->content_len + 1];
 	memcpy(content, line->content, line->content_len);
-	static int i = 0;
 	content[line->content_len] = '\0';
 
 	String prefix = "";
