@@ -29,6 +29,9 @@ if env["platform"] == "windows":
     # env_git.Prepend(CPPDEFINES=["GIT_WINHTTP"])
     thirdparty_sources += Glob("thirdparty/libgit2/src/win32/" + "*.c")
 
+if env["platform"] in ["x11", "osx"]:
+    thirdparty_sources += Glob("thirdparty/libgit2/src/unix/" + "*.c")
+
 env_git.Prepend(
     CPPPATH=[
         "thirdparty/libgit2/include/",
