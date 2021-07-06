@@ -23,6 +23,10 @@ void EditorVCSInterfaceGit::_bind_methods() {
 }
 
 void EditorVCSInterfaceGit::_setup() {
+	// It may happen that there are other VCS currently registered, prevent potentially memory leak.
+	if (EditorVCSInterface::get_singleton()) {
+		memdelete(EditorVCSInterface::get_singleton());
+	}
 	// EditorVCSInterfaceGit singleton must NOT be assigned until `register_editor` is called.
 	// otherwise no docks will appear.
 	VersionControlEditorPlugin::get_singleton()->register_editor();
