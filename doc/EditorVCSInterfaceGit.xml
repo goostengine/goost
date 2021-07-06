@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="EditorVCSInterfaceGit" inherits="EditorVCSInterface" version="3.4">
+	<brief_description>
+		A built-in version control plugin which provides [url=https://git-scm.com/]Git[/url] functionality.
+	</brief_description>
+	<description>
+		This plugin provides basic [url=https://git-scm.com/]Git[/url] functionality from within the editor powered by [url=https://libgit2.org/]libgit2[/url] library.
+		The "Commit" dock and "Version Control" bottom panel will automatically appear once the editor is launched.
+		[b]Note:[/b] it may not be possible to use other VCS plugins at the moment.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+	</methods>
+	<constants>
+	</constants>
+</class>
