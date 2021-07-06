@@ -1,0 +1,31 @@
+diff --git a/editor/editor_vcs_interface.cpp b/editor/editor_vcs_interface.cpp
+index 28aa63e210..a94be77a8c 100644
+--- a/editor/editor_vcs_interface.cpp
++++ b/editor/editor_vcs_interface.cpp
+@@ -34,16 +34,16 @@ EditorVCSInterface *EditorVCSInterface::singleton = nullptr;
+ 
+ void EditorVCSInterface::_bind_methods() {
+ 	// Proxy end points that act as fallbacks to unavailability of a function in the VCS addon
+-	ClassDB::bind_method(D_METHOD("_initialize", "project_root_path"), &EditorVCSInterface::_initialize);
+-	ClassDB::bind_method(D_METHOD("_is_vcs_initialized"), &EditorVCSInterface::_is_vcs_initialized);
+-	ClassDB::bind_method(D_METHOD("_get_vcs_name"), &EditorVCSInterface::_get_vcs_name);
+-	ClassDB::bind_method(D_METHOD("_shut_down"), &EditorVCSInterface::_shut_down);
+-	ClassDB::bind_method(D_METHOD("_get_project_name"), &EditorVCSInterface::_get_project_name);
+-	ClassDB::bind_method(D_METHOD("_get_modified_files_data"), &EditorVCSInterface::_get_modified_files_data);
+-	ClassDB::bind_method(D_METHOD("_commit", "msg"), &EditorVCSInterface::_commit);
+-	ClassDB::bind_method(D_METHOD("_get_file_diff", "file_path"), &EditorVCSInterface::_get_file_diff);
+-	ClassDB::bind_method(D_METHOD("_stage_file", "file_path"), &EditorVCSInterface::_stage_file);
+-	ClassDB::bind_method(D_METHOD("_unstage_file", "file_path"), &EditorVCSInterface::_unstage_file);
++	// ClassDB::bind_method(D_METHOD("_initialize", "project_root_path"), &EditorVCSInterface::_initialize);
++	// ClassDB::bind_method(D_METHOD("_is_vcs_initialized"), &EditorVCSInterface::_is_vcs_initialized);
++	// ClassDB::bind_method(D_METHOD("_get_vcs_name"), &EditorVCSInterface::_get_vcs_name);
++	// ClassDB::bind_method(D_METHOD("_shut_down"), &EditorVCSInterface::_shut_down);
++	// ClassDB::bind_method(D_METHOD("_get_project_name"), &EditorVCSInterface::_get_project_name);
++	// ClassDB::bind_method(D_METHOD("_get_modified_files_data"), &EditorVCSInterface::_get_modified_files_data);
++	// ClassDB::bind_method(D_METHOD("_commit", "msg"), &EditorVCSInterface::_commit);
++	// ClassDB::bind_method(D_METHOD("_get_file_diff", "file_path"), &EditorVCSInterface::_get_file_diff);
++	// ClassDB::bind_method(D_METHOD("_stage_file", "file_path"), &EditorVCSInterface::_stage_file);
++	// ClassDB::bind_method(D_METHOD("_unstage_file", "file_path"), &EditorVCSInterface::_unstage_file);
+ 
+ 	ClassDB::bind_method(D_METHOD("is_addon_ready"), &EditorVCSInterface::is_addon_ready);
+ 

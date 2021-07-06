@@ -1,0 +1,4 @@
+[submodule "modules/git/thirdparty/libgit2"]
+	path = modules/git/thirdparty/libgit2
+	url = https://github.com/libgit2/libgit2
+	ignore = dirty

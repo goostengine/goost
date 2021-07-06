@@ -51,3 +51,8 @@ The following lists C/C++ libraries which are bundled and used by Goost.
 
 See [`clipper.10.0.0-r539-no-except.patch`](clipper/clipper.10.0.0-r539-no-except.patch)
 file for the exact changes.
+
+## libgit2
+- Upstream: https://github.com/libgit2/libgit2
+- Version: 1.1.1
+- License: GPLv2 with linking exception

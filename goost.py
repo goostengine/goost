@@ -25,6 +25,7 @@ components = [
     "scene/physics",
     "scene/gui",
     "editor",
+    "editor/vcs",
 ]
 
 def get_components(config={}, enabled_by_default=True):
@@ -133,6 +134,7 @@ class GoostClass:
 #
 # Only rightmost child components are specified.
 classes = {
+    "EditorVCSInterfaceGit": "vcs",
     "GoostEngine": "core",
     "GoostGeometry2D": "geometry",
     "GoostImage": "image",
@@ -172,6 +174,7 @@ classes = {
 module_classes = [
     "ImageFrames",
     "GDScriptTranspiler",
+    "EditorVCSInterfaceGit",
 ]
 
 # Instantiate `GoostClass` nodes.

@@ -161,4 +161,4 @@ Unless otherwise specified, the extension is released under the
 [MIT license](LICENSE.txt).
 
 See the full list of third-party libraries with their licenses used by this
-extension at [thirdparty/README.md](thirdparty/README.md) (MIT compatible).
+extension at [thirdparty/README.md](thirdparty/README.md).
