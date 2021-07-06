@@ -30,5 +30,11 @@ void register_git_types() {
 }
 
 void unregister_git_types() {
-	// Nothing to do here.
+	if (vcs_interface) {
+		if (EditorVCSInterface::get_singleton()) {
+			EditorVCSInterface::get_singleton()->shut_down();
+		}
+		memdelete(vcs_interface);
+		EditorVCSInterface::set_singleton(nullptr);
+	}
 }
