@@ -20,17 +20,17 @@ class EditorVCSInterfaceGit : public EditorVCSInterface {
 
 	git_repository *repo = nullptr;
 
-	void _commit(const String p_msg);
-	bool _is_vcs_initialized();
-	Dictionary _get_modified_files_data();
-	Array _get_file_diff(const String file_path);
-	String _get_project_name();
-	String _get_vcs_name();
-	bool _initialize(const String p_project_root_path);
-	bool _shut_down();
-	void _stage_file(const String p_file_path);
-	void _unstage_file(const String p_file_path);
-	
+	virtual void _commit(const String p_msg);
+	virtual bool _is_vcs_initialized();
+	virtual Dictionary _get_modified_files_data();
+	virtual Array _get_file_diff(const String file_path);
+	virtual String _get_project_name();
+	virtual String _get_vcs_name();
+	virtual bool _initialize(const String p_project_root_path);
+	virtual bool _shut_down();
+	virtual void _stage_file(const String p_file_path);
+	virtual void _unstage_file(const String p_file_path);
+
 	void _setup();
 
 protected:
@@ -49,6 +49,7 @@ public:
 			singleton = this;
 		}
 	}
+	virtual ~EditorVCSInterfaceGit() {};
 };
 
 #endif // GOOST_GIT_API_H

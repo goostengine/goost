@@ -8,17 +8,6 @@
 EditorVCSInterfaceGit *EditorVCSInterfaceGit::singleton = nullptr;
 
 void EditorVCSInterfaceGit::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("_initialize", "project_root_path"), &EditorVCSInterfaceGit::_initialize);
-	ClassDB::bind_method(D_METHOD("_is_vcs_initialized"), &EditorVCSInterfaceGit::_is_vcs_initialized);
-	ClassDB::bind_method(D_METHOD("_get_vcs_name"), &EditorVCSInterfaceGit::_get_vcs_name);
-	ClassDB::bind_method(D_METHOD("_shut_down"), &EditorVCSInterfaceGit::_shut_down);
-	ClassDB::bind_method(D_METHOD("_get_project_name"), &EditorVCSInterfaceGit::_get_project_name);
-	ClassDB::bind_method(D_METHOD("_get_modified_files_data"), &EditorVCSInterfaceGit::_get_modified_files_data);
-	ClassDB::bind_method(D_METHOD("_commit", "msg"), &EditorVCSInterfaceGit::_commit);
-	ClassDB::bind_method(D_METHOD("_get_file_diff", "file_path"), &EditorVCSInterfaceGit::_get_file_diff);
-	ClassDB::bind_method(D_METHOD("_stage_file", "file_path"), &EditorVCSInterfaceGit::_stage_file);
-	ClassDB::bind_method(D_METHOD("_unstage_file", "file_path"), &EditorVCSInterfaceGit::_unstage_file);
-
 	ClassDB::bind_method(D_METHOD("_setup"), &EditorVCSInterfaceGit::_setup);
 }
 

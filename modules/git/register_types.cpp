@@ -1,12 +1,12 @@
 #include "register_types.h"
 
-#include "editor/plugins/version_control_editor_plugin.h"
 #include "core/os/os.h"
 #include "editor/editor_node.h"
+#include "editor/plugins/version_control_editor_plugin.h"
 
 #include "git_api.h"
 
-EditorVCSInterfaceGit *vcs_interface = nullptr;
+EditorVCSInterface *vcs_interface = nullptr;
 
 static void initialize_git() {
 	ERR_FAIL_NULL(vcs_interface);
@@ -34,7 +34,11 @@ void unregister_git_types() {
 		if (EditorVCSInterface::get_singleton()) {
 			EditorVCSInterface::get_singleton()->shut_down();
 		}
-		memdelete(vcs_interface);
+		// Validate before attempting delete, the interface may get deleted
+		// either by `VersionControlEditorPlugin` or here...
+		if (ObjectDB::instance_validate(vcs_interface)) {
+			memdelete(vcs_interface);
+		}
 		EditorVCSInterface::set_singleton(nullptr);
 	}
 }
