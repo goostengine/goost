@@ -86,7 +86,7 @@ proceed to [GitHub Actions tab](https://github.com/goostengine/goost/actions) (h
 ### Compiling
 
 ```sh
-git clone https://github.com/goostengine/goost
+git clone https://github.com/goostengine/goost --recurse-submodules
 cd goost
 python goost.py config # Optional, pick components to build.
 scons
