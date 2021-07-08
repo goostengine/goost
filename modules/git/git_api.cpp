@@ -32,7 +32,7 @@ void EditorVCSInterfaceGit::_setup() {
 
 void EditorVCSInterfaceGit::_commit(const String p_msg) {
 	if (!can_commit) {
-		ERR_FAIL_MSG("Git API cannot commit. Check previous errors.");
+		ERR_FAIL_MSG("Git cannot commit. Check previous errors.");
 		return;
 	}
 	git_signature *default_sign;
@@ -41,23 +41,23 @@ void EditorVCSInterfaceGit::_commit(const String p_msg) {
 	git_index *repo_index;
 	git_commit *parent_commit;
 
-	GIT2_CALL(git_repository_index(&repo_index, repo), "Could not get repository index", NULL);
+	GIT2_CALL(git_repository_index(&repo_index, repo), "Could not get repository index", nullptr);
 	for (int i = 0; i < staged_files.size(); i++) {
 		String file_path = staged_files[i];
 		CharString file_path_utf8 = file_path.utf8();
 		if (FileAccess::exists(file_path)) {
-			GIT2_CALL(git_index_add_bypath(repo_index, file_path_utf8.get_data()), "Could not add file by path", NULL);
+			GIT2_CALL(git_index_add_bypath(repo_index, file_path_utf8.get_data()), "Could not add file by path", nullptr);
 		} else {
-			GIT2_CALL(git_index_remove_bypath(repo_index, file_path_utf8.get_data()), "Could not add file by path", NULL);
+			GIT2_CALL(git_index_remove_bypath(repo_index, file_path_utf8.get_data()), "Could not add file by path", nullptr);
 		}
 	}
-	GIT2_CALL(git_index_write_tree(&tree_id, repo_index), "Could not write index to tree", NULL);
-	GIT2_CALL(git_index_write(repo_index), "Could not write index to disk", NULL);
-	GIT2_CALL(git_signature_default(&default_sign, repo), "Could not get default signature", NULL);
-	GIT2_CALL(git_tree_lookup(&tree, repo, &tree_id), "Could not lookup tree from ID", NULL);
+	GIT2_CALL(git_index_write_tree(&tree_id, repo_index), "Could not write index to tree", nullptr);
+	GIT2_CALL(git_index_write(repo_index), "Could not write index to disk", nullptr);
+	GIT2_CALL(git_signature_default(&default_sign, repo), "Could not get default signature", nullptr);
+	GIT2_CALL(git_tree_lookup(&tree, repo, &tree_id), "Could not lookup tree from ID", nullptr);
 
-	GIT2_CALL(git_reference_name_to_id(&parent_commit_id, repo, "HEAD"), "Could not get parent ID", NULL);
-	GIT2_CALL(git_commit_lookup(&parent_commit, repo, &parent_commit_id), "Could not lookup parent commit data", NULL);
+	GIT2_CALL(git_reference_name_to_id(&parent_commit_id, repo, "HEAD"), "Could not get parent ID", nullptr);
+	GIT2_CALL(git_commit_lookup(&parent_commit, repo, &parent_commit_id), "Could not lookup parent commit data", nullptr);
 
 	CharString msg = p_msg.utf8();
 
@@ -73,8 +73,8 @@ void EditorVCSInterfaceGit::_commit(const String p_msg) {
 					tree,
 					1,
 					parent_commit),
-			"Could not create commit",
-			NULL);
+			"Could not create a commit",
+			nullptr);
 
 	staged_files.clear();
 
@@ -144,10 +144,10 @@ bool EditorVCSInterfaceGit::create_initial_commit() {
 		ERR_FAIL_V_MSG(false, "Unable to create a commit signature. Perhaps 'user.name' and 'user.email' are not set. Set default user name and user email by `git config` and initialize again");
 	}
 
-	GIT2_CALL(git_repository_index(&repo_index, repo), "Could not get repository index", NULL);
-	GIT2_CALL(git_index_write_tree(&tree_id, repo_index), "Could not create intial commit", NULL);
+	GIT2_CALL(git_repository_index(&repo_index, repo), "Could not get the repository index", nullptr);
+	GIT2_CALL(git_index_write_tree(&tree_id, repo_index), "Could not create the initial commit", nullptr);
 
-	GIT2_CALL(git_tree_lookup(&tree, repo, &tree_id), "Could not create intial commit", NULL);
+	GIT2_CALL(git_tree_lookup(&tree, repo, &tree_id), "Could not create the initial commit", nullptr);
 	GIT2_CALL(
 			git_commit_create_v(
 					&commit_id,
@@ -155,14 +155,14 @@ bool EditorVCSInterfaceGit::create_initial_commit() {
 					"HEAD",
 					sig,
 					sig,
-					NULL,
+					nullptr,
 					"Initial commit",
 					tree,
 					0),
 			"Could not create the initial commit",
-			NULL);
+			nullptr);
 
-	GIT2_CALL(git_index_write(repo_index), "Could not write index to disk", NULL);
+	GIT2_CALL(git_index_write(repo_index), "Could not write index to disk", nullptr);
 	git_index_free(repo_index);
 	git_tree_free(tree);
 	git_signature_free(sig);
@@ -180,8 +180,8 @@ Dictionary EditorVCSInterfaceGit::_get_modified_files_data() {
 	opts.flags = GIT_STATUS_OPT_EXCLUDE_SUBMODULES;
 	opts.flags |= GIT_STATUS_OPT_INCLUDE_UNTRACKED | GIT_STATUS_OPT_RENAMES_HEAD_TO_INDEX | GIT_STATUS_OPT_SORT_CASE_SENSITIVELY | GIT_STATUS_OPT_RECURSE_UNTRACKED_DIRS;
 
-	git_status_list *statuses = NULL;
-	GIT2_CALL(git_status_list_new(&statuses, repo, &opts), "Could not get status information from repository", NULL);
+	git_status_list *statuses = nullptr;
+	GIT2_CALL(git_status_list_new(&statuses, repo, &opts), "Could not get status information from the repository", nullptr);
 
 	Dictionary diff; // Schema is <file_path, status>
 	size_t count = git_status_list_entrycount(statuses);
@@ -236,10 +236,10 @@ Array EditorVCSInterfaceGit::_get_file_diff(const String file_path) {
 	opts.pathspec.strings = &pathspec;
 	opts.pathspec.count = 1;
 
-	GIT2_CALL(git_diff_index_to_workdir(&diff, repo, NULL, &opts), "Could not create diff for index from working directory", NULL);
+	GIT2_CALL(git_diff_index_to_workdir(&diff, repo, nullptr, &opts), "Could not create diff for index from the working directory", nullptr);
 
 	diff_contents.clear();
-	GIT2_CALL(git_diff_print(diff, GIT_DIFF_FORMAT_PATCH, diff_line_callback_function, NULL), "Call to diff handler provided unsuccessful", NULL);
+	GIT2_CALL(git_diff_print(diff, GIT_DIFF_FORMAT_PATCH, diff_line_callback_function, nullptr), "Call to diff handler provided unsuccessful", nullptr);
 
 	git_diff_free(diff);
 
@@ -270,7 +270,7 @@ bool EditorVCSInterfaceGit::_initialize(const String p_project_root_path) {
 	CharString project_root_path_utf8 = p_project_root_path.utf8();
 
 	can_commit = true;
-	GIT2_CALL(git_repository_init(&repo, project_root_path_utf8.get_data(), 0), "Could not initialize repository", NULL);
+	GIT2_CALL(git_repository_init(&repo, project_root_path_utf8.get_data(), 0), "Could not initialize repository", nullptr);
 
 	if (git_repository_head_unborn(repo) == 1) {
 		create_gitignore_and_gitattributes();
@@ -279,7 +279,7 @@ bool EditorVCSInterfaceGit::_initialize(const String p_project_root_path) {
 			can_commit = false;
 		}
 	}
-	GIT2_CALL(git_repository_open(&repo, project_root_path_utf8.get_data()), "Could not open repository", NULL);
+	GIT2_CALL(git_repository_open(&repo, project_root_path_utf8.get_data()), "Could not open a repository", nullptr);
 	is_initialized = true;
 
 	return is_initialized;
@@ -287,6 +287,6 @@ bool EditorVCSInterfaceGit::_initialize(const String p_project_root_path) {
 
 bool EditorVCSInterfaceGit::_shut_down() {
 	git_repository_free(repo);
-	GIT2_CALL(git_libgit2_shutdown(), "Could not shutdown Git Addon", NULL);
+	GIT2_CALL(git_libgit2_shutdown(), "Could not shutdown Git plugin", nullptr);
 	return true;
 }
