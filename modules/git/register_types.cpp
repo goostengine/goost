@@ -40,7 +40,11 @@ static void add_initialize_git_button() {
 					if (!DirAccess::exists(".git")) {
 						vc->add_icon_item(git_icon, TTR("Set Up Git Repository"), EditorVCSInterfaceGitManager::OPTION_SETUP_SHUTDOWN_REPOSITORY);
 					} else {
-						vc->add_icon_item(git_icon, TTR("Shut Down Git Plugin"), EditorVCSInterfaceGitManager::OPTION_SETUP_SHUTDOWN_REPOSITORY);
+						if (bool(EDITOR_GET("version_control/git/initialize_plugin_at_editor_startup"))) {
+							vc->add_icon_item(git_icon, TTR("Shut Down Git Plugin"), EditorVCSInterfaceGitManager::OPTION_SETUP_SHUTDOWN_REPOSITORY);
+						} else {
+							vc->add_icon_item(git_icon, TTR("Set Up Git Plugin"), EditorVCSInterfaceGitManager::OPTION_SETUP_SHUTDOWN_REPOSITORY);
+						}
 					}
 					vc->connect("id_pressed", git_manager, "_project_menu_option_pressed", varray(vc));
 					found_vcs_popup = true;
@@ -57,7 +61,9 @@ static void add_initialize_git_button() {
 static void setup_git() {
 	ERR_FAIL_NULL_MSG(git_manager, "Git manager is not instantiated");
 
-	if (DirAccess::exists(".git")) {
+	EDITOR_DEF("version_control/git/initialize_plugin_at_editor_startup", true);
+
+	if (DirAccess::exists(".git") && bool(EDITOR_GET("version_control/git/initialize_plugin_at_editor_startup"))) {
 		// This is hacky, but required to prevent crash when `VersionControlEditorPlugin`
 		// is added to the right dock before editor GUI is ready. Normally, this
 		// wouldn't lead to crash because a user is supposed to click on the
@@ -74,8 +80,9 @@ void register_git_types() {
 
 	git_manager = memnew(EditorVCSInterfaceGitManager);
 
-	EditorNode::add_init_callback(add_initialize_git_button);
+	// Order matters.
 	EditorNode::add_init_callback(setup_git);
+	EditorNode::add_init_callback(add_initialize_git_button);
 }
 
 void unregister_git_types() {
