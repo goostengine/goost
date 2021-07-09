@@ -288,11 +288,16 @@ void EditorVCSInterfaceGitManager::_project_menu_option_pressed(int p_id, Object
 	if (!EditorVCSInterface::get_singleton()) {
 		bool initialized = _setup();
 		if (initialized) {
-			popup->set_item_text(popup->get_item_index(p_id), TTR("Shutdown Git repository"));
+			popup->set_item_text(popup->get_item_index(p_id), TTR("Shut Down Git Plugin"));
 		}
 	} else {
 		_shutdown();
-		popup->set_item_text(popup->get_item_index(p_id), TTR("Setup Git repository"));
+
+		if (!DirAccess::exists(".git")) {
+			popup->set_item_text(popup->get_item_index(p_id), TTR("Set Up Git Repository"));
+		} else {
+			popup->set_item_text(popup->get_item_index(p_id), TTR("Set Up Git Plugin"));
+		}
 	}
 }
 

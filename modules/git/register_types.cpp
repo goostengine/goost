@@ -38,9 +38,9 @@ static void add_initialize_git_button() {
 					vc->add_separator(TTR("Built-in"));
 					Ref<Texture> git_icon = gui_base->get_icon("Git", "EditorIcons");
 					if (!DirAccess::exists(".git")) {
-						vc->add_icon_item(git_icon, TTR("Setup Git repository"), EditorVCSInterfaceGitManager::OPTION_SETUP_SHUTDOWN_REPOSITORY);
+						vc->add_icon_item(git_icon, TTR("Set Up Git Repository"), EditorVCSInterfaceGitManager::OPTION_SETUP_SHUTDOWN_REPOSITORY);
 					} else {
-						vc->add_icon_item(git_icon, TTR("Shutdown Git repository"), EditorVCSInterfaceGitManager::OPTION_SETUP_SHUTDOWN_REPOSITORY);
+						vc->add_icon_item(git_icon, TTR("Shut Down Git Plugin"), EditorVCSInterfaceGitManager::OPTION_SETUP_SHUTDOWN_REPOSITORY);
 					}
 					vc->connect("id_pressed", git_manager, "_project_menu_option_pressed", varray(vc));
 					found_vcs_popup = true;
