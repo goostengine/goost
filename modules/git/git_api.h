@@ -13,12 +13,9 @@ class EditorVCSInterfaceGit : public EditorVCSInterface {
 
 	static EditorVCSInterfaceGit *singleton;
 
-	bool is_initialized;
-	bool can_commit;
-
-	Array staged_files;
-
 	git_repository *repo = nullptr;
+	bool is_initialized;
+	Array staged_files;
 
 	virtual void _commit(const String p_msg);
 	virtual bool _is_vcs_initialized();
@@ -38,7 +35,6 @@ public:
 	Array diff_contents;
 
 	void create_gitignore_and_gitattributes();
-	bool create_initial_commit();
 
 	EditorVCSInterfaceGit() {
 		if (!singleton) {
@@ -54,10 +50,10 @@ class EditorVCSInterfaceGitManager : public Object {
 	void _project_menu_option_pressed(int p_idx, Object *p_menu);
 	bool _setup();
 	void _shutdown();
-	
+
 protected:
 	static void _bind_methods();
-	
+
 public:
 	enum {
 		OPTION_SETUP_SHUTDOWN_REPOSITORY = 9000,

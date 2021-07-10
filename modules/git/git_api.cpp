@@ -9,66 +9,68 @@
 EditorVCSInterfaceGit *EditorVCSInterfaceGit::singleton = nullptr;
 
 void EditorVCSInterfaceGit::_commit(const String p_msg) {
-	if (!can_commit) {
-		ERR_FAIL_MSG("Git cannot commit. Check previous errors.");
-		return;
-	}
-	git_signature *default_sign;
-	git_oid tree_id, parent_commit_id, new_commit_id;
+	git_oid tree_id, commit_id;
 	git_tree *tree;
-	git_index *repo_index;
-	git_commit *parent_commit;
+	git_index *index;
+	git_object *parent = nullptr;
+	git_reference *ref = nullptr;
+	git_signature *signature;
 
-	GIT2_CALL(git_repository_index(&repo_index, repo), "Could not get repository index", nullptr);
+	int error = git_revparse_ext(&parent, &ref, repo, "HEAD");
+	if (error == GIT_ENOTFOUND) {
+		// That's alright, we'll be creating initial commit then.
+		error = 0;
+	}
+
+	GIT2_CALL(git_repository_index(&index, repo), "Could not get repository index", nullptr);
 	for (int i = 0; i < staged_files.size(); i++) {
 		String file_path = staged_files[i];
 		CharString file_path_utf8 = file_path.utf8();
 		if (FileAccess::exists(file_path)) {
-			GIT2_CALL(git_index_add_bypath(repo_index, file_path_utf8.get_data()), "Could not add file by path", nullptr);
+			GIT2_CALL(git_index_add_bypath(index, file_path_utf8.get_data()), "Could not add file by path", nullptr);
 		} else {
-			GIT2_CALL(git_index_remove_bypath(repo_index, file_path_utf8.get_data()), "Could not add file by path", nullptr);
+			GIT2_CALL(git_index_remove_bypath(index, file_path_utf8.get_data()), "Could not add file by path", nullptr);
 		}
 	}
-	GIT2_CALL(git_index_write_tree(&tree_id, repo_index), "Could not write index to tree", nullptr);
-	GIT2_CALL(git_index_write(repo_index), "Could not write index to disk", nullptr);
-	GIT2_CALL(git_signature_default(&default_sign, repo), "Could not get default signature", nullptr);
-	GIT2_CALL(git_tree_lookup(&tree, repo, &tree_id), "Could not lookup tree from ID", nullptr);
+	GIT2_CALL(git_index_write_tree(&tree_id, index), "Could not write index to tree", nullptr);
+	GIT2_CALL(git_index_write(index), "Could not write index to disk", nullptr);
 
-	GIT2_CALL(git_reference_name_to_id(&parent_commit_id, repo, "HEAD"), "Could not get parent ID", nullptr);
-	GIT2_CALL(git_commit_lookup(&parent_commit, repo, &parent_commit_id), "Could not lookup parent commit data", nullptr);
+	GIT2_CALL(git_tree_lookup(&tree, repo, &tree_id), "Could not lookup tree from ID", nullptr);
+	GIT2_CALL(git_signature_default(&signature, repo), "Could not get default signature", nullptr);
 
 	CharString msg = p_msg.utf8();
 
 	GIT2_CALL(
 			git_commit_create_v(
-					&new_commit_id,
+					&commit_id,
 					repo,
 					"HEAD",
-					default_sign,
-					default_sign,
+					signature,
+					signature,
 					"UTF-8",
 					msg.get_data(),
 					tree,
-					1,
-					parent_commit),
+					parent ? 1 : 0, parent,
+					parent),
 			"Could not create a commit",
 			nullptr);
 
 	staged_files.clear();
 
-	git_index_free(repo_index);
-	git_signature_free(default_sign);
-	git_commit_free(parent_commit);
+	git_index_free(index);
+	git_signature_free(signature);
 	git_tree_free(tree);
 }
 
 void EditorVCSInterfaceGit::_stage_file(const String p_file_path) {
+	// TODO: Must use Git "add" feature, this was copy-pasted from GDNative version.
 	if (staged_files.find(p_file_path) == -1) {
 		staged_files.push_back(p_file_path);
 	}
 }
 
 void EditorVCSInterfaceGit::_unstage_file(const String p_file_path) {
+	// TODO: Must use Git "add" feature, this was copy-pasted from GDNative version.
 	if (staged_files.find(p_file_path) != -1) {
 		staged_files.erase(p_file_path);
 	}
@@ -110,42 +112,6 @@ void EditorVCSInterfaceGit::create_gitignore_and_gitattributes() {
 				"*.jpg binary\n");
 		file->close();
 	}
-}
-
-bool EditorVCSInterfaceGit::create_initial_commit() {
-	git_signature *sig;
-	git_oid tree_id, commit_id;
-	git_index *repo_index;
-	git_tree *tree;
-
-	if (git_signature_default(&sig, repo) != 0) {
-		ERR_FAIL_V_MSG(false, "Unable to create a commit signature. Perhaps 'user.name' and 'user.email' are not set. Set default user name and user email by `git config` and initialize again");
-	}
-
-	GIT2_CALL(git_repository_index(&repo_index, repo), "Could not get the repository index", nullptr);
-	GIT2_CALL(git_index_write_tree(&tree_id, repo_index), "Could not create the initial commit", nullptr);
-
-	GIT2_CALL(git_tree_lookup(&tree, repo, &tree_id), "Could not create the initial commit", nullptr);
-	GIT2_CALL(
-			git_commit_create_v(
-					&commit_id,
-					repo,
-					"HEAD",
-					sig,
-					sig,
-					nullptr,
-					"Initial commit",
-					tree,
-					0),
-			"Could not create the initial commit",
-			nullptr);
-
-	GIT2_CALL(git_index_write(repo_index), "Could not write index to disk", nullptr);
-	git_index_free(repo_index);
-	git_tree_free(tree);
-	git_signature_free(sig);
-
-	return true;
 }
 
 bool EditorVCSInterfaceGit::_is_vcs_initialized() {
@@ -247,15 +213,10 @@ bool EditorVCSInterfaceGit::_initialize(const String p_project_root_path) {
 
 	CharString project_root_path_utf8 = p_project_root_path.utf8();
 
-	can_commit = true;
 	GIT2_CALL(git_repository_init(&repo, project_root_path_utf8.get_data(), 0), "Could not initialize repository", nullptr);
 
 	if (git_repository_head_unborn(repo) == 1) {
 		create_gitignore_and_gitattributes();
-		if (!create_initial_commit()) {
-			ERR_PRINT("Initial commit could not be created. Commit functionality will not work.");
-			can_commit = false;
-		}
 	}
 	GIT2_CALL(git_repository_open(&repo, project_root_path_utf8.get_data()), "Could not open a repository", nullptr);
 	is_initialized = true;
