@@ -10,14 +10,38 @@
 EditorVCSInterfaceGit *EditorVCSInterfaceGit::singleton = nullptr;
 
 void EditorVCSInterfaceGit::_commit(const String p_msg) {
+	int error = 0;
+
 	git_oid tree_id, commit_id;
-	git_tree *tree;
-	git_index *index;
+	git_tree *tree = nullptr;
+	git_index *index = nullptr;
 	git_object *parent = nullptr;
 	git_reference *ref = nullptr;
-	git_signature *signature;
+	git_signature *signature = nullptr;
 
-	int error = git_revparse_ext(&parent, &ref, repo, "HEAD");
+	String name = EDITOR_GET("version_control/git/user/name");
+	String email = EDITOR_GET("version_control/git/user/email");
+
+	if (!name.empty() && !email.empty()) {
+		if (name.find("<") >= 0 || name.find(">") >= 0 || email.find("<") >= 0 || email.find(">") >= 0) {
+			EditorNode::get_singleton()->show_warning(
+					TTR("Invalid Git \"user.name\" or \"user.email\": Should not contain '<' and '>' characters. Aborting commit."));
+			return;
+		}
+		CharString name_utf8 = name.utf8();
+		CharString email_utf8 = email.utf8();
+		GIT2_CALL(git_signature_now(&signature, name_utf8.get_data(), email_utf8.get_data()), "Could not create signature", nullptr);
+	} else {
+		// Username and email are not overridden via editor settings, use global config.
+		error = git_signature_default(&signature, repo);
+		if (error == GIT_ENOTFOUND) {
+			EditorNode::get_singleton()->show_warning(
+					TTR("No username or email is set in \"Editor Settings/Version Control/Git\".\nConfigure \"user.name\" and \"user.email\" via Editor Settings or Git CLI before committing."));
+			return;
+		}
+	}
+
+	error = git_revparse_ext(&parent, &ref, repo, "HEAD");
 	if (error == GIT_ENOTFOUND) {
 		// That's alright, we'll be creating initial commit then.
 		error = 0;
@@ -37,7 +61,6 @@ void EditorVCSInterfaceGit::_commit(const String p_msg) {
 	GIT2_CALL(git_index_write(index), "Could not write index to disk", nullptr);
 
 	GIT2_CALL(git_tree_lookup(&tree, repo, &tree_id), "Could not lookup tree from ID", nullptr);
-	GIT2_CALL(git_signature_default(&signature, repo), "Could not get default signature", nullptr);
 
 	CharString msg = p_msg.utf8();
 

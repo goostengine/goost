@@ -13,6 +13,23 @@
 // over object instances to drive VCS plugins.
 EditorVCSInterfaceGitManager *git_manager = nullptr;
 
+static void setup_git() {
+	ERR_FAIL_NULL_MSG(git_manager, "Git manager is not instantiated");
+
+	EDITOR_DEF("version_control/git/user/name", "");
+	EDITOR_DEF("version_control/git/user/email", "");
+	EDITOR_DEF("version_control/git/initialize_plugin_at_editor_startup", true);
+
+	if (DirAccess::exists(".git") && bool(EDITOR_GET("version_control/git/initialize_plugin_at_editor_startup"))) {
+		// This is hacky, but required to prevent crash when `VersionControlEditorPlugin`
+		// is added to the right dock before editor GUI is ready. Normally, this
+		// wouldn't lead to crash because a user is supposed to click on the
+		// "Initialize VCS" menu option in the editor, but since we're automatically
+		// enabling the Git addon, we must defer this up until editor GUI is initialized.
+		EditorNode::get_singleton()->get_gui_base()->connect("ready", git_manager, "_setup");
+	}
+}
+
 static void add_initialize_git_button() {
 	ERR_FAIL_NULL_MSG(git_manager, "Git manager is not instantiated");
 
@@ -55,21 +72,6 @@ static void add_initialize_git_button() {
 		if (found_vcs_popup) {
 			break;
 		}
-	}
-}
-
-static void setup_git() {
-	ERR_FAIL_NULL_MSG(git_manager, "Git manager is not instantiated");
-
-	EDITOR_DEF("version_control/git/initialize_plugin_at_editor_startup", true);
-
-	if (DirAccess::exists(".git") && bool(EDITOR_GET("version_control/git/initialize_plugin_at_editor_startup"))) {
-		// This is hacky, but required to prevent crash when `VersionControlEditorPlugin`
-		// is added to the right dock before editor GUI is ready. Normally, this
-		// wouldn't lead to crash because a user is supposed to click on the
-		// "Initialize VCS" menu option in the editor, but since we're forcefully
-		// enabling the Git addon, we must defer this up until editor GUI is initialized.
-		EditorNode::get_singleton()->get_gui_base()->connect("ready", git_manager, "_setup");
 	}
 }
 
