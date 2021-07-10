@@ -77,41 +77,51 @@ void EditorVCSInterfaceGit::_unstage_file(const String p_file_path) {
 }
 
 void EditorVCSInterfaceGit::create_gitignore_and_gitattributes() {
+	// clang-format off
 	if (!FileAccess::exists("res://.gitignore")) {
+		// Sync with: https://github.com/github/gitignore/blob/master/Godot.gitignore
 		FileAccessRef file = FileAccess::open("res://.gitignore", FileAccess::WRITE);
 		file->store_string(
-				"# Import cache\n"
-				".import/\n\n"
+R"(# Godot-specific ignores
+.import/
+export.cfg
+export_presets.cfg
 
-				"# Binaries\n"
-				"bin/\n"
-				"build/\n"
-				"lib/\n");
+# Imported translations (automatically generated from CSV files)
+*.translation
+
+# Mono-specific ignores
+.mono/
+data_*/
+)");
 		file->close();
 	}
 
 	if (!FileAccess::exists("res://.gitattributes")) {
 		FileAccessRef file = FileAccess::open("res://.gitattributes", FileAccess::WRITE);
 		file->store_string(
-				"# Set the default behavior, in case people don't have core.autocrlf set.\n"
-				"* text=auto\n\n"
+R"(# Normalize EOL for all files that Git considers text files.
+* text=auto eol=lf
 
-				"# Explicitly declare text files you want to always be normalized and converted\n"
-				"# to native line endings on checkout.\n"
-				"*.cpp text\n"
-				"*.c text\n"
-				"*.h text\n"
-				"*.gd text\n"
-				"*.cs text\n\n"
+# Explicitly declare text files you want to always be normalized and converted
+# to native line endings on checkout.
+*.gd text
+*.cs text
+*.cpp text
+*.c text
+*.h text
 
-				"# Declare files that will always have CRLF line endings on checkout.\n"
-				"*.sln text eol=crlf\n\n"
+# Declare files that will always have CRLF line endings on checkout.
+*.sln text eol=crlf
 
-				"# Denote all files that are truly binary and should not be modified.\n"
-				"*.png binary\n"
-				"*.jpg binary\n");
+# Denote all files that are truly binary and should not be modified.
+*.png binary
+*.jpg binary
+*.hdr binary
+)");
 		file->close();
 	}
+	// clang-format on
 }
 
 bool EditorVCSInterfaceGit::_is_vcs_initialized() {
