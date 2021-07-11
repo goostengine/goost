@@ -17,24 +17,24 @@
 ![🍏 iOS](https://github.com/goostengine/goost/workflows/%F0%9F%8D%8F%20iOS/badge.svg)
 ![🌐 JavaScript](https://github.com/goostengine/goost/workflows/%F0%9F%8C%90%20JavaScript/badge.svg)
 
-This is a [Godot Engine](https://github.com/godotengine/godot) 3.3+ extension
+Goost is a [Godot Engine](https://github.com/godotengine/godot) extension
 implemented as a
 [C++ module](https://docs.godotengine.org/en/latest/development/cpp/custom_modules_in_cpp.html).
-
 The extension consists of functional components and other modules, most of which
 should be optional to build.
 
 See [Goost official documentation](https://goost.readthedocs.io/en/gd3/) for
-detailed instructions on how to use the module, and the list of currently
-implemented components.
+detailed instructions on how to use the extension and the list of currently
+implemented components. For a complete list of currently implemented classes,
+refer to [Goost API](https://goost.readthedocs.io/en/gd3/classes/index.html).
 
-For a complete list of currently implemented classes, refer to
-[Goost API](https://goost.readthedocs.io/en/gd3/classes/index.html).
+Note that Goost is *not* an engine fork, please have a look at our
+[development philosophy](https://goost.readthedocs.io/en/latest/development/general_principles.html).
 
 ## 🔽 Binary downloads
 
 Official binaries for the Godot + Goost editor and the export templates can be
-found on Goost's [Download](https://goostengine.github.io/download.html) page.
+found on the [Download](https://goostengine.github.io/download.html) page.
 
 -----
 
