@@ -48,18 +48,8 @@ void EditorVCSInterfaceGit::_commit(const String p_msg) {
 	}
 
 	GIT2_CALL(git_repository_index(&index, repo), "Could not get repository index", nullptr);
-	for (int i = 0; i < staged_files.size(); i++) {
-		String file_path = staged_files[i];
-		CharString file_path_utf8 = file_path.utf8();
-		if (FileAccess::exists(file_path)) {
-			GIT2_CALL(git_index_add_bypath(index, file_path_utf8.get_data()), "Could not add file by path", nullptr);
-		} else {
-			GIT2_CALL(git_index_remove_bypath(index, file_path_utf8.get_data()), "Could not add file by path", nullptr);
-		}
-	}
 	GIT2_CALL(git_index_write_tree(&tree_id, index), "Could not write index to tree", nullptr);
 	GIT2_CALL(git_index_write(index), "Could not write index to disk", nullptr);
-
 	GIT2_CALL(git_tree_lookup(&tree, repo, &tree_id), "Could not lookup tree from ID", nullptr);
 
 	CharString msg = p_msg.utf8();
@@ -79,25 +69,36 @@ void EditorVCSInterfaceGit::_commit(const String p_msg) {
 			"Could not create a commit",
 			nullptr);
 
-	staged_files.clear();
-
 	git_index_free(index);
 	git_signature_free(signature);
 	git_tree_free(tree);
 }
 
 void EditorVCSInterfaceGit::_stage_file(const String p_file_path) {
-	// TODO: Must use Git "add" feature, this was copy-pasted from GDNative version.
-	if (staged_files.find(p_file_path) == -1) {
-		staged_files.push_back(p_file_path);
-	}
+	git_index *index;
+	CharString fp = p_file_path.utf8();
+	char *paths[] = { (char *)fp.get_data() };
+	git_strarray array = { paths, 1 };
+
+	GIT2_CALL(git_repository_index(&index, repo), "Could not get repository index", nullptr);
+	GIT2_CALL(git_index_add_all(index, &array, GIT_INDEX_ADD_DEFAULT | GIT_INDEX_ADD_DISABLE_PATHSPEC_MATCH, nullptr, nullptr), "Could not add a file", nullptr);
+	GIT2_CALL(git_index_write(index), "Could not write changes to disk", nullptr);
+
+	git_index_free(index);
 }
 
 void EditorVCSInterfaceGit::_unstage_file(const String p_file_path) {
-	// TODO: Must use Git "add" feature, this was copy-pasted from GDNative version.
-	if (staged_files.find(p_file_path) != -1) {
-		staged_files.erase(p_file_path);
-	}
+	CharString fp = p_file_path.utf8();
+	char *paths[] = { (char *)fp.get_data() };
+	git_strarray array = { paths, 1 };
+
+	git_reference *head;
+	git_object *head_commit;
+
+	git_repository_head(&head, repo);
+	git_reference_peel(&head_commit, head, GIT_OBJ_COMMIT);
+
+	git_reset_default(repo, head_commit, &array);
 }
 
 void EditorVCSInterfaceGit::create_gitignore_and_gitattributes() {

@@ -15,7 +15,6 @@ class EditorVCSInterfaceGit : public EditorVCSInterface {
 
 	git_repository *repo = nullptr;
 	bool is_initialized;
-	Array staged_files;
 
 	virtual void _commit(const String p_msg);
 	virtual bool _is_vcs_initialized();
