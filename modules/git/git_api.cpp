@@ -268,6 +268,27 @@ bool EditorVCSInterfaceGit::_shut_down() {
 
 // Manager
 
+void EditorVCSInterfaceGitManager::_notification(int p_what) {
+	switch (p_what) {
+		case NOTIFICATION_WM_FOCUS_IN: {
+			if (!DirAccess::exists(".git") && EditorVCSInterface::get_singleton()) {
+				_shutdown();
+				WARN_PRINT("Git plugin shutdown: no valid repository is found.");
+			}
+			if (EditorVCSInterface::get_singleton()) {
+				VersionControlEditorPlugin::get_singleton()->call_deferred("_refresh_stage_area");
+				vcs_popup->set_item_text(vcs_popup->get_item_index(OPTION_SETUP_SHUTDOWN_REPOSITORY), TTR("Shut Down Git Plugin"));
+			} else {
+				if (!DirAccess::exists(".git")) {
+					vcs_popup->set_item_text(vcs_popup->get_item_index(OPTION_SETUP_SHUTDOWN_REPOSITORY), TTR("Set Up Git Repository"));
+				} else {
+					vcs_popup->set_item_text(vcs_popup->get_item_index(OPTION_SETUP_SHUTDOWN_REPOSITORY), TTR("Set Up Git Plugin"));
+				}
+			}
+		} break;
+	}
+}
+
 void EditorVCSInterfaceGitManager::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_project_menu_option_pressed"), &EditorVCSInterfaceGitManager::_project_menu_option_pressed);
 	ClassDB::bind_method(D_METHOD("_setup"), &EditorVCSInterfaceGitManager::_setup);

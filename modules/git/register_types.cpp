@@ -20,6 +20,9 @@ static void setup_git() {
 	EDITOR_DEF("version_control/git/user/email", "");
 	EDITOR_DEF("version_control/git/initialize_plugin_at_editor_startup", true);
 
+	// Add as a child, so it receives notifications like window focus.
+	VersionControlEditorPlugin::get_singleton()->add_child(git_manager);
+
 	if (DirAccess::exists(".git") && bool(EDITOR_GET("version_control/git/initialize_plugin_at_editor_startup"))) {
 		// This is hacky, but required to prevent crash when `VersionControlEditorPlugin`
 		// is added to the right dock before editor GUI is ready. Normally, this
@@ -64,6 +67,7 @@ static void add_initialize_git_button() {
 						}
 					}
 					vc->connect("id_pressed", git_manager, "_project_menu_option_pressed", varray(vc));
+					git_manager->set_popup_menu(vc);
 					found_vcs_popup = true;
 					break;
 				}
@@ -97,8 +101,4 @@ void unregister_git_types() {
 		memdelete(EditorVCSInterface::get_singleton());
 	}
 	EditorVCSInterface::set_singleton(nullptr);
-
-	if (git_manager) {
-		memdelete(git_manager);
-	}
 }
