@@ -316,6 +316,7 @@ bool EditorVCSInterfaceGitManager::_setup() {
 	EditorVCSInterface::set_singleton(EditorVCSInterfaceGit::get_singleton());
 
 	EditorFileSystem::get_singleton()->connect("filesystem_changed", VersionControlEditorPlugin::get_singleton(), "_refresh_stage_area");
+	VersionControlEditorPlugin::get_singleton()->call_deferred("_refresh_stage_area");
 
 	String res_dir = OS::get_singleton()->get_resource_dir();
 	bool is_vcs_initialized = EditorVCSInterface::get_singleton()->initialize(res_dir);
