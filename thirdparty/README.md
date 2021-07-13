@@ -54,5 +54,5 @@ file for the exact changes.
 
 ## libgit2
 - Upstream: https://github.com/libgit2/libgit2
-- Version: 1.1.1
-- License: GPLv2 with linking exception
+- Version: v1.1.1
+- License: GPLv2-only with linking exception
