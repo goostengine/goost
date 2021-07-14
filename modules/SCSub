@@ -16,7 +16,7 @@ godot_modules = {
     "bmp" : False,
     "bullet" : False,
     "camera" : False,
-    "csg" : False,
+    "csg" : True, # TODO: https://github.com/godotengine/godot/issues/50462
     "cvtt" : False,
     "denoise" : False,
     "dds" : False,
