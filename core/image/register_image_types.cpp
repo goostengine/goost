@@ -1,6 +1,7 @@
 #include "register_image_types.h"
-#include "goost/register_types.h"
+
 #include "goost/classes_enabled.gen.h"
+#include "goost/goost.h"
 
 #include "core/engine.h"
 

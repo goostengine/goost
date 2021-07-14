@@ -1,7 +1,7 @@
 #include "register_geometry_types.h"
 
-#include "goost/register_types.h"
 #include "goost/classes_enabled.gen.h"
+#include "goost/goost.h"
 
 static _GoostGeometry2D *_goost_geometry_2d = nullptr;
 static Ref<_PolyBoolean2D> _poly_boolean_2d;
