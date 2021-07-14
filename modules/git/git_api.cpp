@@ -327,9 +327,6 @@ bool EditorVCSInterfaceGitManager::_setup() {
 	// otherwise no docks will appear.
 	VersionControlEditorPlugin::get_singleton()->register_editor();
 
-	// TODO: Remove this once https://github.com/godotengine/godot/pull/50341 is merged.
-	VersionControlEditorPlugin::get_singleton()->get_version_control_dock()->set_custom_minimum_size(Size2(0, 300) * EDSCALE);
-
 	// Assign EditorVCSInterfaceGit singleton now, after editor is registered.
 	if (!EditorVCSInterface::get_singleton()) {
 		EditorVCSInterfaceGit::set_singleton(memnew(EditorVCSInterfaceGit));
