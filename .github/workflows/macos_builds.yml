@@ -20,6 +20,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          submodules: recursive
 
       - name: Load .scons_cache directory
         id: macos-editor-cache

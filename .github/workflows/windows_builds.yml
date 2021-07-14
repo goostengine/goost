@@ -19,6 +19,8 @@ jobs:
     name: Editor (target=release_debug, tools=yes)
     steps:
     - uses: actions/checkout@v2
+      with:
+        submodules: recursive
 
     # Editing this is pretty dangerous for Windows since it can break.
     # Needs to be properly tested with a fresh cache.
