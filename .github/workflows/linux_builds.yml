@@ -9,7 +9,7 @@ on:
 
 env:
   GOOST_BASE_BRANCH: gd3
-  SCONSFLAGS: godot_modules_enabled=no --jobs=4
+  SCONSFLAGS: godot_modules_enabled=no verbose=yes warnings=all werror=yes debug_symbols=no --jobs=4
   SCONS_CACHE_LIMIT: 4096
 
 jobs:
@@ -61,7 +61,7 @@ jobs:
         env:
           SCONS_CACHE: ${{github.workspace}}/.scons_cache/
         run: |
-          scons verbose=yes warnings=all werror=yes platform=linuxbsd tools=yes target=release_debug module_mono_enabled=yes mono_glue=no
+          scons platform=linuxbsd tools=yes target=release_debug module_mono_enabled=yes mono_glue=no
 
       - uses: actions/upload-artifact@v2
         with:
@@ -116,7 +116,7 @@ jobs:
         env:
           SCONS_CACHE: ${{github.workspace}}/.scons_cache/
         run: |
-          scons verbose=yes warnings=all werror=yes platform=server tools=yes target=debug
+          scons platform=server tools=yes target=debug debug_symbols=yes
 
       - name: Run unit tests
         run: |
@@ -170,7 +170,7 @@ jobs:
         env:
           SCONS_CACHE: ${{github.workspace}}/.scons_cache/
         run: |
-          scons verbose=yes warnings=all werror=yes platform=linuxbsd target=release tools=no module_mono_enabled=yes mono_glue=no
+          scons platform=linuxbsd target=release tools=no module_mono_enabled=yes mono_glue=no
 
   # Goost-specific
 
@@ -222,7 +222,7 @@ jobs:
         env:
           SCONS_CACHE: ${{github.workspace}}/.scons_cache/
         run: |
-          scons verbose=yes warnings=all werror=yes platform=linuxbsd tools=yes target=release_debug goost_core_enabled=no
+          scons platform=linuxbsd tools=yes target=release_debug goost_core_enabled=no
 
   linux-goost-server:
     runs-on: "ubuntu-20.04"
@@ -272,7 +272,7 @@ jobs:
         env:
           SCONS_CACHE: ${{github.workspace}}/.scons_cache/
         run: |
-          scons verbose=yes warnings=all werror=yes platform=server tools=yes target=debug goost_editor_enabled=no
+          scons platform=server tools=yes target=debug goost_editor_enabled=no
 
   linux-goost-template:
     runs-on: "ubuntu-20.04"
@@ -322,4 +322,4 @@ jobs:
         env:
           SCONS_CACHE: ${{github.workspace}}/.scons_cache/
         run: |
-          scons verbose=yes warnings=all werror=yes platform=linuxbsd target=release tools=no goost_scene_enabled=no
+          scons platform=linuxbsd target=release tools=no goost_scene_enabled=no

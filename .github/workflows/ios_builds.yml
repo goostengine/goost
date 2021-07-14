@@ -9,7 +9,7 @@ on:
 
 env:
   GOOST_BASE_BRANCH: gd3
-  SCONSFLAGS: godot_modules_enabled=no --jobs=4
+  SCONSFLAGS: godot_modules_enabled=no verbose=yes warnings=all werror=yes debug_symbols=no --jobs=4
   SCONS_CACHE_LIMIT: 4096
 
 jobs:
@@ -48,4 +48,4 @@ jobs:
         env:
           SCONS_CACHE: ${{github.workspace}}/.scons_cache/
         run: |
-          scons verbose=yes warnings=all werror=no platform=iphone target=release tools=no
+          scons platform=iphone target=release tools=no
