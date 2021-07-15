@@ -1,6 +1,6 @@
 #include "goost_image.h"
 
-#ifdef SVG_ENABLED // MODULE_SVG_ENABLED in 4.0
+#ifdef MODULE_SVG_ENABLED
 #include "modules/svg/image_loader_svg.h"
 #endif
 
@@ -466,7 +466,7 @@ Ref<Image> GoostImage::render_polygon(Vector<Point2> p_polygon, bool p_fill, con
 
 Ref<Image> GoostImage::render_svg(const String &p_svg, real_t p_scale) {
 	Ref<Image> image;
-#ifdef SVG_ENABLED
+#ifdef MODULE_SVG_ENABLED
 	ERR_FAIL_COND_V_MSG(p_svg.empty(), Ref<Image>(), "Empty SVG document.");
 	ERR_FAIL_COND_V_MSG(p_scale <= 0, Ref<Image>(), "Scale must be positive.");
 	image.instance();
