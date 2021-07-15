@@ -1,0 +1,81 @@
+From 574f156ccd67f9deb0add5cfdba159d84970be47 Mon Sep 17 00:00:00 2001
+From: "Andrii Doroshenko (Xrayez)" <xrayez@gmail.com>
+Date: Tue, 13 Jul 2021 20:33:50 +0300
+Subject: [PATCH] VCS: Allow to stage and commit all files with Ctrl + Enter
+
+---
+ .../plugins/version_control_editor_plugin.cpp | 26 +++++++++++++++++++
+ .../plugins/version_control_editor_plugin.h   |  1 +
+ 2 files changed, 27 insertions(+)
+
+diff --git a/editor/plugins/version_control_editor_plugin.cpp b/editor/plugins/version_control_editor_plugin.cpp
+index 742ff442088d..b0a920665f0c 100644
+--- a/editor/plugins/version_control_editor_plugin.cpp
++++ b/editor/plugins/version_control_editor_plugin.cpp
+@@ -30,6 +30,7 @@
+ 
+ #include "version_control_editor_plugin.h"
+ 
++#include "core/os/keyboard.h"
+ #include "core/script_language.h"
+ #include "editor/editor_file_system.h"
+ #include "editor/editor_node.h"
+@@ -47,6 +48,7 @@ void VersionControlEditorPlugin::_bind_methods() {
+ 	ClassDB::bind_method(D_METHOD("_view_file_diff"), &VersionControlEditorPlugin::_view_file_diff);
+ 	ClassDB::bind_method(D_METHOD("_refresh_file_diff"), &VersionControlEditorPlugin::_refresh_file_diff);
+ 	ClassDB::bind_method(D_METHOD("_update_commit_button"), &VersionControlEditorPlugin::_update_commit_button);
++	ClassDB::bind_method(D_METHOD("_commit_message_gui_input"), &VersionControlEditorPlugin::_commit_message_gui_input);
+ 	ClassDB::bind_method(D_METHOD("popup_vcs_set_up_dialog"), &VersionControlEditorPlugin::popup_vcs_set_up_dialog);
+ 
+ 	// Used to track the status of files in the staging area
+@@ -301,6 +303,29 @@ void VersionControlEditorPlugin::_update_commit_button() {
+ 	commit_button->set_disabled(commit_message->get_text().strip_edges() == "");
+ }
+ 
++void VersionControlEditorPlugin::_commit_message_gui_input(const Ref<InputEvent> &p_event) {
++	if (!commit_message->has_focus()) {
++		return;
++	}
++	if (commit_message->get_text().strip_edges().empty()) {
++		// Do not allow empty commit messages.
++		return;
++	}
++	const Ref<InputEventKey> k = p_event;
++
++	if (k.is_valid() && k->is_pressed()) {
++		if (k->get_scancode_with_modifiers() == (KEY_MASK_CMD | KEY_ENTER)) {
++			if (staged_files_count == 0) {
++				// Stage all files only when no files were previously staged.
++				_stage_all();
++			}
++			_send_commit_msg();
++			commit_message->accept_event();
++			return;
++		}
++	}
++}
++
+ void VersionControlEditorPlugin::register_editor() {
+ 	if (!EditorVCSInterface::get_singleton()) {
+ 		EditorNode::get_singleton()->add_control_to_dock(EditorNode::DOCK_SLOT_RIGHT_UL, version_commit_dock);
+@@ -475,6 +500,7 @@ VersionControlEditorPlugin::VersionControlEditorPlugin() {
+ 	commit_message->set_custom_minimum_size(Size2(200, 100));
+ 	commit_message->set_wrap_enabled(true);
+ 	commit_message->connect("text_changed", this, "_update_commit_button");
++	commit_message->connect("gui_input", this, "_commit_message_gui_input");
+ 	commit_box_vbc->add_child(commit_message);
+ 
+ 	commit_button = memnew(Button);
+diff --git a/editor/plugins/version_control_editor_plugin.h b/editor/plugins/version_control_editor_plugin.h
+index ec8f0f2873c1..c4802279a57e 100644
+--- a/editor/plugins/version_control_editor_plugin.h
++++ b/editor/plugins/version_control_editor_plugin.h
+@@ -112,6 +112,7 @@ class VersionControlEditorPlugin : public EditorPlugin {
+ 	void _update_stage_status();
+ 	void _update_commit_status();
+ 	void _update_commit_button();
++	void _commit_message_gui_input(const Ref<InputEvent> &p_event);
+ 
+ 	friend class EditorVCSInterface;
+ 
+
