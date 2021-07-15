@@ -27,6 +27,19 @@ components = [
     "editor/vcs",
 ]
 
+def get_component_readable_name(component):
+    name = {
+        "script": "Scripting",
+        "image": "Image Processing",
+        "geometry": "Geometry",
+        "physics": "Physics",
+        "gui": "User Interface",
+        "vcs": "Version Control"
+    }.get(component, "")
+    if not name:
+        name = component.capitalize()
+    return name
+
 def get_components(config={}, enabled_by_default=True):
     import sys
 
@@ -519,7 +532,8 @@ if __name__ == "__main__":
                     continue
                 f.write(".. toctree::\n")
                 f.write("    :maxdepth: 1\n")
-                f.write("    :caption: %s\n" % component.capitalize())
+                caption = get_component_readable_name(component)
+                f.write("    :caption: %s\n" % caption)
                 f.write("    :name: toc-component-%s\n" % component)
                 f.write("\n")
                 for class_name in class_list:
@@ -528,7 +542,7 @@ if __name__ == "__main__":
                 parents = get_parent_components(component)
                 parents.reverse()
                 if parents:
-                    f.write("**%s** is part of: " % component.capitalize())
+                    f.write("**%s** is part of: " % caption)
                     for i in range(len(parents)):
                         if len(get_component_classes(parents[i])) > 0:
                             f.write(":ref:`toc-component-%s`" % parents[i])
@@ -557,10 +571,10 @@ if __name__ == "__main__":
                 f.write("\n")
                 f.write(".. code-block:: shell\n")
                 f.write("\n")
-                f.write("    # Disable %s component.\n" % component)
+                f.write("    # Disable \"%s\" component.\n" % get_component_readable_name(component))
                 f.write("    scons goost_%s_enabled=no\n" % component)
                 f.write("\n")
-                f.write("    # Enable %s component, disable all others.\n" % component)
+                f.write("    # Enable \"%s\" component, disable all others.\n" % get_component_readable_name(component))
                 f.write("    scons goost_components_enabled=no goost_%s_enabled=yes\n" % component)
                 f.write("\n")
 
