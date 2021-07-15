@@ -5,8 +5,8 @@
 	</brief_description>
 	<description>
 		This plugin provides basic [url=https://git-scm.com/]Git[/url] functionality from within the editor powered by [url=https://libgit2.org/]libgit2[/url] library.
-		The "Commit" dock and "Version Control" bottom panel will automatically appear once the editor is launched.
-		[b]Note:[/b] it may not be possible to use other VCS plugins at the moment.
+		Note that pulling and pushing are not available in [EditorVCSInterface] as of Godot 3.x.
+		Signed commits are not implemented yet.
 	</description>
 	<tutorials>
 	</tutorials>
