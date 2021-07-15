@@ -24,7 +24,6 @@ components = [
     "core/math/geometry",
     "scene/physics",
     "scene/gui",
-    "editor",
     "editor/vcs",
 ]
 
@@ -531,7 +530,10 @@ if __name__ == "__main__":
                 if parents:
                     f.write("**%s** is part of: " % component.capitalize())
                     for i in range(len(parents)):
-                        f.write(":ref:`toc-component-%s`" % parents[i])
+                        if len(get_component_classes(parents[i])) > 0:
+                            f.write(":ref:`toc-component-%s`" % parents[i])
+                        else:
+                            f.write(parents[i].capitalize())
                         if i < len(parents) - 1:
                             f.write(" **>** ")
                     f.write("\n\n")
