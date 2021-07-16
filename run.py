@@ -50,7 +50,7 @@ if __name__ == "__main__":
     parser.add_argument("--windowed", action="store_true", default=False,
             help="Run the tool in windowed mode, disabled by default.")
 
-    subparsers = parser.add_subparsers(dest="tool")
+    subparsers = parser.add_subparsers(dest="tool", required=True)
 
     # Editor.
     editor = subparsers.add_parser("editor", help="Run Godot editor.")
