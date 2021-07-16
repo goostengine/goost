@@ -13,16 +13,15 @@ env:
   SCONS_CACHE_LIMIT: 4096
 
 jobs:
-  linux-editor:
+  mono-glue:
     runs-on: "ubuntu-20.04"
-    name: Editor w/ Mono (target=release_debug, tools=yes)
+    name: Generate Mono Glue
 
     steps:
       - uses: actions/checkout@v2
         with:
           submodules: recursive
 
-      # Install all packages except SCons
       - name: Configure dependencies
         run: |
           sudo apt-get install build-essential pkg-config libx11-dev libxcursor-dev \
@@ -52,16 +51,127 @@ jobs:
           python --version
           scons --version
 
+      - name: Compilation (module_mono_enabled=yes mono_glue=no)
+        env:
+          SCONS_CACHE: ${{github.workspace}}/.scons_cache/
+        run: |
+          scons platform=linuxbsd tools=yes target=release_debug module_mono_enabled=yes mono_glue=no copy_mono_root=yes
+
+      - name: Generate Mono Glue
+        run: |
+          pushd godot
+          xvfb-run ./bin/godot.x11.opt.tools.64.goost.mono --generate-mono-glue modules/mono/glue || true
+          popd
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: mono-glue
+          path: |
+            godot/modules/mono/glue/**.gen.*
+            godot/modules/mono/glue/GodotSharp/GodotSharp/Generated/
+            godot/modules/mono/glue/GodotSharp/GodotSharpEditor/Generated/
+
+  linux-editor-mono:
+    runs-on: "ubuntu-20.04"
+    name: Linux Editor w/ Mono (target=release_debug, tools=yes)
+    needs: mono-glue
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+
+      - name: Configure dependencies
+        run: |
+          sudo apt-get install build-essential pkg-config libx11-dev libxcursor-dev \
+            libxinerama-dev libgl1-mesa-dev libglu-dev libasound2-dev libpulse-dev libudev-dev libxi-dev libxrandr-dev yasm
+
+      - name: Load .scons_cache directory
+        id: linux-editor-cache
+        uses: actions/cache@v2
+        with:
+          path: ${{github.workspace}}/.scons_cache/
+          key: ${{github.job}}-${{env.GOOST_BASE_BRANCH}}-${{github.ref}}-${{github.sha}}
+          restore-keys: |
+            ${{github.job}}-${{env.GOOST_BASE_BRANCH}}-${{github.ref}}-${{github.sha}}
+            ${{github.job}}-${{env.GOOST_BASE_BRANCH}}-${{github.ref}}
+            ${{github.job}}-${{env.GOOST_BASE_BRANCH}}
+
+      - name: Set up Python 3.x
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+          architecture: 'x64'
+
+      - name: Configuring Python packages
+        run: |
+          python -c "import sys; print(sys.version)"
+          python -m pip install scons
+          python --version
+          scons --version
+
+      - name: Clone Godot repository
+        run: |
+          scons skip_build=yes
+
+      - name: Download Glue
+        uses: actions/download-artifact@v2
+        with:
+          name: mono-glue
+          path: godot/modules/mono/glue
+
       - name: Compilation
         env:
           SCONS_CACHE: ${{github.workspace}}/.scons_cache/
         run: |
-          scons platform=linuxbsd tools=yes target=release_debug module_mono_enabled=yes mono_glue=no
+          scons platform=linuxbsd tools=yes target=release_debug module_mono_enabled=yes mono_glue=yes mono_static=yes copy_mono_root=yes
 
       - uses: actions/upload-artifact@v2
         with:
           name: godot.x11.opt.tools.64.goost.mono
-          path: godot/bin/godot.x11.opt.tools.64.goost.mono
+          path: godot/bin/*
+
+  linux-template:
+    runs-on: "ubuntu-20.04"
+    name: Template (target=release, tools=no)
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Configure dependencies
+        run: |
+          sudo apt-get install build-essential pkg-config libx11-dev libxcursor-dev \
+            libxinerama-dev libgl1-mesa-dev libglu-dev libasound2-dev libpulse-dev libudev-dev libxi-dev libxrandr-dev yasm
+
+      - name: Load .scons_cache directory
+        id: linux-template-cache
+        uses: actions/cache@v2
+        with:
+          path: ${{github.workspace}}/.scons_cache/
+          key: ${{github.job}}-${{env.GOOST_BASE_BRANCH}}-${{github.ref}}-${{github.sha}}
+          restore-keys: |
+            ${{github.job}}-${{env.GOOST_BASE_BRANCH}}-${{github.ref}}-${{github.sha}}
+            ${{github.job}}-${{env.GOOST_BASE_BRANCH}}-${{github.ref}}
+            ${{github.job}}-${{env.GOOST_BASE_BRANCH}}
+
+      - name: Set up Python 3.x
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+          architecture: 'x64'
+
+      - name: Configuring Python packages
+        run: |
+          python -c "import sys; print(sys.version)"
+          python -m pip install scons
+          python --version
+          scons --version
+
+      - name: Compilation
+        env:
+          SCONS_CACHE: ${{github.workspace}}/.scons_cache/
+        run: |
+          scons platform=linuxbsd target=release tools=no module_mono_enabled=yes mono_glue=no
 
   linux-server:
     runs-on: "ubuntu-20.04"
@@ -70,7 +180,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      # Install all packages except SCons.
       - name: Configure dependencies
         run: |
           sudo apt-get install build-essential pkg-config libx11-dev libxcursor-dev \
@@ -128,46 +237,3 @@ jobs:
       - name: Run unit tests
         run: |
           python run.py --windowed tests
-
-  linux-template:
-    runs-on: "ubuntu-20.04"
-    name: Template w/ Mono (target=release, tools=no)
-
-    steps:
-      - uses: actions/checkout@v2
-
-      # Install all packages except SCons.
-      - name: Configure dependencies
-        run: |
-          sudo apt-get install build-essential pkg-config libx11-dev libxcursor-dev \
-            libxinerama-dev libgl1-mesa-dev libglu-dev libasound2-dev libpulse-dev libudev-dev libxi-dev libxrandr-dev yasm
-
-      - name: Load .scons_cache directory
-        id: linux-template-cache
-        uses: actions/cache@v2
-        with:
-          path: ${{github.workspace}}/.scons_cache/
-          key: ${{github.job}}-${{env.GOOST_BASE_BRANCH}}-${{github.ref}}-${{github.sha}}
-          restore-keys: |
-            ${{github.job}}-${{env.GOOST_BASE_BRANCH}}-${{github.ref}}-${{github.sha}}
-            ${{github.job}}-${{env.GOOST_BASE_BRANCH}}-${{github.ref}}
-            ${{github.job}}-${{env.GOOST_BASE_BRANCH}}
-
-      - name: Set up Python 3.x
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.x'
-          architecture: 'x64'
-
-      - name: Configuring Python packages
-        run: |
-          python -c "import sys; print(sys.version)"
-          python -m pip install scons
-          python --version
-          scons --version
-
-      - name: Compilation
-        env:
-          SCONS_CACHE: ${{github.workspace}}/.scons_cache/
-        run: |
-          scons platform=linuxbsd target=release tools=no module_mono_enabled=yes mono_glue=no
