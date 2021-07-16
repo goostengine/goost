@@ -22,13 +22,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      # Azure repositories are not reliable, prevent azure giving packages.
-      - name: Make apt sources.list use the default Ubuntu repositories
-        run: |
-          sudo rm -f /etc/apt/sources.list.d/*
-          sudo cp -f misc/ci/sources.list /etc/apt/sources.list
-          sudo apt-get update
-
       # Upload cache on completion and check it out now
       - name: Load .scons_cache directory
         id: javascript-template-cache
