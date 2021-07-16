@@ -101,4 +101,8 @@ void unregister_git_types() {
 		memdelete(EditorVCSInterface::get_singleton());
 	}
 	EditorVCSInterface::set_singleton(nullptr);
+
+	if (git_manager) {
+		memdelete(git_manager);
+	}
 }
