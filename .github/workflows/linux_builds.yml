@@ -28,7 +28,7 @@ jobs:
             libxinerama-dev libgl1-mesa-dev libglu-dev libasound2-dev libpulse-dev libudev-dev libxi-dev libxrandr-dev yasm
 
       - name: Load .scons_cache directory
-        id: linux-editor-cache
+        id: linux-mono-glue-cache
         uses: actions/cache@v2
         with:
           path: ${{github.workspace}}/.scons_cache/
@@ -87,7 +87,7 @@ jobs:
             libxinerama-dev libgl1-mesa-dev libglu-dev libasound2-dev libpulse-dev libudev-dev libxi-dev libxrandr-dev yasm
 
       - name: Load .scons_cache directory
-        id: linux-editor-cache
+        id: linux-editor-mono-cache
         uses: actions/cache@v2
         with:
           path: ${{github.workspace}}/.scons_cache/
