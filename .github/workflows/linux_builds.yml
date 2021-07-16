@@ -22,13 +22,6 @@ jobs:
         with:
           submodules: recursive
 
-      # Azure repositories are not reliable, prevent azure giving packages.
-      - name: Make apt sources.list use the default Ubuntu repositories
-        run: |
-          sudo rm -f /etc/apt/sources.list.d/*
-          sudo cp -f misc/ci/sources.list /etc/apt/sources.list
-          sudo apt-get update
-
       # Install all packages except SCons
       - name: Configure dependencies
         run: |
@@ -76,13 +69,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-
-      # Azure repositories are not reliable, prevent azure giving packages.
-      - name: Make apt sources.list use the default Ubuntu repositories
-        run: |
-          sudo rm -f /etc/apt/sources.list.d/*
-          sudo cp -f misc/ci/sources.list /etc/apt/sources.list
-          sudo apt-get update
 
       # Install all packages except SCons.
       - name: Configure dependencies
@@ -149,13 +135,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-
-      # Azure repositories are not reliable, prevent azure giving packages.
-      - name: Make apt sources.list use the default Ubuntu repositories
-        run: |
-          sudo rm -f /etc/apt/sources.list.d/*
-          sudo cp -f misc/ci/sources.list /etc/apt/sources.list
-          sudo apt-get update
 
       # Install all packages except SCons.
       - name: Configure dependencies
