@@ -57,7 +57,7 @@ jobs:
         run: |
           scons platform=linuxbsd tools=yes target=release_debug module_mono_enabled=yes mono_glue=no copy_mono_root=yes
 
-      - name: Generate Mono glue
+      - name: Generate Mono Glue
         run: |
           pushd godot
           xvfb-run ./bin/godot.x11.opt.tools.64.goost.mono --generate-mono-glue modules/mono/glue || true
@@ -109,6 +109,10 @@ jobs:
           python -m pip install scons
           python --version
           scons --version
+
+      - name: Clone Godot repository
+        run: |
+          scons skip_build=yes
 
       - name: Download Glue
         uses: actions/download-artifact@v2

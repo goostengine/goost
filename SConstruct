@@ -124,6 +124,11 @@ if godot_dir == Dir("godot"):
         if godot_check_if_branch(env["godot_version"]):
             run(["git", "pull"], godot_dir.abspath)
 
+if ARGUMENTS.get("skip_build") == "yes":
+    # We're only interested in cloning Godot repository given supplied version.
+    print("Skipping the build.")
+    Exit()
+
 # Setup base SCons arguments to the Godot build command.
 # Copy all from the command line, except for options in this SConstruct.
 env.build_args = ["scons"]
