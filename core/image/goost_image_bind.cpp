@@ -1,6 +1,8 @@
 #include "goost_image_bind.h"
 #include "goost_image.h"
 
+#include "modules/modules_enabled.gen.h"
+
 _GoostImage *_GoostImage::singleton = NULL;
 
 void _GoostImage::replace_color(Ref<Image> p_image, const Color &p_color, const Color &p_with_color) {

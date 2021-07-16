@@ -1,5 +1,6 @@
 #include "goost_image.h"
 
+#include "modules/modules_enabled.gen.h"
 #ifdef MODULE_SVG_ENABLED
 #include "modules/svg/image_loader_svg.h"
 #endif
