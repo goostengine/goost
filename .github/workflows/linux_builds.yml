@@ -129,7 +129,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: godot.x11.opt.tools.64.goost.mono
-          path: godot/bin/godot.x11.opt.tools.64.goost.mono
+          path: godot/bin/*
 
   linux-template:
     runs-on: "ubuntu-20.04"
