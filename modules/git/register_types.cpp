@@ -102,7 +102,7 @@ void unregister_git_types() {
 	}
 	EditorVCSInterface::set_singleton(nullptr);
 
-	if (git_manager) {
+	if (ObjectDB::instance_validate(git_manager)) {
 		memdelete(git_manager);
 	}
 }
