@@ -36,8 +36,8 @@ Error ImageFrames::load_gif_from_buffer(const PoolByteArray &p_data, int max_fra
 
 static int save_gif_func(GifFileType *gif, const GifByteType *data, int length) {
 	// gif->UserData is the first parameter passed to EGifOpen.
-	FileAccess *f = (FileAccess *)(gif->UserData); 
-	f->store_buffer((const uint8_t*)data, length);
+	FileAccess *f = (FileAccess *)(gif->UserData);
+	f->store_buffer((const uint8_t *)data, length);
 	return length;
 }
 
@@ -112,11 +112,12 @@ Error ImageFrames::save_gif(const String &p_filepath, int p_colors) {
 		// Add delay.
 		if (get_frame_count() > 1) {
 			EGifPutExtensionLeader(gif, GRAPHICS_EXT_FUNC_CODE);
-			static unsigned char gfx_ext_data[4] = {
+			uint16_t d = 100 * delay;
+			uint8_t gfx_ext_data[4] = {
 				0x04,
-				CLAMP(static_cast<uint8_t>(100 * delay), 0u, 255u) % 0xFF,
-				CLAMP(static_cast<uint8_t>(100 * delay), 0u, 255u) / 0xFF,
-				0x00
+				static_cast<uint8_t>((d >> 0) & 0xff),
+				static_cast<uint8_t>((d >> 8) & 0xff),
+				0x00, // Transparency.
 			};
 			EGifPutExtensionBlock(gif, 4, gfx_ext_data);
 			EGifPutExtensionTrailer(gif);
@@ -139,7 +140,7 @@ Error ImageFrames::save_gif(const String &p_filepath, int p_colors) {
 		EGifPutExtensionLeader(gif, APPLICATION_EXT_FUNC_CODE);
 		char ns[12] = "NETSCAPE2.0";
 		EGifPutExtensionBlock(gif, 11, ns);
-		unsigned char sub[3] = {
+		uint8_t sub[3] = {
 			0x01,
 			0x00, // Infinite.
 			0x00,

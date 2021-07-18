@@ -474,17 +474,17 @@ func test_save_gif_animated():
 	assert_eq(err, OK)
 
 
-func test_save_gif_animated_colors():
+func test_save_gif_animated_rotation():
 	var image_frames = ImageFrames.new()
 
 	var angle = 0.0
-	for i in 8:
+	for i in 32:
 		var frame = TestUtils.image_load(SAMPLES.icon)
 		GoostImage.rotate(frame, angle, false)
-		image_frames.add_frame(frame, 0.1)
-		angle += TAU / 8.0
+		image_frames.add_frame(frame, 0.02)
+		angle += TAU / 32.0
 
-	var err = image_frames.save_gif("res://out/animated_colors.gif", 127)
+	var err = image_frames.save_gif("res://out/animated_rotation.gif", 60)
 	assert_eq(err, OK)
 
 
