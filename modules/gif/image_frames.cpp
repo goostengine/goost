@@ -1,4 +1,6 @@
 #include "image_frames.h"
+
+#include "core/image/image_indexed.h"
 #include <gif_lib.h>
 
 LoadImageFramesFunction ImageFrames::load_gif_func = nullptr;
@@ -34,65 +36,18 @@ Error ImageFrames::save_gif(const String &p_filepath) {
 
 	GifFileType *gif = EGifOpenFileName(fp.get_data(), false, &error);
 	if (!gif) {
-		print_line(vformat("EGifOpenFileName() failed - %s", error));
+		ERR_PRINT(vformat("EGifOpenFileName() failed - %s", error));
 		return ERR_CANT_CREATE;
 	}
 
-	const int palette_size = 2;
-	const int byte_count = 16;
+	// Using dimensions of the first image as the base.
+	const Ref<Image> &first = get_frame_image(0);
 
-	GifColorType colors[palette_size];
-	colors[0].Red = 0x00;
-	colors[0].Green = 0x00;
-	colors[0].Blue = 0x00;
-
-	colors[1].Red = 0xFF;
-	colors[1].Green = 0xFF;
-	colors[1].Blue = 0xFF;
-
-	GifByteType pix1[byte_count] = {
-		0,
-		1,
-		0,
-		1,
-		1,
-		0,
-		1,
-		0,
-		0,
-		1,
-		0,
-		1,
-		1,
-		0,
-		1,
-		0,
-	};
-
-	GifByteType pix2[byte_count] = {
-		1,
-		0,
-		1,
-		0,
-		0,
-		1,
-		0,
-		1,
-		1,
-		0,
-		1,
-		0,
-		0,
-		1,
-		0,
-		1,
-	};
-
-	gif->SWidth = 4;
-	gif->SHeight = 4;
+	gif->SWidth = first->get_width();
+	gif->SHeight = first->get_height();
 	gif->SColorResolution = 8;
 	gif->SBackGroundColor = 0;
-	gif->SColorMap = GifMakeMapObject(palette_size, colors);
+	gif->SColorMap = nullptr; // No global color map, using local.
 
 	if (EGifPutScreenDesc(gif,
 				gif->SWidth,
@@ -103,28 +58,51 @@ Error ImageFrames::save_gif(const String &p_filepath) {
 		return ERR_CANT_CREATE;
 	}
 
-	for (int i = 0; i < 2; ++i) {
-		ColorMapObject *cmap = nullptr;
-		const float delay = 1.0; // Seconds.
+	for (int i = 0; i < get_frame_count(); ++i) {
+		Ref<Image> frame = get_frame_image(i)->duplicate();
+		frame->convert(Image::FORMAT_RGBA8);
+		const float delay = get_frame_delay(i); // Seconds.
 
-		GifByteType *raster = (GifByteType *)malloc(byte_count);
-		if (i == 0) {
-			memcpy(raster, pix1, byte_count);
-		} else if (i == 1) {
-			memcpy(raster, pix2, byte_count);
+		// Generate color map.
+		Ref<ImageIndexed> indexed = frame;
+		if (indexed.is_null()) {
+			indexed.instance();
+			indexed->create(frame->get_width(), frame->get_height(), false, Image::FORMAT_RGBA8, frame->get_data());
 		}
+		indexed->generate_palette(256, ImageIndexed::DITHER_ORDERED, false, true);
 
+		PoolVector<uint8_t> color_map = indexed->get_palette_data();
+		ColorMapObject *cmap = nullptr;
+		{
+			PoolVector<uint8_t>::Read r = color_map.read();
+			GifColorType *gif_colors = (GifColorType *)malloc(sizeof(GifColorType) * indexed->get_palette_size());
+			for (int j = 0; j < indexed->get_palette_size(); ++j) {
+				gif_colors[j].Red = r[j * 4 + 0];
+				gif_colors[j].Green = r[j * 4 + 1];
+				gif_colors[j].Blue = r[j * 4 + 2];
+			}
+			cmap = GifMakeMapObject(indexed->get_palette_size(), gif_colors);
+		}
+		// Create raster.
+		PoolVector<uint8_t> index_data = indexed->get_index_data();
+		GifByteType *raster = nullptr;
+		{
+			PoolVector<uint8_t>::Read r = index_data.read();
+			raster = (GifByteType *)malloc(index_data.size());
+			memcpy(raster, r.ptr(), index_data.size());
+		}
 		// Add delay.
 		EGifPutExtensionLeader(gif, GRAPHICS_EXT_FUNC_CODE);
 		static unsigned char gfx_ext_data[4] = {
 			0x04,
-			CLAMP(int(100 * delay), 0, 255) % 0xFF,
-			CLAMP(int(100 * delay), 0, 255) / 0xFF,
+			CLAMP(static_cast<uint8_t>(100 * delay), 0u, 255u) % 0xFF,
+			CLAMP(static_cast<uint8_t>(100 * delay), 0u, 255u) / 0xFF,
 			0x00
 		};
 		EGifPutExtensionBlock(gif, 4, gfx_ext_data);
 		EGifPutExtensionTrailer(gif);
 
+		// Write!
 		if (EGifPutImageDesc(gif, 0, 0, gif->SWidth, gif->SHeight, false, cmap) == GIF_ERROR) {
 			return ERR_CANT_CREATE;
 		}

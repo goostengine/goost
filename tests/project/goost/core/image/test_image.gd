@@ -435,10 +435,22 @@ func test_load_gif():
 
 func test_save_gif():
 	var image_frames = ImageFrames.new()
+
 	var frame = Image.new()
 	frame.create(64, 64, false, Image.FORMAT_RGBA8)
-	frame.fill(Color.blue)
+	frame.fill(Color.red)
 	image_frames.add_frame(frame, 1.0)
+
+	frame = Image.new()
+	frame.create(64, 64, false, Image.FORMAT_RGBA8)
+	frame.fill(Color.yellow)
+	image_frames.add_frame(frame, 1.0)
+
+	frame = Image.new()
+	frame.create(64, 64, false, Image.FORMAT_RGBA8)
+	frame.fill(Color.green)
+	image_frames.add_frame(frame, 1.0)
+
 	var err = image_frames.save_gif(ProjectSettings.globalize_path("res://out/animated.gif"))
 	assert_eq(err, OK)
 
