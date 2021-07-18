@@ -94,9 +94,10 @@
 			</argument>
 			<description>
 				Saves a GIF file using frames added with [method add_frame]. If there are multiple images, creates an animated GIF, taking into account individual frame delays. If there's only one image, GIF is written as a static image.
-				The [code]colors[/code] parameter specifies the number of colors in GIF color map. The number of colors are rounded to nearest power of 2, and the maximum number of colors is 256.
+				The [code]colors[/code] parameter specifies the number of colors in GIF color map. The number of colors are rounded to nearest power of two, and the maximum number of colors is [code]256[/code].
 				Frames can have different sizes. Dimensions of the first frame is taken as the base canvas size.
-				[b]Note:[/b] This method depends on [ImageIndexed] used to generate image palette required to write GIF files.
+				Note that GIF animation timing is measured in hundredths of a second, and delay values below [code]0.02[/code] may fallback to [code]1.0[/code] second when rendered on screen, which depends on application displaying such a GIF.
+				This method depends on [ImageIndexed] used to generate image palette required to write GIF files.
 			</description>
 		</method>
 		<method name="set_frame_delay">
