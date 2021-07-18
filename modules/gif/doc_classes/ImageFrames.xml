@@ -85,6 +85,17 @@
 				Removes the frame [code]idx[/code].
 			</description>
 		</method>
+		<method name="save_gif">
+			<return type="int" enum="Error">
+			</return>
+			<argument index="0" name="filepath" type="String">
+			</argument>
+			<description>
+				Saves a GIF file using frames added with [method add_frame]. If there are multiple images, creates an animated GIF, taking into account individual frame delays. If there's only one image, GIF is written as a static image.
+				Frames can have different sizes. Dimensions of the first frame is taken as the base canvas size.
+				[b]Note:[/b] This method depends on [ImageIndexed] used to generate image palette required to write GIF files.
+			</description>
+		</method>
 		<method name="set_frame_delay">
 			<return type="void">
 			</return>
