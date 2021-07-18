@@ -1,5 +1,7 @@
 #include "image_frames.h"
 
+#include "goost/classes_enabled.gen.h"
+
 #include "core/image/image_indexed.h"
 #include "core/os/file_access.h"
 
@@ -29,6 +31,8 @@ Error ImageFrames::load_gif_from_buffer(const PoolByteArray &p_data, int max_fra
 		return ERR_FILE_UNRECOGNIZED;
 	}
 }
+
+#ifdef GOOST_ImageIndexed
 
 static int save_gif_func(GifFileType *gif, const GifByteType *data, int length) {
 	// gif->UserData is the first parameter passed to EGifOpen.
@@ -146,6 +150,7 @@ Error ImageFrames::save_gif(const String &p_filepath) {
 
 	return OK;
 }
+#endif // GOOST_ImageIndexed
 
 void ImageFrames::add_frame(const Ref<Image> &p_image, float p_delay, int p_idx) {
 	ERR_FAIL_COND(p_idx > get_frame_count() - 1);
@@ -200,9 +205,9 @@ void ImageFrames::clear() {
 void ImageFrames::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("load", "path", "max_frames"), &ImageFrames::load, DEFVAL(0));
 	ClassDB::bind_method(D_METHOD("load_gif_from_buffer", "data", "max_frames"), &ImageFrames::load_gif_from_buffer, DEFVAL(0));
-
+#ifdef GOOST_ImageIndexed
 	ClassDB::bind_method(D_METHOD("save_gif", "filepath"), &ImageFrames::save_gif);
-
+#endif
 	ClassDB::bind_method(D_METHOD("add_frame", "image", "delay", "idx"), &ImageFrames::add_frame, DEFVAL(-1));
 	ClassDB::bind_method(D_METHOD("remove_frame", "idx"), &ImageFrames::remove_frame);
 
