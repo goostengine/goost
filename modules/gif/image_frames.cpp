@@ -41,7 +41,7 @@ static int save_gif_func(GifFileType *gif, const GifByteType *data, int length) 
 	return length;
 }
 
-Error ImageFrames::save_gif(const String &p_filepath) {
+Error ImageFrames::save_gif(const String &p_filepath, int p_colors) {
 	ERR_FAIL_COND_V_MSG(get_frame_count() == 0, ERR_CANT_CREATE,
 			"ImageFrames must have at least one frame added.");
 
@@ -85,7 +85,9 @@ Error ImageFrames::save_gif(const String &p_filepath) {
 			indexed.instance();
 			indexed->create(frame->get_width(), frame->get_height(), false, Image::FORMAT_RGBA8, frame->get_data());
 		}
-		indexed->generate_palette(256, ImageIndexed::DITHER_ORDERED, false, true);
+		int num_colors = CLAMP(p_colors, 1, 256);
+		num_colors = next_power_of_2(num_colors);
+		indexed->generate_palette(num_colors, ImageIndexed::DITHER_ORDERED, false, true);
 
 		PoolVector<uint8_t> color_map = indexed->get_palette_data();
 		ColorMapObject *cmap = nullptr;
@@ -206,7 +208,7 @@ void ImageFrames::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("load", "path", "max_frames"), &ImageFrames::load, DEFVAL(0));
 	ClassDB::bind_method(D_METHOD("load_gif_from_buffer", "data", "max_frames"), &ImageFrames::load_gif_from_buffer, DEFVAL(0));
 #ifdef GOOST_ImageIndexed
-	ClassDB::bind_method(D_METHOD("save_gif", "filepath"), &ImageFrames::save_gif);
+	ClassDB::bind_method(D_METHOD("save_gif", "filepath", "colors"), &ImageFrames::save_gif, DEFVAL(256));
 #endif
 	ClassDB::bind_method(D_METHOD("add_frame", "image", "delay", "idx"), &ImageFrames::add_frame, DEFVAL(-1));
 	ClassDB::bind_method(D_METHOD("remove_frame", "idx"), &ImageFrames::remove_frame);

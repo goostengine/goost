@@ -90,8 +90,11 @@
 			</return>
 			<argument index="0" name="filepath" type="String">
 			</argument>
+			<argument index="1" name="colors" type="int" default="256">
+			</argument>
 			<description>
 				Saves a GIF file using frames added with [method add_frame]. If there are multiple images, creates an animated GIF, taking into account individual frame delays. If there's only one image, GIF is written as a static image.
+				The [code]colors[/code] parameter specifies the number of colors in GIF color map. The number of colors are rounded to nearest power of 2, and the maximum number of colors is 256.
 				Frames can have different sizes. Dimensions of the first frame is taken as the base canvas size.
 				[b]Note:[/b] This method depends on [ImageIndexed] used to generate image palette required to write GIF files.
 			</description>
