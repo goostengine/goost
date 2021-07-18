@@ -38,7 +38,8 @@ static int save_gif_func(GifFileType *gif, const GifByteType *data, int length) 
 }
 
 Error ImageFrames::save_gif(const String &p_filepath) {
-	ERR_FAIL_COND_V(get_frame_count() == 0, ERR_CANT_CREATE);
+	ERR_FAIL_COND_V_MSG(get_frame_count() == 0, ERR_CANT_CREATE,
+			"ImageFrames must have at least one frame added.");
 
 	int error;
 
@@ -114,12 +115,12 @@ Error ImageFrames::save_gif(const String &p_filepath) {
 		EGifPutExtensionTrailer(gif);
 
 		// Write!
-		if (EGifPutImageDesc(gif, 0, 0, gif->SWidth, gif->SHeight, false, cmap) == GIF_ERROR) {
+		if (EGifPutImageDesc(gif, 0, 0, frame->get_width(), frame->get_height(), false, cmap) == GIF_ERROR) {
 			return ERR_CANT_CREATE;
 		}
 
-		for (int j = 0; j < gif->SHeight; j++) {
-			if (EGifPutLine(gif, raster + j * gif->SWidth, gif->SWidth) == GIF_ERROR) {
+		for (int j = 0; j < frame->get_height(); j++) {
+			if (EGifPutLine(gif, raster + j * frame->get_width(), frame->get_width()) == GIF_ERROR) {
 				return ERR_CANT_CREATE;
 			}
 		}
