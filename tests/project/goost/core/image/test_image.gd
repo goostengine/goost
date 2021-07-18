@@ -433,7 +433,19 @@ func test_load_gif():
 	output.unlock()
 
 
-func test_save_gif():
+func test_save_gif_static():
+	var image_frames = ImageFrames.new()
+
+	var frame = Image.new()
+	frame.create(64, 32, false, Image.FORMAT_RGB8)
+	frame.fill(Color.yellow)
+	image_frames.add_frame(frame, 1.0)
+
+	var err = image_frames.save_gif("res://out/static.gif")
+	assert_eq(err, OK)
+
+
+func test_save_gif_animated():
 	var image_frames = ImageFrames.new()
 
 	# Different image sizes are tested here.

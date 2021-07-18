@@ -104,15 +104,17 @@ Error ImageFrames::save_gif(const String &p_filepath) {
 			memcpy(raster, r.ptr(), index_data.size());
 		}
 		// Add delay.
-		EGifPutExtensionLeader(gif, GRAPHICS_EXT_FUNC_CODE);
-		static unsigned char gfx_ext_data[4] = {
-			0x04,
-			CLAMP(static_cast<uint8_t>(100 * delay), 0u, 255u) % 0xFF,
-			CLAMP(static_cast<uint8_t>(100 * delay), 0u, 255u) / 0xFF,
-			0x00
-		};
-		EGifPutExtensionBlock(gif, 4, gfx_ext_data);
-		EGifPutExtensionTrailer(gif);
+		if (get_frame_count() > 1) {
+			EGifPutExtensionLeader(gif, GRAPHICS_EXT_FUNC_CODE);
+			static unsigned char gfx_ext_data[4] = {
+				0x04,
+				CLAMP(static_cast<uint8_t>(100 * delay), 0u, 255u) % 0xFF,
+				CLAMP(static_cast<uint8_t>(100 * delay), 0u, 255u) / 0xFF,
+				0x00
+			};
+			EGifPutExtensionBlock(gif, 4, gfx_ext_data);
+			EGifPutExtensionTrailer(gif);
+		}
 
 		// Write!
 		if (EGifPutImageDesc(gif, 0, 0, frame->get_width(), frame->get_height(), false, cmap) == GIF_ERROR) {
@@ -127,16 +129,18 @@ Error ImageFrames::save_gif(const String &p_filepath) {
 	}
 
 	// Add loop.
-	EGifPutExtensionLeader(gif, APPLICATION_EXT_FUNC_CODE);
-	char ns[12] = "NETSCAPE2.0";
-	EGifPutExtensionBlock(gif, 11, ns);
-	unsigned char sub[3] = {
-		0x01,
-		0x00, // Infinite.
-		0x00,
-	};
-	EGifPutExtensionBlock(gif, 3, sub);
-	EGifPutExtensionTrailer(gif);
+	if (get_frame_count() > 1) {
+		EGifPutExtensionLeader(gif, APPLICATION_EXT_FUNC_CODE);
+		char ns[12] = "NETSCAPE2.0";
+		EGifPutExtensionBlock(gif, 11, ns);
+		unsigned char sub[3] = {
+			0x01,
+			0x00, // Infinite.
+			0x00,
+		};
+		EGifPutExtensionBlock(gif, 3, sub);
+		EGifPutExtensionTrailer(gif);
+	}
 
 	EGifCloseFile(gif, &error);
 
