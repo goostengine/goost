@@ -1,6 +1,8 @@
 #include "image_frames.h"
 
 #include "core/image/image_indexed.h"
+#include "core/os/file_access.h"
+
 #include <gif_lib.h>
 
 LoadImageFramesFunction ImageFrames::load_gif_func = nullptr;
@@ -28,15 +30,24 @@ Error ImageFrames::load_gif_from_buffer(const PoolByteArray &p_data, int max_fra
 	}
 }
 
+static int save_gif_func(GifFileType *gif, const GifByteType *data, int length) {
+	// gif->UserData is the first parameter passed to EGifOpen.
+	FileAccess *f = (FileAccess *)(gif->UserData); 
+	f->store_buffer((const uint8_t*)data, length);
+	return length;
+}
+
 Error ImageFrames::save_gif(const String &p_filepath) {
 	ERR_FAIL_COND_V(get_frame_count() == 0, ERR_CANT_CREATE);
 
 	int error;
-	CharString fp = p_filepath.utf8();
 
-	GifFileType *gif = EGifOpenFileName(fp.get_data(), false, &error);
+	FileAccess *f = FileAccess::open(p_filepath, FileAccess::WRITE);
+	ERR_FAIL_COND_V(!f, ERR_CANT_OPEN);
+
+	GifFileType *gif = EGifOpen(f, save_gif_func, &error);
 	if (!gif) {
-		ERR_PRINT(vformat("EGifOpenFileName() failed - %s", error));
+		ERR_PRINT(vformat("EGifOpen() failed - %s", error));
 		return ERR_CANT_CREATE;
 	}
 
