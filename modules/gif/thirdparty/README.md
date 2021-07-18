@@ -11,6 +11,7 @@ Files extracted from upstream source:
 - gif_err.c
 - gif_lib.h
 - dgif_lib.c
+- egif_lib.c
 - gifalloc.c
 - gif_hash.{c,h}
 - gif_lib_private.h

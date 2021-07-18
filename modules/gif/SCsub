@@ -9,6 +9,7 @@ thirdparty_dir = "./thirdparty/giflib/"
 thirdparty_sources = [
     "gif_err.c",
     "dgif_lib.c",
+    "egif_lib.c",
     "gifalloc.c",
     "gif_hash.c",
     "openbsd-reallocarray.c"

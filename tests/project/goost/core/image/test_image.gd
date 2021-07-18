@@ -433,6 +433,16 @@ func test_load_gif():
 	output.unlock()
 
 
+func test_save_gif():
+	var image_frames = ImageFrames.new()
+	var frame = Image.new()
+	frame.create(64, 64, false, Image.FORMAT_RGBA8)
+	frame.fill(Color.blue)
+	image_frames.add_frame(frame, 1.0)
+	var err = image_frames.save_gif(ProjectSettings.globalize_path("res://out/animated.gif"))
+	assert_eq(err, OK)
+
+
 func test_bucket_fill_4_connected():
 	var input = TestUtils.image_load(SAMPLES.icon_binary)
 	input.convert(Image.FORMAT_RGBA8)
