@@ -57,12 +57,6 @@ void LinkedList::create_from(const Variant &p_value) {
 }
 
 ListNode *LinkedList::push_back(const Variant &value) {
-	if (!_data) {
-		_data = memnew(ListData);
-		_data->first = nullptr;
-		_data->last = nullptr;
-		_data->size_cache = 0;
-	}
 	ListNode *n = memnew(ListNode);
 	n->value = value;
 
@@ -90,12 +84,6 @@ void LinkedList::pop_back() {
 }
 
 ListNode *LinkedList::push_front(const Variant &value) {
-	if (!_data) {
-		_data = memnew(ListData);
-		_data->first = nullptr;
-		_data->last = nullptr;
-		_data->size_cache = 0;
-	}
 	ListNode *n = memnew(ListNode);
 	n->value = value;
 	n->prev_ptr = 0;
@@ -136,11 +124,9 @@ Array LinkedList::get_elements() {
 }
 
 ListNode *LinkedList::insert_after(ListNode *p_node, const Variant &p_value) {
-	CRASH_COND(p_node && (!_data || p_node->data != _data));
+	ERR_FAIL_COND_V(!p_node, nullptr);
+	ERR_FAIL_COND_V(p_node->data != _data, nullptr);
 
-	if (!p_node) {
-		return push_back(p_value);
-	}
 	ListNode *n = memnew(ListNode);
 	n->value = p_value;
 	n->prev_ptr = p_node;
@@ -160,11 +146,9 @@ ListNode *LinkedList::insert_after(ListNode *p_node, const Variant &p_value) {
 }
 
 ListNode *LinkedList::insert_before(ListNode *p_node, const Variant &p_value) {
-	CRASH_COND(p_node && (!_data || p_node->data != _data));
+	ERR_FAIL_COND_V(!p_node, nullptr);
+	ERR_FAIL_COND_V(p_node->data != _data, nullptr);
 
-	if (!p_node) {
-		return push_back(p_value);
-	}
 	ListNode *n = memnew(ListNode);
 	n->value = p_value;
 	n->prev_ptr = p_node->prev_ptr;
@@ -262,7 +246,9 @@ void LinkedList::invert() {
 }
 
 void LinkedList::move_to_back(ListNode *p_I) {
+	ERR_FAIL_COND(!p_I);
 	ERR_FAIL_COND(p_I->data != _data);
+
 	if (!p_I->next_ptr) {
 		return;
 	}
@@ -284,7 +270,9 @@ void LinkedList::move_to_back(ListNode *p_I) {
 }
 
 void LinkedList::move_to_front(ListNode *p_I) {
+	ERR_FAIL_COND(!p_I);
 	ERR_FAIL_COND(p_I->data != _data);
+
 	if (!p_I->prev_ptr) {
 		return;
 	}
@@ -306,6 +294,10 @@ void LinkedList::move_to_front(ListNode *p_I) {
 }
 
 void LinkedList::move_before(ListNode *p_A, ListNode *p_B) {
+	ERR_FAIL_COND(!p_A || !p_B);
+	ERR_FAIL_COND(p_A->data != _data);
+	ERR_FAIL_COND(p_B->data != _data);
+
 	if (p_A->prev_ptr) {
 		p_A->prev_ptr->next_ptr = p_A->next_ptr;
 	} else {
@@ -434,6 +426,13 @@ void ListNode::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::NIL, "value", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NIL_IS_VARIANT), "set_value", "get_value");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "next"), "", "get_next");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "prev"), "", "get_prev");
+}
+
+LinkedList::LinkedList() {
+	_data = memnew(ListData);
+	_data->first = nullptr;
+	_data->last = nullptr;
+	_data->size_cache = 0;
 }
 
 LinkedList::~LinkedList() {
