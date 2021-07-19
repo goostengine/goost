@@ -119,6 +119,10 @@ Vector<Point2> GoostGeometry2D::simplify_polyline(const Vector<Point2> &p_polyli
 	if (p_polyline.size() <= 2) {
 		return p_polyline;
 	}
+	if (p_epsilon <= 0.0) {
+		// Retain all points.
+		return p_polyline;
+	}
 	Vector<bool> points_to_retain;
 	points_to_retain.resize(p_polyline.size());
 

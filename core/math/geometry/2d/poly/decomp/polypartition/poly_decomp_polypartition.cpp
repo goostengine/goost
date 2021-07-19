@@ -61,7 +61,9 @@ Vector<Vector<Point2>> partition(List<TriangulatorPoly> &p_out_poly) {
 
 Vector<Vector<Point2>> PolyDecomp2DPolyPartition::triangulate_ec(const Vector<Vector<Point2>> &p_polygons) {
 	List<TriangulatorPoly> in_poly = configure(DECOMP_TRIANGLES_EC, p_polygons);
-
+	if (in_poly.empty()) {
+		return Vector<Vector<Point2>>();
+	}
 	TriangulatorPartition tpart;
 	List<TriangulatorPoly> out_poly;
 
@@ -74,7 +76,9 @@ Vector<Vector<Point2>> PolyDecomp2DPolyPartition::triangulate_ec(const Vector<Ve
 
 Vector<Vector<Point2>> PolyDecomp2DPolyPartition::triangulate_opt(const Vector<Vector<Point2>> &p_polygons) {
 	List<TriangulatorPoly> in_poly = configure(DECOMP_TRIANGLES_OPT, p_polygons);
-
+	if (in_poly.empty()) {
+		return Vector<Vector<Point2>>();
+	}
 	TriangulatorPartition tpart;
 	List<TriangulatorPoly> out_poly;
 
@@ -87,7 +91,9 @@ Vector<Vector<Point2>> PolyDecomp2DPolyPartition::triangulate_opt(const Vector<V
 
 Vector<Vector<Point2>> PolyDecomp2DPolyPartition::triangulate_mono(const Vector<Vector<Point2>> &p_polygons) {
 	List<TriangulatorPoly> in_poly = configure(DECOMP_TRIANGLES_MONO, p_polygons);
-
+	if (in_poly.empty()) {
+		return Vector<Vector<Point2>>();
+	}
 	TriangulatorPartition tpart;
 	List<TriangulatorPoly> out_poly;
 
@@ -101,7 +107,9 @@ Vector<Vector<Point2>> PolyDecomp2DPolyPartition::triangulate_mono(const Vector<
 
 Vector<Vector<Point2>> PolyDecomp2DPolyPartition::decompose_convex_hm(const Vector<Vector<Point2>> &p_polygons) {
 	List<TriangulatorPoly> in_poly = configure(DECOMP_CONVEX_HM, p_polygons);
-
+	if (in_poly.empty()) {
+		return Vector<Vector<Point2>>();
+	}
 	TriangulatorPartition tpart;
 	List<TriangulatorPoly> out_poly;
 
@@ -114,7 +122,9 @@ Vector<Vector<Point2>> PolyDecomp2DPolyPartition::decompose_convex_hm(const Vect
 
 Vector<Vector<Point2>> PolyDecomp2DPolyPartition::decompose_convex_opt(const Vector<Vector<Point2>> &p_polygons) {
 	List<TriangulatorPoly> in_poly = configure(DECOMP_CONVEX_OPT, p_polygons);
-
+	if (in_poly.empty()) {
+		return Vector<Vector<Point2>>();
+	}
 	TriangulatorPartition tpart;
 	List<TriangulatorPoly> out_poly;
 
