@@ -27,6 +27,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
   - `insert_before/after(null, value)` no longer pushes front/back an element.
 - Out of memory error when calling `GoostGeometry2D.simplify_polyline()` with `epsilon = 0`.
 - Crashes while decomposing empty polygons with `PolyDecomp2D` when using `polypartition` geometry backend.
+- Crash when attempting to load invalid GIF data from buffer using `ImageFrames.load_gif_from_buffer()`.
 
 ## [1.0] - 2021-05-24
 

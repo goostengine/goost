@@ -22,6 +22,7 @@ Error ImageFrames::load(const String &p_path, int max_frames) {
 }
 
 Error ImageFrames::load_gif_from_buffer(const PoolByteArray &p_data, int max_frames) {
+	ERR_FAIL_COND_V_MSG(p_data.empty(), ERR_INVALID_DATA, "Invalid GIF data");
 	clear();
 	if (p_data[0] == 'G') {
 		Ref<ImageFrames> image_frames = Ref<ImageFrames>(this);
