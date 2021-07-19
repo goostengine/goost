@@ -488,6 +488,24 @@ func test_save_gif_animated_rotation():
 	assert_eq(err, OK)
 
 
+func test_save_gif_animated_rotation_custom_indexed():
+	var image_frames = ImageFrames.new()
+
+	var angle = 0.0
+	for i in 32:
+		var frame = TestUtils.image_load(SAMPLES.icon)
+		GoostImage.rotate(frame, angle, false)
+		var indexed = ImageIndexed.new()
+		indexed.create_from_data(frame.get_width(), frame.get_height(), false, frame.get_format(), frame.get_data())
+		indexed.convert(Image.FORMAT_RGBA8)
+		indexed.generate_palette(4, ImageIndexed.DITHER_RANDOM, false, true)
+		image_frames.add_frame(indexed, 0.02)
+		angle += TAU / 32.0
+
+	var err = image_frames.save_gif("res://out/animated_rotation_custom_indexed.gif")
+	assert_eq(err, OK)
+
+
 func test_bucket_fill_4_connected():
 	var input = TestUtils.image_load(SAMPLES.icon_binary)
 	input.convert(Image.FORMAT_RGBA8)

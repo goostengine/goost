@@ -41,7 +41,7 @@ static int save_gif_func(GifFileType *gif, const GifByteType *data, int length) 
 	return length;
 }
 
-Error ImageFrames::save_gif(const String &p_filepath, int p_colors) {
+Error ImageFrames::save_gif(const String &p_filepath, int p_color_count) {
 	ERR_FAIL_COND_V_MSG(get_frame_count() == 0, ERR_CANT_CREATE,
 			"ImageFrames must have at least one frame added.");
 
@@ -75,20 +75,22 @@ Error ImageFrames::save_gif(const String &p_filepath, int p_colors) {
 	}
 
 	for (int i = 0; i < get_frame_count(); ++i) {
-		Ref<Image> frame = get_frame_image(i)->duplicate();
-		frame->convert(Image::FORMAT_RGBA8);
+		const Ref<Image> &frame = get_frame_image(i);
 		const float delay = get_frame_delay(i); // Seconds.
 
 		// Generate color map.
 		Ref<ImageIndexed> indexed = frame;
 		if (indexed.is_null()) {
 			indexed.instance();
-			indexed->create(frame->get_width(), frame->get_height(), false, Image::FORMAT_RGBA8, frame->get_data());
+			indexed->create(frame->get_width(), frame->get_height(), false, frame->get_format(), frame->get_data());
+			indexed->convert(Image::FORMAT_RGBA8);
+			int num_colors = CLAMP(p_color_count, 1, 256);
+			num_colors = next_power_of_2(num_colors);
+			indexed->generate_palette(num_colors, ImageIndexed::DITHER_ORDERED, false, true);
+		} else {
+			ERR_FAIL_COND_V_MSG(!indexed->has_palette(), ERR_CANT_CREATE,
+					"Custom ImageIndexed passed to ImagesFrames must have palette already generated.");
 		}
-		int num_colors = CLAMP(p_colors, 1, 256);
-		num_colors = next_power_of_2(num_colors);
-		indexed->generate_palette(num_colors, ImageIndexed::DITHER_ORDERED, false, true);
-
 		PoolVector<uint8_t> color_map = indexed->get_palette_data();
 		ColorMapObject *cmap = nullptr;
 		{
@@ -209,7 +211,7 @@ void ImageFrames::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("load", "path", "max_frames"), &ImageFrames::load, DEFVAL(0));
 	ClassDB::bind_method(D_METHOD("load_gif_from_buffer", "data", "max_frames"), &ImageFrames::load_gif_from_buffer, DEFVAL(0));
 #ifdef GOOST_ImageIndexed
-	ClassDB::bind_method(D_METHOD("save_gif", "filepath", "colors"), &ImageFrames::save_gif, DEFVAL(256));
+	ClassDB::bind_method(D_METHOD("save_gif", "filepath", "color_count"), &ImageFrames::save_gif, DEFVAL(256));
 #endif
 	ClassDB::bind_method(D_METHOD("add_frame", "image", "delay", "idx"), &ImageFrames::add_frame, DEFVAL(-1));
 	ClassDB::bind_method(D_METHOD("remove_frame", "idx"), &ImageFrames::remove_frame);
