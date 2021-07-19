@@ -243,6 +243,16 @@ func test_simplify_polyline():
 		assert_eq(simplified[i], control[i])
 
 
+func test_simplify_polyline_zero_epsilon():
+	var input = PoolVector2Array([
+		Vector2(-2.182464, -3.504493),
+		Vector2(-2.662979, -1.333622),
+		Vector2(2.71501, 1.567903),
+	])
+	var simplified = GoostGeometry2D.simplify_polyline(input, 0)
+	assert_eq(input.size(), simplified.size())
+
+
 func test_smooth_polygon():
 	var input = [Vector2(26, 20), Vector2(73, 23), Vector2(72, 62), Vector2(29, 57)]
 	var control = [Vector2(26, 20), Vector2(49.311768, 15.934073), Vector2(73, 23),
