@@ -132,21 +132,6 @@ func test_insert_after_back():
 	assert_eq(list.back.value, "Godot")
 
 
-func test_insert_after_null():
-	populate_test_data(list)
-	var _n = list.insert_after(null, "Godot")
-	assert_eq(list.back.value, "Godot")
-
-
-func test_insert_before_null():
-	populate_test_data(list)
-	var _n = list.insert_before(null, "Godot")
-	# Not sure about this, see issue upstream from which this was ported:
-	# https://github.com/godotengine/godot/issues/42116
-	# But consistency with builtin List<Variant> is more important currently.
-	assert_eq(list.back.value, "Godot")
-
-
 func test_size():
 	var nodes = populate_test_data(list)
 	var original_size = nodes.size()
@@ -638,3 +623,56 @@ func test_cleanup():
 	assert_not_null(n)
 	list = null
 	assert_freed(list, "List")
+
+
+# TODO: cannot test for now in automated manner, need to be able to disable error
+# printing first, which is not possible to do via GDScript.
+#
+# Prepend "Test" to the class name in order to run these.
+class InvalidData extends "res://addons/gut/test.gd":
+	var list: LinkedList
+
+	func before_each():
+		list = LinkedList.new()
+
+	# Goost fails on null rather than pushing to back.
+	# See https://github.com/godotengine/godot/issues/42116.
+	func test_insert_after_null():
+		var _n = list.push_back(Color.blue)
+		_n = list.insert_after(null, "Godot")
+		assert_eq(list.back.value, Color.blue)
+
+	# Goost fails on null rather than pushing to front.
+	# See https://github.com/godotengine/godot/issues/42116.
+	func test_insert_before_null():
+		var _n = list.push_back(Color.blue)
+		_n = list.insert_before(null, "Godot")
+		assert_eq(list.back.value, Color.blue)
+
+	func test_swap():
+		list.swap(ClassDB.instance("ListNode"), ClassDB.instance("ListNode"))
+		list.swap(null, ClassDB.instance("ListNode"))
+		list.swap(ClassDB.instance("ListNode"), null)
+
+	func test_stuff3():
+		var _n = list.insert_before(null, Array([]))
+		_n = list.insert_after(ClassDB.instance("ListNode"), Array([]))
+
+	# TODO: Should memdelete(this) or prevent with ERR_FAIL_COND?
+	# func test_list_node_erase_not_exists():
+	# 	var n = ClassDB.instance("ListNode")
+	# 	node.erase()
+	# 	node.set_value("1769126663") # GDScript parser error Attempted to run on null instance.
+
+	func test_move_to_front():
+		list.move_to_front(null)
+		list.move_to_front(ClassDB.instance("ListNode"))
+
+	func test_move_to_back():
+		list.move_to_back(null)
+		list.move_to_back(ClassDB.instance("ListNode"))
+
+	func test_move_before():
+		list.move_before(null, null)
+		list.move_before(null, ClassDB.instance("ListNode"))
+		list.move_before(ClassDB.instance("ListNode"), null)

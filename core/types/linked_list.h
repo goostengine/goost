@@ -181,7 +181,7 @@ public:
 		}
 		memdelete_arr(aux_buffer);
 	}
-	LinkedList() {}
+	LinkedList();
 	~LinkedList();
 };
 

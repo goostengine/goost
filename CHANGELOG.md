@@ -22,6 +22,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 - Moved `PolyCollisionShape2D` class to the `physics` component.
 - Updated third-party image libraries.
 
+### Fixed
+- Crashes with `LinkedList` when dealing with invalid data.
+  - `insert_before/after(null, value)` no longer pushes front/back an element.
+
 ## [1.0] - 2021-05-24
 
 Initial release.
