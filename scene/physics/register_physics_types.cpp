@@ -1,7 +1,6 @@
 #include "register_physics_types.h"
 
 #include "goost/classes_enabled.gen.h"
-#include "goost/goost.h"
 
 namespace goost {
 

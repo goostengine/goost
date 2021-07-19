@@ -1,9 +1,9 @@
 #include "image_frames.h"
 
-#include "goost/classes_enabled.gen.h"
-
-#include "core/image/image_indexed.h"
 #include "core/os/file_access.h"
+#include "core/image/image_indexed.h"
+
+#include "goost/classes_enabled.gen.h"
 
 #include <gif_lib.h>
 

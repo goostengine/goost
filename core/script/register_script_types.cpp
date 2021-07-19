@@ -1,8 +1,5 @@
 #include "register_script_types.h"
 
-#include "goost/classes_enabled.gen.h"
-#include "goost/goost.h"
-
 #include "mixin_script/editor/mixin_script_editor.h"
 #include "mixin_script/editor/mixin_script_editor_plugin.h"
 #include "mixin_script/mixin_script.h"
@@ -10,6 +7,8 @@
 #include "core/script_language.h"
 #include "editor/editor_node.h"
 #include "editor/plugins/script_editor_plugin.h"
+
+#include "goost/classes_enabled.gen.h"
 
 namespace goost {
 

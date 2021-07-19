@@ -1,12 +1,11 @@
 #include "register_image_types.h"
 
-#include "goost/classes_enabled.gen.h"
-#include "goost/goost.h"
-
 #include "core/engine.h"
 
 #include "drivers/png/image_loader_indexed_png.h"
 #include "drivers/png/resource_saver_indexed_png.h"
+
+#include "goost/classes_enabled.gen.h"
 
 static _GoostImage *_goost_image = nullptr;
 static ImageLoaderIndexedPNG *image_loader_indexed_png;

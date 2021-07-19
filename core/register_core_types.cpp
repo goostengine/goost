@@ -1,8 +1,5 @@
 #include "register_core_types.h"
 
-#include "goost/classes_enabled.gen.h"
-#include "goost/goost.h"
-
 #include "core/engine.h"
 #include "scene/main/scene_tree.h"
 
@@ -15,6 +12,8 @@
 #include "editor/editor_resource_preview.h"
 #include "types/editor/variant_resource_preview.h"
 #endif
+
+#include "goost/classes_enabled.gen.h"
 
 namespace goost {
 
