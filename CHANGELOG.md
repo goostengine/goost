@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 - Built-in implementation of Git version control plugin.
 - An experimental support for cross-language mixin using `MixinScript` (aka `MultiScript`).
 - A `Stopwatch` node, which complements Godot's `Timer` node.
+- A `ImageFrames.save_gif()` method which allows to save both static and animated GIF images.
 - A `geometry` option/component, which is separate from `math` now.
 - Numerous `GoostEngine` methods to retrieve copyright/license information, such as `get_license_text()`.
 - "About Goost" editor dialog, which lists Goost authors, Goost license, and third-party licenses.

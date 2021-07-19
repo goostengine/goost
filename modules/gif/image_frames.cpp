@@ -1,5 +1,12 @@
 #include "image_frames.h"
 
+#include "goost/classes_enabled.gen.h"
+
+#include "core/image/image_indexed.h"
+#include "core/os/file_access.h"
+
+#include <gif_lib.h>
+
 LoadImageFramesFunction ImageFrames::load_gif_func = nullptr;
 
 Error ImageFrames::load(const String &p_path, int max_frames) {
@@ -25,6 +32,131 @@ Error ImageFrames::load_gif_from_buffer(const PoolByteArray &p_data, int max_fra
 	}
 }
 
+#ifdef GOOST_ImageIndexed
+
+static int save_gif_func(GifFileType *gif, const GifByteType *data, int length) {
+	// gif->UserData is the first parameter passed to EGifOpen.
+	FileAccess *f = (FileAccess *)(gif->UserData);
+	f->store_buffer((const uint8_t *)data, length);
+	return length;
+}
+
+Error ImageFrames::save_gif(const String &p_filepath, int p_color_count) {
+	ERR_FAIL_COND_V_MSG(get_frame_count() == 0, ERR_CANT_CREATE,
+			"ImageFrames must have at least one frame added.");
+
+	int error;
+
+	FileAccess *f = FileAccess::open(p_filepath, FileAccess::WRITE);
+	ERR_FAIL_COND_V(!f, ERR_CANT_OPEN);
+
+	GifFileType *gif = EGifOpen(f, save_gif_func, &error);
+	if (!gif) {
+		ERR_PRINT(vformat("EGifOpen() failed - %s", error));
+		return ERR_CANT_CREATE;
+	}
+
+	// Using dimensions of the first image as the base.
+	const Ref<Image> &first = get_frame_image(0);
+
+	gif->SWidth = first->get_width();
+	gif->SHeight = first->get_height();
+	gif->SColorResolution = 8;
+	gif->SBackGroundColor = 0;
+	gif->SColorMap = nullptr; // No global color map, using local.
+
+	if (EGifPutScreenDesc(gif,
+				gif->SWidth,
+				gif->SHeight,
+				gif->SColorResolution,
+				gif->SBackGroundColor,
+				gif->SColorMap) == GIF_ERROR) {
+		return ERR_CANT_CREATE;
+	}
+
+	for (int i = 0; i < get_frame_count(); ++i) {
+		const Ref<Image> &frame = get_frame_image(i);
+		const float delay = get_frame_delay(i); // Seconds.
+
+		// Generate color map.
+		Ref<ImageIndexed> indexed = frame;
+		if (indexed.is_null()) {
+			indexed.instance();
+			indexed->create(frame->get_width(), frame->get_height(), false, frame->get_format(), frame->get_data());
+			indexed->convert(Image::FORMAT_RGBA8);
+			int num_colors = CLAMP(p_color_count, 1, 256);
+			num_colors = next_power_of_2(num_colors);
+			indexed->generate_palette(num_colors, ImageIndexed::DITHER_ORDERED, false, true);
+		} else {
+			ERR_FAIL_COND_V_MSG(!indexed->has_palette(), ERR_CANT_CREATE,
+					"Custom ImageIndexed passed to ImagesFrames must have palette already generated.");
+		}
+		PoolVector<uint8_t> color_map = indexed->get_palette_data();
+		ColorMapObject *cmap = nullptr;
+		{
+			PoolVector<uint8_t>::Read r = color_map.read();
+			GifColorType *gif_colors = (GifColorType *)malloc(sizeof(GifColorType) * indexed->get_palette_size());
+			for (int j = 0; j < indexed->get_palette_size(); ++j) {
+				gif_colors[j].Red = r[j * 4 + 0];
+				gif_colors[j].Green = r[j * 4 + 1];
+				gif_colors[j].Blue = r[j * 4 + 2];
+			}
+			cmap = GifMakeMapObject(indexed->get_palette_size(), gif_colors);
+		}
+		// Create raster.
+		PoolVector<uint8_t> index_data = indexed->get_index_data();
+		GifByteType *raster = nullptr;
+		{
+			PoolVector<uint8_t>::Read r = index_data.read();
+			raster = (GifByteType *)malloc(index_data.size());
+			memcpy(raster, r.ptr(), index_data.size());
+		}
+		// Add delay.
+		if (get_frame_count() > 1) {
+			EGifPutExtensionLeader(gif, GRAPHICS_EXT_FUNC_CODE);
+			uint16_t d = 100 * delay;
+			uint8_t gfx_ext_data[4] = {
+				0x04,
+				static_cast<uint8_t>((d >> 0) & 0xff),
+				static_cast<uint8_t>((d >> 8) & 0xff),
+				0x00, // Transparency.
+			};
+			EGifPutExtensionBlock(gif, 4, gfx_ext_data);
+			EGifPutExtensionTrailer(gif);
+		}
+
+		// Write!
+		if (EGifPutImageDesc(gif, 0, 0, frame->get_width(), frame->get_height(), false, cmap) == GIF_ERROR) {
+			return ERR_CANT_CREATE;
+		}
+
+		for (int j = 0; j < frame->get_height(); j++) {
+			if (EGifPutLine(gif, raster + j * frame->get_width(), frame->get_width()) == GIF_ERROR) {
+				return ERR_CANT_CREATE;
+			}
+		}
+	}
+
+	// Add loop.
+	if (get_frame_count() > 1) {
+		EGifPutExtensionLeader(gif, APPLICATION_EXT_FUNC_CODE);
+		char ns[12] = "NETSCAPE2.0";
+		EGifPutExtensionBlock(gif, 11, ns);
+		uint8_t sub[3] = {
+			0x01,
+			0x00, // Infinite.
+			0x00,
+		};
+		EGifPutExtensionBlock(gif, 3, sub);
+		EGifPutExtensionTrailer(gif);
+	}
+
+	EGifCloseFile(gif, &error);
+
+	return OK;
+}
+#endif // GOOST_ImageIndexed
+
 void ImageFrames::add_frame(const Ref<Image> &p_image, float p_delay, int p_idx) {
 	ERR_FAIL_COND(p_idx > get_frame_count() - 1);
 	Frame frame;
@@ -32,8 +164,7 @@ void ImageFrames::add_frame(const Ref<Image> &p_image, float p_delay, int p_idx)
 	frame.delay = p_delay;
 	if (p_idx < 0) {
 		frames.push_back(frame);
-	}
-	else {
+	} else {
 		frames.set(p_idx, frame);
 	}
 }
@@ -79,7 +210,9 @@ void ImageFrames::clear() {
 void ImageFrames::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("load", "path", "max_frames"), &ImageFrames::load, DEFVAL(0));
 	ClassDB::bind_method(D_METHOD("load_gif_from_buffer", "data", "max_frames"), &ImageFrames::load_gif_from_buffer, DEFVAL(0));
-
+#ifdef GOOST_ImageIndexed
+	ClassDB::bind_method(D_METHOD("save_gif", "filepath", "color_count"), &ImageFrames::save_gif, DEFVAL(256));
+#endif
 	ClassDB::bind_method(D_METHOD("add_frame", "image", "delay", "idx"), &ImageFrames::add_frame, DEFVAL(-1));
 	ClassDB::bind_method(D_METHOD("remove_frame", "idx"), &ImageFrames::remove_frame);
 
