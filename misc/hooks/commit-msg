@@ -1,10 +1,11 @@
 #!/bin/sh
 #
 # This hook allows to run tests automatically before committing changes locally.
-# Use "wip", "[wip]", "[ci skip]" or "[skip ci]" keywords in the commit message
-# descriptions to skip running tests.
+# Use "wip", "[wip]", "[ci skip]" keywords in the commit message to skip running
+# CI and unit tests, or use "[tests skip]" in order to skip running unit tests,
+# but not CI checks when pushed to remote.
 #
-if grep -iq -e 'wip' -e '\[wip\]' -e '\[ci skip\]' -e '\[skip ci\]' "$1"; then
+if grep -iq -e 'wip' -e '\[wip\]' -e '\[ci skip\]' -e '\[skip ci\]' -e '\[tests skip\]' -e '\[skip tests\]' "$1"; then
   echo "Skipping tests."
 else
   python run.py --windowed tests
