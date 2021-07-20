@@ -36,4 +36,5 @@ See also a full list of
     Andrii Doroshenko (Xrayez)
     Daw11
     Mariano Suligoy (MarianoGnu)
+    Rafał Mikrut (qarmin)
     Twarit Waikar (ChronicallySerious)
