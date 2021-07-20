@@ -90,7 +90,12 @@ func test_decompose_polygons_convex_opt():
 	assert_eq(solution[0].size(), 8)
 
 
-# TODO: re-enable once error printing can be disabled.
-# func test_decompose_polygon_empty():
-# 	PolyDecomp2D.decompose_polygons(Array([]), PolyDecomp2D.DECOMP_TRIANGLES_OPT)
-# 	PolyDecomp2D.decompose_polygons(Array([]), PolyDecomp2D.DECOMP_CONVEX_OPT)
+func test_decompose_polygon_empty():
+	Engine.print_error_messages = false
+
+	solution = PolyDecomp2D.decompose_polygons(Array([]), PolyDecomp2D.DECOMP_TRIANGLES_OPT)
+	assert_eq(solution.size(), 0)
+	solution = PolyDecomp2D.decompose_polygons(Array([]), PolyDecomp2D.DECOMP_CONVEX_OPT)
+	assert_eq(solution.size(), 0)
+
+	Engine.print_error_messages = true

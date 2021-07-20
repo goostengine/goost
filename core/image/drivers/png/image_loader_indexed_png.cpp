@@ -203,8 +203,7 @@ Error ImageLoaderIndexedPNG::load_image(Ref<Image> p_image, FileAccess *f, bool 
 }
 
 void ImageLoaderIndexedPNG::get_recognized_extensions(List<String> *p_extensions) const {
-	// TODO: can't detect whether a PNG image is indexed only by extension...
-	// p_extensions->push_back("png");
+	// There's no way to know whether a PNG image is indexed only by extension, sorry.
 }
 
 struct PNGReadStatus {

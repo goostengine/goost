@@ -92,9 +92,13 @@ func test_save_gif_animated_rotation_custom_indexed():
 	assert_eq(err, OK)
 
 
-# TODO: enable once error printing can be disabled.
-# func test_image_frames_invalid_data():
-# 	var frames = ImageFrames.new()
-# 	frames.get_frame_image(-20)
-# 	frames.load(".", 4)
-# 	frames.load_gif_from_buffer(PoolByteArray([]), -31)
+func test_image_frames_invalid_data():
+	Engine.print_error_messages = false
+
+	var frames = ImageFrames.new()
+	frames.get_frame_image(-20)
+	frames.load(".", 4)
+	frames.load_gif_from_buffer(PoolByteArray([]), -31)
+	assert_eq(frames.get_frame_count(), 0)
+
+	Engine.print_error_messages = true

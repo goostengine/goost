@@ -591,10 +591,8 @@ func test_list_inside_list_node__via_manual_value_set():
 	var n = list.front
 	n.value = new_list
 
-	# FIXME: the following doesn't work, throws an error:
-	# 'Invalid set index 'front' (on base: 'LinkedList') with value of type 'ListNode'.'
-	# Despite the fact that `new_list` is NOT a `ListNode`,
-	# and the referenced `front` property is incorrect (the above works).
+	# FIXME: the following doesn't work, throws an error.
+	# See https://github.com/goostengine/goost/issues/17
 	#
 	# list.front.value = new_list
 
@@ -625,15 +623,17 @@ func test_cleanup():
 	assert_freed(list, "List")
 
 
-# TODO: cannot test for now in automated manner, need to be able to disable error
-# printing first, which is not possible to do via GDScript.
-#
-# Prepend "Test" to the class name in order to run these.
-class InvalidData extends "res://addons/gut/test.gd":
+class TestInvalidData extends "res://addons/gut/test.gd":
 	var list: LinkedList
+
+	func before_all():
+		Engine.print_error_messages = false
 
 	func before_each():
 		list = LinkedList.new()
+
+	func after_all():
+		Engine.print_error_messages = true
 
 	# Goost fails on null rather than pushing to back.
 	# See https://github.com/godotengine/godot/issues/42116.
@@ -650,29 +650,44 @@ class InvalidData extends "res://addons/gut/test.gd":
 		assert_eq(list.back.value, Color.blue)
 
 	func test_swap():
-		list.swap(ClassDB.instance("ListNode"), ClassDB.instance("ListNode"))
-		list.swap(null, ClassDB.instance("ListNode"))
-		list.swap(ClassDB.instance("ListNode"), null)
+		var node_a = ListNode.new()
+		var node_b = ListNode.new()
+		list.swap(node_a, node_b)
+		list.swap(null, node_b)
+		list.swap(node_a, null)
+		assert_true(list.empty())
+		node_a.free()
+		node_b.free()
 
-	func test_stuff3():
-		var _n = list.insert_before(null, Array([]))
-		_n = list.insert_after(ClassDB.instance("ListNode"), Array([]))
-
-	# TODO: Should memdelete(this) or prevent with ERR_FAIL_COND?
-	# func test_list_node_erase_not_exists():
-	# 	var n = ClassDB.instance("ListNode")
-	# 	node.erase()
-	# 	node.set_value("1769126663") # GDScript parser error Attempted to run on null instance.
+	func test_insert_before_after():
+		var n = list.insert_before(null, Array([]))
+		assert_null(n)
+		var node = ListNode.new()
+		n = list.insert_after(node, Array([]))
+		node.free()
+		assert_null(n)
+		assert_true(list.empty())
 
 	func test_move_to_front():
 		list.move_to_front(null)
-		list.move_to_front(ClassDB.instance("ListNode"))
+		var node = ListNode.new()
+		list.move_to_front(node)
+		node.free()
+		assert_true(list.empty())
 
 	func test_move_to_back():
 		list.move_to_back(null)
-		list.move_to_back(ClassDB.instance("ListNode"))
+		var node = ListNode.new()
+		list.move_to_back(node)
+		node.free()
+		assert_true(list.empty())
 
 	func test_move_before():
 		list.move_before(null, null)
-		list.move_before(null, ClassDB.instance("ListNode"))
-		list.move_before(ClassDB.instance("ListNode"), null)
+		var node_a = ListNode.new()
+		list.move_before(null, node_a)
+		node_a.free()
+		var node_b = ListNode.new()
+		list.move_before(node_b, null)
+		node_b.free()
+		assert_true(list.empty())

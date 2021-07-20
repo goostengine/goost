@@ -146,11 +146,12 @@ func test_choice():
 	var ch = rng.choice("Goost")
 	assert_eq(ch, "G")
 
-	# Should not crash.
-	# TODO: there's no way to disable error printing in the editor yet:
-	# https://github.com/godotengine/godot-proposals/issues/1763
-	# assert_null(rng.choice(""))
-	# assert_null(rng.choice([]))
+	Engine.print_error_messages = false
+
+	assert_null(rng.choice(""))
+	assert_null(rng.choice([]))
+
+	Engine.print_error_messages = true
 
 
 func test_shuffle_array():
