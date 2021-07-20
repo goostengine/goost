@@ -35,13 +35,15 @@ if env["goost_image_enabled"]:
 
     leptonica_sources = [Glob("leptonica/" + f) for f in leptonica_sources]
     env_leptonica.add_source_files(env.modules_sources, leptonica_sources)
-    
+
     if env_goost["target"] in ["debug", "release_debug"]:
         env_leptonica.Prepend(CPPDEFINES=["DEBUG"])
+        # Print warning and higher messages, no info messages.
+        env_leptonica.Prepend(CPPDEFINES=[("MINIMUM_SEVERITY", "4")])
     if env_goost["target"] != "debug":
         env_leptonica.Prepend(CPPDEFINES=["NO_CONSOLE_IO"])
     env_leptonica.disable_warnings()
-    
+
     # Exoquant
     env_thirdparty.add_source_files(env.modules_sources, "exoquant/*.c")
     # HQX
