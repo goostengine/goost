@@ -77,8 +77,22 @@ if __name__ == "__main__":
 
     elif args.tool.startswith("test"):
         print("Running Goost tests ...")
-        test_args = [godot_bin, "--path", "tests/project", "-d", "-s",
+
+        import atexit
+        import time
+
+        time_start = time.time()
+
+        def print_time_elapsed():
+            time_elapsed_sec = round(time.time() - time_start, 3)
+            time_ms = round((time_elapsed_sec % 1) * 1000)
+            print(f"[Time elapsed: {time.strftime('%H:%M:%S', time.gmtime(time_elapsed_sec))}.{time_ms:03}]")
+
+        atexit.register(print_time_elapsed)
+
+        test_args = [godot_bin, "--path", "tests/project", "--fixed-fps", "15", "-d", "-s",
                 os.path.join(base_path, "tests/project/addons/gut/gut_cmdln.gd")]
+
         if args.test_file:
             # Reset `-gdir`, otherwise all scripts are going to be collected
             # recursively from the directory defined in `.gutconfig.json`.
@@ -90,6 +104,7 @@ if __name__ == "__main__":
             # Not exiting on failure only makes sense while running in
             # windowed mode, this does not matter for console output.
             test_args.append("-gexit=true")
+
         ret = run(test_args, windowed=args.windowed, verbose=args.verbose)
         sys.exit(ret)
 

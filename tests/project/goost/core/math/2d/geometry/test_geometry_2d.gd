@@ -189,8 +189,6 @@ func test_pixel_line():
 
 func test_pixel_circle():
 	var circle = GoostGeometry2D.pixel_circle(16)
-	# for i in circle.size():
-		# gut.p("%s: %s" % [i, circle[i]])
 	assert_eq(circle.size(), 96)
 	assert_eq(circle[0], Vector2(16, 0))
 	assert_eq(circle[3], Vector2(16, 0))

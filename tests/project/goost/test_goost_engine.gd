@@ -71,12 +71,12 @@ func test_defer_call():
 	var m = Counter.new()
 	assert_eq(m.counter, 0)
 
-	for i in 100:
+	for i in 10:
 		GoostEngine.defer_call(m, "inc")
 
 	assert_eq(m.counter, 0)
 	yield(get_tree(), "physics_frame") # Make it flush calls.
-	assert_eq(m.counter, 100)
+	assert_eq(m.counter, 10)
 
 
 func test_defer_call_unique():
@@ -87,11 +87,11 @@ func test_defer_call_unique():
 	yield(get_tree(), "physics_frame") # Make it flush calls.
 	assert_eq(m.counter, 1)
 
-	for i in 100:
+	for i in 10:
 		GoostEngine.defer_call_unique(m, "inc")
 	yield(get_tree(), "physics_frame") # Make it flush calls.
 	assert_eq(m.counter, 2)
-	assert_ne(m.counter, 101)
+	assert_ne(m.counter, 11)
 
 	GoostEngine.defer_call_unique(m, "inc")
 	GoostEngine.defer_call_unique(m, "inc_custom", 10)
@@ -110,20 +110,20 @@ func test_invoke_delay():
 	var m = Counter.new()
 	assert_eq(m.counter, 0)
 
-	var state: InvokeState = GoostEngine.invoke(m, "inc", 0.5)
+	var state: InvokeState = GoostEngine.invoke(m, "inc", 0.25)
 	assert_eq(state.target, m)
 	assert_eq(state.method, "inc")
 	assert_true(state.is_active())
 	assert_false(state.is_repeating())
 
-	yield(get_tree().create_timer(0.25), "timeout")
+	yield(get_tree().create_timer(0.125), "timeout")
 	assert_eq(m.counter, 0)
-	assert_almost_eq(state.time_left, 0.25, get_process_delta_time() * 2)
-	yield(get_tree().create_timer(0.25), "timeout")
+	assert_almost_eq(state.time_left, 0.125, get_process_delta_time() * 2)
+	yield(get_tree().create_timer(0.125), "timeout")
 	assert_eq(m.counter, 1)
 
-	state = GoostEngine.invoke_deferred(m, "inc", 0.25)
-	# Since it's deferred, it may not take exactly 0.25 seconds.
+	state = GoostEngine.invoke_deferred(m, "inc", 0.125)
+	# Since it's deferred, it may not take exactly 0.125 seconds.
 	yield(state, "completed")
 	assert_eq(m.counter, 2)
 
@@ -132,18 +132,18 @@ func test_invoke_repeating():
 	var m = Counter.new()
 	assert_eq(m.counter, 0)
 
-	var state: InvokeState = GoostEngine.invoke(m, "inc", 0.5, 0.1)
+	var state: InvokeState = GoostEngine.invoke(m, "inc", 0.2, 0.1)
 	assert_true(state.is_repeating())
-	# 0.5 for delay, 0.5 for total time.
-	yield(get_tree().create_timer(0.5 + 0.5), "timeout")
-	assert_eq(m.counter, 5)
+	# 0.2 for delay, 0.2 for total time.
+	yield(get_tree().create_timer(0.2 + 0.2), "timeout")
+	assert_eq(m.counter, 2)
 
 	yield(state, "pre_call")
-	assert_eq(m.counter, 5)
+	assert_eq(m.counter, 2)
 
-	for i in 5:
+	for i in 4:
 		yield(state, "post_call")
-	assert_eq(m.counter, 10)
+	assert_eq(m.counter, 6)
 
 	state.cancel()
 
@@ -156,8 +156,9 @@ func test_invoke_repeating():
 	assert_not_null(state) # We still hold a reference inside test script.
 	assert_true(GoostEngine.get_invokes().empty())
 
-	state = GoostEngine.invoke_deferred(m, "inc", 0.5, 0.1)
+	state = GoostEngine.invoke_deferred(m, "inc", 0.2, 0.1)
 	assert_eq(state, GoostEngine.get_invokes().back())
-	yield(get_tree().create_timer(0.5 + 0.5), "timeout")
-	assert_eq(m.counter, 15)
+
+	yield(get_tree().create_timer(0.2 + 0.2), "timeout")
+	assert_eq(m.counter, 8)
 	state.cancel()
