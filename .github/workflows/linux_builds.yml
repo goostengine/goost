@@ -232,7 +232,7 @@ jobs:
         env:
           SCONS_CACHE: ${{github.workspace}}/.scons_cache/
         run: |
-          scons platform=server tools=yes target=debug debug_symbols=yes goost_components_enabled=yes
+          scons platform=server tools=yes target=debug debug_symbols=yes tests=yes use_asan=yes goost_components_enabled=yes 
 
       - name: Run unit tests
         run: |
