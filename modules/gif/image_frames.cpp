@@ -2,8 +2,8 @@
 
 #include "core/os/file_access.h"
 
-#include "goost/core/image/image_indexed.h"
 #include "goost/classes_enabled.gen.h"
+#include "goost/core/image/image_indexed.h"
 
 #include <gif_lib.h>
 
@@ -54,6 +54,7 @@ Error ImageFrames::save_gif(const String &p_filepath, int p_color_count) {
 	GifFileType *gif = EGifOpen(f, save_gif_func, &error);
 	if (!gif) {
 		ERR_PRINT(vformat("EGifOpen() failed - %s", error));
+		memdelete(f);
 		return ERR_CANT_CREATE;
 	}
 
@@ -79,7 +80,7 @@ Error ImageFrames::save_gif(const String &p_filepath, int p_color_count) {
 		const Ref<Image> &frame = get_frame_image(i);
 		const float delay = get_frame_delay(i); // Seconds.
 
-		// Generate color map.
+		// Prepare indexed image and generate palette.
 		Ref<ImageIndexed> indexed = frame;
 		if (indexed.is_null()) {
 			indexed.instance();
@@ -92,26 +93,26 @@ Error ImageFrames::save_gif(const String &p_filepath, int p_color_count) {
 			ERR_FAIL_COND_V_MSG(!indexed->has_palette(), ERR_CANT_CREATE,
 					"Custom ImageIndexed passed to ImagesFrames must have palette already generated.");
 		}
+
+		// Generate GIF color map.
 		PoolVector<uint8_t> color_map = indexed->get_palette_data();
-		ColorMapObject *cmap = nullptr;
+		ColorMapObject *gif_color_map = nullptr;
 		{
 			PoolVector<uint8_t>::Read r = color_map.read();
 			GifColorType *gif_colors = (GifColorType *)malloc(sizeof(GifColorType) * indexed->get_palette_size());
+			const int pixel_size = Image::get_format_pixel_size(indexed->get_format());
+
 			for (int j = 0; j < indexed->get_palette_size(); ++j) {
-				gif_colors[j].Red = r[j * 4 + 0];
-				gif_colors[j].Green = r[j * 4 + 1];
-				gif_colors[j].Blue = r[j * 4 + 2];
+				gif_colors[j].Red = r[j * pixel_size + 0];
+				gif_colors[j].Green = r[j * pixel_size + 1];
+				gif_colors[j].Blue = r[j * pixel_size + 2];
 			}
-			cmap = GifMakeMapObject(indexed->get_palette_size(), gif_colors);
+			gif_color_map = GifMakeMapObject(indexed->get_palette_size(), gif_colors);
+			ERR_FAIL_NULL_V(gif_color_map, ERR_CANT_CREATE);
+
+			free((GifColorType *)gif_colors);
 		}
-		// Create raster.
-		PoolVector<uint8_t> index_data = indexed->get_index_data();
-		GifByteType *raster = nullptr;
-		{
-			PoolVector<uint8_t>::Read r = index_data.read();
-			raster = (GifByteType *)malloc(index_data.size());
-			memcpy(raster, r.ptr(), index_data.size());
-		}
+
 		// Add delay.
 		if (get_frame_count() > 1) {
 			EGifPutExtensionLeader(gif, GRAPHICS_EXT_FUNC_CODE);
@@ -127,9 +128,15 @@ Error ImageFrames::save_gif(const String &p_filepath, int p_color_count) {
 		}
 
 		// Write!
-		if (EGifPutImageDesc(gif, 0, 0, frame->get_width(), frame->get_height(), false, cmap) == GIF_ERROR) {
+		if (EGifPutImageDesc(gif, 0, 0, frame->get_width(), frame->get_height(), false, gif_color_map) == GIF_ERROR) {
+			GifFreeMapObject(gif_color_map);
 			return ERR_CANT_CREATE;
 		}
+		GifFreeMapObject(gif_color_map);
+
+		PoolVector<uint8_t> index_data = indexed->get_index_data();
+		PoolVector<uint8_t>::Write w = index_data.write();
+		GifPixelType *raster = static_cast<GifPixelType *>(w.ptr());
 
 		for (int j = 0; j < frame->get_height(); j++) {
 			if (EGifPutLine(gif, raster + j * frame->get_width(), frame->get_width()) == GIF_ERROR) {
@@ -153,7 +160,9 @@ Error ImageFrames::save_gif(const String &p_filepath, int p_color_count) {
 	}
 
 	EGifCloseFile(gif, &error);
-
+	if (f) {
+		memdelete(f);
+	}
 	return OK;
 }
 #endif // GOOST_ImageIndexed
