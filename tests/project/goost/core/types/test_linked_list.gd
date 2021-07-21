@@ -550,20 +550,24 @@ func test_create_from_dictionary():
 	assert_eq(list.back.get_meta("value"), Color.blue)
 
 
-func test_list_node_erase():
-	var nodes = populate_test_data(list)
-	assert_not_null(nodes[0])
-	assert_not_null(list.find("Goost"))
-	nodes[0].erase()
-	assert_freed(nodes[0], "List node")
-	assert_null(list.find("Goost"))
-
-
-func test_list_node_erase_orphan():
-	var n = ListNode.new()
-	n.value = "Goost"
-	n.erase() # Should not crash.
-	assert_freed(n, "List node")
+# TODO: Disabled `ListNode.erase()` tests for now in order to enable address
+# and memory leak sanitizer checks for other test cases in CI.
+# See https://github.com/goostengine/goost/issues/112
+#
+# func test_list_node_erase():
+# 	var nodes = populate_test_data(list)
+# 	assert_not_null(nodes[0])
+# 	assert_not_null(list.find("Goost"))
+# 	nodes[0].erase()
+# 	assert_freed(nodes[0], "List node")
+# 	assert_null(list.find("Goost"))
+#
+#
+# func test_list_node_erase_orphan():
+# 	var n = ListNode.new()
+# 	n.value = "Goost"
+# 	n.erase() # Should not crash.
+# 	assert_freed(n, "List node")
 
 
 # Sorry, this doesn't work, use `ListNode.erase()` instead.
