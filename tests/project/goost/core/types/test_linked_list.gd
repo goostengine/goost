@@ -189,6 +189,8 @@ func test_clear():
 	assert_null(list.find("Goost"))
 	assert_null(list.find(37))
 	assert_null(list.find(Color.blue))
+	# Should not crash, must have ListData still available.
+	var _n = list.push_back("It's alive!")
 
 
 func test_next():

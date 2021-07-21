@@ -78,7 +78,7 @@ ListNode *LinkedList::push_back(const Variant &value) {
 }
 
 void LinkedList::pop_back() {
-	if (_data && _data->last) {
+	if (_data->last) {
 		remove(_data->last);
 	}
 }
@@ -104,7 +104,7 @@ ListNode *LinkedList::push_front(const Variant &value) {
 }
 
 void LinkedList::pop_front() {
-	if (_data && _data->first) {
+	if (_data->first) {
 		remove(_data->first);
 	}
 }
@@ -168,16 +168,12 @@ ListNode *LinkedList::insert_before(ListNode *p_node, const Variant &p_value) {
 }
 
 bool LinkedList::remove(ListNode *p_I) {
-	if (_data && p_I) {
+	if (p_I) {
 		bool ret = _data->erase(p_I);
-		if (_data->size_cache == 0) {
-			memdelete(_data);
-			_data = nullptr;
-		}
 		return ret;
 	}
 	return false;
-};
+}
 
 ListNode *LinkedList::find(const Variant &p_value) {
 	ListNode *it = get_front();
