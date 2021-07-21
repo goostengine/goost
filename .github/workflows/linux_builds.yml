@@ -213,26 +213,26 @@ jobs:
         env:
           SCONS_CACHE: ${{github.workspace}}/.scons_cache/
         run: |
-          scons platform=server tools=yes target=debug debug_symbols=yes goost_core_enabled=no
+          scons platform=server tools=yes target=debug debug_symbols=yes tests=yes use_asan=yes use_lsan=yes use_ubsan=yes goost_core_enabled=no
 
       - name: Compilation (goost_editor_enabled=no)
         env:
           SCONS_CACHE: ${{github.workspace}}/.scons_cache/
         run: |
-          scons platform=server tools=yes target=debug debug_symbols=yes goost_editor_enabled=no
+          scons platform=server tools=yes target=debug debug_symbols=yes tests=yes use_asan=yes use_lsan=yes use_ubsan=yes goost_editor_enabled=no
 
       - name: Compilation (goost_scene_enabled=no)
         env:
           SCONS_CACHE: ${{github.workspace}}/.scons_cache/
         run: |
-          scons platform=server tools=yes target=debug debug_symbols=yes goost_scene_enabled=no
+          scons platform=server tools=yes target=debug debug_symbols=yes tests=yes use_asan=yes use_lsan=yes use_ubsan=yes goost_scene_enabled=no
 
       # Should be run last, must run all unit tests afterwards.
       - name: Compilation (goost_components_enabled=yes)
         env:
           SCONS_CACHE: ${{github.workspace}}/.scons_cache/
         run: |
-          scons platform=server tools=yes target=debug debug_symbols=yes goost_components_enabled=yes
+          scons platform=server tools=yes target=debug debug_symbols=yes tests=yes use_asan=yes use_lsan=yes use_ubsan=yes goost_components_enabled=yes 
 
       - name: Run unit tests
         run: |
