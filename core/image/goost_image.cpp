@@ -186,6 +186,7 @@ void GoostImage::rotate(Ref<Image> p_image, real_t p_angle, bool p_expand) {
 	const bool hq = type == L_ROTATE_AREA_MAP;
 
 	PIX *pix_out = pixRotate(pix_in, p_angle, type, L_BRING_IN_BLACK, w, h);
+	pixDestroy(&pix_in);
 
 	image_copy_from_pix(p_image, pix_out, hq ? false : true);
 	pixDestroy(&pix_out);
@@ -193,26 +194,35 @@ void GoostImage::rotate(Ref<Image> p_image, real_t p_angle, bool p_expand) {
 
 void GoostImage::rotate_90(Ref<Image> p_image, Direction p_direction) {
 	PIX *pix_in = pix_create_from_image(p_image);
+
 	PIX *pix_out = pixRotate90(pix_in, static_cast<int>(p_direction));
+	pixDestroy(&pix_in);
+
 	image_copy_from_pix(p_image, pix_out);
 	pixDestroy(&pix_out);
 }
 
 void GoostImage::rotate_180(Ref<Image> p_image) {
 	PIX *pix_in = pix_create_from_image(p_image);
+
 	PIX *pix_out = pixRotate180(nullptr, pix_in);
+	pixDestroy(&pix_in);
+
 	image_copy_from_pix(p_image, pix_out);
 	pixDestroy(&pix_out);
 }
 
 void GoostImage::binarize(Ref<Image> p_image, real_t p_threshold, bool p_invert) {
 	PIX *pix_in = pix_create_from_image(p_image);
+	
 	PIX *pix_bin = nullptr;
 	if (p_threshold < 0) {
 		pix_bin = pixConvertTo1Adaptive(pix_in);
 	} else {
 		pix_bin = pixConvertTo1(pix_in, uint8_t(CLAMP(p_threshold * 255.0, 0, 255)));
 	}
+	pixDestroy(&pix_in);
+
 	const l_uint32 val0 = p_invert ? 0 : 0xffffffff;
 	const l_uint32 val1 = p_invert ? 0xffffffff : 0;
 
@@ -261,6 +271,7 @@ void GoostImage::morph(Ref<Image> p_image, MorphOperation p_op, Size2i p_kernel_
 		}
 	}
 	PIX *pix_morph = pixColorMorph(pix_in, type, hs, vs);
+	pixDestroy(&pix_in);
 
 	image_copy_from_pix(p_image, pix_morph, false);
 	pixDestroy(&pix_morph);
@@ -366,10 +377,14 @@ Ref<Image> GoostImage::repeat(const Ref<Image> &p_image, const Size2i &p_count, 
 
 Point2 GoostImage::get_centroid(const Ref<Image> &p_image) {
 	PIX *pix_in = pix_create_from_image(p_image);
+
 	PIX *pix_bin = pixConvertTo8(pix_in, 0);
+	pixDestroy(&pix_in);
+
 	l_float32 x, y;
 	pixCentroid(pix_bin, nullptr, nullptr, &x, &y);
 	pixDestroy(&pix_bin);
+
 	return Point2(static_cast<real_t>(x), static_cast<real_t>(y));
 }
 
