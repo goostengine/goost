@@ -22,6 +22,13 @@ jobs:
         with:
           submodules: recursive
 
+      # Azure repositories are not reliable, prevent Azure giving packages.
+      - name: Make apt sources.list use the default Ubuntu repositories
+        run: |
+          sudo rm -f /etc/apt/sources.list.d/*
+          sudo cp -f misc/ci/sources.list /etc/apt/sources.list
+          sudo apt-get update
+
       - name: Configure dependencies
         run: |
           sudo apt-get install build-essential pkg-config libx11-dev libxcursor-dev \
@@ -81,6 +88,13 @@ jobs:
         with:
           submodules: recursive
 
+      # Azure repositories are not reliable, prevent Azure giving packages.
+      - name: Make apt sources.list use the default Ubuntu repositories
+        run: |
+          sudo rm -f /etc/apt/sources.list.d/*
+          sudo cp -f misc/ci/sources.list /etc/apt/sources.list
+          sudo apt-get update
+
       - name: Configure dependencies
         run: |
           sudo apt-get install build-essential pkg-config libx11-dev libxcursor-dev \
@@ -138,6 +152,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      # Azure repositories are not reliable, prevent Azure giving packages.
+      - name: Make apt sources.list use the default Ubuntu repositories
+        run: |
+          sudo rm -f /etc/apt/sources.list.d/*
+          sudo cp -f misc/ci/sources.list /etc/apt/sources.list
+          sudo apt-get update
+
       - name: Configure dependencies
         run: |
           sudo apt-get install build-essential pkg-config libx11-dev libxcursor-dev \
@@ -179,6 +200,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+
+      # Azure repositories are not reliable, prevent Azure giving packages.
+      - name: Make apt sources.list use the default Ubuntu repositories
+        run: |
+          sudo rm -f /etc/apt/sources.list.d/*
+          sudo cp -f misc/ci/sources.list /etc/apt/sources.list
+          sudo apt-get update
 
       - name: Configure dependencies
         run: |
