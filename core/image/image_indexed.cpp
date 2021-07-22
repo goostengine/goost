@@ -406,24 +406,25 @@ Error ImageIndexed::load_indexed_png(const String &p_path) {
 	Error err;
 	PoolVector<uint8_t> buffer;
 
-	FileAccess *fr = FileAccess::open(p_path, FileAccess::READ, &err);
-	if (!fr) {
+	FileAccess *f = FileAccess::open(p_path, FileAccess::READ, &err);
+	if (!f) {
 		ERR_PRINT("Error opening file: " + p_path);
 		return err;
 	}
 
-	int len = fr->get_len();
+	int len = f->get_len();
 	buffer.resize(len);
 	PoolVector<uint8_t>::Write w = buffer.write();
 	uint8_t *png = w.ptr();
-	fr->get_buffer(png, len);
+	f->get_buffer(png, len);
 
 	if (_indexed_png_mem_loader_func) {
 		Ref<ImageIndexed> img = _indexed_png_mem_loader_func(png, len);
 		copy_internals_from(img);
 		create_indexed_from_data(img->get_palette_data(), img->get_index_data());
 	}
-	memdelete(fr);
+	f->close();
+	memdelete(f);
 
 	return err;
 }

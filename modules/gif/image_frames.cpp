@@ -49,12 +49,12 @@ Error ImageFrames::save_gif(const String &p_filepath, int p_color_count) {
 	int error;
 
 	FileAccess *f = FileAccess::open(p_filepath, FileAccess::WRITE);
-	ERR_FAIL_COND_V(!f, ERR_CANT_OPEN);
+	ERR_FAIL_COND_V_MSG(!f, ERR_CANT_OPEN, "Error opening file.");
 
 	GifFileType *gif = EGifOpen(f, save_gif_func, &error);
 	if (!gif) {
-		ERR_PRINT(vformat("EGifOpen() failed - %s", error));
 		memdelete(f);
+		ERR_PRINT(vformat("EGifOpen() failed - %s.", error));
 		return ERR_CANT_CREATE;
 	}
 
@@ -158,11 +158,11 @@ Error ImageFrames::save_gif(const String &p_filepath, int p_color_count) {
 		EGifPutExtensionBlock(gif, 3, sub);
 		EGifPutExtensionTrailer(gif);
 	}
-
+	// Write out the GIF file.
 	EGifCloseFile(gif, &error);
-	if (f) {
-		memdelete(f);
-	}
+	f->close();
+	memdelete(f);
+
 	return OK;
 }
 #endif // GOOST_ImageIndexed

@@ -87,14 +87,14 @@ Error ResourceImporterAnimatedTexture::import(const String &p_source_file, const
 	const int frame_count = MIN(image_frames->get_frame_count(), max_frames);
 
 	FileAccess *f = FileAccess::open(p_save_path + ".atex", FileAccess::WRITE);
-	ERR_FAIL_COND_V(!f, ERR_CANT_OPEN);
+	ERR_FAIL_COND_V_MSG(!f, ERR_CANT_OPEN, "Error opening file for writing.");
 
 	const uint8_t header[4] = { 'G', 'D', 'A', 'T' };
 	f->store_buffer(header, 4); // Godot Animated Texture.
 	f->store_32(tex_flags);
 	f->store_32(frame_count);
 
-	// We already assume image frames already contains at least one frame,
+	// We already assume `ImageFrames` already contains at least one frame,
 	// and that all frames have the same size.
 	f->store_32(image_frames->get_frame_image(0)->get_width());
 	f->store_32(image_frames->get_frame_image(0)->get_height());

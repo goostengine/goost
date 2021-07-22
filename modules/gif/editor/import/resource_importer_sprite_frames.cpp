@@ -87,7 +87,7 @@ Error ResourceImporterSpriteFrames::import(const String &p_source_file, const St
 	const int frame_count = MIN(image_frames->get_frame_count(), max_frames);
 
 	FileAccess *f = FileAccess::open(p_save_path + ".sframes", FileAccess::WRITE);
-	ERR_FAIL_COND_V(!f, ERR_CANT_OPEN);
+	ERR_FAIL_COND_V_MSG(!f, ERR_CANT_OPEN, "Error opening file for writing.");
 
 	const uint8_t header[4] = { 'G', 'D', 'S', 'F' };
 	f->store_buffer(header, 4); // GoDot Sprite Frames.

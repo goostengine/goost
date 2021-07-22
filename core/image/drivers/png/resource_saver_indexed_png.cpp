@@ -44,7 +44,7 @@ Error ResourceSaverIndexedPNG::save_image(const String &p_path, const Ref<ImageI
 	png_infop info_ptr;
 	png_bytep *row_pointers;
 
-	/* initialize stuff */
+	// Initialize.
 	png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
 
 	ERR_FAIL_COND_V(!png_ptr, ERR_CANT_CREATE);
@@ -56,17 +56,18 @@ Error ResourceSaverIndexedPNG::save_image(const String &p_path, const Ref<ImageI
 	if (setjmp(png_jmpbuf(png_ptr))) {
 		ERR_FAIL_V(ERR_CANT_OPEN);
 	}
-	//change this
+
 	Error err;
 	FileAccess *f = FileAccess::open(p_path, FileAccess::WRITE, &err);
-	if (err) {
-		ERR_FAIL_V(err);
+	if (err != OK) {
+		ERR_FAIL_V_MSG(err, "Cannot open file.");
 	}
-
 	png_set_write_fn(png_ptr, f, _write_png_data, NULL);
 
-	/* write header */
+	// Write header.
 	if (setjmp(png_jmpbuf(png_ptr))) {
+		f->close();
+		memdelete(f);
 		ERR_FAIL_V(ERR_CANT_OPEN);
 	}
 
@@ -135,7 +136,7 @@ Error ResourceSaverIndexedPNG::save_image(const String &p_path, const Ref<ImageI
 				ERR_FAIL_V_MSG(ERR_UNAVAILABLE, "Cannot save indexed PNG image, unsupported format");
 			}
 		}
-		// RGB
+		// RGB channels.
 		int palette_size = p_img->get_palette_size();
 		png_palette = (png_color *)png_malloc(png_ptr, palette_size * sizeof(png_color));
 
@@ -148,7 +149,7 @@ Error ResourceSaverIndexedPNG::save_image(const String &p_path, const Ref<ImageI
 		}
 		png_set_PLTE(png_ptr, info_ptr, png_palette, palette_size);
 
-		// Alpha
+		// Alpha channel.
 		if (has_alpha) {
 			ERR_FAIL_COND_V(format != Image::FORMAT_RGBA8, ERR_BUG);
 
@@ -162,38 +163,36 @@ Error ResourceSaverIndexedPNG::save_image(const String &p_path, const Ref<ImageI
 	}
 	png_write_info(png_ptr, info_ptr);
 
-	/* write bytes */
+	// Write data.
 	if (setjmp(png_jmpbuf(png_ptr))) {
+		f->close();
 		memdelete(f);
 		ERR_FAIL_V(ERR_CANT_OPEN);
 	}
 
 	PoolVector<uint8_t>::Read r;
-
 	if (has_palette) {
 		r = p_img->get_index_data().read();
 	} else {
 		r = img->get_data().read();
 	}
-
 	row_pointers = (png_bytep *)memalloc(sizeof(png_bytep) * h);
 	for (int i = 0; i < h; i++) {
 		row_pointers[i] = (png_bytep)&r[i * w * cs];
 	}
 	png_write_image(png_ptr, row_pointers);
-
 	memfree(row_pointers);
 
-	/* end write */
 	if (setjmp(png_jmpbuf(png_ptr))) {
+		f->close();
 		memdelete(f);
 		ERR_FAIL_V(ERR_CANT_OPEN);
 	}
-
 	png_write_end(png_ptr, NULL);
+	f->close();
 	memdelete(f);
 
-	/* cleanup heap allocation */
+	// Cleanup.
 	png_destroy_write_struct(&png_ptr, &info_ptr);
 	png_free(png_ptr, png_palette);
 	png_free(png_ptr, png_palette_alpha);
