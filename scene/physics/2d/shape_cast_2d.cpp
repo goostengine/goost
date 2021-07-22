@@ -64,11 +64,11 @@ bool ShapeCast2D::is_colliding() const {
 }
 
 Object *ShapeCast2D::get_collider(int p_idx) const {
-	ERR_FAIL_INDEX_V_MSG(p_idx, result.size(), NULL, "No collider found.");
+	ERR_FAIL_INDEX_V_MSG(p_idx, result.size(), nullptr, "No collider found.");
 
-	if (result[p_idx].collider_id == 0)
-		return NULL;
-
+	if (result[p_idx].collider_id == 0) {
+		return nullptr;
+	}
 	return ObjectDB::get_instance(result[p_idx].collider_id);
 }
 
@@ -96,7 +96,7 @@ real_t ShapeCast2D::get_closest_collision_unsafe_distance() const {
 }
 
 Object *ShapeCast2D::get_closest_collider() const {
-	ERR_FAIL_COND_V_MSG(result.empty(), NULL, "Shape cast has not collided with anything yet.");
+	ERR_FAIL_COND_V_MSG(result.empty(), nullptr, "Shape cast has not collided with anything yet.");
 	return ObjectDB::get_instance(result[0].collider_id);
 }
 
@@ -118,10 +118,12 @@ Vector2 ShapeCast2D::get_closest_collision_normal() const {
 void ShapeCast2D::set_enabled(bool p_enabled) {
 	enabled = p_enabled;
 	update();
-	if (is_inside_tree() && !Engine::get_singleton()->is_editor_hint())
+	if (is_inside_tree() && !Engine::get_singleton()->is_editor_hint()) {
 		set_physics_process_internal(p_enabled);
-	if (!p_enabled)
+	}
+	if (!p_enabled) {
 		collided = false;
+	}
 }
 
 bool ShapeCast2D::is_enabled() const {
@@ -142,19 +144,20 @@ Ref<Shape2D> ShapeCast2D::get_shape() const {
 }
 
 void ShapeCast2D::set_exclude_parent_body(bool p_exclude_parent_body) {
-	if (exclude_parent_body == p_exclude_parent_body)
+	if (exclude_parent_body == p_exclude_parent_body) {
 		return;
-
+	}
 	exclude_parent_body = p_exclude_parent_body;
 
-	if (!is_inside_tree())
+	if (!is_inside_tree()) {
 		return;
-
+	}
 	if (Object::cast_to<CollisionObject2D>(get_parent())) {
-		if (exclude_parent_body)
+		if (exclude_parent_body) {
 			exclude.insert(Object::cast_to<CollisionObject2D>(get_parent())->get_rid());
-		else
+		} else {
 			exclude.erase(Object::cast_to<CollisionObject2D>(get_parent())->get_rid());
+		}
 	}
 }
 
@@ -165,22 +168,23 @@ bool ShapeCast2D::get_exclude_parent_body() const {
 void ShapeCast2D::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_ENTER_TREE: {
-			if (enabled && !Engine::get_singleton()->is_editor_hint())
+			if (enabled && !Engine::get_singleton()->is_editor_hint()) {
 				set_physics_process_internal(true);
-			else
+			} else {
 				set_physics_process_internal(false);
-
+			}
 			if (Object::cast_to<CollisionObject2D>(get_parent())) {
-				if (exclude_parent_body)
+				if (exclude_parent_body) {
 					exclude.insert(Object::cast_to<CollisionObject2D>(get_parent())->get_rid());
-				else
+				} else {
 					exclude.erase(Object::cast_to<CollisionObject2D>(get_parent())->get_rid());
+				}
 			}
 		} break;
 		case NOTIFICATION_EXIT_TREE: {
-			if (enabled)
+			if (enabled) {
 				set_physics_process_internal(false);
-
+			}
 		} break;
 
 		case NOTIFICATION_DRAW: {
@@ -227,8 +231,9 @@ void ShapeCast2D::_notification(int p_what) {
 #endif
 		} break;
 		case NOTIFICATION_INTERNAL_PHYSICS_PROCESS: {
-			if (!enabled)
+			if (!enabled) {
 				break;
+			}
 			_update_shapecast_state();
 		} break;
 	}
@@ -287,8 +292,9 @@ void ShapeCast2D::add_exception_rid(const RID &p_rid) {
 void ShapeCast2D::add_exception(const Object *p_object) {
 	ERR_FAIL_NULL(p_object);
 	const CollisionObject2D *co = Object::cast_to<CollisionObject2D>(p_object);
-	if (!co)
+	if (!co) {
 		return;
+	}
 	add_exception_rid(co->get_rid());
 }
 
@@ -299,8 +305,9 @@ void ShapeCast2D::remove_exception_rid(const RID &p_rid) {
 void ShapeCast2D::remove_exception(const Object *p_object) {
 	ERR_FAIL_NULL(p_object);
 	const CollisionObject2D *co = Object::cast_to<CollisionObject2D>(p_object);
-	if (!co)
+	if (!co) {
 		return;
+	}
 	remove_exception_rid(co->get_rid());
 }
 
@@ -354,7 +361,6 @@ String ShapeCast2D::get_configuration_warning() const {
 		}
 		warning += TTR("This node cannot interact with other objects unless a Shape2D is assigned.");
 	}
-
 	return warning;
 }
 

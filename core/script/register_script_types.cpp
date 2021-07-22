@@ -12,7 +12,7 @@
 
 namespace goost {
 
-static MixinScriptLanguage *script_mixin_script = NULL;
+static MixinScriptLanguage *script_mixin_script = nullptr;
 
 #if defined(TOOLS_ENABLED) && defined(GOOST_MixinScript)
 static ScriptEditorBase *create_editor(const RES &p_resource) {

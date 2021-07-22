@@ -32,7 +32,7 @@ Dictionary GoostEngine::get_version_info() const {
 
 static Array array_from_info(const char *const *info_list) {
 	Array arr;
-	for (int i = 0; info_list[i] != NULL; i++) {
+	for (int i = 0; info_list[i] != nullptr; i++) {
 		arr.push_back(info_list[i]);
 	}
 	return arr;

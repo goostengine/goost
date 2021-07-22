@@ -45,7 +45,7 @@ Error ResourceSaverIndexedPNG::save_image(const String &p_path, const Ref<ImageI
 	png_bytep *row_pointers;
 
 	// Initialize.
-	png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+	png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr);
 
 	ERR_FAIL_COND_V(!png_ptr, ERR_CANT_CREATE);
 
@@ -62,7 +62,7 @@ Error ResourceSaverIndexedPNG::save_image(const String &p_path, const Ref<ImageI
 	if (err != OK) {
 		ERR_FAIL_V_MSG(err, "Cannot open file.");
 	}
-	png_set_write_fn(png_ptr, f, _write_png_data, NULL);
+	png_set_write_fn(png_ptr, f, _write_png_data, nullptr);
 
 	// Write header.
 	if (setjmp(png_jmpbuf(png_ptr))) {
@@ -117,8 +117,8 @@ Error ResourceSaverIndexedPNG::save_image(const String &p_path, const Ref<ImageI
 			PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE);
 
 	// Prepare palette
-	png_colorp png_palette = NULL;
-	png_bytep png_palette_alpha = NULL;
+	png_colorp png_palette = nullptr;
+	png_bytep png_palette_alpha = nullptr;
 
 	if (has_palette) {
 		PoolVector<uint8_t>::Read r = p_img->get_palette_data().read();
@@ -158,7 +158,7 @@ Error ResourceSaverIndexedPNG::save_image(const String &p_path, const Ref<ImageI
 				png_bytep a = &png_palette_alpha[i];
 				*a = r[i * ps + 3];
 			}
-			png_set_tRNS(png_ptr, info_ptr, png_palette_alpha, palette_size, NULL);
+			png_set_tRNS(png_ptr, info_ptr, png_palette_alpha, palette_size, nullptr);
 		}
 	}
 	png_write_info(png_ptr, info_ptr);
@@ -188,7 +188,7 @@ Error ResourceSaverIndexedPNG::save_image(const String &p_path, const Ref<ImageI
 		memdelete(f);
 		ERR_FAIL_V(ERR_CANT_OPEN);
 	}
-	png_write_end(png_ptr, NULL);
+	png_write_end(png_ptr, nullptr);
 	f->close();
 	memdelete(f);
 

@@ -4,8 +4,8 @@
 
 const int ImageIndexed::MAX_PALETTE_SIZE = 256;
 
-ImageIndexedMemLoadFunc ImageIndexed::_indexed_png_mem_loader_func = NULL;
-SaveIndexedPNGFunc ImageIndexed::save_indexed_png_func = NULL;
+ImageIndexedMemLoadFunc ImageIndexed::_indexed_png_mem_loader_func = nullptr;
+SaveIndexedPNGFunc ImageIndexed::save_indexed_png_func = nullptr;
 
 Error ImageIndexed::create_indexed(int p_num_palette_entries) {
 	ERR_FAIL_COND_V(empty(), ERR_UNCONFIGURED);
@@ -430,7 +430,7 @@ Error ImageIndexed::load_indexed_png(const String &p_path) {
 }
 
 Error ImageIndexed::save_indexed_png(const String &p_path) const {
-	if (save_indexed_png_func == NULL)
+	if (save_indexed_png_func == nullptr)
 		return ERR_UNAVAILABLE;
 
 	return save_indexed_png_func(p_path, Ref<ImageIndexed>((ImageIndexed *)this));

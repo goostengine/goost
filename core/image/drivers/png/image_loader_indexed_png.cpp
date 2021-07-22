@@ -38,20 +38,20 @@ Error ImageLoaderIndexedPNG::_load_image(void *rf_up, png_rw_ptr p_func, Ref<Ima
 	png_structp png;
 	png_infop info;
 
-	png = png_create_read_struct_2(PNG_LIBPNG_VER_STRING, (png_voidp)NULL, _png_error_function, _png_warn_function, (png_voidp)NULL,
+	png = png_create_read_struct_2(PNG_LIBPNG_VER_STRING, (png_voidp)nullptr, _png_error_function, _png_warn_function, (png_voidp)nullptr,
 			_png_malloc_fn, _png_free_fn);
 
 	ERR_FAIL_COND_V(!png, ERR_OUT_OF_MEMORY);
 
 	info = png_create_info_struct(png);
 	if (!info) {
-		png_destroy_read_struct(&png, NULL, NULL);
+		png_destroy_read_struct(&png, nullptr, nullptr);
 		ERR_PRINT("Out of Memory");
 		return ERR_OUT_OF_MEMORY;
 	}
 
 	if (setjmp(png_jmpbuf(png))) {
-		png_destroy_read_struct(&png, NULL, NULL);
+		png_destroy_read_struct(&png, nullptr, nullptr);
 		ERR_PRINT("PNG Corrupted");
 		return ERR_FILE_CORRUPT;
 	}
@@ -62,11 +62,11 @@ Error ImageLoaderIndexedPNG::_load_image(void *rf_up, png_rw_ptr p_func, Ref<Ima
 	int depth, color;
 
 	png_read_info(png, info);
-	png_get_IHDR(png, info, &width, &height, &depth, &color, NULL, NULL, NULL);
+	png_get_IHDR(png, info, &width, &height, &depth, &color, nullptr, nullptr, nullptr);
 
 	bool update_info = false;
 
-	png_colorp png_palette = NULL;
+	png_colorp png_palette = nullptr;
 	int palette_size = 0;
 
 	if (png_get_valid(png, info, PNG_INFO_PLTE)) {
@@ -84,17 +84,17 @@ Error ImageLoaderIndexedPNG::_load_image(void *rf_up, png_rw_ptr p_func, Ref<Ima
 		update_info = true;
 	}
 
-	png_bytep png_palette_alpha = NULL;
+	png_bytep png_palette_alpha = nullptr;
 	int palette_alpha_size = 0;
 
 	if (png_get_valid(png, info, PNG_INFO_tRNS)) {
-		png_get_tRNS(png, info, &png_palette_alpha, &palette_alpha_size, NULL);
+		png_get_tRNS(png, info, &png_palette_alpha, &palette_alpha_size, nullptr);
 		update_info = true;
 	}
 
 	if (update_info) {
 		png_read_update_info(png, info);
-		png_get_IHDR(png, info, &width, &height, &depth, &color, NULL, NULL, NULL);
+		png_get_IHDR(png, info, &width, &height, &depth, &color, nullptr, nullptr, nullptr);
 	}
 
 	int components = 0;
@@ -123,7 +123,7 @@ Error ImageLoaderIndexedPNG::_load_image(void *rf_up, png_rw_ptr p_func, Ref<Ima
 		} break;
 		default: {
 			ERR_PRINT("INVALID PNG TYPE");
-			png_destroy_read_struct(&png, &info, NULL);
+			png_destroy_read_struct(&png, &info, nullptr);
 			return ERR_UNAVAILABLE;
 		} break;
 	}
@@ -151,7 +151,7 @@ Error ImageLoaderIndexedPNG::_load_image(void *rf_up, png_rw_ptr p_func, Ref<Ima
 
 	if (color == PNG_COLOR_TYPE_PALETTE) {
 		// Loaded data are indices
-		ERR_FAIL_COND_V_MSG(png_palette == NULL, ERR_BUG, "Expected to extract PNG palette, got none.");
+		ERR_FAIL_COND_V_MSG(png_palette == nullptr, ERR_BUG, "Expected to extract PNG palette, got none.");
 
 		PoolVector<uint8_t> palette_data;
 		palette_data.resize(palette_size * 4);
@@ -187,7 +187,7 @@ Error ImageLoaderIndexedPNG::_load_image(void *rf_up, png_rw_ptr p_func, Ref<Ima
 		p_image->create(width, height, 0, fmt, dstbuff);
 	}
 
-	png_destroy_read_struct(&png, &info, NULL);
+	png_destroy_read_struct(&png, &info, nullptr);
 
 	return OK;
 }

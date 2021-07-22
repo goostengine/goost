@@ -3,7 +3,7 @@
 
 #include "modules/modules_enabled.gen.h"
 
-_GoostImage *_GoostImage::singleton = NULL;
+_GoostImage *_GoostImage::singleton = nullptr;
 
 void _GoostImage::replace_color(Ref<Image> p_image, const Color &p_color, const Color &p_with_color) {
 	GoostImage::replace_color(p_image, p_color, p_with_color);
