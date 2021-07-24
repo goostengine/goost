@@ -1,7 +1,7 @@
 #ifndef GOOST_GEOMETRY_POLY_BOOLEAN_H
 #define GOOST_GEOMETRY_POLY_BOOLEAN_H
 
-#include "core/reference.h"
+#include "core/resource.h"
 #include "../poly_node_2d.h"
 
 class PolyBoolean2D;
@@ -111,8 +111,8 @@ protected:
 
 VARIANT_ENUM_CAST(_PolyBoolean2D::Operation);
 
-class PolyBooleanParameters2D : public Reference {
-	GDCLASS(PolyBooleanParameters2D, Reference);
+class PolyBooleanParameters2D : public Resource {
+	GDCLASS(PolyBooleanParameters2D, Resource);
 
 public:
 	enum FillRule {
@@ -134,22 +134,22 @@ protected:
 	static void _bind_methods();
 
 public:
-	void set_subject_fill_rule(FillRule p_subject_fill_rule) { subject_fill_rule = p_subject_fill_rule; }
+	void set_subject_fill_rule(FillRule p_subject_fill_rule);
 	FillRule get_subject_fill_rule() const { return subject_fill_rule; }
 
-	void set_clip_fill_rule(FillRule p_clip_fill_rule) { clip_fill_rule = p_clip_fill_rule; }
+	void set_clip_fill_rule(FillRule p_clip_fill_rule);
 	FillRule get_clip_fill_rule() const { return clip_fill_rule; }
 
-	void set_subject_open(bool p_subject_open) { subject_open = p_subject_open; }
+	void set_subject_open(bool p_subject_open);
 	bool is_subject_open() const { return subject_open; }
 
-	void set_reverse_solution(bool p_reverse_solution) { reverse_solution = p_reverse_solution; }
+	void set_reverse_solution(bool p_reverse_solution);
 	bool is_reverse_solution() const { return reverse_solution; }
 
-	void set_strictly_simple(bool p_strictly_simple) { strictly_simple = p_strictly_simple; }
+	void set_strictly_simple(bool p_strictly_simple);
 	bool is_strictly_simple() const { return strictly_simple; }
 
-	void set_preserve_collinear(bool p_preserve_collinear) { preserve_collinear = p_preserve_collinear; }
+	void set_preserve_collinear(bool p_preserve_collinear);
 	bool is_preserve_collinear() const { return preserve_collinear; }
 
 	void reset() {

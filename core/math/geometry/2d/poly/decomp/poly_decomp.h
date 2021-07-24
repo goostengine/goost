@@ -1,7 +1,7 @@
 #ifndef GOOST_GEOMETRY_POLY_DECOMP_H
 #define GOOST_GEOMETRY_POLY_DECOMP_H
 
-#include "core/reference.h"
+#include "core/resource.h"
 
 class PolyDecomp2D;
 class PolyDecompParameters2D;
@@ -100,8 +100,8 @@ protected:
 
 VARIANT_ENUM_CAST(_PolyDecomp2D::Decomposition);
 
-class PolyDecompParameters2D : public Reference {
-	GDCLASS(PolyDecompParameters2D, Reference);
+class PolyDecompParameters2D : public Resource {
+	GDCLASS(PolyDecompParameters2D, Resource);
 
 public:
 	enum FillRule {
@@ -120,7 +120,7 @@ protected:
 	static void _bind_methods();
 
 public:
-	void set_fill_rule(FillRule p_fill_rule) { fill_rule = p_fill_rule; }
+	void set_fill_rule(FillRule p_fill_rule);
 	FillRule get_fill_rule() const { return fill_rule; }
 
 	void reset() {

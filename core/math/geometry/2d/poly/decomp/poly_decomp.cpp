@@ -34,6 +34,11 @@ Vector<Vector<Point2>> PolyDecomp2DBackend::decompose_polygons(const Vector<Vect
 	return polys;
 }
 
+void PolyDecompParameters2D::set_fill_rule(FillRule p_fill_rule) {
+	fill_rule = p_fill_rule;
+	emit_changed();
+}
+
 Vector<Vector<Point2>> PolyDecomp2D::triangulate_polygons(const Vector<Vector<Point2>> &p_polygons, const Ref<PolyDecompParameters2D> &p_parameters) {
 	backend->set_parameters(p_parameters);
 	return backend->triangulate_mono(p_polygons);
@@ -141,5 +146,5 @@ void PolyDecompParameters2D::_bind_methods() {
 	BIND_ENUM_CONSTANT(FILL_RULE_POSITIVE);
 	BIND_ENUM_CONSTANT(FILL_RULE_NEGATIVE);
 
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "fill_rule"), "set_fill_rule", "get_fill_rule");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "fill_rule", PROPERTY_HINT_ENUM, "Even-odd,Non-zero,Positive,Negative"), "set_fill_rule", "get_fill_rule");
 }

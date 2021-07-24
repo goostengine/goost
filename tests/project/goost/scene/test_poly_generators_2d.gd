@@ -34,3 +34,35 @@ func test_rectangle():
 	assert_true(GoostGeometry2D.point_in_polygon(Vector2(128, 0), rectangle) as bool)
 
 	n.queue_free()
+
+
+func test_poly_path():
+	var np = Path2D.new()
+	var c = np.get_curve()
+	c.add_point(Vector2(0, 0))
+	c.add_point(Vector2(100, 100))
+
+	var n = PolyPath2D.new()
+	n.add_child(np)
+	add_child_autofree(n)
+
+	n.buffer_offset = 32.0
+	var params = PolyOffsetParameters2D.new()
+	params.join_type = PolyOffsetParameters2D.JOIN_ROUND
+	params.end_type = PolyOffsetParameters2D.END_ROUND
+	n.buffer_parameters = params
+
+	var outlines = n.build_outlines()
+	assert_false(outlines.empty())
+
+	var deflated = outlines[0]
+	var control = [
+		Vector2(-31, 0),
+		Vector2(0, 0),
+		Vector2(0, -31),
+		Vector2(100 - 31, 100),
+		Vector2(100, 100),
+		Vector2(100, 100 - 31),
+	]
+	for p in control:
+		assert_true(GoostGeometry2D.point_in_polygon(p, deflated) as bool)

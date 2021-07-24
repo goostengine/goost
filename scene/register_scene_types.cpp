@@ -9,6 +9,7 @@ void register_scene_types() {
 #if defined(GOOST_GEOMETRY_ENABLED) && defined(GOOST_PolyNode2D)
 	goost::register_class<PolyCircle2D>();
 	goost::register_class<PolyRectangle2D>();
+	goost::register_class<PolyPath2D>();
 	goost::register_class<PolyShape2D>();
 #endif
 	goost::register_class<Stopwatch>();
