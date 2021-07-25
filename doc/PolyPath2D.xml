@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="PolyPath2D" inherits="PolyNode2D" version="3.4">
+	<brief_description>
+		Turns [Path2D] into a buffered path.
+	</brief_description>
+	<description>
+		Generates a buffered outline defined by curves added with [Path2D]. The [PolyPath2D] must have at least one [Path2D] added as a child with [Curve2D] defined. The process of curve deflation is done via [PolyOffset2D] internally, so you can use [member buffer_parameters] to configure offsetting behavior.
+		[b]Note:[/b] the class makes sure that changes to [Curve2D] in [Path2D] lead to automatic updates in [PolyPath2D] using internal process callback on each idle frame. If you'd like to optimize the updating behavior, you can turn off internal processing using [method Node.set_process_internal] method.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+	</methods>
+	<members>
+		<member name="buffer_offset" type="float" setter="set_buffer_offset" getter="get_buffer_offset" default="32.0">
+			Determines the width of a deflated curve, which is [code]width = buffer_offset * 2[/code].
+		</member>
+		<member name="buffer_parameters" type="PolyOffsetParameters2D" setter="set_buffer_parameters" getter="get_buffer_parameters">
+			Configures offset parameters such as join type, end type, miter limit.
+		</member>
+		<member name="tessellation_stages" type="int" setter="set_tessellation_stages" getter="get_tessellation_stages" default="5">
+			The number of subdivisions a curve segment may face before it is considered approximate enough. Decrease the default value if you want to improve decomposition performance in sacrifice of accuracy. For more information, see [method Curve2D.tessellate].
+		</member>
+		<member name="tessellation_tolerance_degrees" type="float" setter="set_tessellation_tolerance_degrees" getter="get_tessellation_tolerance_degrees" default="4.0">
+			Controls how many degrees the midpoint of a segment may deviate from the real curve, before the segment has to be subdivided. Increase the default value if you want to improve decomposition performance in sacrifice of accuracy. For more information, see [method Curve2D.tessellate].
+		</member>
+	</members>
+	<constants>
+	</constants>
+</class>

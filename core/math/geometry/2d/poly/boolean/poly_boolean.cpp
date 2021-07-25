@@ -12,6 +12,36 @@ void PolyBoolean2DBackend::set_parameters(const Ref<PolyBooleanParameters2D> &p_
 	}
 }
 
+void PolyBooleanParameters2D::set_subject_fill_rule(FillRule p_subject_fill_rule) {
+	subject_fill_rule = p_subject_fill_rule;
+	emit_changed();
+}
+
+void PolyBooleanParameters2D::set_clip_fill_rule(FillRule p_clip_fill_rule) {
+	clip_fill_rule = p_clip_fill_rule;
+	emit_changed();
+}
+
+void PolyBooleanParameters2D::set_subject_open(bool p_subject_open) {
+	subject_open = p_subject_open;
+	emit_changed();
+}
+
+void PolyBooleanParameters2D::set_reverse_solution(bool p_reverse_solution) {
+	reverse_solution = p_reverse_solution;
+	emit_changed();
+}
+
+void PolyBooleanParameters2D::set_strictly_simple(bool p_strictly_simple) {
+	strictly_simple = p_strictly_simple;
+	emit_changed();
+}
+
+void PolyBooleanParameters2D::set_preserve_collinear(bool p_preserve_collinear) {
+	preserve_collinear = p_preserve_collinear;
+	emit_changed();
+}
+
 Vector<Vector<Point2>> PolyBoolean2D::merge_polygons(const Vector<Vector<Point2>> &p_polygons_a, const Vector<Vector<Point2>> &p_polygons_b, const Ref<PolyBooleanParameters2D> &p_parameters) {
 	backend->set_parameters(p_parameters);
 	backend->get_parameters()->subject_open = false;
@@ -252,14 +282,19 @@ void _PolyBoolean2D::_bind_methods() {
 void PolyBooleanParameters2D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_subject_fill_rule", "subject_fill_rule"), &PolyBooleanParameters2D::set_subject_fill_rule);
 	ClassDB::bind_method(D_METHOD("get_subject_fill_rule"), &PolyBooleanParameters2D::get_subject_fill_rule);
+
 	ClassDB::bind_method(D_METHOD("set_clip_fill_rule", "clip_fill_rule"), &PolyBooleanParameters2D::set_clip_fill_rule);
 	ClassDB::bind_method(D_METHOD("get_clip_fill_rule"), &PolyBooleanParameters2D::get_clip_fill_rule);
+
 	ClassDB::bind_method(D_METHOD("set_subject_open", "subject_open"), &PolyBooleanParameters2D::set_subject_open);
 	ClassDB::bind_method(D_METHOD("is_subject_open"), &PolyBooleanParameters2D::is_subject_open);
+
 	ClassDB::bind_method(D_METHOD("set_reverse_solution", "reverse_solution"), &PolyBooleanParameters2D::set_reverse_solution);
 	ClassDB::bind_method(D_METHOD("is_reverse_solution"), &PolyBooleanParameters2D::is_reverse_solution);
+
 	ClassDB::bind_method(D_METHOD("set_strictly_simple", "strictly_simple"), &PolyBooleanParameters2D::set_strictly_simple);
 	ClassDB::bind_method(D_METHOD("is_strictly_simple"), &PolyBooleanParameters2D::is_strictly_simple);
+
 	ClassDB::bind_method(D_METHOD("set_preserve_collinear", "preserve_collinear"), &PolyBooleanParameters2D::set_preserve_collinear);
 	ClassDB::bind_method(D_METHOD("is_preserve_collinear"), &PolyBooleanParameters2D::is_preserve_collinear);
 
@@ -268,8 +303,8 @@ void PolyBooleanParameters2D::_bind_methods() {
 	BIND_ENUM_CONSTANT(FILL_RULE_POSITIVE);
 	BIND_ENUM_CONSTANT(FILL_RULE_NEGATIVE);
 
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "subject_fill_rule"), "set_subject_fill_rule", "get_subject_fill_rule");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "clip_fill_rule"), "set_clip_fill_rule", "get_clip_fill_rule");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "subject_fill_rule", PROPERTY_HINT_ENUM, "Even-odd,Non-zero,Positive,Negative"), "set_subject_fill_rule", "get_subject_fill_rule");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "clip_fill_rule", PROPERTY_HINT_ENUM, "Even-odd,Non-zero,Positive,Negative"), "set_clip_fill_rule", "get_clip_fill_rule");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "subject_open"), "set_subject_open", "is_subject_open");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "reverse_solution"), "set_reverse_solution", "is_reverse_solution");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "strictly_simple"), "set_strictly_simple", "is_strictly_simple");

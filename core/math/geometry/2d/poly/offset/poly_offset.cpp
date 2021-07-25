@@ -36,6 +36,26 @@ Vector<Vector<Point2>> PolyOffset2D::deflate_polylines(const Vector<Vector<Point
 	return backend->offset_polypaths(p_polylines, p_delta);
 }
 
+void PolyOffsetParameters2D::set_join_type(JoinType p_join_type) {
+	join_type = p_join_type;
+	emit_changed();
+}
+
+void PolyOffsetParameters2D::set_end_type(EndType p_end_type) {
+	end_type = p_end_type;
+	emit_changed();
+}
+
+void PolyOffsetParameters2D::set_arc_tolerance(real_t p_arc_tolerance) {
+	arc_tolerance = p_arc_tolerance;
+	emit_changed();
+}
+
+void PolyOffsetParameters2D::set_miter_limit(real_t p_miter_limit) {
+	miter_limit = p_miter_limit;
+	emit_changed();
+}
+
 // BIND
 
 _PolyOffset2D *_PolyOffset2D::singleton = nullptr;
@@ -116,21 +136,25 @@ void _PolyOffset2D::_bind_methods() {
 void PolyOffsetParameters2D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_join_type", "join_type"), &PolyOffsetParameters2D::set_join_type);
 	ClassDB::bind_method(D_METHOD("get_join_type"), &PolyOffsetParameters2D::get_join_type);
+
 	ClassDB::bind_method(D_METHOD("set_end_type", "end_type"), &PolyOffsetParameters2D::set_end_type);
 	ClassDB::bind_method(D_METHOD("get_end_type"), &PolyOffsetParameters2D::get_end_type);
+
 	ClassDB::bind_method(D_METHOD("set_arc_tolerance", "arc_tolerance"), &PolyOffsetParameters2D::set_arc_tolerance);
 	ClassDB::bind_method(D_METHOD("get_arc_tolerance"), &PolyOffsetParameters2D::get_arc_tolerance);
+
 	ClassDB::bind_method(D_METHOD("set_miter_limit", "miter_limit"), &PolyOffsetParameters2D::set_miter_limit);
 	ClassDB::bind_method(D_METHOD("get_miter_limit"), &PolyOffsetParameters2D::get_miter_limit);
 
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "join_type"), "set_join_type", "get_join_type");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "end_type"), "set_end_type", "get_end_type");
-	ADD_PROPERTY(PropertyInfo(Variant::REAL, "arc_tolerance"), "set_arc_tolerance", "get_arc_tolerance");
-	ADD_PROPERTY(PropertyInfo(Variant::REAL, "miter_limit"), "set_miter_limit", "get_miter_limit");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "join_type", PROPERTY_HINT_ENUM, "Square,Round,Miter"), "set_join_type", "get_join_type");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "end_type", PROPERTY_HINT_ENUM, "Polygon,Joined,Butt,Square,Round"), "set_end_type", "get_end_type");
+	ADD_PROPERTY(PropertyInfo(Variant::REAL, "arc_tolerance", PROPERTY_HINT_RANGE, "0.01,5.0,0.01,or_greater"), "set_arc_tolerance", "get_arc_tolerance");
+	ADD_PROPERTY(PropertyInfo(Variant::REAL, "miter_limit", PROPERTY_HINT_RANGE, "0.1,10.0,0.1,or_greater"), "set_miter_limit", "get_miter_limit");
 
 	BIND_ENUM_CONSTANT(JOIN_SQUARE);
 	BIND_ENUM_CONSTANT(JOIN_ROUND);
 	BIND_ENUM_CONSTANT(JOIN_MITER);
+
 	BIND_ENUM_CONSTANT(END_POLYGON);
 	BIND_ENUM_CONSTANT(END_JOINED);
 	BIND_ENUM_CONSTANT(END_BUTT);

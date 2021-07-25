@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="PolyDecompParameters2D" inherits="Reference" version="3.4">
+<class name="PolyDecompParameters2D" inherits="Resource" version="3.4">
 	<brief_description>
 		A set of parameters to configure polygon partitioning methods in [PolyDecomp2D].
 	</brief_description>

@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 ### Added
 - Built-in implementation of Git version control plugin.
 - An experimental support for cross-language mixin using `MixinScript` (aka `MultiScript`).
+- A `PolyPath2D` node, which takes `Path2D` nodes to buffer curves into polygons.
 - A `Stopwatch` node, which complements Godot's `Timer` node.
 - A `ImageFrames.save_gif()` method which allows to save both static and animated GIF images.
 - A `geometry` option/component, which is separate from `math` now.
@@ -20,6 +21,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 ### Changed
 - Refactor the process of configuring components and classes. You can use `python goost.py config` to configure components and individual classes now.
 - Moved `PolyCollisionShape2D` class to the `physics` component.
+- Converted `PolyBoolean/Offset/Decomp2D` classes into `Resource`s, as needed by `PolyPath2D`.
 - Updated third-party image libraries.
 
 ### Fixed
@@ -28,6 +30,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 - Out of memory error when calling `GoostGeometry2D.simplify_polyline()` with `epsilon = 0`.
 - Crashes while decomposing empty polygons with `PolyDecomp2D` when using `polypartition` geometry backend.
 - Crash when attempting to load invalid GIF data from buffer using `ImageFrames.load_gif_from_buffer()`.
+- Memory leaks in the image component.
 
 ## [1.0] - 2021-05-24
 
