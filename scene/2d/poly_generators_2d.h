@@ -61,7 +61,6 @@ protected:
 	void _notification(int p_what);
 	static void _bind_methods();
 	virtual Vector<Vector<Point2>> _build_outlines();
-	void _queue_update() { queue_update(); }
 
 	virtual void add_child_notify(Node *p_child);
 	virtual void remove_child_notify(Node *p_child);

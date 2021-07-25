@@ -10,14 +10,14 @@
 void PolyCircle2D::set_radius(real_t p_radius) {
 	ERR_FAIL_COND(p_radius <= 0);
 	radius = p_radius;
-	queue_update();
+	_queue_update();
 	_change_notify("radius");
 }
 
 void PolyCircle2D::set_max_error(real_t p_max_error) {
 	ERR_FAIL_COND(p_max_error <= 0);
 	max_error = p_max_error;
-	queue_update();
+	_queue_update();
 	_change_notify("max_error");
 }
 
@@ -44,7 +44,7 @@ void PolyRectangle2D::set_extents(const Vector2 &p_extents) {
 	ERR_FAIL_COND(p_extents.x <= 0);
 	ERR_FAIL_COND(p_extents.y <= 0);
 	extents = p_extents;
-	queue_update();
+	_queue_update();
 	_change_notify("extents");
 }
 
@@ -82,7 +82,7 @@ void PolyPath2D::add_child_notify(Node *p_child) {
 	if (curve.is_valid()) {
 		curve->connect(CoreStringNames::get_singleton()->changed, this, "_queue_update");
 	}
-	queue_update();
+	_queue_update();
 }
 
 void PolyPath2D::remove_child_notify(Node *p_child) {
@@ -101,12 +101,12 @@ void PolyPath2D::remove_child_notify(Node *p_child) {
 			curve->disconnect(CoreStringNames::get_singleton()->changed, this, "_queue_update");
 		}
 	}
-	queue_update();
+	_queue_update();
 }
 
 void PolyPath2D::set_buffer_offset(real_t p_buffer_offset) {
 	buffer_offset = MAX(0.0, p_buffer_offset);
-	queue_update();
+	_queue_update();
 	_change_notify("buffer_offset");
 }
 
@@ -121,19 +121,19 @@ void PolyPath2D::set_buffer_parameters(const Ref<PolyOffsetParameters2D> &p_buff
 	if (buffer_parameters.is_valid()) {
 		buffer_parameters->connect(CoreStringNames::get_singleton()->changed, this, "_queue_update");
 	}
-	queue_update();
+	_queue_update();
 	_change_notify("buffer_parameters");
 }
 
 void PolyPath2D::set_tessellation_stages(int p_tessellation_stages) {
 	tessellation_stages = MAX(1, p_tessellation_stages);
-	queue_update();
+	_queue_update();
 	_change_notify("tessellation_stages");
 }
 
 void PolyPath2D::set_tessellation_tolerance_degrees(float p_tessellation_tolerance_degrees) {
 	tessellation_tolerance_degrees = CLAMP(p_tessellation_tolerance_degrees, 0.0f, 180.0f);
-	queue_update();
+	_queue_update();
 	_change_notify("tessellation_tolerance_degrees");
 }
 
@@ -197,7 +197,7 @@ void PolyPath2D::_notification(int p_what) {
 					if (curve_current.is_valid()) {
 						curve_current->connect(CoreStringNames::get_singleton()->changed, this, "_queue_update");
 					}
-					queue_update();
+					_queue_update();
 				}
 			}
 		} break;
@@ -228,8 +228,6 @@ void PolyPath2D::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("set_tessellation_tolerance_degrees", "tessellation_tolerance_degrees"), &PolyPath2D::set_tessellation_tolerance_degrees);
 	ClassDB::bind_method(D_METHOD("get_tessellation_tolerance_degrees"), &PolyPath2D::get_tessellation_tolerance_degrees);
-
-	ClassDB::bind_method(D_METHOD("_queue_update"), &PolyPath2D::_queue_update);
 
 	ADD_GROUP("Buffer", "buffer_");
 	ADD_PROPERTY(PropertyInfo(Variant::REAL, "buffer_offset", PROPERTY_HINT_RANGE, "0.01,256.0,0.01,or_greater"), "set_buffer_offset", "get_buffer_offset");

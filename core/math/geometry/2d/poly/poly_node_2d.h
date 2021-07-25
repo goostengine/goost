@@ -46,6 +46,7 @@ protected:
 	Vector<Vector<Point2>> outlines;
 	void _update_outlines();
 	virtual Vector<Vector<Point2>> _build_outlines();
+	void _queue_update();
 
 public:
 	void set_points(const Vector<Point2> &p_points);
@@ -96,7 +97,6 @@ public:
 	Vector<Vector<Point2>> build_outlines(); // Immediate.
 	Array get_outlines_array();
 	Array build_outlines_array();
-	void queue_update();
 
 	void clear();
 
