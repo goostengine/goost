@@ -2,8 +2,11 @@
 
 #include "core/os/file_access.h"
 
+#include "modules/modules_enabled.gen.h"
+#ifdef MODULE_GOOST_ENABLED
 #include "goost/classes_enabled.gen.h"
 #include "goost/core/image/image_indexed.h"
+#endif
 
 #include <gif_lib.h>
 
