@@ -1,5 +1,4 @@
-#ifndef GOOST_EDITOR_ABOUT_H
-#define GOOST_EDITOR_ABOUT_H
+#pragma once
 
 #include "scene/gui/control.h"
 #include "scene/gui/dialogs.h"
@@ -48,4 +47,3 @@ public:
 	GoostEditorAbout();
 };
 
-#endif // GOOST_EDITOR_ABOUT_H

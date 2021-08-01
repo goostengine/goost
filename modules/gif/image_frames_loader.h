@@ -1,5 +1,4 @@
-#ifndef IMAGE_FRAMES_LOADER_H
-#define IMAGE_FRAMES_LOADER_H
+#pragma once
 
 #include "image_frames.h"
 
@@ -55,4 +54,3 @@ public:
 	virtual String get_resource_type(const String &p_path) const;
 };
 
-#endif // IMAGE_FRAMES_LOADER_H  

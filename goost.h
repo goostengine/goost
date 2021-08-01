@@ -1,5 +1,4 @@
-#ifndef GOOST_H
-#define GOOST_H
+#pragma once
 
 #include "core/goost_engine.h"
 #include "core/image/goost_image.h"
@@ -39,4 +38,3 @@ void register_class() {
 }
 } // namespace goost
 
-#endif // GOOST_H

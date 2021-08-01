@@ -1,5 +1,4 @@
-#ifndef GOOST_IMAGE_INDEXED_H
-#define GOOST_IMAGE_INDEXED_H
+#pragma once
 
 #include "core/image.h"
 
@@ -74,4 +73,3 @@ public:
 
 VARIANT_ENUM_CAST(ImageIndexed::DitherMode)
 
-#endif // GOOST_IMAGE_INDEXED_H

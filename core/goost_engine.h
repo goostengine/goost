@@ -1,5 +1,4 @@
-#ifndef GOOST_ENGINE_H
-#define GOOST_ENGINE_H
+#pragma once
 
 #include "core/object.h"
 #include "scene/main/scene_tree.h"
@@ -50,4 +49,3 @@ public:
 	}
 };
 
-#endif // GOOST_ENGINE_H

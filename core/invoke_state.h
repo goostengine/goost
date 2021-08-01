@@ -1,5 +1,4 @@
-#ifndef INVOKE_STATE_H
-#define INVOKE_STATE_H
+#pragma once
 
 #include "core/reference.h"
 #include "scene/main/scene_tree.h"
@@ -30,4 +29,3 @@ public:
 	real_t get_time_left() { return active ? timer->get_time_left() : 0; }
 };
 
-#endif // INVOKE_STATE_H

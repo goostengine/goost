@@ -1,5 +1,4 @@
-#ifndef GOOST_GRADIENT_TEXTURE_2D
-#define GOOST_GRADIENT_TEXTURE_2D
+#pragma once
 
 #include "scene/resources/texture.h"
 
@@ -72,4 +71,3 @@ public:
 VARIANT_ENUM_CAST(GradientTexture2D::Fill);
 VARIANT_ENUM_CAST(GradientTexture2D::Repeat);
 
-#endif

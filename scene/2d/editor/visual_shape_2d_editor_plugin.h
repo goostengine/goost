@@ -1,5 +1,4 @@
-#ifndef GOOST_VISUAL_SHAPE_2D_EDITOR_PLUGIN_H
-#define GOOST_VISUAL_SHAPE_2D_EDITOR_PLUGIN_H
+#pragma once
 
 #include "editor/plugins/abstract_polygon_2d_editor.h"
 #include "goost/scene/2d/visual_shape_2d.h"
@@ -36,4 +35,3 @@ public:
 	VisualShape2DEditorPlugin(EditorNode *p_node);
 };
 
-#endif // GOOST_VISUAL_SHAPE_2D_EDITOR_PLUGIN_H

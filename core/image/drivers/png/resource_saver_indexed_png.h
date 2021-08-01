@@ -1,5 +1,4 @@
-#ifndef RESOURCE_SAVER_INDEXED_PNG_H
-#define RESOURCE_SAVER_INDEXED_PNG_H
+#pragma once
 
 #include "core/io/resource_saver.h"
 #include "goost/core/image/image_indexed.h"
@@ -15,4 +14,3 @@ public:
 	ResourceSaverIndexedPNG();
 };
 
-#endif // RESOURCE_SAVER_INDEXED_PNG_H

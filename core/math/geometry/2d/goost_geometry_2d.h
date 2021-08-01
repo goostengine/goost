@@ -1,5 +1,4 @@
-#ifndef GOOST_GEOMETRY_2D_H
-#define GOOST_GEOMETRY_2D_H
+#pragma once
 
 #include "core/variant.h"
 
@@ -49,4 +48,3 @@ public:
 	static Vector<Point2i> polygon_to_pixels(const Vector<Point2> &p_points);
 };
 
-#endif // GOOST_GEOMETRY_2D_H

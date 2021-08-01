@@ -1,5 +1,4 @@
-#ifndef GOOST_GIT_API_H
-#define GOOST_GIT_API_H
+#pragma once
 
 // Initial implementation based on Godot's GDNative version of the Git plugin
 // See https://github.com/godotengine/godot-git-plugin.
@@ -66,4 +65,3 @@ public:
 	PopupMenu *get_popup_menu(PopupMenu *p_popup) { return vcs_popup; }
 };
 
-#endif // GOOST_GIT_API_H

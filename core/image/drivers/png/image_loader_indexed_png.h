@@ -1,5 +1,4 @@
-#ifndef IMAGE_LOADER_INDEXED_PNG_H
-#define IMAGE_LOADER_INDEXED_PNG_H
+#pragma once
 
 #include "core/io/image_loader.h"
 #include "goost/core/image/image_indexed.h"
@@ -16,4 +15,3 @@ public:
 	ImageLoaderIndexedPNG();
 };
 
-#endif

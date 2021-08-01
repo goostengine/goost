@@ -1,5 +1,4 @@
-#ifndef GOOST_CLIPPER6_PATH_CONVERT_H
-#define GOOST_CLIPPER6_PATH_CONVERT_H
+#pragma once
 
 #include "core/math/vector2.h"
 #include "core/vector.h"
@@ -26,4 +25,3 @@ void scale_down_polypath(const Path &p_polypath_in, Vector<Point2> &p_polypath_o
 
 } // namespace GodotClipperUtils
 
-#endif // GOOST_CLIPPER6_PATH_CONVERT_H

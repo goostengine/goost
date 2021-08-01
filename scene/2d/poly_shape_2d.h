@@ -1,5 +1,4 @@
-#ifndef POLY_SHAPE_2D_H
-#define POLY_SHAPE_2D_H
+#pragma once
 
 #include "goost/core/math/geometry/2d/poly/poly_node_2d.h"
 
@@ -47,4 +46,3 @@ public:
 
 VARIANT_ENUM_CAST(PolyShape2D::BuildMode);
 
-#endif // POLY_SHAPE_2D_H

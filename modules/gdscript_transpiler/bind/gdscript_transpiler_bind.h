@@ -1,5 +1,4 @@
-#ifndef GDSCRIPT_TRANSPILER_BIND_H
-#define GDSCRIPT_TRANSPILER_BIND_H
+#pragma once
 
 #include "core/object.h"
 #include "gdscript_transpiler.h"
@@ -23,4 +22,3 @@ public:
 	_GDScriptTranspiler();
 };
 
-#endif // GDSCRIPT_TRANSPILER_H

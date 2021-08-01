@@ -1,5 +1,4 @@
-#ifndef GRID_RECT_H
-#define GRID_RECT_H
+#pragma once
 
 #include "core/color.h"
 #include "scene/gui/control.h"
@@ -119,4 +118,3 @@ VARIANT_ENUM_CAST(GridRect::CellOrigin);
 VARIANT_ENUM_CAST(GridRect::Axis);
 VARIANT_ENUM_CAST(GridRect::Line);
 
-#endif // GRID_RECT_H

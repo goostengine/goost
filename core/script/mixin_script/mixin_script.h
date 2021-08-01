@@ -1,5 +1,4 @@
-#ifndef GOOST_MULTISCRIPT_H
-#define GOOST_MULTISCRIPT_H
+#pragma once
 
 // Based on unreleased and subsequently removed MixinScript support
 // in previous versions of Godot: https://github.com/godotengine/godot/pull/8718
@@ -177,4 +176,3 @@ public:
 	int profiling_get_frame_data(ProfilingInfo *p_info_arr, int p_info_max) { return 0; }
 };
 
-#endif // GOOST_MULTISCRIPT_H

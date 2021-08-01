@@ -1,5 +1,4 @@
-#ifndef IMAGE_FRAMES_H
-#define IMAGE_FRAMES_H
+#pragma once
 
 #include "core/image.h"
 
@@ -41,4 +40,3 @@ public:
 	void clear();
 };
 
-#endif // IMAGE_FRAMES_H

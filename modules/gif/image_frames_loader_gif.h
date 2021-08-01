@@ -1,5 +1,4 @@
-#ifndef IMAGE_FRAMES_LOADER_GIF_H
-#define IMAGE_FRAMES_LOADER_GIF_H
+#pragma once
 
 #include "image_frames_loader.h"
 
@@ -32,4 +31,3 @@ public:
 	Error load_from_buffer(Ref<ImageFrames> &r_image_frames, const PoolByteArray &p_data, int max_frames = 0);
 };
 
-#endif // IMAGE_FRAMES_LOADER_GIF_H

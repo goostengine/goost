@@ -1,5 +1,4 @@
-#ifndef GOOST_GEOMETRY_POLY_OFFSET_CLIPPER10
-#define GOOST_GEOMETRY_POLY_OFFSET_CLIPPER10
+#pragma once
 
 #include "../poly_offset.h"
 #include "goost/thirdparty/clipper/clipper_offset.h"
@@ -14,4 +13,3 @@ private:
 	clipperlib::EndType end_type;
 };
 
-#endif // GOOST_GEOMETRY_POLY_OFFSET_CLIPPER10
