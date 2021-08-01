@@ -1,5 +1,4 @@
-#ifndef GOOST_GEOMETRY_2D_BIND_H
-#define GOOST_GEOMETRY_2D_BIND_H
+#pragma once
 
 #include "core/object.h"
 
@@ -55,4 +54,3 @@ public:
 	_GoostGeometry2D();
 };
 
-#endif // GOOST_GEOMETRY_2D_BIND_H

@@ -1,5 +1,4 @@
-#ifndef GOOST_GEOMETRY_POLY_BOOLEAN_H
-#define GOOST_GEOMETRY_POLY_BOOLEAN_H
+#pragma once
 
 #include "core/resource.h"
 #include "../poly_node_2d.h"
@@ -164,4 +163,3 @@ public:
 
 VARIANT_ENUM_CAST(PolyBooleanParameters2D::FillRule);
 
-#endif // GOOST_GEOMETRY_POLY_BOOLEAN_H

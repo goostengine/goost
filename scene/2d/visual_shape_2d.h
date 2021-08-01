@@ -1,5 +1,4 @@
-#ifndef GOOST_VISUAL_SHAPE_2D_H
-#define GOOST_VISUAL_SHAPE_2D_H
+#pragma once
 
 #include "scene/2d/node_2d.h"
 #include "scene/resources/concave_polygon_shape_2d.h"
@@ -49,4 +48,3 @@ public:
 	VisualShape2D(){};
 };
 
-#endif // GOOST_VISUAL_SHAPE_2D_H

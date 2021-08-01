@@ -1,5 +1,4 @@
-#ifndef GDSCRIPT_TRANSPILER_H
-#define GDSCRIPT_TRANSPILER_H
+#pragma once
 
 #include "core/reference.h"
 
@@ -37,4 +36,3 @@ public:
 	virtual Variant transpile(const Ref<GDScript> &p_script) = 0;
 };
 
-#endif // GDSCRIPT_TRANSPILER_H

@@ -1,5 +1,4 @@
-#ifndef FUNC_BUFFER_H
-#define FUNC_BUFFER_H
+#pragma once
 
 #include "core/object.h"
 
@@ -32,4 +31,3 @@ public:
 	}
 };
 
-#endif // FUNC_BUFFER_H

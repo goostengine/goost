@@ -1,5 +1,4 @@
-#ifndef GOOST_GEOMETRY_POLY_BOOLEAN_CLIPPER10
-#define GOOST_GEOMETRY_POLY_BOOLEAN_CLIPPER10
+#pragma once
 
 #include "../poly_boolean.h"
 #include "goost/thirdparty/clipper/clipper.h"
@@ -17,4 +16,3 @@ private:
 	bool subject_open;
 };
 
-#endif // GOOST_GEOMETRY_POLY_BOOLEAN_CLIPPER10

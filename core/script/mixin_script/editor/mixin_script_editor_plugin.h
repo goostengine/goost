@@ -1,5 +1,4 @@
-#ifndef MIXIN_SCRIPT_EDITOR_PLUGIN_H
-#define MIXIN_SCRIPT_EDITOR_PLUGIN_H
+#pragma once
 
 #include "../mixin_script.h"
 
@@ -30,4 +29,3 @@ public:
 	MixinScriptEditorPlugin(EditorNode *p_node);
 };
 
-#endif // MIXIN_SCRIPT_EDITOR_PLUGIN_H

@@ -1,5 +1,4 @@
-#ifndef GOOST_IMAGE_BIND_H
-#define GOOST_IMAGE_BIND_H
+#pragma once
 
 #include "core/image.h"
 
@@ -75,4 +74,3 @@ VARIANT_ENUM_CAST(_GoostImage::MorphOperation);
 VARIANT_ENUM_CAST(_GoostImage::Direction);
 VARIANT_ENUM_CAST(_GoostImage::WrapMode);
 
-#endif

@@ -1,5 +1,4 @@
-#ifndef GOOST_GEOMETRY_POLY_OFFSET_2D_H
-#define GOOST_GEOMETRY_POLY_OFFSET_2D_H
+#pragma once
 
 #include "core/resource.h"
 
@@ -122,4 +121,3 @@ public:
 VARIANT_ENUM_CAST(PolyOffsetParameters2D::JoinType);
 VARIANT_ENUM_CAST(PolyOffsetParameters2D::EndType);
 
-#endif // GOOST_GEOMETRY_POLY_OFFSET_2D_H

@@ -1,5 +1,4 @@
-#ifndef GOOST_POLY_NODE_2D_H
-#define GOOST_POLY_NODE_2D_H
+#pragma once
 
 #include "scene/2d/node_2d.h"
 
@@ -117,4 +116,3 @@ struct VariantCaster<PolyNode2D *> {
 	}
 };
 
-#endif // GOOST_POLY_NODE_2D_H

@@ -1,5 +1,4 @@
-#ifndef GOOST_LIST_H
-#define GOOST_LIST_H
+#pragma once
 
 // Implementation based on Godot's `core/list.h`, which is mostly
 // an instantiation of the `List<Variant>` template class for performance,
@@ -192,4 +191,3 @@ struct VariantCaster<ListNode *> {
 	}
 };
 
-#endif // GOOST_LIST_H

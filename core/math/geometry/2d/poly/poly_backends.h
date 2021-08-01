@@ -1,5 +1,4 @@
-#ifndef GOOST_POLY_BACKENDS_2D_H
-#define GOOST_POLY_BACKENDS_2D_H
+#pragma once
 
 #include "core/project_settings.h"
 
@@ -148,4 +147,3 @@ public:
 	}
 };
 
-#endif // GOOST_POLY_BACKENDS_2D_H

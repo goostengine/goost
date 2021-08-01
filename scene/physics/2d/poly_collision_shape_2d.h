@@ -1,5 +1,4 @@
-#ifndef POLY_COLLISION_SHAPE_2D_H
-#define POLY_COLLISION_SHAPE_2D_H
+#pragma once
 
 #include "scene/2d/collision_object_2d.h"
 #include "goost/scene/2d/poly_shape_2d.h"
@@ -34,4 +33,3 @@ public:
 	PolyCollisionShape2D();
 };
 
-#endif // POLY_COLLISION_SHAPE_2D_H

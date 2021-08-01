@@ -1,5 +1,4 @@
-#ifndef GOOST_GEOMETRY_POLY_DECOMP_CLIPPER10
-#define GOOST_GEOMETRY_POLY_DECOMP_CLIPPER10
+#pragma once
 
 #include "../polypartition/poly_decomp_polypartition.h"
 #include "goost/thirdparty/clipper/clipper_triangulation.h"
@@ -13,4 +12,3 @@ private:
 	clipperlib::FillRule fill_rule;
 };
 
-#endif // GOOST_GEOMETRY_POLY_DECOMP_CLIPPER10

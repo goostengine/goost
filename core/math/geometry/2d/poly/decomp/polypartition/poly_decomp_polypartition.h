@@ -1,5 +1,4 @@
-#ifndef GOOST_GEOMETRY_POLY_DECOMP_POLYPARTITION_H
-#define GOOST_GEOMETRY_POLY_DECOMP_POLYPARTITION_H
+#pragma once
 
 #include "../poly_decomp.h"
 #include "core/reference.h"
@@ -15,4 +14,3 @@ public:
 	virtual Vector<Vector<Point2>> decompose_convex_opt(const Vector<Vector<Point2>> &p_polygons);
 };
 
-#endif // GOOST_GEOMETRY_POLY_DECOMP_POLYPARTITION_H

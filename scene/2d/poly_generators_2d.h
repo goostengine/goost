@@ -1,5 +1,4 @@
-#ifndef GOOST_POLY_GENERATORS_2D_H
-#define GOOST_POLY_GENERATORS_2D_H
+#pragma once
 
 #include "goost/core/math/geometry/2d/poly/poly_node_2d.h"
 #include "goost/core/math/geometry/2d/poly/offset/poly_offset.h"
@@ -89,4 +88,3 @@ public:
 	}
 };
 
-#endif // GOOST_POLY_GENERATORS_2D_H

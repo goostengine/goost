@@ -1,5 +1,4 @@
-#ifndef VARIANT_RESOURCE_PREVIEW_H
-#define VARIANT_RESOURCE_PREVIEW_H
+#pragma once
 
 #include "editor/editor_resource_preview.h"
 #include "../variant_resource.h"
@@ -15,4 +14,3 @@ public:
 	virtual bool can_generate_small_preview() const { return true; };
 };
 
-#endif // VARIANT_RESOURCE_PREVIEW_H

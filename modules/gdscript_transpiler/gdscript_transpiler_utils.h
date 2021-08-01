@@ -1,5 +1,4 @@
-#ifndef GDSCRIPT_TRANSPILER_UTILS_H
-#define GDSCRIPT_TRANSPILER_UTILS_H
+#pragma once
 
 #include "core/string_builder.h"
 #include "core/ustring.h"
@@ -40,4 +39,3 @@ public:
 
 } // namespace GDScriptTranspilerUtils
 
-#endif // GDSCRIPT_TRANSPILER_UTILS_H

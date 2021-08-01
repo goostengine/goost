@@ -1,5 +1,4 @@
-#ifndef GOOST_SHAPE_CAST_2D_H
-#define GOOST_SHAPE_CAST_2D_H
+#pragma once
 
 #include "scene/2d/node_2d.h"
 #include "scene/resources/shape_2d.h"
@@ -93,4 +92,3 @@ public:
 	ShapeCast2D() {};
 };
 
-#endif // GOOST_SHAPE_CAST_2D_H

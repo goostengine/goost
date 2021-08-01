@@ -1,5 +1,4 @@
-#ifndef GOOST_POLY_NODE_2D_EDITOR_PLUGIN_H
-#define GOOST_POLY_NODE_2D_EDITOR_PLUGIN_H
+#pragma once
 
 #include "editor/plugins/abstract_polygon_2d_editor.h"
 #include "goost/core/math/geometry/2d/poly/poly_node_2d.h"
@@ -44,4 +43,3 @@ public:
 	PolyNode2DEditorPlugin(EditorNode *p_node);
 };
 
-#endif // GOOST_POLY_NODE_2D_EDITOR_PLUGIN_H

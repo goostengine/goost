@@ -1,5 +1,4 @@
-#ifndef GOOST_REGISTER_TYPES
-#define GOOST_REGISTER_TYPES
+#pragma once
 
 #include "core/engine.h"
 
@@ -11,4 +10,3 @@
 void register_goost_types();
 void unregister_goost_types();
 
-#endif // GOOST_REGISTER_TYPES

@@ -1,5 +1,4 @@
-#ifndef GOOST_STOPWATCH_H
-#define GOOST_STOPWATCH_H
+#pragma once
 
 #include "scene/main/node.h"
 
@@ -45,4 +44,3 @@ private:
 
 VARIANT_ENUM_CAST(Stopwatch::ProcessMode);
 
-#endif // GOOST_STOPWATCH_H

@@ -1,5 +1,4 @@
-#ifndef GOOST_IMAGE_BLENDER_H
-#define GOOST_IMAGE_BLENDER_H
+#pragma once
 
 #include "core/image.h"
 #include "core/method_bind_ext.gen.inc"
@@ -75,4 +74,3 @@ public:
 VARIANT_ENUM_CAST(ImageBlender::BlendEquation);
 VARIANT_ENUM_CAST(ImageBlender::BlendFactor);
 
-#endif // GOOST_IMAGE_BLENDER_H

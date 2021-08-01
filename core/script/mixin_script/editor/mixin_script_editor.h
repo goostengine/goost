@@ -1,5 +1,4 @@
-#ifndef MIXIN_SCRIPT_EDITOR_H
-#define MIXIN_SCRIPT_EDITOR_H
+#pragma once
 
 #include "../mixin_script.h"
 
@@ -81,4 +80,3 @@ public:
 	~MixinScriptEditor();
 };
 
-#endif // MIXIN_SCRIPT_EDITOR_H

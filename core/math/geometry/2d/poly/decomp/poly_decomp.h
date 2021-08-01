@@ -1,5 +1,4 @@
-#ifndef GOOST_GEOMETRY_POLY_DECOMP_H
-#define GOOST_GEOMETRY_POLY_DECOMP_H
+#pragma once
 
 #include "core/resource.h"
 
@@ -130,4 +129,3 @@ public:
 
 VARIANT_ENUM_CAST(PolyDecompParameters2D::FillRule);
 
-#endif // GOOST_GEOMETRY_POLY_DECOMP_H

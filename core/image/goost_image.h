@@ -1,5 +1,4 @@
-#ifndef GOOST_IMAGE_H
-#define GOOST_IMAGE_H
+#pragma once
 
 #include "core/image.h"
 
@@ -61,4 +60,3 @@ public:
 	static Color get_pixel_average(const Ref<Image> &p_image, const Rect2 &p_rect = Rect2(), const Ref<Image> &p_mask = nullptr);
 };
 
-#endif

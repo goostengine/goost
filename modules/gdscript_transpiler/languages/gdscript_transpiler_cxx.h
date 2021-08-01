@@ -1,5 +1,4 @@
-#ifndef GDSCRIPT_TRANSPILER_CPP_H
-#define GDSCRIPT_TRANSPILER_CPP_H
+#pragma once
 
 #include "gdscript_transpiler.h"
 
@@ -247,4 +246,3 @@ public:
 	~GDScriptTranspilerCpp();
 };
 
-#endif // GDSCRIPT_TRANSPILER_CPP_H

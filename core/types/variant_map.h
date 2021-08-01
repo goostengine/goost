@@ -1,5 +1,4 @@
-#ifndef GOOST_VARIANT_MAP_H
-#define GOOST_VARIANT_MAP_H
+#pragma once
 
 #include "core/resource.h"
 #include "core/variant.h"
@@ -51,4 +50,3 @@ public:
 	virtual String to_string();
 };
 
-#endif // GOOST_VARIANT_MAP_H

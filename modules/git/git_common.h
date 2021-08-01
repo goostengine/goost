@@ -1,5 +1,4 @@
-#ifndef GIT_COMMON_H
-#define GIT_COMMON_H
+#pragma once
 
 #include <git2.h>
 
@@ -9,4 +8,3 @@ extern "C" int diff_line_callback_function(const git_diff_delta *delta, const gi
 
 #define GIT2_CALL(function_call, m_error_msg, m_additional_msg) check_git2_errors(function_call, m_error_msg, m_additional_msg);
 
-#endif // !GIT_COMMON_H

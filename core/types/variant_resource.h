@@ -1,5 +1,4 @@
-#ifndef GOOST_VARIANT_RESOURCE_H
-#define GOOST_VARIANT_RESOURCE_H
+#pragma once
 
 #include "core/resource.h"
 #include "core/variant.h"
@@ -52,4 +51,3 @@ public:
 	}
 };
 
-#endif // GOOST_VARIANT_RESOURCE_H
