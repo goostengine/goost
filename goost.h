@@ -30,11 +30,3 @@
 #include "scene/physics/2d/shape_cast_2d.h"
 #include "scene/resources/gradient_texture_2d.h"
 #include "scene/resources/light_texture.h"
-
-namespace goost {
-template <typename T>
-void register_class() {
-	ClassDB::register_class<T>();
-}
-} // namespace goost
-

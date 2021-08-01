@@ -10,7 +10,7 @@ namespace goost {
 void register_math_types() {
 #ifdef GOOST_Random
 	_random.instance();
-	goost::register_class<Random>();
+	ClassDB::register_class<Random>();
 	Object *random = Object::cast_to<Object>(Random::get_singleton());
 	Engine::get_singleton()->add_singleton(Engine::Singleton("Random", random));
 #endif

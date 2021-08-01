@@ -16,11 +16,11 @@ namespace goost {
 void register_image_types() {
 #ifdef GOOST_GoostImage
 	_goost_image = memnew(_GoostImage);
-	goost::register_class<_GoostImage>();
+	ClassDB::register_class<_GoostImage>();
 	Engine::get_singleton()->add_singleton(Engine::Singleton("GoostImage", _GoostImage::get_singleton()));
 #endif
 #ifdef GOOST_ImageIndexed
-	goost::register_class<ImageIndexed>();
+	ClassDB::register_class<ImageIndexed>();
 
 	image_loader_indexed_png = memnew(ImageLoaderIndexedPNG);
 	ImageLoader::add_image_format_loader(image_loader_indexed_png);
@@ -28,7 +28,7 @@ void register_image_types() {
 	resource_saver_indexed_png.instance();
 	ResourceSaver::add_resource_format_saver(resource_saver_indexed_png);
 #endif
-	goost::register_class<ImageBlender>();
+	ClassDB::register_class<ImageBlender>();
 }
 
 void unregister_image_types() {
