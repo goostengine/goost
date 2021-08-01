@@ -7,18 +7,18 @@ namespace goost {
 
 void register_scene_types() {
 #if defined(GOOST_GEOMETRY_ENABLED) && defined(GOOST_PolyNode2D)
-	goost::register_class<PolyCircle2D>();
-	goost::register_class<PolyRectangle2D>();
-	goost::register_class<PolyPath2D>();
-	goost::register_class<PolyShape2D>();
+	ClassDB::register_class<PolyCircle2D>();
+	ClassDB::register_class<PolyRectangle2D>();
+	ClassDB::register_class<PolyPath2D>();
+	ClassDB::register_class<PolyShape2D>();
 #endif
-	goost::register_class<Stopwatch>();
-	goost::register_class<VisualShape2D>();
-	goost::register_class<GradientTexture2D>();
-	goost::register_class<LightTexture>();
+	ClassDB::register_class<Stopwatch>();
+	ClassDB::register_class<VisualShape2D>();
+	ClassDB::register_class<GradientTexture2D>();
+	ClassDB::register_class<LightTexture>();
 
 #ifdef GOOST_GUI_ENABLED
-	goost::register_class<GridRect>();
+	ClassDB::register_class<GridRect>();
 #endif
 
 #if defined(TOOLS_ENABLED) && defined(GOOST_EDITOR_ENABLED)
