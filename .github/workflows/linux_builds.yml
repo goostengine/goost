@@ -265,3 +265,8 @@ jobs:
       - name: Run unit tests
         run: |
           python run.py --windowed tests
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: godot.goost.server
+          path: godot/bin/*
