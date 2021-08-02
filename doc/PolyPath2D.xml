@@ -18,7 +18,7 @@
 		<member name="buffer_parameters" type="PolyOffsetParameters2D" setter="set_buffer_parameters" getter="get_buffer_parameters">
 			Configures offset parameters such as join type, end type, miter limit.
 		</member>
-		<member name="tessellation_stages" type="int" setter="set_tessellation_stages" getter="get_tessellation_stages" default="5">
+		<member name="tessellation_stages" type="int" setter="set_tessellation_stages" getter="get_tessellation_stages" default="4">
 			The number of subdivisions a curve segment may face before it is considered approximate enough. Decrease the default value if you want to improve decomposition performance in sacrifice of accuracy. For more information, see [method Curve2D.tessellate].
 		</member>
 		<member name="tessellation_tolerance_degrees" type="float" setter="set_tessellation_tolerance_degrees" getter="get_tessellation_tolerance_degrees" default="4.0">
