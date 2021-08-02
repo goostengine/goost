@@ -5,18 +5,11 @@
 	</brief_description>
 	<description>
 		The list node is an elemental building block which represent the entire structure of [LinkedList]s. It has [member next] and [member prev] properties which are assigned whenever a new element is inserted into the list, such as using [method LinkedList.push_back].
-		[b]Warning:[/b] do not use [method Object.free] to remove this node from the list it belongs to (unless it is instantiated manually with [code]ListNode.new()[/code]), call [method erase] instead which allows the list to update neighbor node references as well.
+		You can call [method Object.free] to remove this node from the list it belongs to.
 	</description>
 	<tutorials>
 	</tutorials>
 	<methods>
-		<method name="erase">
-			<return type="void">
-			</return>
-			<description>
-				Erases this node from the [LinkedList] it originates from.
-			</description>
-		</method>
 	</methods>
 	<members>
 		<member name="next" type="ListNode" setter="" getter="get_next">

@@ -24,6 +24,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 - Converted `PolyBoolean/Offset/Decomp2D` classes into `Resource`s, as needed by `PolyPath2D`.
 - Updated third-party image libraries.
 
+### Removed
+- Redundant and buggy `ListNode.erase()` method. You can safely use `ListNode.free()` regardless of whether a node was instantiated manually or via `LinkedList.push_back()`.
+- No longer relevant `LinkedList.remove(ListNode)` method due to the above.
+
 ### Fixed
 - Crashes with `LinkedList` when dealing with invalid data.
   - `insert_before/after(null, value)` no longer pushes front/back an element.

@@ -13,13 +13,14 @@ struct ListData {
 	ListNode *first = nullptr;
 	ListNode *last = nullptr;
 	int size_cache = 0;
-	bool erase(ListNode *p_node);
+	bool remove(ListNode *p_node);
 };
 
 class ListNode : public Object {
 	GDCLASS(ListNode, Object);
 
 protected:
+	void _notification(int p_what);
 	static void _bind_methods();
 
 private:
@@ -37,8 +38,6 @@ public:
 
 	Variant get_value() { return value; }
 	void set_value(const Variant &p_value) { value = p_value; }
-
-	void erase();
 
 	virtual String to_string() { return String(value); }
 
@@ -80,7 +79,6 @@ public:
 
 	ListNode *find(const Variant &p_value);
 
-	bool remove(ListNode *p_node);
 	bool erase(const Variant &value);
 	bool empty() const { return !_data || !_data->size_cache; }
 	void clear();
