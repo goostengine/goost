@@ -268,5 +268,6 @@ jobs:
 
       - uses: actions/upload-artifact@v2
         with:
-          name: godot.goost.server
+          name: godot_server.x11.tools.64.goosts
           path: godot/bin/*
+          retention-days: 30
