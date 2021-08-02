@@ -192,15 +192,6 @@
 				Constructs a new [ListNode] and pushes it at the [i]beginning[/i] of the list.
 			</description>
 		</method>
-		<method name="remove">
-			<return type="bool">
-			</return>
-			<argument index="0" name="node" type="ListNode">
-			</argument>
-			<description>
-				Removes (and deletes) an existing node from the list.
-			</description>
-		</method>
 		<method name="size" qualifiers="const">
 			<return type="int">
 			</return>

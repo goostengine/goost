@@ -1,6 +1,6 @@
 #include "linked_list.h"
 
-bool ListData::erase(ListNode *p_I) {
+bool ListData::remove(ListNode *p_I) {
 	ERR_FAIL_COND_V(!p_I, false);
 	ERR_FAIL_COND_V(p_I->data != this, false);
 
@@ -16,8 +16,13 @@ bool ListData::erase(ListNode *p_I) {
 	if (p_I->next_ptr) {
 		p_I->next_ptr->prev_ptr = p_I->prev_ptr;
 	}
-	memdelete(p_I);
+	// Deletion is handled by user code after NOTIFICATION_PREDELETE, not here.
+	// memdelete(p_I);
 	size_cache--;
+
+	p_I->next_ptr = nullptr;
+	p_I->prev_ptr = nullptr;
+	p_I->data = nullptr;
 
 	return true;
 }
@@ -79,7 +84,7 @@ ListNode *LinkedList::push_back(const Variant &value) {
 
 void LinkedList::pop_back() {
 	if (_data->last) {
-		remove(_data->last);
+		memdelete(_data->last);
 	}
 }
 
@@ -105,7 +110,7 @@ ListNode *LinkedList::push_front(const Variant &value) {
 
 void LinkedList::pop_front() {
 	if (_data->first) {
-		remove(_data->first);
+		memdelete(_data->first);
 	}
 }
 
@@ -167,14 +172,6 @@ ListNode *LinkedList::insert_before(ListNode *p_node, const Variant &p_value) {
 	return n;
 }
 
-bool LinkedList::remove(ListNode *p_I) {
-	if (p_I) {
-		bool ret = _data->erase(p_I);
-		return ret;
-	}
-	return false;
-}
-
 ListNode *LinkedList::find(const Variant &p_value) {
 	ListNode *it = get_front();
 	while (it) {
@@ -188,7 +185,11 @@ ListNode *LinkedList::find(const Variant &p_value) {
 
 bool LinkedList::erase(const Variant &p_value) {
 	ListNode *I = find(p_value);
-	return remove(I);
+	if (I) {
+		memdelete(I);
+		return true;
+	}
+	return false;
 }
 
 void LinkedList::swap(ListNode *p_A, ListNode *p_B) {
@@ -339,7 +340,6 @@ void LinkedList::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("find", "value"), &LinkedList::find);
 	ClassDB::bind_method(D_METHOD("erase", "value"), &LinkedList::erase);
-	ClassDB::bind_method(D_METHOD("remove", "node"), &LinkedList::remove);
 
 	ClassDB::bind_method(D_METHOD("empty"), &LinkedList::empty);
 	ClassDB::bind_method(D_METHOD("clear"), &LinkedList::clear);
@@ -384,7 +384,7 @@ Variant LinkedList::_iter_get(const Variant &p_iter) {
 
 void LinkedList::clear() {
 	while (get_front()) {
-		remove(get_front());
+		memdelete(get_front());
 	}
 }
 
@@ -402,11 +402,13 @@ String LinkedList::to_string() {
 	return str;
 }
 
-void ListNode::erase() {
-	if (data) {
-		data->erase(this);
-	} else {
-		memdelete(this);
+void ListNode::_notification(int p_what) {
+	switch (p_what) {
+		case NOTIFICATION_PREDELETE: {
+			if (data) {
+				data->remove(this);
+			}
+		} break;
 	}
 }
 
@@ -416,8 +418,6 @@ void ListNode::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("set_value", "value"), &ListNode::set_value);
 	ClassDB::bind_method(D_METHOD("get_value"), &ListNode::get_value);
-
-	ClassDB::bind_method(D_METHOD("erase"), &ListNode::erase);
 
 	ADD_PROPERTY(PropertyInfo(Variant::NIL, "value", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NIL_IS_VARIANT), "set_value", "get_value");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "next"), "", "get_next");
