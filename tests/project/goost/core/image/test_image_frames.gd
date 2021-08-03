@@ -101,4 +101,8 @@ func test_image_frames_invalid_data():
 	frames.load_gif_from_buffer(PoolByteArray([]), -31)
 	assert_eq(frames.get_frame_count(), 0)
 
+	frames = ImageFrames.new()
+	frames.add_frame(null, -46.891228)
+	frames.save_gif("res://out/3857695334", -28)
+
 	Engine.print_error_messages = true

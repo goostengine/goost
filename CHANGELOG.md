@@ -23,6 +23,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 - Moved `PolyCollisionShape2D` class to the `physics` component.
 - Converted `PolyBoolean/Offset/Decomp2D` classes into `Resource`s, as needed by `PolyPath2D`.
 - Updated third-party image libraries.
+- `ImageFrames.add_frame()` no longer accepts index to override existing frames.
 
 ### Removed
 - Redundant and buggy `ListNode.erase()` method. You can safely use `ListNode.free()` regardless of whether a node was instantiated manually or via `LinkedList.push_back()`.

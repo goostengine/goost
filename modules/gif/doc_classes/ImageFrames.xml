@@ -14,9 +14,7 @@
 			</return>
 			<argument index="0" name="image" type="Image">
 			</argument>
-			<argument index="1" name="delay" type="float">
-			</argument>
-			<argument index="2" name="idx" type="int" default="-1">
+			<argument index="1" name="delay" type="float" default="-1">
 			</argument>
 			<description>
 				Adds a new frame.
@@ -39,7 +37,7 @@
 		<method name="get_frame_delay" qualifiers="const">
 			<return type="float">
 			</return>
-			<argument index="0" name="idx" type="int">
+			<argument index="0" name="index" type="int">
 			</argument>
 			<description>
 				Returns the delay of frame [code]idx[/code].
@@ -48,7 +46,7 @@
 		<method name="get_frame_image" qualifiers="const">
 			<return type="Image">
 			</return>
-			<argument index="0" name="idx" type="int">
+			<argument index="0" name="index" type="int">
 			</argument>
 			<description>
 				Returns the [Image] of frame [code]idx[/code].
@@ -79,7 +77,7 @@
 		<method name="remove_frame">
 			<return type="void">
 			</return>
-			<argument index="0" name="idx" type="int">
+			<argument index="0" name="index" type="int">
 			</argument>
 			<description>
 				Removes the frame [code]idx[/code].
@@ -103,7 +101,7 @@
 		<method name="set_frame_delay">
 			<return type="void">
 			</return>
-			<argument index="0" name="idx" type="int">
+			<argument index="0" name="index" type="int">
 			</argument>
 			<argument index="1" name="delay" type="float">
 			</argument>
@@ -114,7 +112,7 @@
 		<method name="set_frame_image">
 			<return type="void">
 			</return>
-			<argument index="0" name="idx" type="int">
+			<argument index="0" name="index" type="int">
 			</argument>
 			<argument index="1" name="image" type="Image">
 			</argument>
