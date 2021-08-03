@@ -12,6 +12,8 @@
 #include "core/local_vector.h"
 
 void GoostImage::replace_color(Ref<Image> p_image, const Color &p_color, const Color &p_with_color) {
+	ERR_FAIL_COND(p_image.is_null());
+
 	if (p_color == p_with_color) {
 		return;
 	}
@@ -49,6 +51,8 @@ struct BucketFillQueue {
 // Scanline could perform better for 4-connected case, but this runs up to
 // x35 faster compared to equivalent GDScript implementation in any case.
 Ref<Image> GoostImage::bucket_fill(Ref<Image> p_image, const Point2 &p_at, const Color &p_fill_color, bool p_fill_image, Connectivity p_con) {
+	ERR_FAIL_COND_V(p_image.is_null(), Ref<Image>());
+
 	if (!has_pixelv(p_image, p_at)) {
 		return Ref<Image>();
 	}
@@ -133,6 +137,7 @@ Ref<Image> GoostImage::bucket_fill(Ref<Image> p_image, const Point2 &p_at, const
 }
 
 void GoostImage::resize_hqx(Ref<Image> p_image, int p_scale) {
+	ERR_FAIL_COND(p_image.is_null());
 	ERR_FAIL_COND(p_scale < 2);
 	ERR_FAIL_COND(p_scale > 3);
 
@@ -178,6 +183,8 @@ Ref<Image> image_create_from_pix(PIX *p_pix, bool p_include_alpha = true);
 void image_copy_from_pix(Ref<Image> p_image, PIX *p_pix, bool p_include_alpha = true);
 
 void GoostImage::rotate(Ref<Image> p_image, real_t p_angle, bool p_expand) {
+	ERR_FAIL_COND(p_image.is_null());
+
 	PIX *pix_in = pix_create_from_image(p_image);
 
 	const int w = p_expand ? p_image->get_width() : 0;
@@ -193,6 +200,8 @@ void GoostImage::rotate(Ref<Image> p_image, real_t p_angle, bool p_expand) {
 }
 
 void GoostImage::rotate_90(Ref<Image> p_image, Direction p_direction) {
+	ERR_FAIL_COND(p_image.is_null());
+
 	PIX *pix_in = pix_create_from_image(p_image);
 
 	PIX *pix_out = pixRotate90(pix_in, static_cast<int>(p_direction));
@@ -203,6 +212,8 @@ void GoostImage::rotate_90(Ref<Image> p_image, Direction p_direction) {
 }
 
 void GoostImage::rotate_180(Ref<Image> p_image) {
+	ERR_FAIL_COND(p_image.is_null());
+
 	PIX *pix_in = pix_create_from_image(p_image);
 
 	PIX *pix_out = pixRotate180(nullptr, pix_in);
@@ -213,6 +224,8 @@ void GoostImage::rotate_180(Ref<Image> p_image) {
 }
 
 void GoostImage::binarize(Ref<Image> p_image, real_t p_threshold, bool p_invert) {
+	ERR_FAIL_COND(p_image.is_null());
+
 	PIX *pix_in = pix_create_from_image(p_image);
 	
 	PIX *pix_bin = nullptr;
@@ -234,14 +247,18 @@ void GoostImage::binarize(Ref<Image> p_image, real_t p_threshold, bool p_invert)
 }
 
 void GoostImage::dilate(Ref<Image> p_image, int p_kernel_size) {
+	ERR_FAIL_COND(p_image.is_null());
 	morph(p_image, MORPH_DILATE, Size2i(p_kernel_size, p_kernel_size));
 }
 
 void GoostImage::erode(Ref<Image> p_image, int p_kernel_size) {
+	ERR_FAIL_COND(p_image.is_null());
 	morph(p_image, MORPH_ERODE, Size2i(p_kernel_size, p_kernel_size));
 }
 
 void GoostImage::morph(Ref<Image> p_image, MorphOperation p_op, Size2i p_kernel_size) {
+	ERR_FAIL_COND(p_image.is_null());
+
 	const int hs = p_kernel_size.x;
 	const int vs = p_kernel_size.y;
 #ifdef DEBUG_ENABLED
@@ -376,6 +393,8 @@ Ref<Image> GoostImage::repeat(const Ref<Image> &p_image, const Size2i &p_count, 
 }
 
 Point2 GoostImage::get_centroid(const Ref<Image> &p_image) {
+	ERR_FAIL_COND_V(p_image.is_null(), Point2());
+
 	PIX *pix_in = pix_create_from_image(p_image);
 
 	PIX *pix_bin = pixConvertTo8(pix_in, 0);
@@ -389,6 +408,8 @@ Point2 GoostImage::get_centroid(const Ref<Image> &p_image) {
 }
 
 Color GoostImage::get_pixel_average(const Ref<Image> &p_image, const Rect2 &p_rect, const Ref<Image> &p_mask) {
+	ERR_FAIL_COND_V(p_image.is_null(), Color());
+
 	bool using_rect = !p_rect.has_no_area();
 	bool using_mask = p_mask.is_valid();
 	if (using_mask) {
@@ -504,6 +525,9 @@ bool GoostImage::has_pixelv(Ref<Image> p_image, const Vector2 &p_pos) {
 }
 
 bool GoostImage::get_pixel_or_null(Ref<Image> p_image, int x, int y, Color *r_pixel) {
+#ifdef DEBUG_ENABLED
+	ERR_FAIL_COND_V(p_image.is_null(), false);
+#endif
 	if (x >= 0 && x < p_image->get_width() && y >= 0 && y < p_image->get_height()) {
 		if (r_pixel) {
 			*r_pixel = p_image->get_pixel(x, y);
@@ -514,6 +538,9 @@ bool GoostImage::get_pixel_or_null(Ref<Image> p_image, int x, int y, Color *r_pi
 }
 
 bool GoostImage::get_pixelv_or_null(Ref<Image> p_image, const Vector2 &p_pos, Color *r_pixel) {
+#ifdef DEBUG_ENABLED
+	ERR_FAIL_COND_V(p_image.is_null(), false);
+#endif
 	return get_pixel_or_null(p_image, p_pos.x, p_pos.y, r_pixel);
 }
 
