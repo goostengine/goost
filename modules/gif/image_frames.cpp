@@ -63,6 +63,7 @@ Error ImageFrames::save_gif(const String &p_filepath, int p_color_count) {
 
 	// Using dimensions of the first image as the base.
 	const Ref<Image> &first = get_frame_image(0);
+	ERR_FAIL_COND_V(first.is_null(), ERR_CANT_CREATE);
 
 	gif->SWidth = first->get_width();
 	gif->SHeight = first->get_height();
@@ -170,45 +171,37 @@ Error ImageFrames::save_gif(const String &p_filepath, int p_color_count) {
 }
 #endif // GOOST_ImageIndexed
 
-void ImageFrames::add_frame(const Ref<Image> &p_image, float p_delay, int p_idx) {
-	ERR_FAIL_COND(p_idx > get_frame_count() - 1);
+void ImageFrames::add_frame(const Ref<Image> &p_image, float p_delay) {
+	ERR_FAIL_COND(p_image.is_null());
+
 	Frame frame;
 	frame.image = p_image;
 	frame.delay = p_delay;
-	if (p_idx < 0) {
-		frames.push_back(frame);
-	} else {
-		frames.set(p_idx, frame);
-	}
+	frames.push_back(frame);
 }
 
 void ImageFrames::remove_frame(int p_idx) {
-	ERR_FAIL_COND(p_idx < 0);
-	ERR_FAIL_COND(p_idx > get_frame_count() - 1);
+	ERR_FAIL_INDEX(p_idx, frames.size());
 	frames.remove(p_idx);
 }
 
 void ImageFrames::set_frame_image(int p_idx, const Ref<Image> &p_image) {
-	ERR_FAIL_COND(p_idx < 0);
-	ERR_FAIL_COND(p_idx > get_frame_count() - 1);
+	ERR_FAIL_INDEX(p_idx, frames.size());
 	frames.write[p_idx].image = p_image;
 }
 
 Ref<Image> ImageFrames::get_frame_image(int p_idx) const {
-	ERR_FAIL_COND_V(p_idx < 0, Ref<Image>());
-	ERR_FAIL_COND_V(p_idx > get_frame_count() - 1, Ref<Image>());
+	ERR_FAIL_INDEX_V(p_idx, frames.size(), Ref<Image>());
 	return frames[p_idx].image;
 }
 
 void ImageFrames::set_frame_delay(int p_idx, float p_delay) {
-	ERR_FAIL_COND(p_idx < 0);
-	ERR_FAIL_COND(p_idx > get_frame_count() - 1);
+	ERR_FAIL_INDEX(p_idx, frames.size());
 	frames.write[p_idx].delay = p_delay;
 }
 
 float ImageFrames::get_frame_delay(int p_idx) const {
-	ERR_FAIL_COND_V(p_idx < 0, 0);
-	ERR_FAIL_COND_V(p_idx > get_frame_count() - 1, 0);
+	ERR_FAIL_INDEX_V(p_idx, frames.size(), 0);
 	return frames[p_idx].delay;
 }
 
@@ -226,14 +219,14 @@ void ImageFrames::_bind_methods() {
 #ifdef GOOST_ImageIndexed
 	ClassDB::bind_method(D_METHOD("save_gif", "filepath", "color_count"), &ImageFrames::save_gif, DEFVAL(256));
 #endif
-	ClassDB::bind_method(D_METHOD("add_frame", "image", "delay", "idx"), &ImageFrames::add_frame, DEFVAL(-1));
-	ClassDB::bind_method(D_METHOD("remove_frame", "idx"), &ImageFrames::remove_frame);
+	ClassDB::bind_method(D_METHOD("add_frame", "image", "delay"), &ImageFrames::add_frame, DEFVAL(-1));
+	ClassDB::bind_method(D_METHOD("remove_frame", "index"), &ImageFrames::remove_frame);
 
-	ClassDB::bind_method(D_METHOD("set_frame_image", "idx", "image"), &ImageFrames::set_frame_image);
-	ClassDB::bind_method(D_METHOD("get_frame_image", "idx"), &ImageFrames::get_frame_image);
+	ClassDB::bind_method(D_METHOD("set_frame_image", "index", "image"), &ImageFrames::set_frame_image);
+	ClassDB::bind_method(D_METHOD("get_frame_image", "index"), &ImageFrames::get_frame_image);
 
-	ClassDB::bind_method(D_METHOD("set_frame_delay", "idx", "delay"), &ImageFrames::set_frame_delay);
-	ClassDB::bind_method(D_METHOD("get_frame_delay", "idx"), &ImageFrames::get_frame_delay);
+	ClassDB::bind_method(D_METHOD("set_frame_delay", "index", "delay"), &ImageFrames::set_frame_delay);
+	ClassDB::bind_method(D_METHOD("get_frame_delay", "index"), &ImageFrames::get_frame_delay);
 
 	ClassDB::bind_method(D_METHOD("get_frame_count"), &ImageFrames::get_frame_count);
 

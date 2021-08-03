@@ -26,7 +26,7 @@ public:
 
 	Error save_gif(const String &p_path, int p_color_count = 256);
 
-	void add_frame(const Ref<Image> &p_image, float p_delay, int p_idx = -1);
+	void add_frame(const Ref<Image> &p_image, float p_delay);
 	void remove_frame(int p_idx);
 
 	void set_frame_image(int p_idx, const Ref<Image> &p_image);
