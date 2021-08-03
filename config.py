@@ -1,6 +1,10 @@
 import goost
 
 
+def get_name():
+    return "goost"
+
+
 def can_build(env, platform):
     return True
 

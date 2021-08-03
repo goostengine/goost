@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #
 # Upstream: https://github.com/goostengine/goost
-# Version: 2.1.1 (Godot Engine 3.3+)
+# Version: 2.2 (Godot Engine 3.x)
 # License: MIT
 #
 # `SConstruct` which allows to build any C++ module just like Godot Engine.
@@ -26,10 +26,15 @@ import subprocess
 import config
 
 env = Environment()
+module_name = ""
 
-# Module name is determined from directory name.
-module_name = os.path.basename(Dir(".").abspath)
-print("Configuring %s module ..." % module_name.capitalize())
+try:
+    module_name = config.get_name()
+except:
+    # Infer module name from directory name.
+    module_name = os.path.basename(Dir(".").abspath)
+
+print("Configuring %s ..." % module_name.capitalize())
 
 # Environment variables (can override default build options).
 godot_version = os.getenv("GODOT_VERSION", "3.x") # A branch, commit, tag etc.
