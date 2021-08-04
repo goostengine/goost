@@ -21,7 +21,6 @@ func after_each():
 func test_save_indexed_png():
     var image = ImageIndexed.new()
     image.create(64, 64, false, Image.FORMAT_RGBA8)
-    image.lock()
     image.fill(Color.blue)
     image.generate_palette(4, ImageIndexed.DITHER_RANDOM, false, true)
     image.save_indexed_png("res://out/indexed.png")

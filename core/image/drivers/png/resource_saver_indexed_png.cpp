@@ -183,13 +183,14 @@ Error ResourceSaverIndexedPNG::save_image(const String &p_path, const Ref<ImageI
 		ERR_FAIL_V(ERR_CANT_OPEN);
 	}
 	png_write_end(png_ptr, nullptr);
-	f->close();
-	memdelete(f);
 
 	// Cleanup.
-	png_destroy_write_struct(&png_ptr, &info_ptr);
 	png_free(png_ptr, png_palette);
 	png_free(png_ptr, png_palette_alpha);
+	png_destroy_write_struct(&png_ptr, &info_ptr);
+
+	f->close();
+	memdelete(f);
 
 	return OK;
 }
