@@ -386,6 +386,7 @@ void LinkedList::clear() {
 	while (get_front()) {
 		memdelete(get_front());
 	}
+	_iter_current = nullptr;
 }
 
 String LinkedList::to_string() {

@@ -684,3 +684,10 @@ class TestInvalidData extends "res://addons/gut/test.gd":
 		list.move_before(node_b, null)
 		node_b.free()
 		assert_true(list.empty())
+
+	func test_iter():
+		var _n = list.push_front(Array([]))
+		list._iter_init(Array([]))
+		list.clear()
+		var _b = list._iter_get(Array([]))
+		assert_true(list.empty())
