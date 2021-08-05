@@ -115,7 +115,10 @@ def godot_verify_min_version():
 if godot_dir == Dir("godot"):
     if not godot_dir.exists():
         # Checkout Godot repository directly into this module.
-        run(["git", "clone", godot_url])
+        if os.getenv("CI"):
+            run(["git", "clone", "--depth", "1", godot_url, "--branch", env["godot_version"]])
+        else:
+            run(["git", "clone", godot_url])
         run(["git", "checkout", env["godot_version"], "--quiet"], godot_dir.abspath)
         if not godot_verify_min_version():
             Exit(255)
