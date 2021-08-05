@@ -125,3 +125,11 @@ func test_move_script():
 	assert_eq(n.tell(), "First", "Did not move")
 	ms.move_mixin(1, MixinFirst)
 	assert_eq(n.tell(), "Second")
+
+
+func test_mixin_get_owner():
+	var m = Mixin.new()
+	var o = m.get_owner()
+	assert_null(o)
+	m.free()
+	assert_freed(m, "Freed")

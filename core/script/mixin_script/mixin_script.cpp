@@ -518,6 +518,12 @@ Variant Mixin::call(const StringName &p_method, const Variant **p_args, int p_ar
 	if (real_owner) {
 		return real_owner->call(p_method, p_args, p_argcount, r_error);
 	}
+#ifdef DEBUG_ENABLED
+	// The following allows to call `Mixin.free()`.
+	// This is not strictly needed because Mixin objects should not be instantiated directly,
+	// and doing so is discouraged, but this can make debug builds more robust for fuzz testing. 
+	Object::call(p_method, p_args, p_argcount, r_error);
+#endif
 	return Variant();
 }
 
