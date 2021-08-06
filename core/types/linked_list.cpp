@@ -369,7 +369,8 @@ Variant LinkedList::_iter_init(const Array &p_iter) {
 
 Variant LinkedList::_iter_next(const Array &p_iter) {
 #ifdef DEBUG_ENABLED
-	ERR_FAIL_NULL_V(_iter_current, Variant());
+	ERR_FAIL_COND_V_MSG(!ObjectDB::instance_validate(_iter_current), Variant(),
+			"ListNode was deleted while iterating LinkedList.");
 #endif
 	_iter_current = _iter_current->get_next();
 	return _iter_current != nullptr;
@@ -377,7 +378,8 @@ Variant LinkedList::_iter_next(const Array &p_iter) {
 
 Variant LinkedList::_iter_get(const Variant &p_iter) {
 #ifdef DEBUG_ENABLED
-	ERR_FAIL_NULL_V(_iter_current, Variant());
+	ERR_FAIL_COND_V_MSG(!ObjectDB::instance_validate(_iter_current), Variant(),
+			"ListNode was deleted while iterating LinkedList.");
 #endif
 	return _iter_current->get_value();
 }
@@ -386,7 +388,6 @@ void LinkedList::clear() {
 	while (get_front()) {
 		memdelete(get_front());
 	}
-	_iter_current = nullptr;
 }
 
 String LinkedList::to_string() {
