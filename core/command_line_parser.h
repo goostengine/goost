@@ -71,7 +71,7 @@ public:
 
 	CommandLineOption() = default;
 	explicit CommandLineOption(const PoolStringArray &p_names, int p_arg_count = 1);
-	~CommandLineOption() override;
+	~CommandLineOption();
 };
 
 class CommandLineHelpFormat : public Reference {

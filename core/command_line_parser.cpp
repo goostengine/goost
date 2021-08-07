@@ -13,7 +13,7 @@ struct CommandLineOption::ArgumentChecker {
 struct CommandLineOption::FunctionChecker : public CommandLineOption::ArgumentChecker {
 	CheckFunction function;
 
-	bool check(const String &p_arg) const override {
+	bool check(const String &p_arg) const {
 		return function(p_arg);
 	}
 };
@@ -21,7 +21,7 @@ struct CommandLineOption::FunctionChecker : public CommandLineOption::ArgumentCh
 // struct CommandLineOption::CallableChecker : public CommandLineOption::ArgumentChecker {
 // 	Callable callable;
 
-// 	bool check(const String &p_arg) const override {
+// 	bool check(const String &p_arg) const {
 // 		Callable::CallError call_error;
 // 		const Variant variant = p_arg;
 // 		const Variant *args = { &variant };
