@@ -70,10 +70,10 @@ Color ImageBlender::blend_colors(const Color &p_src, const Color &p_dst) const {
 			color.a = (p_src * calculate_alpha_src_factor(p_src, p_dst)).a + (p_dst * calculate_alpha_dst_factor(p_src, p_dst)).a;
 		} break;
 		case FUNC_SUBTRACT: {
-			color.a = (p_src * calculate_rgb_src_factor(p_src, p_dst)).a - (p_dst * calculate_rgb_dst_factor(p_src, p_dst)).a;
+			color.a = (p_src * calculate_alpha_src_factor(p_src, p_dst)).a - (p_dst * calculate_alpha_dst_factor(p_src, p_dst)).a;
 		} break;
 		case FUNC_REVERSE_SUBTRACT: {
-			color.a = (p_dst * calculate_rgb_dst_factor(p_src, p_dst)).a - (p_src * calculate_rgb_src_factor(p_src, p_dst)).a;
+			color.a = (p_dst * calculate_alpha_dst_factor(p_src, p_dst)).a - (p_src * calculate_alpha_src_factor(p_src, p_dst)).a;
 		} break;
 		case FUNC_MAX: {
 			color.a = MAX(p_src.a, p_dst.a);
@@ -86,6 +86,7 @@ Color ImageBlender::blend_colors(const Color &p_src, const Color &p_dst) const {
 }
 
 void ImageBlender::blend_rect(const Ref<Image> p_src, const Rect2 &p_src_rect, Ref<Image> p_dst, const Point2 &p_dst_pos) const {
+	ERR_FAIL_COND_MSG(p_dst.is_null(), "It's not a reference to a valid Image object.");
 	ERR_FAIL_COND_MSG(p_src.is_null(), "It's not a reference to a valid Image object.");
 	int dsize = p_dst->get_data().size();
 	int srcdsize = p_src->get_data().size();
@@ -129,6 +130,15 @@ void ImageBlender::blend_rect(const Ref<Image> p_src, const Rect2 &p_src_rect, R
 }
 
 void ImageBlender::stamp_rect(const Ref<Image> p_src, const Rect2 &p_src_rect, Ref<Image> p_dst, const Point2 &p_dst_init_pos, const Point2 &p_dst_end_pos, float p_spacing) const {
+	ERR_FAIL_COND_MSG(p_dst.is_null(), "It's not a reference to a valid Image object.");
+	ERR_FAIL_COND_MSG(p_src.is_null(), "It's not a reference to a valid Image object.");
+	int dsize = p_dst->get_data().size();
+	int srcdsize = p_src->get_data().size();
+	ERR_FAIL_COND(dsize == 0);
+	ERR_FAIL_COND(srcdsize == 0);
+	ERR_FAIL_COND(p_dst->get_format() != p_src->get_format());
+	ERR_FAIL_COND(p_spacing <= 0);
+
 	float semi_width = p_src_rect.get_size().width / 2;
 	float semi_height = p_src_rect.get_size().height / 2;
 
@@ -143,9 +153,9 @@ void ImageBlender::stamp_rect(const Ref<Image> p_src, const Rect2 &p_src_rect, R
 	float step_x = 0.0;
 	float step_y = 0.0;
 	if (distance > 0.0) {
-		float invert_distance = 1.0 / distance;
-		step_x = delta_x * invert_distance;
-		step_y = delta_y * invert_distance;
+		float reciprocal_distance = 1.0 / distance;
+		step_x = delta_x * reciprocal_distance;
+		step_y = delta_y * reciprocal_distance;
 	}
 
 	float offset_x = 0.0;

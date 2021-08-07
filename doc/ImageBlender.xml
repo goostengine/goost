@@ -40,7 +40,7 @@
 			<argument index="5" name="spacing" type="float">
 			</argument>
 			<description>
-				Stamps [code]src_rect[/code] from [code]src[/code] image to [code]dst[/code] image in a straight line from [code]dst_init_pos[/code] to [code]dst_end_pos[/code], with a certain [code]spacing[/code] between stamps.
+				Stamps [code]src_rect[/code] from [code]src[/code] image to [code]dst[/code] image in a straight line from [code]dst_init_pos[/code] to [code]dst_end_pos[/code], with a certain [code]spacing[/code] between stamps. You may use it to draw strokes.
 			</description>
 		</method>
 	</methods>
