@@ -115,12 +115,13 @@
 				Returns a string containing the complete help information generated from the added options.
 			</description>
 		</method>
-		<method name="get_occurence_count" qualifiers="const">
+		<method name="get_occurrence_count" qualifiers="const">
 			<return type="int">
 			</return>
 			<argument index="0" name="option" type="CommandLineOption">
 			</argument>
 			<description>
+				Returns the number of times the option got parsed.
 			</description>
 		</method>
 		<method name="get_option" qualifiers="const">

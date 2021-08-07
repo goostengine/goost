@@ -212,7 +212,7 @@ public:
 	String get_prefix(const Ref<CommandLineOption> &p_option) const;
 	PoolStringArray get_prefixes(const Ref<CommandLineOption> &p_option) const;
 
-	int get_occurence_count(const Ref<CommandLineOption> &p_option) const;
+	int get_occurrence_count(const Ref<CommandLineOption> &p_option) const;
 
 	PoolStringArray get_forwarded_args() const;
 	PoolStringArray get_args() const;

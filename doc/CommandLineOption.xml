@@ -69,7 +69,7 @@
 			If [code]true[/code], the option will be displayed in help.
 		</member>
 		<member name="multitoken" type="bool" setter="set_multitoken" getter="is_multitoken" default="false">
-			If [code]true[/code], option can be specified multiply times. Number of times can be obtained using [method CommandLineParser.get_occurence_count].
+			If [code]true[/code], option can be specified multiply times. Number of times can be obtained using [method CommandLineParser.get_occurrence_count].
 		</member>
 		<member name="names" type="PoolStringArray" setter="set_names" getter="get_names" default="PoolStringArray(  )">
 			Returns the names set for this option.

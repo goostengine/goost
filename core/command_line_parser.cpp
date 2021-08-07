@@ -765,7 +765,7 @@ void CommandLineParser::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_prefix", "option"), &CommandLineParser::get_prefix);
 	ClassDB::bind_method(D_METHOD("get_prefixes", "option"), &CommandLineParser::get_prefixes);
 
-	ClassDB::bind_method(D_METHOD("get_occurence_count", "option"), &CommandLineParser::get_occurence_count);
+	ClassDB::bind_method(D_METHOD("get_occurrence_count", "option"), &CommandLineParser::get_occurrence_count);
 
 	ClassDB::bind_method(D_METHOD("get_forwarded_args"), &CommandLineParser::get_forwarded_args);
 	ClassDB::bind_method(D_METHOD("get_args"), &CommandLineParser::get_args);
@@ -973,7 +973,7 @@ PoolStringArray CommandLineParser::get_prefixes(const Ref<CommandLineOption> &p_
 	return E->value();
 }
 
-int CommandLineParser::get_occurence_count(const Ref<CommandLineOption> &p_option) const {
+int CommandLineParser::get_occurrence_count(const Ref<CommandLineOption> &p_option) const {
 	ERR_FAIL_COND_V(p_option.is_null(), 0);
 	const Map<const CommandLineOption *, int>::Element *E = _parsed_count.find(p_option.ptr());
 	if (!E) {
