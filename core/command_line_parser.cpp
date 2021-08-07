@@ -344,8 +344,8 @@ bool CommandLineParser::_is_options_valid() const {
 			if (opt_names.size() != another_opt_names.size()) {
 				same_name = false;
 			} else {
-				for (int i = 0; i < opt_names.size(); ++i) {
-					if (opt_names[i] != another_opt_names[i]) {
+				for (int k = 0; k < opt_names.size(); ++k) {
+					if (opt_names[k] != another_opt_names[k]) {
 						same_name = false;
 						break;
 					}
