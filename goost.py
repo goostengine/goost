@@ -147,6 +147,9 @@ class GoostClass:
 # Only rightmost child components are specified.
 classes = {
     "EditorVCSInterfaceGit": "vcs",  # modules/git
+	"CommandLineHelpFormat": "core",
+    "CommandLineOption": "core",
+	"CommandLineParser": "core",
     "GoostEngine": "core",
     "GoostGeometry2D": "geometry",
     "GoostImage": "image",

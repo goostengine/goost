@@ -1,5 +1,6 @@
 #pragma once
 
+#include "core/command_line_parser.h"
 #include "core/goost_engine.h"
 #include "core/image/goost_image.h"
 #include "core/image/goost_image_bind.h"

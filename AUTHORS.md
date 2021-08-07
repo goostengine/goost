@@ -35,6 +35,8 @@ See also a full list of
     98teg
     Andrii Doroshenko (Xrayez)
     Daw11
+    Hennadii Chernyshchyk (Shatur)
+    lupoDharkael
     Mariano Suligoy (MarianoGnu)
     Rafał Mikrut (qarmin)
     Twarit Waikar (ChronicallySerious)

@@ -24,6 +24,10 @@ static void _variant_resource_preview_init();
 #endif
 
 void register_core_types() {
+	ClassDB::register_class<CommandLineOption>();
+	ClassDB::register_class<CommandLineHelpFormat>();
+	ClassDB::register_class<CommandLineParser>();
+
 #ifdef GOOST_GoostEngine
 	_goost = memnew(GoostEngine);
 	ClassDB::register_class<GoostEngine>();
@@ -38,6 +42,7 @@ void register_core_types() {
 
 	ClassDB::register_class<VariantMap>();
 	ClassDB::register_class<VariantResource>();
+
 #if defined(TOOLS_ENABLED) && defined(GOOST_VariantResource)
 	EditorNode::add_init_callback(_variant_resource_preview_init);
 #endif
