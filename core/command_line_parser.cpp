@@ -771,7 +771,7 @@ void CommandLineParser::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_args"), &CommandLineParser::get_args);
 
 	ClassDB::bind_method(D_METHOD("get_help_text", "format"), &CommandLineParser::get_help_text);
-	ClassDB::bind_method(D_METHOD("get_error"), &CommandLineParser::get_error);
+	ClassDB::bind_method(D_METHOD("get_error_text"), &CommandLineParser::get_error_text);
 
 	ClassDB::bind_method(D_METHOD("clear"), &CommandLineParser::clear);
 
@@ -1064,7 +1064,7 @@ String CommandLineParser::get_help_text(const Ref<CommandLineHelpFormat> &p_form
 	return help_text;
 }
 
-String CommandLineParser::get_error() const {
+String CommandLineParser::get_error_text() const {
 	return _error;
 }
 

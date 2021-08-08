@@ -24,7 +24,7 @@
 		    parser.add_option(input)
 
 		    if parser.parse(OS.get_cmdline_args()) != OK:
-		        print(parser.get_error())
+		        print(parser.get_error_text())
 		        return
 
 		    if parser.is_set(help):
@@ -36,7 +36,7 @@
 		        return
 
 		    if parser.validate() != OK:
-		        print(parser.get_error())
+		        print(parser.get_error_text())
 		        return
 
 		    print(parser.get_value(input))
@@ -91,7 +91,7 @@
 				Returns all arguments that were passed by [method parse].
 			</description>
 		</method>
-		<method name="get_error" qualifiers="const">
+		<method name="get_error_text" qualifiers="const">
 			<return type="String">
 			</return>
 			<description>
@@ -190,7 +190,7 @@
 			<argument index="0" name="args" type="PoolStringArray">
 			</argument>
 			<description>
-				Parses command-line [code]args[/code]. Returns [constant OK] upon success. In case of error, refer to [method get_error] which returns human-readable error message.
+				Parses command-line [code]args[/code]. Returns [constant OK] upon success. In case of error, refer to [method get_error_text] which returns human-readable error message.
 			</description>
 		</method>
 		<method name="remove_option">

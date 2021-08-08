@@ -24,7 +24,7 @@
 			<argument index="1" name="error_msg" type="String">
 			</argument>
 			<description>
-				Sets a [code]callable[/code] that accepts a [String] as input and returns [code]true[/code] if the value matches the given check. If the function returns [code]false[/code], then the parsing will fail and [method CommandLineParser.get_error] will return [code]error_msg[/code].
+				Sets a [code]callable[/code] that accepts a [String] as input and returns [code]true[/code] if the value matches the given check. If the function returns [code]false[/code], then the parsing will fail and [method CommandLineParser.get_error_text] will return [code]error_msg[/code].
 				Example:
 				[codeblock]
 				var parser = CommandLineParser.new()
