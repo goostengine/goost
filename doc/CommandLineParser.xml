@@ -23,7 +23,7 @@
 		    input.description = "Specify filename to process."
 		    parser.add_option(input)
 
-		    if parser.parse_args(OS.get_cmdline_args()) != OK:
+		    if parser.parse(OS.get_cmdline_args()) != OK:
 		        print(parser.get_error())
 		        return
 
@@ -88,7 +88,7 @@
 			<return type="PoolStringArray">
 			</return>
 			<description>
-				Returns all arguments that were passed by [method parse_args].
+				Returns all arguments that were passed by [method parse].
 			</description>
 		</method>
 		<method name="get_error" qualifiers="const">
@@ -184,7 +184,7 @@
 				Returns [code]true[/code] if [code]option[/code] was specified.
 			</description>
 		</method>
-		<method name="parse_args">
+		<method name="parse">
 			<return type="int" enum="Error">
 			</return>
 			<argument index="0" name="args" type="PoolStringArray">

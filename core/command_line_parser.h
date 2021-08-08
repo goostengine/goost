@@ -191,7 +191,7 @@ protected:
 	static void _bind_methods();
 
 public:
-	Error parse_args(const PoolStringArray &p_args);
+	Error parse(const PoolStringArray &p_args);
 	Error validate();
 
 	void add_option(const Ref<CommandLineOption> &p_option);

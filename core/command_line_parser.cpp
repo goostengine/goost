@@ -744,7 +744,7 @@ bool CommandLineParser::_contains_optional_options(const Vector<Pair<const Comma
 }
 
 void CommandLineParser::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("parse_args", "args"), &CommandLineParser::parse_args);
+	ClassDB::bind_method(D_METHOD("parse", "args"), &CommandLineParser::parse);
 	ClassDB::bind_method(D_METHOD("validate"), &CommandLineParser::validate);
 
 	ClassDB::bind_method(D_METHOD("add_option", "option"), &CommandLineParser::add_option);
@@ -814,7 +814,7 @@ static int find_arg(const PoolStringArray &p_args, const String &p_arg) {
 	return -1;
 }
 
-Error CommandLineParser::parse_args(const PoolStringArray &p_args) {
+Error CommandLineParser::parse(const PoolStringArray &p_args) {
 	_args = p_args;
 	_forwarded_args.resize(0);
 	_parsed_values.clear();
