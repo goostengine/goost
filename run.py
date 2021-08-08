@@ -51,6 +51,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--windowed", action="store_true", default=False, help="Run in windowed mode.")
     parser.add_argument("--verbose", action="store_true", default=False, help="Run in verbose mode.")
+    parser.add_argument("--debug", action="store_true", default=False, help="Run in debug mode.")
 
     subparsers = parser.add_subparsers(dest="tool", required=True)
 
@@ -90,8 +91,17 @@ if __name__ == "__main__":
 
         atexit.register(print_time_elapsed)
 
-        test_args = [godot_bin, "--path", "tests/project", "--fixed-fps", "15", "-d", "-s",
-                os.path.join(base_path, "tests/project/addons/gut/gut_cmdln.gd")]
+        test_args = [godot_bin]
+        # Path to GUT test project.
+        test_args.extend(["--path", "tests/project"])
+        # Allows to speed up tests. Do not set below 15, may cause delta time errors.
+        test_args.extend(["--fixed-fps", "15"])
+        # Run in debug mode, disabling it allows to workaround:
+        # https://github.com/godotengine/godot/issues/51387
+        if args.debug:
+            test_args.append("-d") # Use short options, GUT will break otherwise.
+        # Path to GUT command-line script.
+        test_args.extend(["-s", os.path.join(base_path, "tests/project/addons/gut/gut_cmdln.gd")])
 
         if args.test_file:
             # Reset `-gdir`, otherwise all scripts are going to be collected
@@ -105,8 +115,12 @@ if __name__ == "__main__":
             # windowed mode, this does not matter for console output.
             test_args.append("-gexit=true")
 
-        ret = run(test_args, windowed=args.windowed, verbose=args.verbose)
-        sys.exit(ret)
+        try:
+            ret = run(test_args, windowed=args.windowed, verbose=args.verbose)
+            sys.exit(ret)
+        except KeyboardInterrupt:
+            print("Aborting Goost tests.")
+            sys.exit(255)
 
     elif args.tool.startswith("doc"):
         print("Generating documentation ...")
