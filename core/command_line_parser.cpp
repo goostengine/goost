@@ -514,7 +514,8 @@ const CommandLineOption *CommandLineParser::_validate_option(const String &p_nam
 		// Try to suggest the correct option.
 		const String similar_name = _find_most_similar(p_name);
 		if (!similar_name.empty()) {
-			_error += vformat(RTR("\nMaybe you wanted to use: '%s'."), p_prefix + similar_name);
+			_error += "\n";
+			_error += vformat(RTR("Perhaps you wanted to use: '%s'."), p_prefix + similar_name);
 		}
 		return nullptr;
 	}
