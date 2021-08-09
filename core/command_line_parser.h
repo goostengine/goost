@@ -203,7 +203,7 @@ public:
 	PoolStringArray get_forwarding_args() const;
 	PoolStringArray get_args() const;
 
-	String get_help_text(const Ref<CommandLineHelpFormat> &p_format) const;
+	String get_help_text(const Ref<CommandLineHelpFormat> &p_format = Ref<CommandLineHelpFormat>()) const;
 	String get_error_text() const;
 
 	void set_long_prefixes(const PoolStringArray &p_prefixes);

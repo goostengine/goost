@@ -14,6 +14,8 @@ func test_parse():
     input.names = ["input", "i"]
 
     cmd.add_option(input)
+    print(cmd.get_help_text())
+
     var err = cmd.parse(args)
     if err:
         print(cmd.get_error_text())

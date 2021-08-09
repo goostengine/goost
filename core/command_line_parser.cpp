@@ -688,7 +688,7 @@ void CommandLineParser::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_forwarding_args"), &CommandLineParser::get_forwarding_args);
 	ClassDB::bind_method(D_METHOD("get_args"), &CommandLineParser::get_args);
 
-	ClassDB::bind_method(D_METHOD("get_help_text", "format"), &CommandLineParser::get_help_text);
+	ClassDB::bind_method(D_METHOD("get_help_text", "format"), &CommandLineParser::get_help_text, DEFVAL(Variant()));
 	ClassDB::bind_method(D_METHOD("get_error_text"), &CommandLineParser::get_error_text);
 
 	ClassDB::bind_method(D_METHOD("clear"), &CommandLineParser::clear);
@@ -905,10 +905,13 @@ PoolStringArray CommandLineParser::get_args() const {
 }
 
 String CommandLineParser::get_help_text(const Ref<CommandLineHelpFormat> &p_format) const {
-	ERR_FAIL_COND_V_MSG(!p_format.is_valid(), String(), "Passed format should be valid");
 	ERR_FAIL_COND_V_MSG(_short_prefixes.empty(), String(), "Short prefixes can't be empty");
 	ERR_FAIL_COND_V_MSG(_long_prefixes.empty(), String(), "Long prefixes can't be empty");
 
+	Ref<CommandLineHelpFormat> format = p_format;
+	if (format.is_null()) {
+		format.instance();
+	}
 	// Build the formated "-x, --xxxxx" and save the longest size to align the descriptions.
 	int options_length = 0;
 	Vector<Pair<const CommandLineOption *, String>> printable_options;
@@ -928,14 +931,14 @@ String CommandLineParser::get_help_text(const Ref<CommandLineHelpFormat> &p_form
 		printable_options.push_back(Pair<const CommandLineOption *, String>(option, line));
 	}
 	// Adjust max available line length from specified parameters.
-	options_length = MIN(options_length + p_format->get_left_pad() + p_format->get_right_pad(), p_format->get_line_length() - p_format->get_min_description_length());
-	const int descriptions_length = p_format->get_line_length() - options_length;
+	options_length = MIN(options_length + format->get_left_pad() + format->get_right_pad(), format->get_line_length() - format->get_min_description_length());
+	const int descriptions_length = format->get_line_length() - options_length;
 
 	// Fill categories and their data.
 	OrderedHashMap<String, PoolStringArray> categories_data;
 	for (int i = 0; i < printable_options.size(); ++i) {
-		String line = printable_options[i].second.rpad(options_length - p_format->get_left_pad());
-		line = line.lpad(line.length() + p_format->get_left_pad());
+		String line = printable_options[i].second.rpad(options_length - format->get_left_pad());
+		line = line.lpad(line.length() + format->get_left_pad());
 		if (line.length() > options_length) {
 			// For long options, add a new padded line to display the description on a new line.
 			line += '\n';
@@ -969,16 +972,17 @@ String CommandLineParser::get_help_text(const Ref<CommandLineHelpFormat> &p_form
 	}
 	// Start generating help.
 	String help_text;
-	if (!p_format->get_header().empty()) {
-		help_text += p_format->get_header();
+	if (!format->get_header().empty()) {
+		help_text += format->get_header();
 	}
-	if (p_format->is_autogenerate_usage()) {
-		help_text += '\n' + _get_usage(printable_options, p_format->get_usage_title());
+	if (format->is_autogenerate_usage()) {
+		help_text += '\n' + _get_usage(printable_options, format->get_usage_title());
 	}
 	help_text += _get_options_description(categories_data);
-	if (!p_format->get_footer().empty()) {
-		help_text += '\n' + p_format->get_footer();
+	if (!format->get_footer().empty()) {
+		help_text += '\n' + format->get_footer();
 	}
+	help_text += '\n';
 	return help_text;
 }
 
