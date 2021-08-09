@@ -177,10 +177,11 @@ protected:
 public:
 	Error parse(const PoolStringArray &p_args);
 
+	Ref<CommandLineOption> new_option(const String &p_name, const String &p_description = "", const String &p_default_value = "", const PoolStringArray &p_allowed_values = PoolStringArray());
 	void add_option(const Ref<CommandLineOption> &p_option);
 	int get_option_count() const;
-	Ref<CommandLineOption> get_option(int p_idx) const;
 	void set_option(int p_idx, const Ref<CommandLineOption> &p_option);
+	Ref<CommandLineOption> get_option(int p_idx) const;
 	void remove_option(int p_idx);
 	Ref<CommandLineOption> find_option(const String &p_name) const;
 

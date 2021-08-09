@@ -153,6 +153,16 @@
 				Returns [code]true[/code] if [code]option[/code] was specified.
 			</description>
 		</method>
+		<method name="new_option">
+			<return type="CommandLineOption" />
+			<argument index="0" name="name" type="String" />
+			<argument index="1" name="description" type="String" default="&quot;&quot;" />
+			<argument index="2" name="default_value" type="String" default="&quot;&quot;" />
+			<argument index="3" name="allowed_values" type="PoolStringArray" default="PoolStringArray(  )" />
+			<description>
+				Instantiates a new [CommandLineOption] with a single name and adds it to the parser. Description, default value, and a list of allowed values can be optionally specified. Note that this method provides common parameters only, you should create [CommandLineOption] and use [method add_option] manually if you need to configure other properties for a new option, or modify the properties of the option returned by this method instead.
+			</description>
+		</method>
 		<method name="parse">
 			<return type="int" enum="Error" />
 			<argument index="0" name="args" type="PoolStringArray" />

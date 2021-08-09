@@ -8,16 +8,12 @@ func before_each():
 
 
 func test_parse():
-    var args = ["--input", "path"]
-
-    var input = CommandLineOption.new()
-    watch_signals(input)
-    input.names = ["input", "i"]
-
-    cmd.add_option(input)
+    var input: CommandLineOption = cmd.new_option("input", "Path to a file.", "file.txt")
     print(cmd.get_help_text())
 
-    var err = cmd.parse(args)
+    watch_signals(input)
+
+    var err = cmd.parse(["--input", "my_file.txt"])
     if err:
         print(cmd.get_error_text())
     assert_eq(err, OK)
@@ -27,7 +23,33 @@ func test_parse():
     var i = cmd.find_option("input")
     assert_eq(input, i)
 
-    assert_eq(cmd.get_value(i), "path")
+    assert_eq(cmd.get_value(i), "my_file.txt")
+
+
+func test_parse_multiple_options():
+    var input = cmd.new_option("input", "Path to a file.")
+    var verbose = cmd.new_option("verbose", "Run in verbose mode.", "no", ["yes", "no"])
+    var debug = cmd.new_option("debug", "Run in debug mode.", "yes", ["yes", "no"])
+
+    assert_true(input.default_args.empty())
+    assert_true("no" in verbose.default_args)
+    assert_true("yes" in debug.default_args)
+
+    var err = cmd.parse(["--input", "path", "--debug", "no", "--verbose", "yes"])
+    if err:
+        print(cmd.get_error_text())
+    assert_eq(err, OK)
+
+    assert_eq(cmd.get_value(input), "path")
+    assert_eq(cmd.get_value(verbose), "yes")
+    assert_eq(cmd.get_value(debug), "no")
+
+    Engine.print_error_messages = false
+
+    err = cmd.parse(["--input", "path", "--debug", "nono", "--verbose", "yeess"])
+    assert_eq(err, ERR_PARSE_ERROR, "Should detect invalid arguments.")
+
+    Engine.print_error_messages = true
 
 
 func add_test_option(arg_count):

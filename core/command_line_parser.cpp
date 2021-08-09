@@ -118,8 +118,8 @@ struct CommandLineParser::ParsedPrefix {
 // CommandLineParser
 
 bool CommandLineParser::_are_options_valid() const {
-	ERR_FAIL_COND_V_MSG(_short_prefixes.empty(), false, "Short prefixes can't be empty");
-	ERR_FAIL_COND_V_MSG(_long_prefixes.empty(), false, "Long prefixes can't be empty");
+	ERR_FAIL_COND_V_MSG(_short_prefixes.empty(), false, "Short prefixes cannot be empty");
+	ERR_FAIL_COND_V_MSG(_long_prefixes.empty(), false, "Long prefixes cannot be empty");
 
 	for (int i = 0; i < _options.size(); ++i) {
 		const CommandLineOption *option = _options[i].ptr();
@@ -355,7 +355,7 @@ static String join_args(const PoolStringArray &p_args) {
 
 bool CommandLineParser::_validate_option_arg(const CommandLineOption *p_option, const String &p_display_name, const String &p_arg) {
 	if (unlikely(!p_option->get_allowed_args().empty() && !has_arg(p_option->get_allowed_args(), p_arg))) {
-		_error_text = vformat(RTR("Argument '%s' can't be used for '%s', possible values: %s."), p_arg, p_display_name, join_args(p_option->get_allowed_args()));
+		_error_text = vformat(RTR("Argument '%s' cannot be used for '%s', possible values: %s."), p_arg, p_display_name, join_args(p_option->get_allowed_args()));
 		return false;
 	}
 	return true;
@@ -523,6 +523,7 @@ void CommandLineParser::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("remove_option", "idx"), &CommandLineParser::remove_option);
 	ClassDB::bind_method(D_METHOD("find_option", "name"), &CommandLineParser::find_option);
 
+	ClassDB::bind_method(D_METHOD("new_option", "name", "description", "default_value", "allowed_values"), &CommandLineParser::new_option, DEFVAL(""), DEFVAL(""), DEFVAL(PoolStringArray()));
 	ClassDB::bind_method(D_METHOD("add_help_option"), &CommandLineParser::add_help_option);
 	ClassDB::bind_method(D_METHOD("add_version_option"), &CommandLineParser::add_version_option);
 
@@ -668,6 +669,29 @@ Ref<CommandLineOption> CommandLineParser::find_option(const String &p_name) cons
 	return nullptr;
 }
 
+Ref<CommandLineOption> CommandLineParser::new_option(const String &p_name, const String &p_description, const String &p_default_value, const PoolStringArray &p_allowed_values) {
+	ERR_FAIL_COND_V_MSG(p_name.empty(), Ref<CommandLineOption>(), "Option name cannot be empty.");
+
+	Ref<CommandLineOption> option = memnew(CommandLineOption);
+	PoolVector<String> names;
+	names.push_back(p_name);
+	option->set_names(names);
+
+	option->set_description(p_description);
+
+	if (!p_default_value.empty()) {
+		PoolVector<String> default_args;
+		default_args.push_back(p_default_value);
+		option->set_default_args(default_args);
+	}
+	if (!p_allowed_values.empty()) {
+		option->set_allowed_args(p_allowed_values);
+	}
+	_options.push_back(option);
+
+	return option;
+}
+
 Ref<CommandLineOption> CommandLineParser::add_help_option() {
 	PoolVector<String> names;
 	names.push_back("h");
@@ -748,8 +772,8 @@ int CommandLineParser::get_occurrence_count(const Ref<CommandLineOption> &p_opti
 }
 
 String CommandLineParser::get_help_text(const Ref<CommandLineHelpFormat> &p_format) const {
-	ERR_FAIL_COND_V_MSG(_short_prefixes.empty(), String(), "Short prefixes can't be empty");
-	ERR_FAIL_COND_V_MSG(_long_prefixes.empty(), String(), "Long prefixes can't be empty");
+	ERR_FAIL_COND_V_MSG(_short_prefixes.empty(), String(), "Short prefixes cannot be empty");
+	ERR_FAIL_COND_V_MSG(_long_prefixes.empty(), String(), "Long prefixes cannot be empty");
 
 	Ref<CommandLineHelpFormat> format = p_format;
 	if (format.is_null()) {
