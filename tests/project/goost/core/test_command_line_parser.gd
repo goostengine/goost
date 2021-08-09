@@ -114,11 +114,11 @@ func test_forwarding_args():
 
     cmd.allow_forwarding_args = true
     assert_eq(cmd.parse(["--"]), OK, "Forwarding zero arguments should succeed.")
-    assert_true(cmd.get_forwarded_args().empty())
+    assert_true(cmd.get_forwarding_args().empty())
 
     assert_eq(cmd.parse(["--", "arg1", "arg2"]), OK,
             "Forwarding two arguments should succeed with `allow_forwarding_args = true`")
-    assert_eq(cmd.get_forwarded_args(), PoolStringArray(["arg1", "arg2"]))
+    assert_eq(cmd.get_forwarding_args(), PoolStringArray(["arg1", "arg2"]))
 
 
 func test_short_options():

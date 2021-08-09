@@ -6,9 +6,9 @@
 class CommandLineOption : public Reference {
 	GDCLASS(CommandLineOption, Reference);
 
-	struct ArgumentChecker;
-	struct FunctionChecker;
-	struct CallableChecker;
+	// struct ArgumentChecker;
+	// struct FunctionChecker;
+	// struct CallableChecker;
 
 	// Names for the options. e.g --help or -h.
 	PoolStringArray _names;
@@ -33,13 +33,13 @@ class CommandLineOption : public Reference {
 	// Arguments count required for the option, -1 for all arguments left.
 	int _arg_count = 1;
 	// Checker for each argument, nullptr if not check specified.
-	ArgumentChecker *_checker = nullptr;
+	// ArgumentChecker *_checker = nullptr;
 
 protected:
 	static void _bind_methods();
 
 public:
-	using CheckFunction = bool (*)(const String &);
+	// using CheckFunction = bool (*)(const String &);
 
 	void set_names(const PoolStringArray &p_names);
 	PoolStringArray get_names() const;
@@ -137,7 +137,7 @@ class CommandLineParser : public Reference {
 	Vector<Ref<CommandLineOption>> _options;
 
 	PoolStringArray _args;
-	PoolStringArray _forwarded_args;
+	PoolStringArray _forwarding_args;
 
 	PoolStringArray _long_prefixes;
 	PoolStringArray _short_prefixes;
@@ -156,7 +156,7 @@ class CommandLineParser : public Reference {
 	bool _allow_compound = true;
 
 	// Parser main helpers.
-	bool _is_options_valid() const;
+	bool _are_options_valid() const;
 	void _read_default_args();
 	int _validate_arguments(int p_current_idx); // Returns number of arguments taken, -1 on validation error.
 
@@ -207,14 +207,14 @@ public:
 	bool is_set(const Ref<CommandLineOption> &p_option) const;
 
 	String get_value(const Ref<CommandLineOption> &p_option) const;
-	PoolStringArray get_values(const Ref<CommandLineOption> &p_option) const;
+	PoolStringArray get_value_list(const Ref<CommandLineOption> &p_option) const;
 
 	String get_prefix(const Ref<CommandLineOption> &p_option) const;
-	PoolStringArray get_prefixes(const Ref<CommandLineOption> &p_option) const;
+	PoolStringArray get_prefix_list(const Ref<CommandLineOption> &p_option) const;
 
 	int get_occurrence_count(const Ref<CommandLineOption> &p_option) const;
 
-	PoolStringArray get_forwarded_args() const;
+	PoolStringArray get_forwarding_args() const;
 	PoolStringArray get_args() const;
 
 	String get_help_text(const Ref<CommandLineHelpFormat> &p_format) const;

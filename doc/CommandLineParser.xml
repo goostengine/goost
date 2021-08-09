@@ -7,7 +7,7 @@
 		[method OS.get_cmdline_args] provides the command-line arguments as a simple list of strings. [CommandLineParser] gives an ability to define a set of options, parse the command-line arguments, and store which options have actually been used, as well as option values.
 		Options on the command line are recognized as starting with any of specified [member long_prefixes] or [member short_prefixes] values. Long options consist of more than one character. Short options always consist of one character and can be written in a compact form, for instance [code]-abc[/code] is equivalent to [code]-a -b -c[/code]. Option values can be specified either separated by a space or by an [code]=[/code] sign (if the option takes only 1 argument). Short options can also have sticky values (without a space in-between, e.g. [code]-Dvalue[/code]).
 		Values can also be specified without an option name and the first option that is marked as [member CommandLineOption.positional] will be assigned automatically. For example, if the [code]input-file[/code] argument is marked as positional, then you can write either [code]--input-file=filename[/code] or just [code]filename[/code].
-		The option [code]--[/code] (without any symbol after) is a special case and means that all following options will be captured as valid and can be obtained later using [method get_forwarded_args].
+		The option [code]--[/code] (without any symbol after) is a special case and means that all following options will be captured as valid and can be obtained later using [method get_forwarding_args].
 		Example:
 		[codeblock]
 		var parser = CommandLineParser.new()
@@ -98,11 +98,11 @@
 				Returns a human-readable description of the last parser error that occurred.
 			</description>
 		</method>
-		<method name="get_forwarded_args" qualifiers="const">
+		<method name="get_forwarding_args" qualifiers="const">
 			<return type="PoolStringArray">
 			</return>
 			<description>
-				Returns all arguments that was forwarded (e.g. all arguments after [code]--[/code]).
+				Returns all arguments that were forwarded after parsing (e.g. all arguments after [code]--[/code]).
 			</description>
 		</method>
 		<method name="get_help_text" qualifiers="const">
@@ -145,10 +145,10 @@
 			<argument index="0" name="option" type="CommandLineOption">
 			</argument>
 			<description>
-				Returns first used prefix for [code]option[/code]. Example: for parsed [code]--help[/code] will return [code]--[/code]. Convenient helper for [method get_prefixes].
+				Returns first used prefix for [code]option[/code]. Example: for parsed [code]--help[/code] will return [code]--[/code]. Convenient helper for [method get_prefix_list].
 			</description>
 		</method>
-		<method name="get_prefixes" qualifiers="const">
+		<method name="get_prefix_list" qualifiers="const">
 			<return type="PoolStringArray">
 			</return>
 			<argument index="0" name="option" type="CommandLineOption">
@@ -163,10 +163,10 @@
 			<argument index="0" name="option" type="CommandLineOption">
 			</argument>
 			<description>
-				Returns first specified value for [code]option[/code]. Example: for parsed [code]--input filename.png[/code] will return [code]filename.png[/code]. Convenient helper for [method get_values].
+				Returns first specified value for [code]option[/code]. Example: for parsed [code]--input filename.png[/code] will return [code]filename.png[/code]. Convenient helper for [method get_value_list].
 			</description>
 		</method>
-		<method name="get_values" qualifiers="const">
+		<method name="get_value_list" qualifiers="const">
 			<return type="PoolStringArray">
 			</return>
 			<argument index="0" name="option" type="CommandLineOption">
@@ -229,7 +229,7 @@
 			If [code]true[/code], short options can be specified without a space. Example: [code]-aux[/code] will be equivalent to [code]-a -u -x[/code].
 		</member>
 		<member name="allow_forwarding_args" type="bool" setter="set_allow_forwarding_args" getter="is_allow_forwarding_args" default="false">
-			If [code]true[/code], all arguments after [code]--[/code] will be treated as forwarding arguments and will be available using the [method get_forwarded_args]. Such arguments will not be parsed as options.
+			If [code]true[/code], all arguments after [code]--[/code] will be treated as forwarding arguments and will be available using the [method get_forwarding_args]. Such arguments will not be parsed as options.
 		</member>
 		<member name="allow_sticky" type="bool" setter="set_allow_sticky" getter="is_allow_sticky" default="true">
 			If [code]true[/code], values for short options can be specified without a space. Example: [code]-ifilename.png[/code].

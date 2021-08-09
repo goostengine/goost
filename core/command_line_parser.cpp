@@ -3,20 +3,20 @@
 #include "core/os/os.h"
 
 // Checkers.
-struct CommandLineOption::ArgumentChecker {
-	String error_msg;
+// struct CommandLineOption::ArgumentChecker {
+// 	String error_msg;
 
-	virtual bool check(const String &p_arg) const = 0;
-	virtual ~ArgumentChecker() = default;
-};
+// 	virtual bool check(const String &p_arg) const = 0;
+// 	virtual ~ArgumentChecker() = default;
+// };
 
-struct CommandLineOption::FunctionChecker : public CommandLineOption::ArgumentChecker {
-	CheckFunction function;
+// struct CommandLineOption::FunctionChecker : public CommandLineOption::ArgumentChecker {
+// 	CheckFunction function;
 
-	bool check(const String &p_arg) const {
-		return function(p_arg);
-	}
-};
+// 	bool check(const String &p_arg) const {
+// 		return function(p_arg);
+// 	}
+// };
 
 // struct CommandLineOption::CallableChecker : public CommandLineOption::ArgumentChecker {
 // 	Callable callable;
@@ -216,9 +216,9 @@ CommandLineOption::CommandLineOption(const PoolStringArray &p_names, int p_arg_c
 		_arg_count(p_arg_count) {}
 
 CommandLineOption::~CommandLineOption() {
-	if (_checker) {
-		memdelete(_checker);
-	}
+	// if (_checker) {
+	// 	memdelete(_checker);
+	// }
 }
 
 // CommandLineHelpFormat
@@ -338,7 +338,7 @@ struct CommandLineParser::ParsedPrefix {
 
 // CommandLineParser
 
-bool CommandLineParser::_is_options_valid() const {
+bool CommandLineParser::_are_options_valid() const {
 	ERR_FAIL_COND_V_MSG(_short_prefixes.empty(), false, "Short prefixes can't be empty");
 	ERR_FAIL_COND_V_MSG(_long_prefixes.empty(), false, "Long prefixes can't be empty");
 
@@ -529,8 +529,8 @@ const CommandLineOption *CommandLineParser::_validate_option(const String &p_nam
 int CommandLineParser::_validate_option_args(const CommandLineOption *p_option, const String &p_display_name, int p_current_idx, bool p_skip_first) {
 	int validated_arg_count = 0;
 	int available_args = _args.size() - p_current_idx;
-	if (!_forwarded_args.empty()) {
-		available_args -= _forwarded_args.size() + 1; // Exclude forwarded args with separator.
+	if (!_forwarding_args.empty()) {
+		available_args -= _forwarding_args.size() + 1; // Exclude forwarded args with separator.
 	}
 
 	// Get all arguments left if specified value less then 0.
@@ -761,14 +761,14 @@ void CommandLineParser::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("is_set", "option"), &CommandLineParser::is_set);
 
 	ClassDB::bind_method(D_METHOD("get_value", "option"), &CommandLineParser::get_value);
-	ClassDB::bind_method(D_METHOD("get_values", "option"), &CommandLineParser::get_values);
+	ClassDB::bind_method(D_METHOD("get_value_list", "option"), &CommandLineParser::get_value_list);
 
 	ClassDB::bind_method(D_METHOD("get_prefix", "option"), &CommandLineParser::get_prefix);
-	ClassDB::bind_method(D_METHOD("get_prefixes", "option"), &CommandLineParser::get_prefixes);
+	ClassDB::bind_method(D_METHOD("get_prefix_list", "option"), &CommandLineParser::get_prefix_list);
 
 	ClassDB::bind_method(D_METHOD("get_occurrence_count", "option"), &CommandLineParser::get_occurrence_count);
 
-	ClassDB::bind_method(D_METHOD("get_forwarded_args"), &CommandLineParser::get_forwarded_args);
+	ClassDB::bind_method(D_METHOD("get_forwarding_args"), &CommandLineParser::get_forwarding_args);
 	ClassDB::bind_method(D_METHOD("get_args"), &CommandLineParser::get_args);
 
 	ClassDB::bind_method(D_METHOD("get_help_text", "format"), &CommandLineParser::get_help_text);
@@ -817,12 +817,12 @@ static int find_arg(const PoolStringArray &p_args, const String &p_arg) {
 
 Error CommandLineParser::parse(const PoolStringArray &p_args) {
 	_args = p_args;
-	_forwarded_args.resize(0);
+	_forwarding_args.resize(0);
 	_parsed_values.clear();
 	_parsed_prefixes.clear();
 	_parsed_count.clear();
 
-	if (unlikely(!_is_options_valid())) {
+	if (unlikely(!_are_options_valid())) {
 		_error = RTR("Option parser was defined with incorrect options.");
 		return ERR_INVALID_DECLARATION;
 	}
@@ -835,7 +835,7 @@ Error CommandLineParser::parse(const PoolStringArray &p_args) {
 			arg_count = separator_pos;
 			if (separator_pos + 1 != _args.size()) {
 				// Arguments after available.
-				_forwarded_args = _args.subarray(separator_pos + 1, _args.size() - 1);
+				_forwarding_args = _args.subarray(separator_pos + 1, _args.size() - 1);
 			}
 		}
 	}
@@ -939,14 +939,14 @@ String CommandLineParser::get_value(const Ref<CommandLineOption> &p_option) cons
 	ERR_FAIL_COND_V(p_option.is_null(), String());
 	ERR_FAIL_COND_V_MSG(p_option->get_arg_count() == 0, String(), vformat("Option '%s' does not accept arguments.", _to_string(p_option->get_names())));
 
-	const PoolStringArray args = get_values(p_option);
+	const PoolStringArray args = get_value_list(p_option);
 	if (args.empty()) {
 		return String();
 	}
 	return args[0];
 }
 
-PoolStringArray CommandLineParser::get_values(const Ref<CommandLineOption> &p_option) const {
+PoolStringArray CommandLineParser::get_value_list(const Ref<CommandLineOption> &p_option) const {
 	ERR_FAIL_COND_V(p_option.is_null(), PoolStringArray());
 	ERR_FAIL_COND_V_MSG(p_option->get_arg_count() == 0, PoolStringArray(), vformat("Option '%s' does not accept arguments.", _to_string(p_option->get_names())));
 	const Map<const CommandLineOption *, PoolStringArray>::Element *E = _parsed_values.find(p_option.ptr());
@@ -958,14 +958,14 @@ PoolStringArray CommandLineParser::get_values(const Ref<CommandLineOption> &p_op
 
 String CommandLineParser::get_prefix(const Ref<CommandLineOption> &p_option) const {
 	ERR_FAIL_COND_V(p_option.is_null(), String());
-	const PoolStringArray args = get_prefixes(p_option);
+	const PoolStringArray args = get_prefix_list(p_option);
 	if (args.empty()) {
 		return String();
 	}
 	return args[0];
 }
 
-PoolStringArray CommandLineParser::get_prefixes(const Ref<CommandLineOption> &p_option) const {
+PoolStringArray CommandLineParser::get_prefix_list(const Ref<CommandLineOption> &p_option) const {
 	ERR_FAIL_COND_V(p_option.is_null(), PoolStringArray());
 	const Map<const CommandLineOption *, PoolStringArray>::Element *E = _parsed_prefixes.find(p_option.ptr());
 	if (!E) {
@@ -1069,14 +1069,14 @@ String CommandLineParser::get_error_text() const {
 	return _error;
 }
 
-PoolStringArray CommandLineParser::get_forwarded_args() const {
-	return _forwarded_args;
+PoolStringArray CommandLineParser::get_forwarding_args() const {
+	return _forwarding_args;
 }
 
 void CommandLineParser::clear() {
 	_options.clear();
 	_args.resize(0);
-	_forwarded_args.resize(0);
+	_forwarding_args.resize(0);
 	_parsed_values.clear();
 	_parsed_prefixes.clear();
 	_error.clear();
