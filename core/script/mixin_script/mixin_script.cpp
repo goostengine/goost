@@ -199,6 +199,11 @@ bool MixinScript::is_valid() const {
 	return false;
 }
 
+bool MixinScript::inherits_script(const Ref<Script> &p_script) const {
+	// There is no inheritance in mixin scripts, so this is enough.
+	return this == p_script.ptr(); 
+}
+
 void MixinScript::clear_mixins() {
 	while (mixins.size()) {
 		remove_mixin(0);

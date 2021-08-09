@@ -88,6 +88,8 @@ public:
 	virtual bool is_tool() const;
 	virtual bool is_valid() const;
 
+	virtual bool inherits_script(const Ref<Script> &p_script) const;
+
 	virtual String get_node_type() const { return ""; }
 
 	void add_mixin(const Ref<Script> &p_script);
