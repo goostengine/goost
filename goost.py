@@ -146,7 +146,7 @@ class GoostClass:
 #
 # Only rightmost child components are specified.
 classes = {
-    "EditorVCSInterfaceGit": "vcs",
+    "EditorVCSInterfaceGit": "vcs",  # modules/git
     "GoostEngine": "core",
     "GoostGeometry2D": "geometry",
     "GoostImage": "image",
@@ -185,9 +185,9 @@ classes = {
 # This is a list of all classes registered from within `modules/` directory.
 # These cannot be disabled via `custom.py` configuration file.
 module_classes = [
-    "ImageFrames",
-    "GDScriptTranspiler",
     "EditorVCSInterfaceGit",
+    "GDScriptTranspiler",
+    "ImageFrames",
 ]
 
 # Instantiate `GoostClass` nodes.

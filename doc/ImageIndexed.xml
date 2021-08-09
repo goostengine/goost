@@ -11,51 +11,39 @@
 	</tutorials>
 	<methods>
 		<method name="apply_palette">
-			<return type="int" enum="Error">
-			</return>
+			<return type="int" enum="Error" />
 			<description>
 				Extends color palette associated with this image from index data and overwrites the original image.
 				Note that the image will still be represented as true color.
 			</description>
 		</method>
 		<method name="clear_palette">
-			<return type="void">
-			</return>
+			<return type="void" />
 			<description>
 				Clears palette and associated index data from this image.
 			</description>
 		</method>
 		<method name="create_indexed">
-			<return type="int" enum="Error">
-			</return>
-			<argument index="0" name="num_palette_entries" type="int" default="256">
-			</argument>
+			<return type="int" enum="Error" />
+			<argument index="0" name="num_palette_entries" type="int" default="256" />
 			<description>
 				Internally allocates indexed image data with the same dimensions as in this image. The number of palette entries can be specified to allocate palette data to be used by image indices.
 			</description>
 		</method>
 		<method name="create_indexed_from_data">
-			<return type="int" enum="Error">
-			</return>
-			<argument index="0" name="palette_data" type="PoolByteArray">
-			</argument>
-			<argument index="1" name="index_data" type="PoolByteArray">
-			</argument>
+			<return type="int" enum="Error" />
+			<argument index="0" name="palette_data" type="PoolByteArray" />
+			<argument index="1" name="index_data" type="PoolByteArray" />
 			<description>
 				A low-level interface to allocate indexed image and color palette from raw data. Make sure that the data is valid and all indices point to valid color palette entries. The palette bitness is determined by image pixel size (in bytes).
 			</description>
 		</method>
 		<method name="generate_palette">
-			<return type="float">
-			</return>
-			<argument index="0" name="num_colors" type="int" default="256">
-			</argument>
-			<argument index="1" name="dithering" type="int" enum="ImageIndexed.DitherMode" default="0">
-			</argument>
-			<argument index="2" name="with_alpha" type="bool" default="true">
-			</argument>
-			<argument index="3" name="high_quality" type="bool" default="false">
-			</argument>
+			<return type="float" />
+			<argument index="0" name="num_colors" type="int" default="256" />
+			<argument index="1" name="dithering" type="int" enum="ImageIndexed.DitherMode" default="0" />
+			<argument index="2" name="with_alpha" type="bool" default="true" />
+			<argument index="3" name="high_quality" type="bool" default="false" />
 			<description>
 				Generates an optimal color palette for this image and maps it to indices. The maximum palette color size that can be generated is 256. Dithering can be applied to improve the overall look of the image with low number of colors, see [enum DitherMode].
 				If [code]with_alpha[/code] is [code]true[/code], the alpha channel will be included for quantization algorithm, set this to false if the image is already premultiplied by alpha or if you don't want the alpha values to affect palette generation.
@@ -65,91 +53,71 @@
 			</description>
 		</method>
 		<method name="get_palette_color" qualifiers="const">
-			<return type="Color">
-			</return>
-			<argument index="0" name="index" type="int">
-			</argument>
+			<return type="Color" />
+			<argument index="0" name="index" type="int" />
 			<description>
 				Returns color palette entry at [code]index[/code] position.
 			</description>
 		</method>
 		<method name="get_palette_size" qualifiers="const">
-			<return type="int">
-			</return>
+			<return type="int" />
 			<description>
 				Returns the total number of color palette entries.
 			</description>
 		</method>
 		<method name="get_pixel_indexed" qualifiers="const">
-			<return type="int">
-			</return>
-			<argument index="0" name="x" type="int">
-			</argument>
-			<argument index="1" name="y" type="int">
-			</argument>
+			<return type="int" />
+			<argument index="0" name="x" type="int" />
+			<argument index="1" name="y" type="int" />
 			<description>
 				Returns an index which is mapped to color palette. See notes for [method Image.get_pixel].
 			</description>
 		</method>
 		<method name="has_palette" qualifiers="const">
-			<return type="bool">
-			</return>
+			<return type="bool" />
 			<description>
 				Return [code]true[/code] is this image has color palette.
 			</description>
 		</method>
 		<method name="load_indexed_png">
-			<return type="int" enum="Error">
-			</return>
-			<argument index="0" name="path" type="String">
-			</argument>
+			<return type="int" enum="Error" />
+			<argument index="0" name="path" type="String" />
 			<description>
 				Loads indexed PNG image from disk at specified path. If PNG image is not indexed, it will load the image normally without color palette, see [method Image.load]. If loaded image is indexed, the color palette and index data will be accessible from within this image. If this image is duplicated, the color palette and index data will not be copied, use [member index_data], [member palette_data] and [method create_indexed_from_data] to manually duplicate palette and index data.
 			</description>
 		</method>
 		<method name="lock_indexed">
-			<return type="void">
-			</return>
+			<return type="void" />
 			<description>
 				Locks the index data for writing access.
 			</description>
 		</method>
 		<method name="save_indexed_png" qualifiers="const">
-			<return type="int" enum="Error">
-			</return>
-			<argument index="0" name="path" type="String">
-			</argument>
+			<return type="int" enum="Error" />
+			<argument index="0" name="path" type="String" />
 			<description>
 				Saves indexed PNG image to disk at specified path. If image has palette and index data associated with it, the image will be saved as indexed, else saved as true color, see [method Image.save_png]. The image with transparency is saved in a separate PNG alpha chunk, preserving transparency in indexed image with regular RGB color palette.
 			</description>
 		</method>
 		<method name="set_palette_color">
-			<return type="void">
-			</return>
-			<argument index="0" name="index" type="int">
-			</argument>
-			<argument index="1" name="color" type="Color">
-			</argument>
+			<return type="void" />
+			<argument index="0" name="index" type="int" />
+			<argument index="1" name="color" type="Color" />
 			<description>
 				Sets color palette entry at [code]index[/code] position with [code]color[/code].
 			</description>
 		</method>
 		<method name="set_pixel_indexed">
-			<return type="void">
-			</return>
-			<argument index="0" name="x" type="int">
-			</argument>
-			<argument index="1" name="y" type="int">
-			</argument>
-			<argument index="2" name="index" type="int">
-			</argument>
+			<return type="void" />
+			<argument index="0" name="x" type="int" />
+			<argument index="1" name="y" type="int" />
+			<argument index="2" name="index" type="int" />
 			<description>
 				Sets an index which should be mapped to color palette. See notes for [method Image.set_pixel].
 			</description>
 		</method>
 		<method name="unlock_indexed">
-			<return type="void">
-			</return>
+			<return type="void" />
 			<description>
 				Unlocks the index data and prevents changes.
 			</description>

@@ -5,10 +5,10 @@
 	</brief_description>
 	<description>
 		This plugin provides basic [url=https://git-scm.com/]Git[/url] functionality from within the editor powered by [url=https://libgit2.org/]libgit2[/url] library.
-		Note that pulling and pushing are not available in [EditorVCSInterface] as of Godot 3.x.
-		Signed commits are not implemented yet.
+		[b]Note:[/b] pulling and pushing features are not available in [EditorVCSInterface] as of Godot 3.x. Signed commits are not implemented.
 	</description>
 	<tutorials>
+		<link>https://goost.readthedocs.io/en/latest/components/version_control.html</link>
 	</tutorials>
 	<methods>
 	</methods>

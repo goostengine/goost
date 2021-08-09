@@ -10,86 +10,66 @@
 	</tutorials>
 	<methods>
 		<method name="add_frame">
-			<return type="void">
-			</return>
-			<argument index="0" name="image" type="Image">
-			</argument>
-			<argument index="1" name="delay" type="float" default="-1">
-			</argument>
+			<return type="void" />
+			<argument index="0" name="image" type="Image" />
+			<argument index="1" name="delay" type="float" default="-1" />
 			<description>
 				Adds a new frame.
 			</description>
 		</method>
 		<method name="clear">
-			<return type="void">
-			</return>
+			<return type="void" />
 			<description>
 				Removes all frames.
 			</description>
 		</method>
 		<method name="get_frame_count" qualifiers="const">
-			<return type="int">
-			</return>
+			<return type="int" />
 			<description>
 				Returns the total number of frames.
 			</description>
 		</method>
 		<method name="get_frame_delay" qualifiers="const">
-			<return type="float">
-			</return>
-			<argument index="0" name="index" type="int">
-			</argument>
+			<return type="float" />
+			<argument index="0" name="index" type="int" />
 			<description>
 				Returns the delay of frame [code]idx[/code].
 			</description>
 		</method>
 		<method name="get_frame_image" qualifiers="const">
-			<return type="Image">
-			</return>
-			<argument index="0" name="index" type="int">
-			</argument>
+			<return type="Image" />
+			<argument index="0" name="index" type="int" />
 			<description>
 				Returns the [Image] of frame [code]idx[/code].
 			</description>
 		</method>
 		<method name="load">
-			<return type="int" enum="Error">
-			</return>
-			<argument index="0" name="path" type="String">
-			</argument>
-			<argument index="1" name="max_frames" type="int" default="0">
-			</argument>
+			<return type="int" enum="Error" />
+			<argument index="0" name="path" type="String" />
+			<argument index="1" name="max_frames" type="int" default="0" />
 			<description>
 				Loads the data from a file located at [code]path[/code]. Recognizes the following file extensions: [code]gif[/code]. The [code]max_frames[/code] parameter limits the number of frames which can be loaded.
 			</description>
 		</method>
 		<method name="load_gif_from_buffer">
-			<return type="int" enum="Error">
-			</return>
-			<argument index="0" name="data" type="PoolByteArray">
-			</argument>
-			<argument index="1" name="max_frames" type="int" default="0">
-			</argument>
+			<return type="int" enum="Error" />
+			<argument index="0" name="data" type="PoolByteArray" />
+			<argument index="1" name="max_frames" type="int" default="0" />
 			<description>
 				Loads the data from a [PoolByteArray] GIF buffer. The [code]max_frames[/code] parameter limits the number of frames which can be loaded.
 			</description>
 		</method>
 		<method name="remove_frame">
-			<return type="void">
-			</return>
-			<argument index="0" name="index" type="int">
-			</argument>
+			<return type="void" />
+			<argument index="0" name="index" type="int" />
 			<description>
 				Removes the frame [code]idx[/code].
 			</description>
 		</method>
 		<method name="save_gif">
-			<return type="int" enum="Error">
-			</return>
-			<argument index="0" name="filepath" type="String">
-			</argument>
-			<argument index="1" name="color_count" type="int" default="256">
-			</argument>
+			<return type="int" enum="Error" />
+			<argument index="0" name="filepath" type="String" />
+			<argument index="1" name="color_count" type="int" default="256" />
 			<description>
 				Saves a GIF file using frames added with [method add_frame]. If there are multiple images, creates an animated GIF, taking into account individual frame delays. If there's only one image, GIF is written as a static image.
 				The [code]color_count[/code] parameter specifies the number of colors in GIF color map. The number of colors are rounded to nearest power of two, and the maximum number of colors is [code]256[/code].
@@ -99,23 +79,17 @@
 			</description>
 		</method>
 		<method name="set_frame_delay">
-			<return type="void">
-			</return>
-			<argument index="0" name="index" type="int">
-			</argument>
-			<argument index="1" name="delay" type="float">
-			</argument>
+			<return type="void" />
+			<argument index="0" name="index" type="int" />
+			<argument index="1" name="delay" type="float" />
 			<description>
 				Sets the delay in seconds of frame [code]idx[/code].
 			</description>
 		</method>
 		<method name="set_frame_image">
-			<return type="void">
-			</return>
-			<argument index="0" name="index" type="int">
-			</argument>
-			<argument index="1" name="image" type="Image">
-			</argument>
+			<return type="void" />
+			<argument index="0" name="index" type="int" />
+			<argument index="1" name="image" type="Image" />
 			<description>
 				Sets the [Image] of frame [code]idx[/code].
 			</description>

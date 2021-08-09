@@ -11,16 +11,14 @@
 	</tutorials>
 	<methods>
 		<method name="_apply_shapes" qualifiers="virtual">
-			<return type="void">
-			</return>
+			<return type="void" />
 			<description>
 				Called whenever [PolyNode2D] outlines are updated, [PolyNode2D] children are added/removed, and when [member build_mode] is changed.
 				Use [method get_shapes] to construct new entities such as collision [Shape2D]s from outlines. See also [PolyCollisionShape2D].
 			</description>
 		</method>
 		<method name="get_shapes">
-			<return type="Array">
-			</return>
+			<return type="Array" />
 			<description>
 				Returns an array of [PoolVector2Array] polygon outlines previously built from [member build_mode].
 			</description>

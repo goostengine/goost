@@ -20,33 +20,22 @@
 	</tutorials>
 	<methods>
 		<method name="choice">
-			<return type="Variant">
-			</return>
-			<argument index="0" name="from_sequence" type="Variant">
-			</argument>
+			<return type="Variant" />
+			<argument index="0" name="from_sequence" type="Variant" />
 			<description>
 				Returns a random element from indexable sequence-based types, such as [Array] or [String]. If the sequence is empty, prints an error and returns [code]null[/code].
 			</description>
 		</method>
 		<method name="color_hsv">
-			<return type="Color">
-			</return>
-			<argument index="0" name="hue_min" type="float" default="0.0">
-			</argument>
-			<argument index="1" name="hue_max" type="float" default="1.0">
-			</argument>
-			<argument index="2" name="saturation_min" type="float" default="0.0">
-			</argument>
-			<argument index="3" name="saturation_max" type="float" default="1.0">
-			</argument>
-			<argument index="4" name="value_min" type="float" default="0.0">
-			</argument>
-			<argument index="5" name="value_max" type="float" default="1.0">
-			</argument>
-			<argument index="6" name="alpha_min" type="float" default="1.0">
-			</argument>
-			<argument index="7" name="alpha_max" type="float" default="1.0">
-			</argument>
+			<return type="Color" />
+			<argument index="0" name="hue_min" type="float" default="0.0" />
+			<argument index="1" name="hue_max" type="float" default="1.0" />
+			<argument index="2" name="saturation_min" type="float" default="0.0" />
+			<argument index="3" name="saturation_max" type="float" default="1.0" />
+			<argument index="4" name="value_min" type="float" default="0.0" />
+			<argument index="5" name="value_max" type="float" default="1.0" />
+			<argument index="6" name="alpha_min" type="float" default="1.0" />
+			<argument index="7" name="alpha_max" type="float" default="1.0" />
 			<description>
 				Generates a random [Color] specified in HSV color model. See also [method Color.from_hsv]. By default, equivalent to the following code:
 				[codeblock]
@@ -56,24 +45,15 @@
 			</description>
 		</method>
 		<method name="color_rgb">
-			<return type="Color">
-			</return>
-			<argument index="0" name="red_min" type="float" default="0.0">
-			</argument>
-			<argument index="1" name="red_max" type="float" default="1.0">
-			</argument>
-			<argument index="2" name="green_min" type="float" default="0.0">
-			</argument>
-			<argument index="3" name="green_max" type="float" default="1.0">
-			</argument>
-			<argument index="4" name="blue_min" type="float" default="0.0">
-			</argument>
-			<argument index="5" name="blue_max" type="float" default="1.0">
-			</argument>
-			<argument index="6" name="alpha_min" type="float" default="1.0">
-			</argument>
-			<argument index="7" name="alpha_max" type="float" default="1.0">
-			</argument>
+			<return type="Color" />
+			<argument index="0" name="red_min" type="float" default="0.0" />
+			<argument index="1" name="red_max" type="float" default="1.0" />
+			<argument index="2" name="green_min" type="float" default="0.0" />
+			<argument index="3" name="green_max" type="float" default="1.0" />
+			<argument index="4" name="blue_min" type="float" default="0.0" />
+			<argument index="5" name="blue_max" type="float" default="1.0" />
+			<argument index="6" name="alpha_min" type="float" default="1.0" />
+			<argument index="7" name="alpha_max" type="float" default="1.0" />
 			<description>
 				Generates a random [Color] specified in RGB color model. By default, equivalent to the following code:
 				[codeblock]
@@ -83,28 +63,22 @@
 			</description>
 		</method>
 		<method name="decision">
-			<return type="bool">
-			</return>
-			<argument index="0" name="probability" type="float">
-			</argument>
+			<return type="bool" />
+			<argument index="0" name="probability" type="float" />
 			<description>
 				Returns a boolean based on a given [code]probability[/code] value in the range of [code]0.0..1.0[/code]. The higher the probability value the higher the chance of this returning [code]true[/code].
 			</description>
 		</method>
 		<method name="new_instance" qualifiers="const">
-			<return type="Reference">
-			</return>
+			<return type="Reference" />
 			<description>
 				Instantiates a new local [Random] instance based on [RandomNumberGenerator]. Does not override the [Random] instance accessible at [@GlobalScope].
 			</description>
 		</method>
 		<method name="range">
-			<return type="Variant">
-			</return>
-			<argument index="0" name="from" type="Variant">
-			</argument>
-			<argument index="1" name="to" type="Variant">
-			</argument>
+			<return type="Variant" />
+			<argument index="0" name="from" type="Variant" />
+			<argument index="1" name="to" type="Variant" />
 			<description>
 				Generates a singular value in a specified range depending on the type of [Variant]. The types of [code]from[/code] and [code]to[/code] must be the same.
 				For integer and float values, generates a random number in the range equivalently to [method RandomNumberGenerator.randi_range] and [method RandomNumberGenerator.randf_range] respectively.
@@ -112,10 +86,8 @@
 			</description>
 		</method>
 		<method name="shuffle">
-			<return type="void">
-			</return>
-			<argument index="0" name="array" type="Array">
-			</argument>
+			<return type="void" />
+			<argument index="0" name="array" type="Array" />
 			<description>
 				Shuffles the array such that the items will have a random order. By default, this method uses the global random number generator in [Random] singletons, but unlike in [method Array.shuffle], local instances of [Random] can be created with [method new_instance] to achieve reproducible results given the same seed.
 			</description>

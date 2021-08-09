@@ -13,54 +13,45 @@
 	</tutorials>
 	<methods>
 		<method name="build_outlines">
-			<return type="Array">
-			</return>
+			<return type="Array" />
 			<description>
 				Builds outlines from selected [member operation]. Unlike [method get_outlines], returns outlines immediately without scheduling operation for the next frame, so prefer to use [method get_outlines] if you care about performance over immediate information.
 			</description>
 		</method>
 		<method name="clear">
-			<return type="void">
-			</return>
+			<return type="void" />
 			<description>
 				Removes all [PolyNode2D] children immediately. Use [method Object.call_deferred] if you want to emulate the [method Node.queue_free] behavior.
 			</description>
 		</method>
 		<method name="get_outlines">
-			<return type="Array">
-			</return>
+			<return type="Array" />
 			<description>
 				Returns the outlines representing this node, which may result from the clipping [member operation]. This is different from [member points].
 			</description>
 		</method>
 		<method name="is_inner" qualifiers="const">
-			<return type="bool">
-			</return>
+			<return type="bool" />
 			<description>
 				Tells whether this node is an inner or an outer node in the hierarchy of nested nodes. If this node has no [PolyNode2D] parent and has empty [member points], this node is considered as inner node containing outer children. If [member points] is not empty, this is an outer node.
 			</description>
 		</method>
 		<method name="is_root" qualifiers="const">
-			<return type="bool">
-			</return>
+			<return type="bool" />
 			<description>
 				Returns [code]true[/code] if this node has no [PolyNode2D] as parent.
 			</description>
 		</method>
 		<method name="make_from_outlines">
-			<return type="void">
-			</return>
-			<argument index="0" name="outlines" type="Array">
-			</argument>
+			<return type="void" />
+			<argument index="0" name="outlines" type="Array" />
 			<description>
 				Constructs an hierarchy of nodes from an array of outer and inner outlines. New nodes are constructed to represent inner outlines with [member operation] set to [constant OP_DIFFERENCE].
 			</description>
 		</method>
 		<method name="new_child">
-			<return type="PolyNode2D">
-			</return>
-			<argument index="0" name="from_points" type="PoolVector2Array">
-			</argument>
+			<return type="PolyNode2D" />
+			<argument index="0" name="from_points" type="PoolVector2Array" />
 			<description>
 				Constructs a new [PolyNode2D] using vertices from supplied points.
 			</description>

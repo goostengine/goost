@@ -28,143 +28,110 @@
 	</tutorials>
 	<methods>
 		<method name="clear">
-			<return type="void">
-			</return>
+			<return type="void" />
 			<description>
 				Clears all elements in this map.
 			</description>
 		</method>
 		<method name="create">
-			<return type="void">
-			</return>
-			<argument index="0" name="width" type="int">
-			</argument>
-			<argument index="1" name="height" type="int">
-			</argument>
+			<return type="void" />
+			<argument index="0" name="width" type="int" />
+			<argument index="1" name="height" type="int" />
 			<description>
 				Initializes the map by allocating new data to hold [code]width * height[/code] elements. By default, all elements of the map are initialized to [code]null[/code] values.
 				[b]Note:[/b] this clears all existing elements from the map before creation.
 			</description>
 		</method>
 		<method name="create_from_data">
-			<return type="void">
-			</return>
-			<argument index="0" name="width" type="int">
-			</argument>
-			<argument index="1" name="height" type="int">
-			</argument>
-			<argument index="2" name="data" type="Array">
-			</argument>
+			<return type="void" />
+			<argument index="0" name="width" type="int" />
+			<argument index="1" name="height" type="int" />
+			<argument index="2" name="data" type="Array" />
 			<description>
 				Initializes the map from a continuos 1D array of data. The number of elements in [code]data[/code] must be equal to [code]width * height[/code].
 			</description>
 		</method>
 		<method name="fill">
-			<return type="void">
-			</return>
-			<argument index="0" name="with_value" type="Variant">
-			</argument>
+			<return type="void" />
+			<argument index="0" name="with_value" type="Variant" />
 			<description>
 				Fills all elements in the map with a specified value.
 			</description>
 		</method>
 		<method name="get_cell">
-			<return type="Variant">
-			</return>
-			<argument index="0" name="position" type="Vector2">
-			</argument>
+			<return type="Variant" />
+			<argument index="0" name="position" type="Vector2" />
 			<description>
 				Similar to [method get_element], but accepts [Vector2] as coordinates.
 			</description>
 		</method>
 		<method name="get_cell_or_null">
-			<return type="Variant">
-			</return>
-			<argument index="0" name="position" type="Vector2">
-			</argument>
+			<return type="Variant" />
+			<argument index="0" name="position" type="Vector2" />
 			<description>
 				Returns cell's value if the map contains an element at specified position, otherwise returns [code]null[/code]. See also [method has_cell].
 			</description>
 		</method>
 		<method name="get_element">
-			<return type="Variant">
-			</return>
-			<argument index="0" name="x" type="int">
-			</argument>
-			<argument index="1" name="y" type="int">
-			</argument>
+			<return type="Variant" />
+			<argument index="0" name="x" type="int" />
+			<argument index="1" name="y" type="int" />
 			<description>
 				Returns an element at specified coordinates.
 			</description>
 		</method>
 		<method name="get_height" qualifiers="const">
-			<return type="int">
-			</return>
+			<return type="int" />
 			<description>
 				Returns the total number of rows.
 			</description>
 		</method>
 		<method name="get_size" qualifiers="const">
-			<return type="Vector2">
-			</return>
+			<return type="Vector2" />
 			<description>
 				Returns the map dimensions as [Vector2] (width and height).
 			</description>
 		</method>
 		<method name="get_width" qualifiers="const">
-			<return type="int">
-			</return>
+			<return type="int" />
 			<description>
 				Returns the total number of elements per row.
 			</description>
 		</method>
 		<method name="has_cell">
-			<return type="bool">
-			</return>
-			<argument index="0" name="position" type="Vector2">
-			</argument>
+			<return type="bool" />
+			<argument index="0" name="position" type="Vector2" />
 			<description>
 				Returns [code]true[/code] if the map contains an element at specified position. Returns [code]false[/code] if the position lies outside the map dimensions. See also [method get_cell_or_null].
 			</description>
 		</method>
 		<method name="is_empty" qualifiers="const">
-			<return type="bool">
-			</return>
+			<return type="bool" />
 			<description>
 				Returns whether the map is empty (does not contain data).
 			</description>
 		</method>
 		<method name="resize">
-			<return type="void">
-			</return>
-			<argument index="0" name="new_width" type="int">
-			</argument>
-			<argument index="1" name="new_height" type="int">
-			</argument>
+			<return type="void" />
+			<argument index="0" name="new_width" type="int" />
+			<argument index="1" name="new_height" type="int" />
 			<description>
 				Resizes the map to have a different number of elements. Resizing an existing map to a smaller size rearranges the elements to fit new width and height without preserving original positions ([b]To-do:[/b] implement cropping method for this). Resizing an existing map to a larger size initializes new elements to [code]null[/code].
 			</description>
 		</method>
 		<method name="set_cell">
-			<return type="void">
-			</return>
-			<argument index="0" name="position" type="Vector2">
-			</argument>
-			<argument index="1" name="value" type="Variant">
-			</argument>
+			<return type="void" />
+			<argument index="0" name="position" type="Vector2" />
+			<argument index="1" name="value" type="Variant" />
 			<description>
 				Similar to [method set_element], but accepts [Vector2] as coordinates.
 			</description>
 		</method>
 		<method name="set_element">
-			<return type="void">
-			</return>
-			<argument index="0" name="x" type="int">
-			</argument>
-			<argument index="1" name="y" type="int">
-			</argument>
-			<argument index="2" name="value" type="Variant">
-			</argument>
+			<return type="void" />
+			<argument index="0" name="x" type="int" />
+			<argument index="1" name="y" type="int" />
+			<argument index="2" name="value" type="Variant" />
 			<description>
 				Sets any value to element at specified coordinates.
 			</description>

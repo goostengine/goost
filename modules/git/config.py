@@ -14,5 +14,14 @@ def can_build(env, platform):
 
     return build
 
+
 def configure(env):
 	pass
+
+
+def get_doc_path():
+    return "doc"
+
+
+def get_doc_classes():
+    return ["EditorVCSInterfaceGit"]

@@ -20,24 +20,18 @@
 	</tutorials>
 	<methods>
 		<method name="deflate_polygons" qualifiers="const">
-			<return type="Array">
-			</return>
-			<argument index="0" name="polygons" type="Array">
-			</argument>
-			<argument index="1" name="delta" type="float">
-			</argument>
+			<return type="Array" />
+			<argument index="0" name="polygons" type="Array" />
+			<argument index="1" name="delta" type="float" />
 			<description>
 				Deflates an array of [code]polygons[/code] by [code]delta[/code] pixels, growing the polygons outward.
 				Each polygon's vertices will be rounded as determined by [member PolyOffsetParameters2D.join_type].
 			</description>
 		</method>
 		<method name="deflate_polylines" qualifiers="const">
-			<return type="Array">
-			</return>
-			<argument index="0" name="polylines" type="Array">
-			</argument>
-			<argument index="1" name="delta" type="float">
-			</argument>
+			<return type="Array" />
+			<argument index="0" name="polylines" type="Array" />
+			<argument index="1" name="delta" type="float" />
 			<description>
 				Deflates (grows) [code]polylines[/code] into polygons by [code]delta[/code] pixels.
 				Each polygon's vertices will be rounded as determined by [member PolyOffsetParameters2D.join_type].
@@ -45,20 +39,16 @@
 			</description>
 		</method>
 		<method name="inflate_polygons" qualifiers="const">
-			<return type="Array">
-			</return>
-			<argument index="0" name="polygons" type="Array">
-			</argument>
-			<argument index="1" name="delta" type="float">
-			</argument>
+			<return type="Array" />
+			<argument index="0" name="polygons" type="Array" />
+			<argument index="1" name="delta" type="float" />
 			<description>
 				Inflates an array of [code]polygons[/code] by [code]delta[/code] pixels, shrinking the polygons inward. Returns an empty array if [code]delta[/code] approximately exceeds the minimum bounding rectangle dimensions of each of the polygons.
 				Each polygon's vertices will be rounded as determined by [member PolyOffsetParameters2D.join_type].
 			</description>
 		</method>
 		<method name="new_instance" qualifiers="const">
-			<return type="Reference">
-			</return>
+			<return type="Reference" />
 			<description>
 				Instantiates a new local [PolyOffset2D] instance, and [member parameters] can be configured.
 			</description>

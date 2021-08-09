@@ -12,255 +12,190 @@
 	</tutorials>
 	<methods>
 		<method name="bounding_rect" qualifiers="const">
-			<return type="Rect2">
-			</return>
-			<argument index="0" name="points" type="PoolVector2Array">
-			</argument>
+			<return type="Rect2" />
+			<argument index="0" name="points" type="PoolVector2Array" />
 			<description>
 				Computes the axis-aligned bounding rectangle of given points.
 			</description>
 		</method>
 		<method name="circle" qualifiers="const">
-			<return type="PoolVector2Array">
-			</return>
-			<argument index="0" name="radius" type="float">
-			</argument>
-			<argument index="1" name="max_error" type="float" default="0.25">
-			</argument>
+			<return type="PoolVector2Array" />
+			<argument index="0" name="radius" type="float" />
+			<argument index="1" name="max_error" type="float" default="0.25" />
 			<description>
 				Generates a closed path approximating the shape of a circle with the specified radius.
 				The [code]max_error[/code] parameter represents the maximum gap in pixels allowed between a circle segment and the boundary of the mathematical circle, with low values increasing the number of vertices. The maximum number of vertices returned is 4096. See also [method regular_polygon].
 			</description>
 		</method>
 		<method name="clip_polygons" qualifiers="const">
-			<return type="Array">
-			</return>
-			<argument index="0" name="polygon_a" type="PoolVector2Array">
-			</argument>
-			<argument index="1" name="polygon_b" type="PoolVector2Array">
-			</argument>
+			<return type="Array" />
+			<argument index="0" name="polygon_a" type="PoolVector2Array" />
+			<argument index="1" name="polygon_b" type="PoolVector2Array" />
 			<description>
 				Performs [constant PolyBoolean2D.OP_DIFFERENCE] between individual polygons.
 			</description>
 		</method>
 		<method name="clip_polyline_with_polygon" qualifiers="const">
-			<return type="Array">
-			</return>
-			<argument index="0" name="polyline" type="PoolVector2Array">
-			</argument>
-			<argument index="1" name="polygon" type="PoolVector2Array">
-			</argument>
+			<return type="Array" />
+			<argument index="0" name="polyline" type="PoolVector2Array" />
+			<argument index="1" name="polygon" type="PoolVector2Array" />
 			<description>
 				Clips a single [code]polyline[/code] against a single [code]polygon[/code] and returns an array of clipped polylines. This performs [constant PolyBoolean2D.OP_DIFFERENCE] between the polyline and the polygon. Returns an empty array if the [code]polygon[/code] completely encloses [code]polyline[/code]. This operation can be thought of as cutting a line with a closed shape.
 			</description>
 		</method>
 		<method name="decompose_polygon" qualifiers="const">
-			<return type="Array">
-			</return>
-			<argument index="0" name="polygon" type="PoolVector2Array">
-			</argument>
+			<return type="Array" />
+			<argument index="0" name="polygon" type="PoolVector2Array" />
 			<description>
 				Partitions a single polygon into a set of convex polygons with [constant PolyDecomp2D.DECOMP_CONVEX_HM].
 			</description>
 		</method>
 		<method name="deflate_polygon" qualifiers="const">
-			<return type="Array">
-			</return>
-			<argument index="0" name="polygon" type="PoolVector2Array">
-			</argument>
-			<argument index="1" name="delta" type="float">
-			</argument>
+			<return type="Array" />
+			<argument index="0" name="polygon" type="PoolVector2Array" />
+			<argument index="1" name="delta" type="float" />
 			<description>
 				Grows a polygon by [code]delta[/code] pixels. See also [method PolyOffset2D.deflate_polygons].
 			</description>
 		</method>
 		<method name="deflate_polyline" qualifiers="const">
-			<return type="Array">
-			</return>
-			<argument index="0" name="polyline" type="PoolVector2Array">
-			</argument>
-			<argument index="1" name="delta" type="float">
-			</argument>
+			<return type="Array" />
+			<argument index="0" name="polyline" type="PoolVector2Array" />
+			<argument index="1" name="delta" type="float" />
 			<description>
 				Grows a single non-closed path into a polygon by [code]delta[/code] pixels. See also [method PolyOffset2D.deflate_polylines].
 			</description>
 		</method>
 		<method name="exclude_polygons" qualifiers="const">
-			<return type="Array">
-			</return>
-			<argument index="0" name="polygon_a" type="PoolVector2Array">
-			</argument>
-			<argument index="1" name="polygon_b" type="PoolVector2Array">
-			</argument>
+			<return type="Array" />
+			<argument index="0" name="polygon_a" type="PoolVector2Array" />
+			<argument index="1" name="polygon_b" type="PoolVector2Array" />
 			<description>
 				Performs [constant PolyBoolean2D.OP_XOR] between individual polygons.
 			</description>
 		</method>
 		<method name="inflate_polygon" qualifiers="const">
-			<return type="Array">
-			</return>
-			<argument index="0" name="polygon" type="PoolVector2Array">
-			</argument>
-			<argument index="1" name="delta" type="float">
-			</argument>
+			<return type="Array" />
+			<argument index="0" name="polygon" type="PoolVector2Array" />
+			<argument index="1" name="delta" type="float" />
 			<description>
 				Shrinks a polygon by [code]delta[/code] pixels. See also [method PolyOffset2D.inflate_polygons].
 			</description>
 		</method>
 		<method name="intersect_polygons" qualifiers="const">
-			<return type="Array">
-			</return>
-			<argument index="0" name="polygon_a" type="PoolVector2Array">
-			</argument>
-			<argument index="1" name="polygon_b" type="PoolVector2Array">
-			</argument>
+			<return type="Array" />
+			<argument index="0" name="polygon_a" type="PoolVector2Array" />
+			<argument index="1" name="polygon_b" type="PoolVector2Array" />
 			<description>
 				Performs [constant PolyBoolean2D.OP_INTERSECTION] between individual polygons.
 			</description>
 		</method>
 		<method name="intersect_polyline_with_polygon" qualifiers="const">
-			<return type="Array">
-			</return>
-			<argument index="0" name="polyline" type="PoolVector2Array">
-			</argument>
-			<argument index="1" name="polygon" type="PoolVector2Array">
-			</argument>
+			<return type="Array" />
+			<argument index="0" name="polyline" type="PoolVector2Array" />
+			<argument index="1" name="polygon" type="PoolVector2Array" />
 			<description>
 				Intersects polyline with polygon and returns an array of intersected polylines. This performs [constant PolyBoolean2D.OP_INTERSECTION] between the polyline and the polygon. This operation can be thought of as chopping a line with a closed shape.
 			</description>
 		</method>
 		<method name="merge_polygons" qualifiers="const">
-			<return type="Array">
-			</return>
-			<argument index="0" name="polygon_a" type="PoolVector2Array">
-			</argument>
-			<argument index="1" name="polygon_b" type="PoolVector2Array">
-			</argument>
+			<return type="Array" />
+			<argument index="0" name="polygon_a" type="PoolVector2Array" />
+			<argument index="1" name="polygon_b" type="PoolVector2Array" />
 			<description>
 				Performs [constant PolyBoolean2D.OP_UNION] between individual polygons. If you need to merge multiple polygons, use [method PolyBoolean2D.merge_polygons] instead.
 			</description>
 		</method>
 		<method name="pixel_circle" qualifiers="const">
-			<return type="PoolVector2Array">
-			</return>
-			<argument index="0" name="radius" type="int">
-			</argument>
-			<argument index="1" name="origin" type="Vector2" default="Vector2( 0, 0 )">
-			</argument>
+			<return type="PoolVector2Array" />
+			<argument index="0" name="radius" type="int" />
+			<argument index="1" name="origin" type="Vector2" default="Vector2( 0, 0 )" />
 			<description>
 				Returns an array of 2D-dimensional raster coordinates approximating a circle using a Bresenham type algorithm.
 				[b]Note:[/b] pixels are created per circle's octant for performance reasons, so you should not rely on the order of returned pixels. If you do need ordered points, consider using methods such as [method polygon_to_pixels] and [method circle] with lower values for [code]max_error[/code] parameter, but take in mind that the quality of the returned points is going to be sub-optimal in comparison.
 			</description>
 		</method>
 		<method name="pixel_line" qualifiers="const">
-			<return type="PoolVector2Array">
-			</return>
-			<argument index="0" name="start" type="Vector2">
-			</argument>
-			<argument index="1" name="end" type="Vector2">
-			</argument>
+			<return type="PoolVector2Array" />
+			<argument index="0" name="start" type="Vector2" />
+			<argument index="1" name="end" type="Vector2" />
 			<description>
 				Returns an array of 2D-dimensional raster coordinates going through a segment determined by [code]start[/code] and [code]end[/code] points using a Bresenham type algorithm. The line is a close approximation to a straight line between those points.
 			</description>
 		</method>
 		<method name="point_in_polygon" qualifiers="const">
-			<return type="int">
-			</return>
-			<argument index="0" name="point" type="Vector2">
-			</argument>
-			<argument index="1" name="polygon" type="PoolVector2Array">
-			</argument>
+			<return type="int" />
+			<argument index="0" name="point" type="Vector2" />
+			<argument index="1" name="polygon" type="PoolVector2Array" />
 			<description>
 				Returns +1 if the point is [i]inside[/i] the polygon, 0 if the point is [i]outside[/i] the polygon, and -1 if the point is [i]exactly[/i] on the polygon's boundary. Supports arbitrary polygons.
 			</description>
 		</method>
 		<method name="polygon_area" qualifiers="const">
-			<return type="float">
-			</return>
-			<argument index="0" name="polygon" type="PoolVector2Array">
-			</argument>
+			<return type="float" />
+			<argument index="0" name="polygon" type="PoolVector2Array" />
 			<description>
 				Returns [code]polygon[/code]'s positive or negative area depending on whether vertices are ordered in clockwise or counterclockwise order. See also [method Geometry.is_polygon_clockwise]. If the order is clockwise, the polygon can be interpreted as an inner polygon (hole), otherwise it's an outer polygon (boundary).
 			</description>
 		</method>
 		<method name="polygon_centroid" qualifiers="const">
-			<return type="Vector2">
-			</return>
-			<argument index="0" name="polygon" type="PoolVector2Array">
-			</argument>
+			<return type="Vector2" />
+			<argument index="0" name="polygon" type="PoolVector2Array" />
 			<description>
 				Calculates the centroid (also known as "center of mass" or "center of gravity") of the [code]polygon[/code] and returns the consistent result regardless of polygon orientation, see [method Geometry.is_polygon_clockwise]. For accurate results, the polygon must be strictly simple, meaning there should be no self-intersecting edges.
 			</description>
 		</method>
 		<method name="polygon_perimeter" qualifiers="const">
-			<return type="float">
-			</return>
-			<argument index="0" name="polygon" type="PoolVector2Array">
-			</argument>
+			<return type="float" />
+			<argument index="0" name="polygon" type="PoolVector2Array" />
 			<description>
 				Returns the perimeter of an arbitrary polygon. See also [method polyline_length].
 			</description>
 		</method>
 		<method name="polygon_to_pixels" qualifiers="const">
-			<return type="PoolVector2Array">
-			</return>
-			<argument index="0" name="points" type="PoolVector2Array">
-			</argument>
+			<return type="PoolVector2Array" />
+			<argument index="0" name="points" type="PoolVector2Array" />
 			<description>
 				Returns an array of 2D-dimensional raster coordinates approximating a polygon going through [code]points[/code] using [method pixel_line]. Point coordinates in the input [code]points[/code] are rounded to nearest integer values.
 				[b]Note:[/b] this method does not fill the interior of the polygon. If you need this to raster polygons onto an image, use [method GoostImage.render_polygon] instead.
 			</description>
 		</method>
 		<method name="polyline_length" qualifiers="const">
-			<return type="float">
-			</return>
-			<argument index="0" name="polyline" type="PoolVector2Array">
-			</argument>
+			<return type="float" />
+			<argument index="0" name="polyline" type="PoolVector2Array" />
 			<description>
 				Returns the total length of the segments representing the polyline. See also [method polygon_perimeter].
 			</description>
 		</method>
 		<method name="polyline_to_pixels" qualifiers="const">
-			<return type="PoolVector2Array">
-			</return>
-			<argument index="0" name="points" type="PoolVector2Array">
-			</argument>
+			<return type="PoolVector2Array" />
+			<argument index="0" name="points" type="PoolVector2Array" />
 			<description>
 				Returns an array of 2D-dimensional raster coordinates approximating a polyline going through [code]points[/code] using [method pixel_line]. Point coordinates in the input [code]points[/code] are rounded to nearest integer values.
 			</description>
 		</method>
 		<method name="regular_polygon" qualifiers="const">
-			<return type="PoolVector2Array">
-			</return>
-			<argument index="0" name="sides" type="int">
-			</argument>
-			<argument index="1" name="size" type="float">
-			</argument>
+			<return type="PoolVector2Array" />
+			<argument index="0" name="sides" type="int" />
+			<argument index="1" name="size" type="float" />
 			<description>
 				Generates a regular polygon (triangle, rectangle, pentagon, hexagon etc.) with all equal sides and angles. The specified size can be seen as a radius, with an increasing number of sides approximating a [method circle].
 				The order of vertices returned is counterclockwise which makes it an outer polygon by default. To convert it to an inner polygon specifically, use [method PoolVector2Array.invert].
 			</description>
 		</method>
 		<method name="simplify_polyline" qualifiers="const">
-			<return type="PoolVector2Array">
-			</return>
-			<argument index="0" name="polyline" type="PoolVector2Array">
-			</argument>
-			<argument index="1" name="epsilon" type="float">
-			</argument>
+			<return type="PoolVector2Array" />
+			<argument index="0" name="polyline" type="PoolVector2Array" />
+			<argument index="1" name="epsilon" type="float" />
 			<description>
 				Simplifies a polyline by reducing the number of points using the Ramer-Douglas-Peucker (RDP) algorithm. Higher [code]epsilon[/code] values result in fewer points retained.
 			</description>
 		</method>
 		<method name="smooth_polygon" qualifiers="const">
-			<return type="PoolVector2Array">
-			</return>
-			<argument index="0" name="polygon" type="PoolVector2Array">
-			</argument>
-			<argument index="1" name="density" type="float">
-			</argument>
-			<argument index="2" name="alpha" type="float" default="0.5">
-			</argument>
+			<return type="PoolVector2Array" />
+			<argument index="0" name="polygon" type="PoolVector2Array" />
+			<argument index="1" name="density" type="float" />
+			<argument index="2" name="alpha" type="float" default="0.5" />
 			<description>
 				Smoothers the polygon using the Catmull-Rom's interpolating spline, resulting in larger number of vertices.
 				The [code]density[/code] parameter configures the desired number of vertices in the output polygon: [code]n = polygon.size() * density[/code], where [code]n[/code] is the point count computed. If [code]density &lt; 1.0[/code], returns original [code]polygon[/code]. The number of vertices is weighted per segment according to the [method polygon_perimeter].
@@ -269,28 +204,20 @@
 			</description>
 		</method>
 		<method name="smooth_polygon_approx" qualifiers="const">
-			<return type="PoolVector2Array">
-			</return>
-			<argument index="0" name="polygon" type="PoolVector2Array">
-			</argument>
-			<argument index="1" name="iterations" type="int" default="1">
-			</argument>
-			<argument index="2" name="cut_distance" type="float" default="0.25">
-			</argument>
+			<return type="PoolVector2Array" />
+			<argument index="0" name="polygon" type="PoolVector2Array" />
+			<argument index="1" name="iterations" type="int" default="1" />
+			<argument index="2" name="cut_distance" type="float" default="0.25" />
 			<description>
 				Approximately smoothers the polygon using the Chaikin's algorithm resulting in larger number of vertices. Number of [code]iterations[/code] can be specified to produce smoother polygons. The [code]cut_distance[/code] determines at what distance new control points are selected from segments.
 				Unlike [method smooth_polygon], the resulting curve does not go through input vertices, but instead touches the segments of the original [code]polygon[/code].
 			</description>
 		</method>
 		<method name="smooth_polyline" qualifiers="const">
-			<return type="PoolVector2Array">
-			</return>
-			<argument index="0" name="polyline" type="PoolVector2Array">
-			</argument>
-			<argument index="1" name="density" type="float">
-			</argument>
-			<argument index="2" name="alpha" type="float" default="0.5">
-			</argument>
+			<return type="PoolVector2Array" />
+			<argument index="0" name="polyline" type="PoolVector2Array" />
+			<argument index="1" name="density" type="float" />
+			<argument index="2" name="alpha" type="float" default="0.5" />
 			<description>
 				Smoothers the polyline using the Catmull-Rom's interpolating spline, resulting in larger number of vertices.
 				The [code]density[/code] parameter configures the desired number of vertices in the output polyline: [code]n = polyline.size() * density[/code], where [code]n[/code] is the point count computed. If [code]density &lt; 1.0[/code], returns original [code]polyline[/code]. The number of vertices is weighted per segment according to the [method polyline_length].
@@ -299,14 +226,10 @@
 			</description>
 		</method>
 		<method name="smooth_polyline_approx" qualifiers="const">
-			<return type="PoolVector2Array">
-			</return>
-			<argument index="0" name="polyline" type="PoolVector2Array">
-			</argument>
-			<argument index="1" name="iterations" type="int" default="1">
-			</argument>
-			<argument index="2" name="cut_distance" type="float" default="0.25">
-			</argument>
+			<return type="PoolVector2Array" />
+			<argument index="0" name="polyline" type="PoolVector2Array" />
+			<argument index="1" name="iterations" type="int" default="1" />
+			<argument index="2" name="cut_distance" type="float" default="0.25" />
 			<description>
 				Approximately smoothers the polyline using the Chaikin's algorithm resulting in larger number of vertices. Number of [code]iterations[/code] can be specified to produce smoother polylines. The [code]cut_distance[/code] determines at what distance new control points are selected from segments.
 				Unlike [method smooth_polyline], the resulting curve does not go through input vertices, but instead touches the segments of the original polyline.
@@ -314,10 +237,8 @@
 			</description>
 		</method>
 		<method name="triangulate_polygon" qualifiers="const">
-			<return type="Array">
-			</return>
-			<argument index="0" name="polygon" type="PoolVector2Array">
-			</argument>
+			<return type="Array" />
+			<argument index="0" name="polygon" type="PoolVector2Array" />
 			<description>
 				Decomposes the polygon into individual triangles using [constant PolyDecomp2D.DECOMP_TRIANGLES_MONO].
 			</description>

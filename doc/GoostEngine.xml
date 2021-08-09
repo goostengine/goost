@@ -11,30 +11,23 @@
 	</tutorials>
 	<methods>
 		<method name="defer_call" qualifiers="vararg">
-			<return type="void">
-			</return>
-			<argument index="0" name="object" type="Object">
-			</argument>
-			<argument index="1" name="method" type="String">
-			</argument>
+			<return type="void" />
+			<argument index="0" name="object" type="Object" />
+			<argument index="1" name="method" type="String" />
 			<description>
 				Calls the [code]method[/code] on the [code]object[/code] during idle time. Mostly equivalent to [method Object.call_deferred], so prefer to use [method Object.call_deferred] unless you need the same behavior along with [method defer_call_unique] which uses the same deferring mechanism.
 			</description>
 		</method>
 		<method name="defer_call_unique" qualifiers="vararg">
-			<return type="void">
-			</return>
-			<argument index="0" name="object" type="Object">
-			</argument>
-			<argument index="1" name="method" type="String">
-			</argument>
+			<return type="void" />
+			<argument index="0" name="object" type="Object" />
+			<argument index="1" name="method" type="String" />
 			<description>
 				Calls the [code]method[/code] on the [code]object[/code] during idle time. Whether a call is unique is determined by the number and type of arguments passed, and any consecutive calls are not scheduled, unlike [method Object.call_deferred].
 			</description>
 		</method>
 		<method name="get_author_info" qualifiers="const">
-			<return type="Dictionary">
-			</return>
+			<return type="Dictionary" />
 			<description>
 				Returns Goost author information in a [Dictionary].
 				[code]lead_developers[/code]    - [Array] of [String], lead developer names
@@ -44,8 +37,7 @@
 			</description>
 		</method>
 		<method name="get_color_constants" qualifiers="const">
-			<return type="Dictionary">
-			</return>
+			<return type="Dictionary" />
 			<description>
 				Returns a [Dictionary] of color constants listed in [Color], with keys as names and values as actual colors.
 				[codeblock]
@@ -59,8 +51,7 @@
 			</description>
 		</method>
 		<method name="get_copyright_info" qualifiers="const">
-			<return type="Array">
-			</return>
+			<return type="Array" />
 			<description>
 				Returns an [Array] of [Dictionary] including copyright information.
 				[code]name[/code]    - [String], component name
@@ -68,8 +59,7 @@
 			</description>
 		</method>
 		<method name="get_invokes" qualifiers="const">
-			<return type="Array">
-			</return>
+			<return type="Array" />
 			<description>
 				Returns an [Array] of active [InvokeState] objects which can be used to track pending method invocations. If any reference to repeating [InvokeState] is lost, then all such invocations can be cancelled the following way:
 				[codeblock]
@@ -80,22 +70,19 @@
 			</description>
 		</method>
 		<method name="get_license_info" qualifiers="const">
-			<return type="Dictionary">
-			</return>
+			<return type="Dictionary" />
 			<description>
 				Returns [Dictionary] of licenses used by Goost and included third-party components.
 			</description>
 		</method>
 		<method name="get_license_text" qualifiers="const">
-			<return type="String">
-			</return>
+			<return type="String" />
 			<description>
 				Returns Goost license text.
 			</description>
 		</method>
 		<method name="get_version_info" qualifiers="const">
-			<return type="Dictionary">
-			</return>
+			<return type="Dictionary" />
 			<description>
 				Returns the current Goost version information in a Dictionary.
 				[code]major[/code]    - Holds the major version number as an int
@@ -110,18 +97,12 @@
 			</description>
 		</method>
 		<method name="invoke">
-			<return type="InvokeState">
-			</return>
-			<argument index="0" name="object" type="Object">
-			</argument>
-			<argument index="1" name="method" type="String">
-			</argument>
-			<argument index="2" name="delay" type="float">
-			</argument>
-			<argument index="3" name="repeat_rate" type="float" default="-1.0">
-			</argument>
-			<argument index="4" name="pause_mode_process" type="bool" default="true">
-			</argument>
+			<return type="InvokeState" />
+			<argument index="0" name="object" type="Object" />
+			<argument index="1" name="method" type="String" />
+			<argument index="2" name="delay" type="float" />
+			<argument index="3" name="repeat_rate" type="float" default="-1.0" />
+			<argument index="4" name="pause_mode_process" type="bool" default="true" />
 			<description>
 				Schedules a [code]method[/code] on the [code]object[/code] to be called [code]delay[/code] seconds later.
 				If [code]repeat_rate &gt;= 0.0[/code], then the method is invoked repeatedly every [code]repeat_rate[/code] seconds until it's cancelled manually using [method InvokeState.cancel]. If the object is freed during the wait period, the invocation is cancelled automatically.
@@ -129,18 +110,12 @@
 			</description>
 		</method>
 		<method name="invoke_deferred">
-			<return type="InvokeState">
-			</return>
-			<argument index="0" name="object" type="Object">
-			</argument>
-			<argument index="1" name="method" type="String">
-			</argument>
-			<argument index="2" name="delay" type="float">
-			</argument>
-			<argument index="3" name="repeat_rate" type="float" default="-1.0">
-			</argument>
-			<argument index="4" name="pause_mode_process" type="bool" default="true">
-			</argument>
+			<return type="InvokeState" />
+			<argument index="0" name="object" type="Object" />
+			<argument index="1" name="method" type="String" />
+			<argument index="2" name="delay" type="float" />
+			<argument index="3" name="repeat_rate" type="float" default="-1.0" />
+			<argument index="4" name="pause_mode_process" type="bool" default="true" />
 			<description>
 				Same as [method invoke], but calls the [code]method[/code] on idle time when the time arrives. This means that the method may not always be invoked exactly after [code]delay[/code] seconds.
 			</description>

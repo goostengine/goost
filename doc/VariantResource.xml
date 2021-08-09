@@ -19,17 +19,14 @@
 	</tutorials>
 	<methods>
 		<method name="get_value" qualifiers="const">
-			<return type="Variant">
-			</return>
+			<return type="Variant" />
 			<description>
 				Returns [Variant] data associated with this resource. The method is recommended to use over [method Object.get] as the property's name may be customized with [member property_name].
 			</description>
 		</method>
 		<method name="set_value">
-			<return type="void">
-			</return>
-			<argument index="0" name="value" type="Variant">
-			</argument>
+			<return type="void" />
+			<argument index="0" name="value" type="Variant" />
 			<description>
 				Modifies existing value of this resource. The value's type is updated automatically if types differ. The method is recommended to use over [method Object.set] as the property's name may be customized with [member property_name].
 			</description>

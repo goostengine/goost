@@ -36,17 +36,14 @@
 	</tutorials>
 	<methods>
 		<method name="clear">
-			<return type="void">
-			</return>
+			<return type="void" />
 			<description>
 				Erases all nodes from the list.
 			</description>
 		</method>
 		<method name="create_from">
-			<return type="void">
-			</return>
-			<argument index="0" name="value" type="Variant">
-			</argument>
+			<return type="void" />
+			<argument index="0" name="value" type="Variant" />
 			<description>
 				Initializes the list from a [Variant] compatible type. Clears all nodes before copying.
 				If [code]value[/code] is [code]null[/code], just clears the contents of the list.
@@ -56,105 +53,83 @@
 			</description>
 		</method>
 		<method name="empty" qualifiers="const">
-			<return type="bool">
-			</return>
+			<return type="bool" />
 			<description>
 				Returns [code]true[/code] if the list doesn't contain any nodes.
 			</description>
 		</method>
 		<method name="erase">
-			<return type="bool">
-			</return>
-			<argument index="0" name="value" type="Variant">
-			</argument>
+			<return type="bool" />
+			<argument index="0" name="value" type="Variant" />
 			<description>
 				Erases (deletes) the first found node with a matching value in the list.
 			</description>
 		</method>
 		<method name="find">
-			<return type="ListNode">
-			</return>
-			<argument index="0" name="value" type="Variant">
-			</argument>
+			<return type="ListNode" />
+			<argument index="0" name="value" type="Variant" />
 			<description>
 				Returns a node if a list contains a node with specified value, otherwise returns [code]null[/code].
 			</description>
 		</method>
 		<method name="get_elements">
-			<return type="Array">
-			</return>
+			<return type="Array" />
 			<description>
 				An alias for [method get_nodes].
 			</description>
 		</method>
 		<method name="get_nodes">
-			<return type="Array">
-			</return>
+			<return type="Array" />
 			<description>
 				Returns all nodes as an [Array], preserving front-to-back order.
 			</description>
 		</method>
 		<method name="insert_after">
-			<return type="ListNode">
-			</return>
-			<argument index="0" name="node" type="ListNode">
-			</argument>
-			<argument index="1" name="value" type="Variant">
-			</argument>
+			<return type="ListNode" />
+			<argument index="0" name="node" type="ListNode" />
+			<argument index="1" name="value" type="Variant" />
 			<description>
 				Constructs a new [ListNode] and places it [i]after[/i] existing node in the list. If [code]node[/code] is [code]null[/code], then the value is pushed at the end of the list, making the behavior equivalent to [method push_back].
 			</description>
 		</method>
 		<method name="insert_before">
-			<return type="ListNode">
-			</return>
-			<argument index="0" name="node" type="ListNode">
-			</argument>
-			<argument index="1" name="value" type="Variant">
-			</argument>
+			<return type="ListNode" />
+			<argument index="0" name="node" type="ListNode" />
+			<argument index="1" name="value" type="Variant" />
 			<description>
 				Constructs a new [ListNode] and places it [i]before[/i] existing node in the list. If [code]node[/code] is [code]null[/code], then the value is pushed at the end of the list, making the behavior equivalent to [method push_back].
 			</description>
 		</method>
 		<method name="invert">
-			<return type="void">
-			</return>
+			<return type="void" />
 			<description>
 				Inverts the order of nodes in the list.
 			</description>
 		</method>
 		<method name="move_before">
-			<return type="void">
-			</return>
-			<argument index="0" name="node" type="ListNode">
-			</argument>
-			<argument index="1" name="before_node" type="ListNode">
-			</argument>
+			<return type="void" />
+			<argument index="0" name="node" type="ListNode" />
+			<argument index="1" name="before_node" type="ListNode" />
 			<description>
 				Moves a node [i]before[/i] the other one within the list.
 			</description>
 		</method>
 		<method name="move_to_back">
-			<return type="void">
-			</return>
-			<argument index="0" name="node" type="ListNode">
-			</argument>
+			<return type="void" />
+			<argument index="0" name="node" type="ListNode" />
 			<description>
 				Moves a node to the back of the list ([member back] node will point to [code]node[/code]).
 			</description>
 		</method>
 		<method name="move_to_front">
-			<return type="void">
-			</return>
-			<argument index="0" name="node" type="ListNode">
-			</argument>
+			<return type="void" />
+			<argument index="0" name="node" type="ListNode" />
 			<description>
 				Moves a node to the front of the list (the [member front] node will point to [code]node[/code]).
 			</description>
 		</method>
 		<method name="pop_back">
-			<return type="void">
-			</return>
+			<return type="void" />
 			<description>
 				Erases the last node of the list. Make sure to preserve the [member ListNode.value] if you're interested in the data associated with the node:
 				[codeblock]
@@ -164,8 +139,7 @@
 			</description>
 		</method>
 		<method name="pop_front">
-			<return type="void">
-			</return>
+			<return type="void" />
 			<description>
 				Erases the first node of the list. Make sure to preserve the [member ListNode.value] if you're interested in the data associated with the node:
 				[codeblock]
@@ -175,44 +149,35 @@
 			</description>
 		</method>
 		<method name="push_back">
-			<return type="ListNode">
-			</return>
-			<argument index="0" name="value" type="Variant">
-			</argument>
+			<return type="ListNode" />
+			<argument index="0" name="value" type="Variant" />
 			<description>
 				Constructs a new [ListNode] and pushes it at the [i]end[/i] of the list.
 			</description>
 		</method>
 		<method name="push_front">
-			<return type="ListNode">
-			</return>
-			<argument index="0" name="value" type="Variant">
-			</argument>
+			<return type="ListNode" />
+			<argument index="0" name="value" type="Variant" />
 			<description>
 				Constructs a new [ListNode] and pushes it at the [i]beginning[/i] of the list.
 			</description>
 		</method>
 		<method name="size" qualifiers="const">
-			<return type="int">
-			</return>
+			<return type="int" />
 			<description>
 				Returns the total number of nodes in the list.
 			</description>
 		</method>
 		<method name="sort">
-			<return type="void">
-			</return>
+			<return type="void" />
 			<description>
 				Sorts the list in alphabetical order if the list contains [String]s. If the list contains nodes with different types of values, these are sorted according to the order of type in [Variant].
 			</description>
 		</method>
 		<method name="swap">
-			<return type="void">
-			</return>
-			<argument index="0" name="node_A" type="ListNode">
-			</argument>
-			<argument index="1" name="node_B" type="ListNode">
-			</argument>
+			<return type="void" />
+			<argument index="0" name="node_A" type="ListNode" />
+			<argument index="1" name="node_B" type="ListNode" />
 			<description>
 				Moves [code]node_A[/code] to the position of [code]node_B[/code], and moves [code]node_B[/code] to the original position of [code]node_A[/code]. If [code]node_A == node_B[/code], does nothing.
 			</description>

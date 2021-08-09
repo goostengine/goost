@@ -23,36 +23,31 @@
 	</tutorials>
 	<methods>
 		<method name="is_running" qualifiers="const">
-			<return type="bool">
-			</return>
+			<return type="bool" />
 			<description>
 				Returns [code]true[/code] if the stopwatch is in the process of measuring a time interval. The opposite of [method is_stopped].
 			</description>
 		</method>
 		<method name="is_stopped" qualifiers="const">
-			<return type="bool">
-			</return>
+			<return type="bool" />
 			<description>
 				Returns [code]true[/code] if the stopwatch is inactive (or hasn't been started yet). The opposite of [method is_running].
 			</description>
 		</method>
 		<method name="reset">
-			<return type="void">
-			</return>
+			<return type="void" />
 			<description>
 				Stops time interval measurement and resets the [member time_elapsed] to zero. The stopwatch cannot be reset if it's already running. In that case, call [method stop] before resetting the stopwatch.
 			</description>
 		</method>
 		<method name="start">
-			<return type="void">
-			</return>
+			<return type="void" />
 			<description>
 				Starts (or resumes) measuring elapsed time for an interval.
 			</description>
 		</method>
 		<method name="stop">
-			<return type="void">
-			</return>
+			<return type="void" />
 			<description>
 				Stops measuring elapsed time for an interval. Emits the [signal interval_measured]. You can reset the stopwatch to zero by calling [method reset] manually.
 			</description>
@@ -72,12 +67,9 @@
 	</members>
 	<signals>
 		<signal name="interval_measured">
-			<argument index="0" name="time_interval" type="float">
-			</argument>
-			<argument index="1" name="time_start" type="float">
-			</argument>
-			<argument index="2" name="time_stop" type="float">
-			</argument>
+			<argument index="0" name="time_interval" type="float" />
+			<argument index="1" name="time_start" type="float" />
+			<argument index="2" name="time_stop" type="float" />
 			<description>
 				Emitted when the stopwatch stops the measurement of a time interval. The [code]time_interval[/code] is the difference between elapsed times between [method start] and [method stop] calls. The signal also provides the start and stop times via [code]time_start[/code] and [code]time_stop[/code] respectively.
 				If the stopwatch is started and then immediately stopped, the signal is not emitted.

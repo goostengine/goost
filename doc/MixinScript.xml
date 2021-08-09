@@ -14,75 +14,58 @@
 	</tutorials>
 	<methods>
 		<method name="add_mixin">
-			<return type="void">
-			</return>
-			<argument index="0" name="script" type="Script">
-			</argument>
+			<return type="void" />
+			<argument index="0" name="script" type="Script" />
 			<description>
 				Adds a new script to extend the behavior of the owner.
 			</description>
 		</method>
 		<method name="clear_mixins">
-			<return type="void">
-			</return>
+			<return type="void" />
 			<description>
 				Removes all mixins from this script.
 			</description>
 		</method>
 		<method name="get_mixin" qualifiers="const">
-			<return type="Script">
-			</return>
-			<argument index="0" name="index" type="int">
-			</argument>
+			<return type="Script" />
+			<argument index="0" name="index" type="int" />
 			<description>
 				Returns a script at index previously added with [method add_mixin].
 			</description>
 		</method>
 		<method name="get_mixin_count" qualifiers="const">
-			<return type="int">
-			</return>
+			<return type="int" />
 			<description>
 				Returns the total number of scripts in [MixinScript].
 			</description>
 		</method>
 		<method name="insert_mixin">
-			<return type="void">
-			</return>
-			<argument index="0" name="position" type="int">
-			</argument>
-			<argument index="1" name="script" type="Script">
-			</argument>
+			<return type="void" />
+			<argument index="0" name="position" type="int" />
+			<argument index="1" name="script" type="Script" />
 			<description>
 				Inserts a new script at a given position in the array of mixins. The behavior is equivalent to [method Array.insert].
 			</description>
 		</method>
 		<method name="move_mixin">
-			<return type="void">
-			</return>
-			<argument index="0" name="position" type="int">
-			</argument>
-			<argument index="1" name="script" type="Script">
-			</argument>
+			<return type="void" />
+			<argument index="0" name="position" type="int" />
+			<argument index="1" name="script" type="Script" />
 			<description>
 				Moves an existing script to a different position (order) among the other scripts. Since calls, signals, etc are performed in script order, changing the order of scripts may be necessary.
 			</description>
 		</method>
 		<method name="remove_mixin">
-			<return type="void">
-			</return>
-			<argument index="0" name="index" type="int">
-			</argument>
+			<return type="void" />
+			<argument index="0" name="index" type="int" />
 			<description>
 				Removes an existing script at index. The functionality of the old script will no longer be available in the instance that uses [MixinScript].
 			</description>
 		</method>
 		<method name="set_mixin">
-			<return type="void">
-			</return>
-			<argument index="0" name="index" type="int">
-			</argument>
-			<argument index="1" name="script" type="Script">
-			</argument>
+			<return type="void" />
+			<argument index="0" name="index" type="int" />
+			<argument index="1" name="script" type="Script" />
 			<description>
 				Changes the script at index. The functionality of the old script will no longer be available in the instance that uses [MixinScript].
 			</description>

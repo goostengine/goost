@@ -11,18 +11,12 @@
 	</tutorials>
 	<methods>
 		<method name="_draw_line" qualifiers="virtual">
-			<return type="bool">
-			</return>
-			<argument index="0" name="from" type="Vector2">
-			</argument>
-			<argument index="1" name="to" type="Vector2">
-			</argument>
-			<argument index="2" name="color" type="Color">
-			</argument>
-			<argument index="3" name="width" type="float">
-			</argument>
-			<argument index="4" name="line" type="Dictionary">
-			</argument>
+			<return type="bool" />
+			<argument index="0" name="from" type="Vector2" />
+			<argument index="1" name="to" type="Vector2" />
+			<argument index="2" name="color" type="Color" />
+			<argument index="3" name="width" type="float" />
+			<argument index="4" name="line" type="Dictionary" />
 			<description>
 				Called before drawing a grid line. The first four parameters match the interface of [method CanvasItem.draw_line].
 				The [code]line[/code] parameter is a [Dictionary] which contains the following fields:
@@ -33,55 +27,43 @@
 			</description>
 		</method>
 		<method name="clear_cell_metadata">
-			<return type="void">
-			</return>
+			<return type="void" />
 			<description>
 				Clears all cell metadata from the grid previously assigned with [method set_cell_metadata].
 			</description>
 		</method>
 		<method name="get_cell_metadata" qualifiers="const">
-			<return type="Variant">
-			</return>
-			<argument index="0" name="cell" type="Vector2">
-			</argument>
+			<return type="Variant" />
+			<argument index="0" name="cell" type="Vector2" />
 			<description>
 				Returns metadata for individual cell on the grid previously assigned with [method set_cell_metadata] (only integer coordinates are accepted). See also [member metadata_show_tooltip].
 			</description>
 		</method>
 		<method name="point_to_view" qualifiers="const">
-			<return type="Vector2">
-			</return>
-			<argument index="0" name="point" type="Vector2">
-			</argument>
+			<return type="Vector2" />
+			<argument index="0" name="point" type="Vector2" />
 			<description>
 				Converts a point specified in grid coordinates to local position of this control.
 			</description>
 		</method>
 		<method name="set_cell_metadata">
-			<return type="void">
-			</return>
-			<argument index="0" name="cell" type="Vector2">
-			</argument>
-			<argument index="1" name="metadata" type="Variant">
-			</argument>
+			<return type="void" />
+			<argument index="0" name="cell" type="Vector2" />
+			<argument index="1" name="metadata" type="Variant" />
 			<description>
 				Assigns metadata for individual cell on the grid (only integer coordinates are accepted). See also [member metadata_show_tooltip].
 			</description>
 		</method>
 		<method name="view_to_point" qualifiers="const">
-			<return type="Vector2">
-			</return>
-			<argument index="0" name="position" type="Vector2">
-			</argument>
+			<return type="Vector2" />
+			<argument index="0" name="position" type="Vector2" />
 			<description>
 				Converts a local position of this control to grid coordinates. See also [method view_to_point_snapped].
 			</description>
 		</method>
 		<method name="view_to_point_snapped" qualifiers="const">
-			<return type="Vector2">
-			</return>
-			<argument index="0" name="position" type="Vector2">
-			</argument>
+			<return type="Vector2" />
+			<argument index="0" name="position" type="Vector2" />
 			<description>
 				Converts a point specified in grid coordinates to local position of this control. The point is snapped to grid line intersections when [member cell_origin] is set to [constant CELL_ORIGIN_TOP_LEFT], or snapped to grid cell center if [member cell_origin] is set to [constant CELL_ORIGIN_CENTER]. See also [method view_to_point].
 			</description>
@@ -128,12 +110,9 @@
 	</members>
 	<signals>
 		<signal name="point_clicked">
-			<argument index="0" name="point" type="Vector2">
-			</argument>
-			<argument index="1" name="point_snapped" type="Vector2">
-			</argument>
-			<argument index="2" name="local_position" type="Vector2">
-			</argument>
+			<argument index="0" name="point" type="Vector2" />
+			<argument index="1" name="point_snapped" type="Vector2" />
+			<argument index="2" name="local_position" type="Vector2" />
 			<description>
 				Emitted when the grid is clicked. The [code]point[/code] and [code]point_snapped[/code] are specified in grid coordinates and are computed with [method view_to_point] and [method view_to_point_snapped] respectively. The [code]local_position[/code] is the position in pixels relative to this control.
 			</description>

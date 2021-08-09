@@ -10,22 +10,19 @@
 	</tutorials>
 	<methods>
 		<method name="cancel">
-			<return type="void">
-			</return>
+			<return type="void" />
 			<description>
 				Cancels the invocation, preventing the target [member method] from being called.
 			</description>
 		</method>
 		<method name="is_active">
-			<return type="bool">
-			</return>
+			<return type="bool" />
 			<description>
 				Tells whether this state is currently processed. If the state is cancelled with [method cancel], then this will return [code]false[/code].
 			</description>
 		</method>
 		<method name="is_repeating">
-			<return type="bool">
-			</return>
+			<return type="bool" />
 			<description>
 				Tells whether the [member method] invocation is repeated every [code]repeat_rate[/code] seconds as requested by [method GoostEngine.invoke].
 			</description>

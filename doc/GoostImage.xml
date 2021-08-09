@@ -11,14 +11,10 @@
 	</tutorials>
 	<methods>
 		<method name="binarize">
-			<return type="void">
-			</return>
-			<argument index="0" name="image" type="Image">
-			</argument>
-			<argument index="1" name="threshold" type="float" default="-1">
-			</argument>
-			<argument index="2" name="invert" type="bool" default="false">
-			</argument>
+			<return type="void" />
+			<argument index="0" name="image" type="Image" />
+			<argument index="1" name="threshold" type="float" default="-1" />
+			<argument index="2" name="invert" type="bool" default="false" />
 			<description>
 				Converts the image into grayscale binary image [constant Image.FORMAT_L8]. If the pixel value is smaller than the threshold, it is set to 0, otherwise it is set to a maximum value.
 				The default threshold of [code]-1[/code] tells the method to apply adaptive threshold, which is determined by analyzing the image for different lighting in different areas.
@@ -26,150 +22,106 @@
 			</description>
 		</method>
 		<method name="bucket_fill">
-			<return type="Image">
-			</return>
-			<argument index="0" name="image" type="Image">
-			</argument>
-			<argument index="1" name="at" type="Vector2">
-			</argument>
-			<argument index="2" name="fill_color" type="Color">
-			</argument>
-			<argument index="3" name="fill_image" type="bool" default="true">
-			</argument>
-			<argument index="4" name="connectivity" type="int" enum="GoostImage.Connectivity" default="0">
-			</argument>
+			<return type="Image" />
+			<argument index="0" name="image" type="Image" />
+			<argument index="1" name="at" type="Vector2" />
+			<argument index="2" name="fill_color" type="Color" />
+			<argument index="3" name="fill_image" type="bool" default="true" />
+			<argument index="4" name="connectivity" type="int" enum="GoostImage.Connectivity" default="0" />
 			<description>
 				Fills the area with a [code]fill_color[/code] confined by other opaque pixels. If [code]fill_image[/code] is [code]false[/code], the filled image chunk shall not overwrite the original image. The filled chunk is returned as another [Image] in all cases.
 				[enum Connectivity] specifies the flood fill algorithm. [constant FOUR_CONNECTED] allows the filling pixels to go through diagonally placed opaque pixels and is slightly more efficient compared to [constant EIGHT_CONNECTED].
 			</description>
 		</method>
 		<method name="dilate">
-			<return type="void">
-			</return>
-			<argument index="0" name="image" type="Image">
-			</argument>
-			<argument index="1" name="kernel_size" type="int" default="3">
-			</argument>
+			<return type="void" />
+			<argument index="0" name="image" type="Image" />
+			<argument index="1" name="kernel_size" type="int" default="3" />
 			<description>
 				Does image dilation, similar to [method morph] with [constant MORPH_DILATE], but accepts a uniform kernel size.
 			</description>
 		</method>
 		<method name="erode">
-			<return type="void">
-			</return>
-			<argument index="0" name="image" type="Image">
-			</argument>
-			<argument index="1" name="kernel_size" type="int" default="3">
-			</argument>
+			<return type="void" />
+			<argument index="0" name="image" type="Image" />
+			<argument index="1" name="kernel_size" type="int" default="3" />
 			<description>
 				Does image erosion, similar to [method morph] with [constant MORPH_ERODE], but accepts a uniform kernel size.
 			</description>
 		</method>
 		<method name="get_centroid">
-			<return type="Vector2">
-			</return>
-			<argument index="0" name="image" type="Image">
-			</argument>
+			<return type="Vector2" />
+			<argument index="0" name="image" type="Image" />
 			<description>
 				Finds a relative geometrical center within the image.
 			</description>
 		</method>
 		<method name="get_pixel_average">
-			<return type="Color">
-			</return>
-			<argument index="0" name="image" type="Image">
-			</argument>
-			<argument index="1" name="rect" type="Rect2" default="Rect2( 0, 0, 0, 0 )">
-			</argument>
-			<argument index="2" name="mask" type="Image" default="null">
-			</argument>
+			<return type="Color" />
+			<argument index="0" name="image" type="Image" />
+			<argument index="1" name="rect" type="Rect2" default="Rect2( 0, 0, 0, 0 )" />
+			<argument index="2" name="mask" type="Image" default="null" />
 			<description>
 				Returns the average color by averaging each color component. If [code]rect[/code] is not empty, computes the average over the region of the image only. Similarly, an image mask can be specified with opaque pixels acting as a filter of all the pixels of interest. Both the rect and the mask can be used simultaneously.
 			</description>
 		</method>
 		<method name="get_pixel_or_null">
-			<return type="Variant">
-			</return>
-			<argument index="0" name="image" type="Image">
-			</argument>
-			<argument index="1" name="x" type="int">
-			</argument>
-			<argument index="2" name="y" type="int">
-			</argument>
+			<return type="Variant" />
+			<argument index="0" name="image" type="Image" />
+			<argument index="1" name="x" type="int" />
+			<argument index="2" name="y" type="int" />
 			<description>
 				Returns a [Color] pixel at specified image coordinates. Returns [code]null[/code] if coordinates lie outside the image boundaries.
 			</description>
 		</method>
 		<method name="get_pixelv_or_null">
-			<return type="Variant">
-			</return>
-			<argument index="0" name="image" type="Image">
-			</argument>
-			<argument index="1" name="pos" type="Vector2">
-			</argument>
+			<return type="Variant" />
+			<argument index="0" name="image" type="Image" />
+			<argument index="1" name="pos" type="Vector2" />
 			<description>
 				Same as [method get_pixel_or_null] but accepts [Vector2] for specifying image coordinates.
 			</description>
 		</method>
 		<method name="has_pixel">
-			<return type="bool">
-			</return>
-			<argument index="0" name="image" type="Image">
-			</argument>
-			<argument index="1" name="x" type="int">
-			</argument>
-			<argument index="2" name="y" type="int">
-			</argument>
+			<return type="bool" />
+			<argument index="0" name="image" type="Image" />
+			<argument index="1" name="x" type="int" />
+			<argument index="2" name="y" type="int" />
 			<description>
 				Returns [code]true[/code] if the specified coordinates lie in between image boundaries determined by its size.
 			</description>
 		</method>
 		<method name="has_pixelv">
-			<return type="bool">
-			</return>
-			<argument index="0" name="image" type="Image">
-			</argument>
-			<argument index="1" name="pos" type="Vector2">
-			</argument>
+			<return type="bool" />
+			<argument index="0" name="image" type="Image" />
+			<argument index="1" name="pos" type="Vector2" />
 			<description>
 				Same as [method has_pixel] but uses [Vector2] for specifying image coordinates.
 			</description>
 		</method>
 		<method name="morph">
-			<return type="void">
-			</return>
-			<argument index="0" name="image" type="Image">
-			</argument>
-			<argument index="1" name="operation" type="int" enum="GoostImage.MorphOperation">
-			</argument>
-			<argument index="2" name="kernel_size" type="Vector2" default="Vector2( 3, 3 )">
-			</argument>
+			<return type="void" />
+			<argument index="0" name="image" type="Image" />
+			<argument index="1" name="operation" type="int" enum="GoostImage.MorphOperation" />
+			<argument index="2" name="kernel_size" type="Vector2" default="Vector2( 3, 3 )" />
 			<description>
 				Performs basic image morphing operations. The structuring element (kernel) is a brick, with the origin being implicitly in the center. The width and height of the kernel must be an odd number, but they can differ. The operation does the morphing on each color component separately, which are later combined.
 			</description>
 		</method>
 		<method name="render_polygon">
-			<return type="Image">
-			</return>
-			<argument index="0" name="polygon" type="PoolVector2Array">
-			</argument>
-			<argument index="1" name="fill" type="bool" default="false">
-			</argument>
-			<argument index="2" name="foreground_color" type="Color" default="Color( 1, 1, 1, 1 )">
-			</argument>
-			<argument index="3" name="background_color" type="Color" default="Color( 0, 0, 0, 0 )">
-			</argument>
+			<return type="Image" />
+			<argument index="0" name="polygon" type="PoolVector2Array" />
+			<argument index="1" name="fill" type="bool" default="false" />
+			<argument index="2" name="foreground_color" type="Color" default="Color( 1, 1, 1, 1 )" />
+			<argument index="3" name="background_color" type="Color" default="Color( 0, 0, 0, 0 )" />
 			<description>
 				Renders a binary representation of the polygon as a new image. If [code]fill[/code] is [code]true[/code], fills the interior of the polygon with [code]foreground_color[/code] (white by default), else just renders the polygon's outline alone with the same color. The boundary pixels are always [constant FOUR_CONNECTED]. The image [code]background_color[/code] can also be overridden (transparent by default).
 			</description>
 		</method>
 		<method name="render_svg">
-			<return type="Image">
-			</return>
-			<argument index="0" name="svg_document" type="String">
-			</argument>
-			<argument index="1" name="scale" type="float" default="1.0">
-			</argument>
+			<return type="Image" />
+			<argument index="0" name="svg_document" type="String" />
+			<argument index="1" name="scale" type="float" default="1.0" />
 			<description>
 				Rasterizes a SVG document as a new image. Any positive scale can be set, as long as the resulting image does not exceed maximum image size determined by [constant Image.MAX_WIDTH] and [constant Image.MAX_HEIGHT] constants. Returns [code]null[/code] if SVG is corrupt.
 				In order to render a SVG from a [File]:
@@ -186,54 +138,38 @@
 			</description>
 		</method>
 		<method name="repeat">
-			<return type="Image">
-			</return>
-			<argument index="0" name="image" type="Image">
-			</argument>
-			<argument index="1" name="count" type="Vector2">
-			</argument>
-			<argument index="2" name="wrap_mode" type="int" enum="GoostImage.WrapMode" default="0">
-			</argument>
-			<argument index="3" name="max_size" type="Vector2" default="Vector2( 16384, 16384 )">
-			</argument>
+			<return type="Image" />
+			<argument index="0" name="image" type="Image" />
+			<argument index="1" name="count" type="Vector2" />
+			<argument index="2" name="wrap_mode" type="int" enum="GoostImage.WrapMode" default="0" />
+			<argument index="3" name="max_size" type="Vector2" default="Vector2( 16384, 16384 )" />
 			<description>
 				Repeats an image in both horizontal and vertical directions several times as determined by the X and Y components of [code]count[/code] respectively. The [code]wrap_mode[/code] specifies how the image is tiled. The [code]max_size[/code] can be overridden to prevent the resulting image from exceeding some size, and the default maximum size is determined by [constant Image.MAX_WIDTH] and [constant Image.MAX_HEIGHT]. See also [method tile].
 			</description>
 		</method>
 		<method name="replace_color">
-			<return type="void">
-			</return>
-			<argument index="0" name="image" type="Image">
-			</argument>
-			<argument index="1" name="color" type="Color">
-			</argument>
-			<argument index="2" name="with_color" type="Color">
-			</argument>
+			<return type="void" />
+			<argument index="0" name="image" type="Image" />
+			<argument index="1" name="color" type="Color" />
+			<argument index="2" name="with_color" type="Color" />
 			<description>
 				Replaces all occurrences of a given color with another one within the image.
 			</description>
 		</method>
 		<method name="resize_hqx">
-			<return type="void">
-			</return>
-			<argument index="0" name="image" type="Image">
-			</argument>
-			<argument index="1" name="scale" type="int" default="2">
-			</argument>
+			<return type="void" />
+			<argument index="0" name="image" type="Image" />
+			<argument index="1" name="scale" type="int" default="2" />
 			<description>
 				Expands the image using HQ2X algorithm with the [code]scale[/code] set to [code]2[/code] or the HQ3X algorithm with the [code]scale[/code] set to [code]3[/code].
 				See also [method Image.expand_x2_hq2x].
 			</description>
 		</method>
 		<method name="rotate">
-			<return type="void">
-			</return>
-			<argument index="0" name="image" type="Image">
-			</argument>
-			<argument index="1" name="angle" type="float">
-			</argument>
-			<argument index="2" name="expand" type="bool" default="true">
-			</argument>
+			<return type="void" />
+			<argument index="0" name="image" type="Image" />
+			<argument index="1" name="angle" type="float" />
+			<argument index="2" name="expand" type="bool" default="true" />
 			<description>
 				Rotates the image around its center. The [code]angle[/code] is specified in radians. If [code]angle[/code] is positive, rotates the image in clockwise direction. If [code]expand[/code] is [code]true[/code], the size is expanded to preserve all image details (prevents clipping) given non-orthogonal angles (90, 180, 270 degrees).
 				[codeblock]
@@ -246,10 +182,8 @@
 			</description>
 		</method>
 		<method name="rotate_180">
-			<return type="void">
-			</return>
-			<argument index="0" name="image" type="Image">
-			</argument>
+			<return type="void" />
+			<argument index="0" name="image" type="Image" />
 			<description>
 				Rotates the image by 180 degrees. The result is equivalent to:
 				[codeblock]
@@ -260,25 +194,18 @@
 			</description>
 		</method>
 		<method name="rotate_90">
-			<return type="void">
-			</return>
-			<argument index="0" name="image" type="Image">
-			</argument>
-			<argument index="1" name="direction" type="int" enum="GoostImage.Direction">
-			</argument>
+			<return type="void" />
+			<argument index="0" name="image" type="Image" />
+			<argument index="1" name="direction" type="int" enum="GoostImage.Direction" />
 			<description>
 				Rotates the image by 90 degrees in either clockwise or counterclockwise [enum Direction]. The method performs faster and doesn't lose any image pixel information as opposed to [method rotate] with the [code]angle[/code] parameter set to [code]PI / 2[/code].
 			</description>
 		</method>
 		<method name="tile">
-			<return type="Image">
-			</return>
-			<argument index="0" name="image" type="Image">
-			</argument>
-			<argument index="1" name="size" type="Vector2">
-			</argument>
-			<argument index="2" name="wrap_mode" type="int" enum="GoostImage.WrapMode" default="0">
-			</argument>
+			<return type="Image" />
+			<argument index="0" name="image" type="Image" />
+			<argument index="1" name="size" type="Vector2" />
+			<argument index="2" name="wrap_mode" type="int" enum="GoostImage.WrapMode" default="0" />
 			<description>
 				Tiles an image in both horizontal and vertical directions over a region limited by [code]size[/code] onto a new image. The [code]wrap_mode[/code] specifies how the image is tiled. See also [method repeat].
 			</description>

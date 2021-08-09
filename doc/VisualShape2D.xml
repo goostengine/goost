@@ -10,8 +10,7 @@
 	</tutorials>
 	<methods>
 		<method name="update_parent_shape">
-			<return type="bool">
-			</return>
+			<return type="bool" />
 			<description>
 				Forces to update the shape from parent node. This is called automatically each [b]idle frame[/b] if [member use_parent_shape] is enabled. Updating the shape each frame may be costly, so you can disable this behavior with [code]set_process(false)[/code] on this node, and update the shape manually with this method when needed.
 			</description>
