@@ -206,6 +206,7 @@ classes = _classes
 # compile/link errors or failing unit tests, it's likely a dependency issue.
 # If so, define them here explicitly so that they're automatically enabled.
 class_dependencies = {
+    "CommandLineParser": ["CommandLineOption", "CommandLineHelpFormat"],
     "GoostEngine" : "InvokeState",
     "GoostGeometry2D" : ["PolyBoolean2D", "PolyDecomp2D", "PolyOffset2D"],
     "LightTexture" : "GradientTexture2D",
