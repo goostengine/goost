@@ -187,16 +187,16 @@
 		</method>
 	</methods>
 	<members>
-		<member name="allow_adjacent" type="bool" setter="set_allow_adjacent" getter="is_allow_adjacent" default="true">
+		<member name="allow_adjacent" type="bool" setter="set_allow_adjacent" getter="is_adjacent_allowed" default="true">
 			If [code]true[/code], values for options can delimited by [code]=[/code] sign. Example: [code]--input=filename.png[/code].
 		</member>
-		<member name="allow_compound" type="bool" setter="set_allow_compound" getter="is_allow_compound" default="true">
+		<member name="allow_compound" type="bool" setter="set_allow_compound" getter="is_compound_allowed" default="true">
 			If [code]true[/code], short options can be specified without a space. Example: [code]-aux[/code] will be equivalent to [code]-a -u -x[/code].
 		</member>
-		<member name="allow_forwarding_args" type="bool" setter="set_allow_forwarding_args" getter="is_allow_forwarding_args" default="false">
+		<member name="allow_forwarding_args" type="bool" setter="set_allow_forwarding_args" getter="are_forwarding_args_allowed" default="false">
 			If [code]true[/code], all arguments after [code]--[/code] will be treated as forwarding arguments and will be available using the [method get_forwarding_args]. Such arguments will not be parsed as options.
 		</member>
-		<member name="allow_sticky" type="bool" setter="set_allow_sticky" getter="is_allow_sticky" default="true">
+		<member name="allow_sticky" type="bool" setter="set_allow_sticky" getter="is_sticky_allowed" default="true">
 			If [code]true[/code], values for short options can be specified without a space. Example: [code]-ifilename.png[/code].
 		</member>
 		<member name="long_prefixes" type="PoolStringArray" setter="set_long_prefixes" getter="get_long_prefixes" default="PoolStringArray( &quot;--&quot; )">
