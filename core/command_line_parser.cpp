@@ -2,37 +2,6 @@
 
 #include "core/os/os.h"
 
-// Checkers.
-// struct CommandLineOption::ArgumentChecker {
-// 	String error_msg;
-
-// 	virtual bool check(const String &p_arg) const = 0;
-// 	virtual ~ArgumentChecker() = default;
-// };
-
-// struct CommandLineOption::FunctionChecker : public CommandLineOption::ArgumentChecker {
-// 	CheckFunction function;
-
-// 	bool check(const String &p_arg) const {
-// 		return function(p_arg);
-// 	}
-// };
-
-// struct CommandLineOption::CallableChecker : public CommandLineOption::ArgumentChecker {
-// 	Callable callable;
-
-// 	bool check(const String &p_arg) const {
-// 		Callable::CallError call_error;
-// 		const Variant variant = p_arg;
-// 		const Variant *args = { &variant };
-// 		Variant result;
-
-// 		callable.call(&args, 1, result, call_error);
-// 		ERR_FAIL_COND_V_MSG(call_error.error != Callable::CallError::CALL_OK, false, vformat("Error calling method from checker: %s.", Variant::get_callable_error_text(callable, &args, 1, call_error)));
-// 		return result;
-// 	}
-// };
-
 // CommandLineOption
 
 void CommandLineOption::_bind_methods() {
@@ -80,9 +49,6 @@ void CommandLineOption::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "positional"), "set_positional", "is_positional");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "required"), "set_required", "is_required");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "multitoken"), "set_multitoken", "is_multitoken");
-
-	// ClassDB::bind_method(D_METHOD("set_checker", "callable", "error_msg"), &CommandLineOption::set_checker);
-	// ClassDB::bind_method(D_METHOD("remove_checker"), &CommandLineOption::remove_checker);
 
 	ADD_SIGNAL(MethodInfo("validated", PropertyInfo(Variant::POOL_STRING_ARRAY, "values")));
 }
@@ -178,48 +144,9 @@ PoolStringArray CommandLineOption::get_allowed_args() const {
 	return _allowed_args;
 }
 
-// void CommandLineOption::set_static_checker(CheckFunction p_function, const String &p_error_msg) {
-// 	FunctionChecker *checker = memnew(FunctionChecker);
-// 	checker->function = p_function;
-// 	checker->error_msg = p_error_msg;
-// 	if (_checker) {
-// 		memdelete(_checker);
-// 	}
-// 	_checker = checker;
-// }
-
-// Error CommandLineOption::set_checker(const Callable &p_callable, const String &p_error_msg) {
-// 	ERR_FAIL_COND_V(p_callable.is_null(), ERR_INVALID_PARAMETER);
-
-// 	CallableChecker *checker = memnew(CallableChecker);
-// 	checker->error_msg = p_error_msg;
-// 	checker->callable = p_callable;
-// 	if (_checker) {
-// 		memdelete(_checker);
-// 	}
-// 	_checker = checker;
-// 	return OK;
-// }
-
-// const CommandLineOption::ArgumentChecker *CommandLineOption::get_checker() const {
-// 	return _checker;
-// }
-
-// void CommandLineOption::remove_checker() {
-// 	ERR_FAIL_NULL_MSG(_checker, "Option do not have any checker.");
-// 	memdelete(_checker);
-// 	_checker = nullptr;
-// }
-
 CommandLineOption::CommandLineOption(const PoolStringArray &p_names, int p_arg_count) :
 		_names(p_names),
 		_arg_count(p_arg_count) {}
-
-CommandLineOption::~CommandLineOption() {
-	// if (_checker) {
-	// 	memdelete(_checker);
-	// }
-}
 
 // CommandLineHelpFormat
 
@@ -354,12 +281,6 @@ bool CommandLineParser::_are_options_valid() const {
 				vformat("Option '%s' has %d default arguments, but requires %d.", _to_string(option->get_names()), default_args.size(), option->get_arg_count()));
 		ERR_FAIL_COND_V_MSG(!default_args.empty() && option->is_required(), false,
 				vformat("Option '%s' cannot have default arguments and be required.", _to_string(option->get_names())));
-
-		// if (option->get_checker()) {
-		// 	for (int j = 0; j < default_args.size(); ++j) {
-		// 		ERR_FAIL_COND_V_MSG(!option->get_checker()->check(default_args[j]), false, vformat("Option '%s' have allowed argument '%s' that do not pass specified checker.", _to_string(option->get_names()), default_args[j]));
-		// 	}
-		// }
 
 		// Compare with other options.
 		for (int j = i + 1; j < _options.size(); ++j) {
@@ -581,10 +502,6 @@ static String join_args(const PoolStringArray &p_args) {
 }
 
 bool CommandLineParser::_validate_option_arg(const CommandLineOption *p_option, const String &p_display_name, const String &p_arg) {
-	// if (unlikely(p_option->get_checker() && !p_option->get_checker()->check(p_arg))) {
-	// 	_error = vformat(RTR("Argument '%s' can't be used for '%s': %s"), p_arg, p_display_name, p_option->get_checker()->error_msg);
-	// 	return false;
-	// }
 	if (unlikely(!p_option->get_allowed_args().empty() && !has_arg(p_option->get_allowed_args(), p_arg))) {
 		_error = vformat(RTR("Argument '%s' can't be used for '%s', possible values: %s."), p_arg, p_display_name, join_args(p_option->get_allowed_args()));
 		return false;

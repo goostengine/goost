@@ -6,10 +6,6 @@
 class CommandLineOption : public Reference {
 	GDCLASS(CommandLineOption, Reference);
 
-	// struct ArgumentChecker;
-	// struct FunctionChecker;
-	// struct CallableChecker;
-
 	// Names for the options. e.g --help or -h.
 	PoolStringArray _names;
 	// List of default values for each argument, empty if any value is allowed.
@@ -32,15 +28,11 @@ class CommandLineOption : public Reference {
 	bool _multitoken = false;
 	// Arguments count required for the option, -1 for all arguments left.
 	int _arg_count = 1;
-	// Checker for each argument, nullptr if not check specified.
-	// ArgumentChecker *_checker = nullptr;
 
 protected:
 	static void _bind_methods();
 
 public:
-	// using CheckFunction = bool (*)(const String &);
-
 	void set_names(const PoolStringArray &p_names);
 	PoolStringArray get_names() const;
 
@@ -74,14 +66,8 @@ public:
 	void set_multitoken(bool p_multitoken);
 	bool is_multitoken() const;
 
-	// void set_static_checker(CheckFunction p_function, const String &p_error_msg);
-	// Error set_checker(const Callable &p_callable, const String &p_error_msg);
-	// const ArgumentChecker *get_checker() const;
-	// void remove_checker();
-
 	CommandLineOption() = default;
 	explicit CommandLineOption(const PoolStringArray &p_names, int p_arg_count = 1);
-	~CommandLineOption();
 };
 
 class CommandLineHelpFormat : public Reference {
