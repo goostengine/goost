@@ -42,14 +42,14 @@
 			If [code]true[/code], option can be specified without a name. In this case, the first unparsed option marked as [member positional] will be selected.
 		</member>
 		<member name="required" type="bool" setter="set_required" getter="is_required" default="false">
-			If [code]true[/code], [method CommandLineParser.validate] will return an error if the option was not specified in the argument list.
+			If [code]true[/code], [method CommandLineParser.parse] will return an error if the option was not specified in the argument list.
 		</member>
 	</members>
 	<signals>
-		<signal name="validated">
+		<signal name="parsed">
 			<argument index="0" name="values" type="PoolStringArray" />
 			<description>
-				Emitted after calling [method CommandLineParser.validate] if it returns [constant OK] and this option was specified in the argument list. [code]values[/code] contains all values that were passed to the option.
+				Emitted after calling [method CommandLineParser.parse] if it returns [constant OK] and this option was specified in the argument list. [code]values[/code] contains all values that were passed to the option.
 			</description>
 		</signal>
 	</signals>

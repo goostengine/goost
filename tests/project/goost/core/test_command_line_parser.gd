@@ -11,6 +11,7 @@ func test_parse():
     var args = ["--input", "path"]
 
     var input = CommandLineOption.new()
+    watch_signals(input)
     input.names = ["input", "i"]
 
     cmd.add_option(input)
@@ -20,6 +21,8 @@ func test_parse():
     if err:
         print(cmd.get_error_text())
     assert_eq(err, OK)
+
+    assert_signal_emitted(input, "parsed")
 
     var i = cmd.find_option("input")
     assert_eq(input, i)

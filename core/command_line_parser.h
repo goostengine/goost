@@ -176,7 +176,6 @@ protected:
 
 public:
 	Error parse(const PoolStringArray &p_args);
-	Error validate();
 
 	void add_option(const Ref<CommandLineOption> &p_option);
 	int get_option_count() const;

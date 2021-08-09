@@ -50,7 +50,7 @@ void CommandLineOption::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "required"), "set_required", "is_required");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "multitoken"), "set_multitoken", "is_multitoken");
 
-	ADD_SIGNAL(MethodInfo("validated", PropertyInfo(Variant::POOL_STRING_ARRAY, "values")));
+	ADD_SIGNAL(MethodInfo("parsed", PropertyInfo(Variant::POOL_STRING_ARRAY, "values")));
 }
 
 void CommandLineOption::set_names(const PoolStringArray &p_names) {
@@ -515,7 +515,6 @@ bool CommandLineParser::_contains_optional_options(const Vector<Pair<const Comma
 
 void CommandLineParser::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("parse", "args"), &CommandLineParser::parse);
-	ClassDB::bind_method(D_METHOD("validate"), &CommandLineParser::validate);
 
 	ClassDB::bind_method(D_METHOD("add_option", "option"), &CommandLineParser::add_option);
 	ClassDB::bind_method(D_METHOD("get_option_count"), &CommandLineParser::get_option_count);
@@ -619,10 +618,6 @@ Error CommandLineParser::parse(const PoolStringArray &p_args) {
 
 	_read_default_args();
 
-	return OK;
-}
-
-Error CommandLineParser::validate() {
 	for (int i = 0; i < _options.size(); ++i) {
 		const CommandLineOption *option = _options[i].ptr();
 		if (unlikely(option->is_required() && !_parsed_values.has(option))) {
@@ -634,7 +629,7 @@ Error CommandLineParser::validate() {
 		CommandLineOption *option = _options.get(i).ptr();
 		const Map<const CommandLineOption *, PoolStringArray>::Element *E = _parsed_values.find(option);
 		if (E) {
-			option->emit_signal("validated", E->value());
+			option->emit_signal("parsed", E->value());
 		}
 	}
 	return OK;

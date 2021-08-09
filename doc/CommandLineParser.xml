@@ -35,10 +35,6 @@
 		        print(ProjectSettings.get_setting("application/config/version"))
 		        return
 
-		    if parser.validate() != OK:
-		        print(parser.get_error_text())
-		        return
-
 		    print(parser.get_value(input))
 		[/codeblock]
 	</description>
@@ -177,12 +173,6 @@
 			<argument index="1" name="option" type="CommandLineOption" />
 			<description>
 				Replaces option at specified index [code]idx[/code] with [code]option[/code].
-			</description>
-		</method>
-		<method name="validate">
-			<return type="int" enum="Error" />
-			<description>
-				Checks if all required methods were specified. Emits [signal CommandLineOption.validated] upon success for options that were parsed.
 			</description>
 		</method>
 	</methods>
