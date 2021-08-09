@@ -142,6 +142,15 @@ func test_short_options():
     assert_eq(cmd.parse(["-a", "-i"]), OK, "Should fail, not allowed if `allow_compound = false`.")
 
 
+func test_short_option_not_short():
+    var new_opt = CommandLineOption.new()
+    new_opt.names = ["aaaaa", "a", "aaaa"]
+    new_opt.arg_count = 0
+    cmd.add_option(new_opt)
+
+    assert_eq(cmd.parse(["-aaaa"]), ERR_INVALID_DATA)
+
+
 func test_long_options():
     add_test_option(0)
 
@@ -181,3 +190,22 @@ func test_one_arg():
 
     cmd.allow_sticky = false
     assert_eq(cmd.parse(["-iarg"]), ERR_INVALID_DATA, "Compound options should fail if `allow_sticky = false`.")
+
+
+func test_positional():
+    add_test_option(-1) # Any number of values.
+    opt.positional = true
+
+    assert_eq(cmd.parse(["1", "2", "3"]), OK)
+    var values = cmd.get_value_list(opt)
+    assert_eq(values.size(), 3)
+    assert_eq(values[0], "1")
+    assert_eq(values[1], "2")
+    assert_eq(values[2], "3")
+
+    assert_eq(cmd.parse(["--input", "1", "2", "3"]), OK)
+    values = cmd.get_value_list(opt)
+    assert_eq(values.size(), 3)
+    assert_eq(values[0], "1")
+    assert_eq(values[1], "2")
+    assert_eq(values[2], "3")
