@@ -593,7 +593,7 @@ Error CommandLineParser::parse(const PoolStringArray &p_args) {
 
 	if (unlikely(!_are_options_valid())) {
 		_error_text = RTR("Option parser was defined with incorrect options.");
-		return ERR_INVALID_DECLARATION;
+		return ERR_PARSE_ERROR;
 	}
 
 	int arg_count = _args.size();
@@ -612,7 +612,7 @@ Error CommandLineParser::parse(const PoolStringArray &p_args) {
 	for (int i = 0; i < arg_count;) {
 		const int taken_arguments = _validate_arguments(i);
 		if (unlikely(taken_arguments == -1)) {
-			return ERR_INVALID_DATA;
+			return ERR_PARSE_ERROR;
 		}
 		i += taken_arguments;
 	}
@@ -627,7 +627,7 @@ Error CommandLineParser::validate() {
 		const CommandLineOption *option = _options[i].ptr();
 		if (unlikely(option->is_required() && !_parsed_values.has(option))) {
 			_error_text = vformat(RTR("Option '%s' is required but missing."), _to_string(option->get_names()));
-			return ERR_INVALID_DATA;
+			return ERR_PARSE_ERROR;
 		}
 	}
 	for (int i = 0; i < _options.size(); ++i) {

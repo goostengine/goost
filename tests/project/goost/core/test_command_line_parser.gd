@@ -75,32 +75,32 @@ func test_validation():
     
     var arg_count = opt.arg_count
     opt.arg_count = arg_count + 1
-    assert_eq(cmd.parse([]), ERR_INVALID_DECLARATION,
+    assert_eq(cmd.parse([]), ERR_PARSE_ERROR,
             "Expected error: Option requires more arguments, but only one default value was given.")
     opt.arg_count = arg_count
 
     var names = opt.names
     opt.names = []
-    assert_eq(cmd.parse([]), ERR_INVALID_DECLARATION,
+    assert_eq(cmd.parse([]), ERR_PARSE_ERROR,
             "Expected error: Parsing with an option which does not have any names should fail.")
     opt.names = names
     
     var default_args = opt.default_args
     opt.default_args = ["a", "b"]
-    assert_eq(cmd.parse([]), ERR_INVALID_DECLARATION,
+    assert_eq(cmd.parse([]), ERR_PARSE_ERROR,
             "Expected error: Parsing with an option which has different number of arguments and default arguments should fail.")
     opt.default_args = default_args
 
     var required = opt.required
     opt.required = not required
-    assert_eq(cmd.parse([]), ERR_INVALID_DECLARATION,
+    assert_eq(cmd.parse([]), ERR_PARSE_ERROR,
             "Parsing with an option which is required and have default arguments should fail.")
     opt.required = required
 
     # TODO: checkers here
 
     cmd.add_option(opt)
-    assert_eq(cmd.parse([]), ERR_INVALID_DECLARATION,
+    assert_eq(cmd.parse([]), ERR_PARSE_ERROR,
             "Parsing with multiple options that have the same name should fail.")
     cmd.remove_option(1)
 
@@ -111,7 +111,7 @@ func test_validation():
 
         
 func test_forwarding_args():
-    assert_eq(cmd.parse(["--", "arg1", "arg2"]), ERR_INVALID_DATA,
+    assert_eq(cmd.parse(["--", "arg1", "arg2"]), ERR_PARSE_ERROR,
             "Parsing forwarded arguments should fail if disabled.")
 
     cmd.allow_forwarding_args = true
@@ -126,8 +126,8 @@ func test_forwarding_args():
 func test_short_options():
     add_test_option(0)
 
-    assert_eq(cmd.parse(["-u"]), ERR_INVALID_DATA, "Unknown option, should fail.")
-    assert_eq(cmd.parse(["-i", "-i"]), ERR_INVALID_DATA, "Same options, should fail.")
+    assert_eq(cmd.parse(["-u"]), ERR_PARSE_ERROR, "Unknown option, should fail.")
+    assert_eq(cmd.parse(["-i", "-i"]), ERR_PARSE_ERROR, "Same options, should fail.")
 
     var new_opt = CommandLineOption.new()
     new_opt.names = ["a"]
@@ -150,21 +150,21 @@ func test_short_option_not_short():
     new_opt.arg_count = 0
     cmd.add_option(new_opt)
 
-    assert_eq(cmd.parse(["-aaaa"]), ERR_INVALID_DATA)
+    assert_eq(cmd.parse(["-aaaa"]), ERR_PARSE_ERROR)
 
 
 func test_long_options():
     add_test_option(0)
 
-    assert_eq(cmd.parse(["--test"]), ERR_INVALID_DATA, "Unknown option, should fail.")
-    assert_eq(cmd.parse(["--input", "--input"]), ERR_INVALID_DATA, "Same options, should fail.")
-    assert_eq(cmd.parse(["--input", "value"]), ERR_INVALID_DATA, "Option should not accept arguments.")
+    assert_eq(cmd.parse(["--test"]), ERR_PARSE_ERROR, "Unknown option, should fail.")
+    assert_eq(cmd.parse(["--input", "--input"]), ERR_PARSE_ERROR, "Same options, should fail.")
+    assert_eq(cmd.parse(["--input", "value"]), ERR_PARSE_ERROR, "Option should not accept arguments.")
 
     opt.multitoken = true
     assert_eq(cmd.parse(["--input", "--input"]), OK, "Same multiple options should be allowed with `multitoken = true`.")
     assert_eq(cmd.get_occurrence_count(opt), 2)
 
-    assert_eq(cmd.parse(["--input=path"]), ERR_INVALID_DATA, "Option should not accept arguments")
+    assert_eq(cmd.parse(["--input=path"]), ERR_PARSE_ERROR, "Option should not accept arguments")
 
 
 func test_one_arg():
@@ -186,12 +186,12 @@ func test_one_arg():
     Engine.print_error_messages = true
 
     cmd.allow_compound = false
-    assert_eq(cmd.parse(["-ai", "arg"]), ERR_INVALID_DATA, "Compound options should fail if `allow_compound = false`.")
+    assert_eq(cmd.parse(["-ai", "arg"]), ERR_PARSE_ERROR, "Compound options should fail if `allow_compound = false`.")
 
     assert_eq(cmd.parse(["-iarg"]), OK, "Sticky, should succeed.")
 
     cmd.allow_sticky = false
-    assert_eq(cmd.parse(["-iarg"]), ERR_INVALID_DATA, "Compound options should fail if `allow_sticky = false`.")
+    assert_eq(cmd.parse(["-iarg"]), ERR_PARSE_ERROR, "Compound options should fail if `allow_sticky = false`.")
 
 
 func test_positional():
