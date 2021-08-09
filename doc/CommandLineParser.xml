@@ -46,176 +46,141 @@
 	</tutorials>
 	<methods>
 		<method name="add_help_option">
-			<return type="CommandLineOption">
-			</return>
+			<return type="CommandLineOption" />
 			<description>
 				Adds the help option (-h, --help) with the default description.
 			</description>
 		</method>
 		<method name="add_option">
-			<return type="void">
-			</return>
-			<argument index="0" name="option" type="CommandLineOption">
-			</argument>
+			<return type="void" />
+			<argument index="0" name="option" type="CommandLineOption" />
 			<description>
 				Adds the option to look for while parsing.
 			</description>
 		</method>
 		<method name="add_version_option">
-			<return type="CommandLineOption">
-			</return>
+			<return type="CommandLineOption" />
 			<description>
 				Adds the version option (-v, --version) with default description.
 			</description>
 		</method>
 		<method name="clear">
-			<return type="void">
-			</return>
+			<return type="void" />
 			<description>
 				Clears all parsed data and specified options.
 			</description>
 		</method>
 		<method name="find_option" qualifiers="const">
-			<return type="CommandLineOption">
-			</return>
-			<argument index="0" name="name" type="String">
-			</argument>
+			<return type="CommandLineOption" />
+			<argument index="0" name="name" type="String" />
 			<description>
 				Finds an option by name.
 			</description>
 		</method>
 		<method name="get_args" qualifiers="const">
-			<return type="PoolStringArray">
-			</return>
+			<return type="PoolStringArray" />
 			<description>
 				Returns all arguments that were passed by [method parse].
 			</description>
 		</method>
 		<method name="get_error_text" qualifiers="const">
-			<return type="String">
-			</return>
+			<return type="String" />
 			<description>
 				Returns a human-readable description of the last parser error that occurred.
 			</description>
 		</method>
 		<method name="get_forwarding_args" qualifiers="const">
-			<return type="PoolStringArray">
-			</return>
+			<return type="PoolStringArray" />
 			<description>
 				Returns all arguments that were forwarded after parsing (e.g. all arguments after [code]--[/code]).
 			</description>
 		</method>
 		<method name="get_help_text" qualifiers="const">
-			<return type="String">
-			</return>
-			<argument index="0" name="format" type="CommandLineHelpFormat">
-			</argument>
+			<return type="String" />
+			<argument index="0" name="format" type="CommandLineHelpFormat" default="null" />
 			<description>
 				Returns a string containing the complete help information generated from the added options.
 			</description>
 		</method>
 		<method name="get_occurrence_count" qualifiers="const">
-			<return type="int">
-			</return>
-			<argument index="0" name="option" type="CommandLineOption">
-			</argument>
+			<return type="int" />
+			<argument index="0" name="option" type="CommandLineOption" />
 			<description>
 				Returns the number of times the option was parsed.
 			</description>
 		</method>
 		<method name="get_option" qualifiers="const">
-			<return type="CommandLineOption">
-			</return>
-			<argument index="0" name="idx" type="int">
-			</argument>
+			<return type="CommandLineOption" />
+			<argument index="0" name="idx" type="int" />
 			<description>
 				Returns the option at index position [code]idx[/code]. Negative indices can be used to count from the back, like in Python (-1 is the last element, -2 the second to last, etc.).
 			</description>
 		</method>
 		<method name="get_option_count" qualifiers="const">
-			<return type="int">
-			</return>
+			<return type="int" />
 			<description>
 				Returns the number of options in the parser.
 			</description>
 		</method>
 		<method name="get_prefix" qualifiers="const">
-			<return type="String">
-			</return>
-			<argument index="0" name="option" type="CommandLineOption">
-			</argument>
+			<return type="String" />
+			<argument index="0" name="option" type="CommandLineOption" />
 			<description>
 				Returns first used prefix for [code]option[/code]. Example: for parsed [code]--help[/code] will return [code]--[/code]. Convenient helper for [method get_prefix_list].
 			</description>
 		</method>
 		<method name="get_prefix_list" qualifiers="const">
-			<return type="PoolStringArray">
-			</return>
-			<argument index="0" name="option" type="CommandLineOption">
-			</argument>
+			<return type="PoolStringArray" />
+			<argument index="0" name="option" type="CommandLineOption" />
 			<description>
 				Returns all used prefixes for [code]option[/code].
 			</description>
 		</method>
 		<method name="get_value" qualifiers="const">
-			<return type="String">
-			</return>
-			<argument index="0" name="option" type="CommandLineOption">
-			</argument>
+			<return type="String" />
+			<argument index="0" name="option" type="CommandLineOption" />
 			<description>
 				Returns first specified value for [code]option[/code]. Example: for parsed [code]--input filename.png[/code] will return [code]filename.png[/code]. Convenient helper for [method get_value_list].
 			</description>
 		</method>
 		<method name="get_value_list" qualifiers="const">
-			<return type="PoolStringArray">
-			</return>
-			<argument index="0" name="option" type="CommandLineOption">
-			</argument>
+			<return type="PoolStringArray" />
+			<argument index="0" name="option" type="CommandLineOption" />
 			<description>
 				Returns all specified values for [code]option[/code].
 			</description>
 		</method>
 		<method name="is_set" qualifiers="const">
-			<return type="bool">
-			</return>
-			<argument index="0" name="option" type="CommandLineOption">
-			</argument>
+			<return type="bool" />
+			<argument index="0" name="option" type="CommandLineOption" />
 			<description>
 				Returns [code]true[/code] if [code]option[/code] was specified.
 			</description>
 		</method>
 		<method name="parse">
-			<return type="int" enum="Error">
-			</return>
-			<argument index="0" name="args" type="PoolStringArray">
-			</argument>
+			<return type="int" enum="Error" />
+			<argument index="0" name="args" type="PoolStringArray" />
 			<description>
 				Parses command-line [code]args[/code]. Returns [constant OK] upon success. In case of error, refer to [method get_error_text] which returns human-readable error message.
 			</description>
 		</method>
 		<method name="remove_option">
-			<return type="void">
-			</return>
-			<argument index="0" name="idx" type="int">
-			</argument>
+			<return type="void" />
+			<argument index="0" name="idx" type="int" />
 			<description>
 				Removes option at specified index [code]idx[/code].
 			</description>
 		</method>
 		<method name="set_option">
-			<return type="void">
-			</return>
-			<argument index="0" name="idx" type="int">
-			</argument>
-			<argument index="1" name="option" type="CommandLineOption">
-			</argument>
+			<return type="void" />
+			<argument index="0" name="idx" type="int" />
+			<argument index="1" name="option" type="CommandLineOption" />
 			<description>
 				Replaces option at specified index [code]idx[/code] with [code]option[/code].
 			</description>
 		</method>
 		<method name="validate">
-			<return type="int" enum="Error">
-			</return>
+			<return type="int" enum="Error" />
 			<description>
 				Checks if all required methods were specified. Emits [signal CommandLineOption.validated] upon success for options that were parsed.
 			</description>

@@ -9,40 +9,6 @@
 	<tutorials>
 	</tutorials>
 	<methods>
-		<method name="remove_checker">
-			<return type="void">
-			</return>
-			<description>
-				Removes the checker added by [method set_checker].
-			</description>
-		</method>
-		<method name="set_checker">
-			<return type="int" enum="Error">
-			</return>
-			<argument index="0" name="callable" type="Callable">
-			</argument>
-			<argument index="1" name="error_msg" type="String">
-			</argument>
-			<description>
-				Sets a [code]callable[/code] that accepts a [String] as input and returns [code]true[/code] if the value matches the given check. If the function returns [code]false[/code], then the parsing will fail and [method CommandLineParser.get_error_text] will return [code]error_msg[/code].
-				Example:
-				[codeblock]
-				var parser = CommandLineParser.new()
-				var option = CommandLineOption.new()
-
-				func _init():
-				    option.names = ["i", "ip"]
-				    option.arg_count = 1
-				    option.description = "This option can accept IP address only."
-				    option.arg_text = "&lt;ip&gt;"
-				    option.set_checker(Callable(self, "_is_valid_ip"), "Invalid IP");
-				    parser.add_command(option)
-
-				func _is_valid_ip(arg: String) -&gt; bool:
-				    return arg.is_valid_ip_address()
-				[/codeblock]
-			</description>
-		</method>
 	</methods>
 	<members>
 		<member name="allowed_args" type="PoolStringArray" setter="set_allowed_args" getter="get_allowed_args" default="PoolStringArray(  )">
@@ -81,8 +47,7 @@
 	</members>
 	<signals>
 		<signal name="validated">
-			<argument index="0" name="values" type="PoolStringArray">
-			</argument>
+			<argument index="0" name="values" type="PoolStringArray" />
 			<description>
 				Emitted after calling [method CommandLineParser.validate] if it returns [constant OK] and this option was specified in the argument list. [code]values[/code] contains all values that were passed to the option.
 			</description>
