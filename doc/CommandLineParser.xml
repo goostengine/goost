@@ -107,7 +107,7 @@
 		</method>
 		<method name="get_option" qualifiers="const">
 			<return type="CommandLineOption" />
-			<argument index="0" name="idx" type="int" />
+			<argument index="0" name="index" type="int" />
 			<description>
 				Returns the option at index position [code]idx[/code]. Negative indices can be used to count from the back, like in Python (-1 is the last element, -2 the second to last, etc.).
 			</description>
@@ -172,14 +172,14 @@
 		</method>
 		<method name="remove_option">
 			<return type="void" />
-			<argument index="0" name="idx" type="int" />
+			<argument index="0" name="index" type="int" />
 			<description>
 				Removes option at specified index [code]idx[/code].
 			</description>
 		</method>
 		<method name="set_option">
 			<return type="void" />
-			<argument index="0" name="idx" type="int" />
+			<argument index="0" name="index" type="int" />
 			<argument index="1" name="option" type="CommandLineOption" />
 			<description>
 				Replaces option at specified index [code]idx[/code] with [code]option[/code].

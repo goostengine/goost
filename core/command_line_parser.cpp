@@ -518,9 +518,9 @@ void CommandLineParser::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("add_option", "option"), &CommandLineParser::add_option);
 	ClassDB::bind_method(D_METHOD("get_option_count"), &CommandLineParser::get_option_count);
-	ClassDB::bind_method(D_METHOD("get_option", "idx"), &CommandLineParser::get_option);
-	ClassDB::bind_method(D_METHOD("set_option", "idx", "option"), &CommandLineParser::set_option);
-	ClassDB::bind_method(D_METHOD("remove_option", "idx"), &CommandLineParser::remove_option);
+	ClassDB::bind_method(D_METHOD("get_option", "index"), &CommandLineParser::get_option);
+	ClassDB::bind_method(D_METHOD("set_option", "index", "option"), &CommandLineParser::set_option);
+	ClassDB::bind_method(D_METHOD("remove_option", "index"), &CommandLineParser::remove_option);
 	ClassDB::bind_method(D_METHOD("find_option", "name"), &CommandLineParser::find_option);
 
 	ClassDB::bind_method(D_METHOD("new_option", "name", "description", "default_value", "allowed_values"), &CommandLineParser::new_option, DEFVAL(""), DEFVAL(""), DEFVAL(PoolStringArray()));
