@@ -697,3 +697,4 @@ class TestInvalidData extends "res://addons/gut/test.gd":
 		list._iter_init(Array([]))
 		list.pop_front()
 		var _v = list._iter_get(Array([]))
+		assert_true(list.empty())
