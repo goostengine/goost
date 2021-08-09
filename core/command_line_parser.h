@@ -1,7 +1,7 @@
 #pragma once
 
-#include "core/reference.h"
 #include "core/ordered_hash_map.h"
+#include "core/reference.h"
 
 class CommandLineOption : public Reference {
 	GDCLASS(CommandLineOption, Reference);
@@ -34,37 +34,37 @@ protected:
 
 public:
 	void set_names(const PoolStringArray &p_names);
-	PoolStringArray get_names() const;
+	PoolStringArray get_names() const { return _names; }
 
-	void set_default_args(const PoolStringArray &p_args);
-	PoolStringArray get_default_args() const;
+	void set_default_args(const PoolStringArray &p_args) { _default_args = p_args; }
+	PoolStringArray get_default_args() const { return _default_args; }
 
-	void set_allowed_args(const PoolStringArray &p_args);
-	PoolStringArray get_allowed_args() const;
+	void set_allowed_args(const PoolStringArray &p_args) { _allowed_args = p_args; }
+	PoolStringArray get_allowed_args() const { return _allowed_args; }
 
-	void set_description(const String &p_description);
-	String get_description() const;
+	void set_description(const String &p_description) { _description = p_description; }
+	String get_description() const { return _description; }
 
-	void set_category(const String &p_category);
-	String get_category() const;
+	void set_category(const String &p_category) { _category = p_category; }
+	String get_category() const { return _category; }
 
-	void set_arg_text(const String &p_arg_text);
-	String get_arg_text() const;
+	void set_arg_text(const String &p_arg_text) { _arg_text = p_arg_text; }
+	String get_arg_text() const { return _arg_text; }
 
-	void set_arg_count(int p_count);
-	int get_arg_count() const;
+	void set_arg_count(int p_count) { _arg_count = p_count; }
+	int get_arg_count() const { return _arg_count; }
 
-	void set_hidden(bool p_hidden);
-	bool is_hidden() const;
+	void set_hidden(bool p_hidden) { _hidden = p_hidden; }
+	bool is_hidden() const { return _hidden; }
 
-	void set_positional(bool p_positional);
-	bool is_positional() const;
+	void set_positional(bool p_positional) { _positional = p_positional; }
+	bool is_positional() const { return _positional; }
 
-	void set_required(bool p_required);
-	bool is_required() const;
+	void set_required(bool p_required) { _required = p_required; }
+	bool is_required() const { return _required; }
 
-	void set_multitoken(bool p_multitoken);
-	bool is_multitoken() const;
+	void set_multitoken(bool p_multitoken) { _multitoken = p_multitoken; }
+	bool is_multitoken() const { return _multitoken; }
 
 	CommandLineOption() = default;
 	explicit CommandLineOption(const PoolStringArray &p_names, int p_arg_count = 1);
@@ -88,31 +88,29 @@ protected:
 	static void _bind_methods();
 
 public:
-	void set_header(const String &p_header);
-	String get_header() const;
+	void set_header(const String &p_header) { _help_header = p_header; }
+	String get_header() const { return _help_header; }
 
-	void set_footer(const String &p_footer);
-	String get_footer() const;
+	void set_footer(const String &p_footer) { _help_footer = p_footer; }
+	String get_footer() const { return _help_footer; }
 
-	void set_usage_title(const String &p_title);
-	String get_usage_title() const;
+	void set_usage_title(const String &p_title) { _usage_title = p_title; }
+	String get_usage_title() const { return _usage_title; }
 
-	void set_left_pad(int p_size);
-	int get_left_pad() const;
+	void set_left_pad(int p_size) { _left_help_pad = p_size; }
+	int get_left_pad() const { return _left_help_pad; }
 
-	void set_right_pad(int p_size);
-	int get_right_pad() const;
+	void set_right_pad(int p_size) { _right_help_pad = p_size; }
+	int get_right_pad() const { return _right_help_pad; }
 
-	void set_line_length(int p_length);
-	int get_line_length() const;
+	void set_line_length(int p_length) { _help_line_length = p_length; }
+	int get_line_length() const { return _help_line_length; }
 
-	void set_min_description_length(int p_length);
-	int get_min_description_length() const;
+	void set_min_description_length(int p_length) { _min_description_length = p_length; }
+	int get_min_description_length() const { return _min_description_length; }
 
-	void set_autogenerate_usage(bool p_generate);
-	bool is_autogenerate_usage() const;
-
-	CommandLineHelpFormat() = default;
+	void set_autogenerate_usage(bool p_generate) { _autogenerate_usage = p_generate; }
+	bool is_autogenerate_usage() const { return _autogenerate_usage; }
 };
 
 class CommandLineParser : public Reference {
@@ -132,7 +130,7 @@ class CommandLineParser : public Reference {
 	Map<const CommandLineOption *, PoolStringArray> _parsed_prefixes;
 	Map<const CommandLineOption *, int> _parsed_count;
 
-	String _error;
+	String _error_text;
 
 	float _similarity_bias = 0.3;
 
@@ -200,32 +198,32 @@ public:
 
 	int get_occurrence_count(const Ref<CommandLineOption> &p_option) const;
 
-	PoolStringArray get_forwarding_args() const;
-	PoolStringArray get_args() const;
+	PoolStringArray get_forwarding_args() const { return _forwarding_args; }
+	PoolStringArray get_args() const { return _args; }
 
 	String get_help_text(const Ref<CommandLineHelpFormat> &p_format = Ref<CommandLineHelpFormat>()) const;
-	String get_error_text() const;
+	String get_error_text() const { return _error_text; }
 
-	void set_long_prefixes(const PoolStringArray &p_prefixes);
-	PoolStringArray get_long_prefixes() const;
+	void set_long_prefixes(const PoolStringArray &p_prefixes) { _long_prefixes = p_prefixes; }
+	PoolStringArray get_long_prefixes() const { return _long_prefixes; }
 
-	void set_short_prefixes(const PoolStringArray &p_prefixes);
-	PoolStringArray get_short_prefixes() const;
+	void set_short_prefixes(const PoolStringArray &p_prefixes) { _short_prefixes = p_prefixes; }
+	PoolStringArray get_short_prefixes() const { return _short_prefixes; }
 
-	void set_similarity_bias(float p_bias);
-	float get_similarity_bias() const;
+	void set_similarity_bias(float p_bias) { _similarity_bias = CLAMP(p_bias, 0.0f, 1.0f); }
+	float get_similarity_bias() const { return _similarity_bias; }
 
-	void set_allow_forwarding_args(bool p_allow);
-	bool is_allow_forwarding_args() const;
+	void set_allow_forwarding_args(bool p_allow) { _allow_forwarding_args = p_allow; }
+	bool is_allow_forwarding_args() const { return _allow_forwarding_args; }
 
-	void set_allow_adjacent(bool p_allow);
-	bool is_allow_adjacent() const;
+	void set_allow_adjacent(bool p_allow) { _allow_adjacent = p_allow; }
+	bool is_allow_adjacent() const { return _allow_adjacent; }
 
-	void set_allow_sticky(bool p_allow);
-	bool is_allow_sticky() const;
+	void set_allow_sticky(bool p_allow) { _allow_sticky = p_allow; }
+	bool is_allow_sticky() const { return _allow_sticky; }
 
-	void set_allow_compound(bool p_allow);
-	bool is_allow_compound() const;
+	void set_allow_compound(bool p_allow) { _allow_compound = p_allow; }
+	bool is_allow_compound() const { return _allow_compound; }
 
 	void clear();
 

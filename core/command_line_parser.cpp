@@ -60,90 +60,6 @@ void CommandLineOption::set_names(const PoolStringArray &p_names) {
 	_names = p_names;
 }
 
-PoolStringArray CommandLineOption::get_names() const {
-	return _names;
-}
-
-void CommandLineOption::set_description(const String &p_description) {
-	_description = p_description;
-}
-
-String CommandLineOption::get_description() const {
-	return _description;
-}
-
-void CommandLineOption::set_category(const String &p_category) {
-	_category = p_category;
-}
-
-String CommandLineOption::get_category() const {
-	return _category;
-}
-
-void CommandLineOption::set_arg_text(const String &p_arg_text) {
-	_arg_text = p_arg_text;
-}
-
-String CommandLineOption::get_arg_text() const {
-	return _arg_text;
-}
-
-void CommandLineOption::set_arg_count(int p_count) {
-	_arg_count = p_count;
-}
-
-int CommandLineOption::get_arg_count() const {
-	return _arg_count;
-}
-
-void CommandLineOption::set_hidden(const bool p_hidden) {
-	_hidden = p_hidden;
-}
-
-bool CommandLineOption::is_hidden() const {
-	return _hidden;
-}
-
-void CommandLineOption::set_positional(bool p_positional) {
-	_positional = p_positional;
-}
-
-bool CommandLineOption::is_positional() const {
-	return _positional;
-}
-
-void CommandLineOption::set_required(bool p_required) {
-	_required = p_required;
-}
-
-bool CommandLineOption::is_required() const {
-	return _required;
-}
-
-void CommandLineOption::set_multitoken(bool p_multitoken) {
-	_multitoken = p_multitoken;
-}
-
-bool CommandLineOption::is_multitoken() const {
-	return _multitoken;
-}
-
-void CommandLineOption::set_default_args(const PoolStringArray &p_args) {
-	_default_args = p_args;
-}
-
-PoolStringArray CommandLineOption::get_default_args() const {
-	return _default_args;
-}
-
-void CommandLineOption::set_allowed_args(const PoolStringArray &p_args) {
-	_allowed_args = p_args;
-}
-
-PoolStringArray CommandLineOption::get_allowed_args() const {
-	return _allowed_args;
-}
-
 CommandLineOption::CommandLineOption(const PoolStringArray &p_names, int p_arg_count) :
 		_names(p_names),
 		_arg_count(p_arg_count) {}
@@ -183,70 +99,6 @@ void CommandLineHelpFormat::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "line_length"), "set_line_length", "get_line_length");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "min_description_length"), "set_min_description_length", "get_min_description_length");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "autogenerate_usage"), "set_autogenerate_usage", "is_autogenerate_usage");
-}
-
-void CommandLineHelpFormat::set_header(const String &p_header) {
-	_help_header = p_header;
-}
-
-String CommandLineHelpFormat::get_header() const {
-	return _help_header;
-}
-
-void CommandLineHelpFormat::set_footer(const String &p_footer) {
-	_help_footer = p_footer;
-}
-
-String CommandLineHelpFormat::get_footer() const {
-	return _help_footer;
-}
-
-void CommandLineHelpFormat::set_usage_title(const String &p_title) {
-	_usage_title = p_title;
-}
-
-String CommandLineHelpFormat::get_usage_title() const {
-	return _usage_title;
-}
-
-void CommandLineHelpFormat::set_left_pad(int p_size) {
-	_left_help_pad = p_size;
-}
-
-int CommandLineHelpFormat::get_left_pad() const {
-	return _left_help_pad;
-}
-
-void CommandLineHelpFormat::set_right_pad(int p_size) {
-	_right_help_pad = p_size;
-}
-
-int CommandLineHelpFormat::get_right_pad() const {
-	return _right_help_pad;
-}
-
-void CommandLineHelpFormat::set_line_length(int p_length) {
-	_help_line_length = p_length;
-}
-
-int CommandLineHelpFormat::get_line_length() const {
-	return _help_line_length;
-}
-
-void CommandLineHelpFormat::set_min_description_length(int p_length) {
-	_min_description_length = p_length;
-}
-
-int CommandLineHelpFormat::get_min_description_length() const {
-	return _min_description_length;
-}
-
-void CommandLineHelpFormat::set_autogenerate_usage(bool p_generate) {
-	_autogenerate_usage = p_generate;
-}
-
-bool CommandLineHelpFormat::is_autogenerate_usage() const {
-	return _autogenerate_usage;
 }
 
 // Represents detected option prefix.
@@ -351,13 +203,13 @@ int CommandLineParser::_validate_positional(const String &p_arg, int p_current_i
 		}
 	}
 	// No unparsed positional option found.
-	_error = vformat(RTR("Unexpected argument: '%s'."), p_arg);
+	_error_text = vformat(RTR("Unexpected argument: '%s'."), p_arg);
 	return -1;
 }
 
 int CommandLineParser::_validate_adjacent(const String &p_arg, const String &p_prefix, int p_separator) {
 	if (unlikely(p_separator == p_arg.length() - 1)) {
-		_error = vformat(RTR("Missing argument after '%s"), p_arg);
+		_error_text = vformat(RTR("Missing argument after '%s"), p_arg);
 		return -1;
 	}
 	const String &option_name = p_arg.substr(p_prefix.length(), p_separator - p_prefix.length());
@@ -366,7 +218,7 @@ int CommandLineParser::_validate_adjacent(const String &p_arg, const String &p_p
 		return -1;
 	}
 	if (option->get_arg_count() != 1 && option->get_arg_count() != -1) {
-		_error = vformat(RTR("Argument separator '=' can be used only for single argument, but option '%s' accepts %d arguments"), option_name, option->get_arg_count());
+		_error_text = vformat(RTR("Argument separator '=' can be used only for single argument, but option '%s' accepts %d arguments"), option_name, option->get_arg_count());
 		return -1;
 	}
 	const String &value = p_arg.substr(p_separator + 1);
@@ -382,7 +234,7 @@ int CommandLineParser::_validate_short(const String &p_arg, const String &p_pref
 	for (int i = p_prefix.length(); i < p_arg.length(); i++) {
 		if (unlikely(!_allow_compound && i == p_prefix.length() + 1)) {
 			// With compound arguments disabled, the loop should only execute once.
-			_error = vformat(RTR("Unexpected text '%s' after '%s'"), p_arg.right(p_prefix.length() + 1), p_arg.left(p_prefix.length() + 1));
+			_error_text = vformat(RTR("Unexpected text '%s' after '%s'"), p_arg.right(p_prefix.length() + 1), p_arg.left(p_prefix.length() + 1));
 			return -1;
 		}
 		const String option_name = String::chr(p_arg[i]);
@@ -396,7 +248,7 @@ int CommandLineParser::_validate_short(const String &p_arg, const String &p_pref
 			if (!sticky_arg.empty()) {
 				// Validate sticky argument first if present.
 				if (unlikely(!_allow_sticky)) {
-					_error = vformat(RTR("Missing space between '%s' and '%s"), p_prefix + option_name, sticky_arg);
+					_error_text = vformat(RTR("Missing space between '%s' and '%s"), p_prefix + option_name, sticky_arg);
 					return -1;
 				}
 				if (unlikely(!_validate_option_arg(option, display_name, sticky_arg))) {
@@ -431,17 +283,17 @@ int CommandLineParser::_validate_long(const String &p_arg, const String &p_prefi
 const CommandLineOption *CommandLineParser::_validate_option(const String &p_name, const String &p_prefix) {
 	const CommandLineOption *option = find_option(p_name).ptr();
 	if (unlikely(!option)) {
-		_error = vformat(RTR("'%s' is not a valid option."), p_prefix + p_name);
+		_error_text = vformat(RTR("'%s' is not a valid option."), p_prefix + p_name);
 		// Try to suggest the correct option.
 		const String similar_name = _find_most_similar(p_name);
 		if (!similar_name.empty()) {
-			_error += "\n";
-			_error += vformat(RTR("Perhaps you wanted to use: '%s'."), p_prefix + similar_name);
+			_error_text += "\n";
+			_error_text += vformat(RTR("Perhaps you wanted to use: '%s'."), p_prefix + similar_name);
 		}
 		return nullptr;
 	}
 	if (unlikely(!option->is_multitoken() && _parsed_values.has(option))) {
-		_error = vformat(RTR("Option '%s' has been specified more than once."), p_prefix + p_name);
+		_error_text = vformat(RTR("Option '%s' has been specified more than once."), p_prefix + p_name);
 		return nullptr;
 	}
 	return option;
@@ -471,13 +323,13 @@ int CommandLineParser::_validate_option_args(const CommandLineOption *p_option, 
 
 	// The option has a certain number of required arguments, but got less.
 	if (unlikely(p_option->get_arg_count() >= 0 && p_option->get_arg_count() != validated_arg_count + p_skip_first)) {
-		_error = vformat(RTR("Option '%s' expects %d arguments, but %d was provided."),
+		_error_text = vformat(RTR("Option '%s' expects %d arguments, but %d was provided."),
 				p_display_name, p_option->get_arg_count(), validated_arg_count + p_skip_first);
 		return -1;
 	}
 	// Option that takes all arguments left should always have at least one.
 	if (unlikely(p_option->get_arg_count() < 0 && validated_arg_count == 0)) {
-		_error = vformat(RTR("Option '%s' expects at least one argument."), p_display_name);
+		_error_text = vformat(RTR("Option '%s' expects at least one argument."), p_display_name);
 		return -1;
 	}
 
@@ -503,7 +355,7 @@ static String join_args(const PoolStringArray &p_args) {
 
 bool CommandLineParser::_validate_option_arg(const CommandLineOption *p_option, const String &p_display_name, const String &p_arg) {
 	if (unlikely(!p_option->get_allowed_args().empty() && !has_arg(p_option->get_allowed_args(), p_arg))) {
-		_error = vformat(RTR("Argument '%s' can't be used for '%s', possible values: %s."), p_arg, p_display_name, join_args(p_option->get_allowed_args()));
+		_error_text = vformat(RTR("Argument '%s' can't be used for '%s', possible values: %s."), p_arg, p_display_name, join_args(p_option->get_allowed_args()));
 		return false;
 	}
 	return true;
@@ -740,7 +592,7 @@ Error CommandLineParser::parse(const PoolStringArray &p_args) {
 	_parsed_count.clear();
 
 	if (unlikely(!_are_options_valid())) {
-		_error = RTR("Option parser was defined with incorrect options.");
+		_error_text = RTR("Option parser was defined with incorrect options.");
 		return ERR_INVALID_DECLARATION;
 	}
 
@@ -774,7 +626,7 @@ Error CommandLineParser::validate() {
 	for (int i = 0; i < _options.size(); ++i) {
 		const CommandLineOption *option = _options[i].ptr();
 		if (unlikely(option->is_required() && !_parsed_values.has(option))) {
-			_error = vformat(RTR("Option '%s' is required but missing."), _to_string(option->get_names()));
+			_error_text = vformat(RTR("Option '%s' is required but missing."), _to_string(option->get_names()));
 			return ERR_INVALID_DATA;
 		}
 	}
@@ -900,10 +752,6 @@ int CommandLineParser::get_occurrence_count(const Ref<CommandLineOption> &p_opti
 	return E->value();
 }
 
-PoolStringArray CommandLineParser::get_args() const {
-	return _args;
-}
-
 String CommandLineParser::get_help_text(const Ref<CommandLineHelpFormat> &p_format) const {
 	ERR_FAIL_COND_V_MSG(_short_prefixes.empty(), String(), "Short prefixes can't be empty");
 	ERR_FAIL_COND_V_MSG(_long_prefixes.empty(), String(), "Long prefixes can't be empty");
@@ -986,75 +834,11 @@ String CommandLineParser::get_help_text(const Ref<CommandLineHelpFormat> &p_form
 	return help_text;
 }
 
-String CommandLineParser::get_error_text() const {
-	return _error;
-}
-
-PoolStringArray CommandLineParser::get_forwarding_args() const {
-	return _forwarding_args;
-}
-
 void CommandLineParser::clear() {
 	_options.clear();
 	_args.resize(0);
 	_forwarding_args.resize(0);
 	_parsed_values.clear();
 	_parsed_prefixes.clear();
-	_error.clear();
-}
-
-void CommandLineParser::set_long_prefixes(const PoolStringArray &p_prefixes) {
-	_long_prefixes = p_prefixes;
-}
-
-PoolStringArray CommandLineParser::get_long_prefixes() const {
-	return _long_prefixes;
-}
-
-void CommandLineParser::set_short_prefixes(const PoolStringArray &p_prefixes) {
-	_short_prefixes = p_prefixes;
-}
-
-PoolStringArray CommandLineParser::get_short_prefixes() const {
-	return _short_prefixes;
-}
-
-void CommandLineParser::set_similarity_bias(float p_similarity) {
-	_similarity_bias = p_similarity;
-}
-
-float CommandLineParser::get_similarity_bias() const {
-	return _similarity_bias;
-}
-
-void CommandLineParser::set_allow_forwarding_args(bool p_allow) {
-	_allow_forwarding_args = p_allow;
-}
-
-bool CommandLineParser::is_allow_forwarding_args() const {
-	return _allow_forwarding_args;
-}
-
-void CommandLineParser::set_allow_adjacent(bool p_allow) {
-	_allow_adjacent = p_allow;
-}
-
-bool CommandLineParser::is_allow_adjacent() const {
-	return _allow_adjacent;
-}
-
-void CommandLineParser::set_allow_sticky(bool p_allow) {
-	_allow_sticky = p_allow;
-}
-
-bool CommandLineParser::is_allow_sticky() const {
-	return _allow_sticky;
-}
-
-void CommandLineParser::set_allow_compound(bool p_allow) {
-	_allow_compound = p_allow;
-}
-
-bool CommandLineParser::is_allow_compound() const {
-	return _allow_compound;
+	_error_text.clear();
 }
