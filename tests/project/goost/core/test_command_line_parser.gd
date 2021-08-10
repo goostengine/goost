@@ -52,6 +52,27 @@ func test_parse_multiple_options():
     Engine.print_error_messages = true
 
 
+func test_same_options():
+    var _opt
+    _opt = cmd.new_option("verbose")
+    _opt = cmd.new_option("verbose")
+
+    Engine.print_error_messages = false
+
+    var err = cmd.parse(["--verbose=yes"])
+    assert_eq(err, ERR_PARSE_ERROR)
+
+    Engine.print_error_messages = true
+
+
+func test_same_options_multitoken():
+    var k = cmd.new_option("k")
+    k.multitoken = true
+
+    var err = cmd.parse(["-k -k -k -k"])
+    assert_eq(err, OK)
+
+
 func add_test_option(arg_count):
     opt = CommandLineOption.new()
     opt.names = ["i", "input"]
@@ -88,45 +109,38 @@ func test_options():
     assert_eq(cmd.find_option(opt.names[0]), opt, "Should find option by existing name/alias.")
     assert_eq(cmd.find_option(opt.names[1]), opt, "Should find option by existing name/alias.")
 
-    
+
 func test_validation():
     add_test_option(1)
 
     opt.default_args = ["a"]
 
-    assert_eq(cmd.parse([]), OK, "Parsing with a valid default argument should succeed.")
+    assert_eq(cmd.parse([]), OK)
 
     Engine.print_error_messages = false
-    
+
     var arg_count = opt.arg_count
     opt.arg_count = arg_count + 1
-    assert_eq(cmd.parse([]), ERR_PARSE_ERROR,
-            "Expected error: Option requires more arguments, but only one default value was given.")
+    assert_eq(cmd.parse([]), ERR_PARSE_ERROR, "Requires more args, but only one default value was given.")
     opt.arg_count = arg_count
 
     var names = opt.names
     opt.names = []
-    assert_eq(cmd.parse([]), ERR_PARSE_ERROR,
-            "Expected error: Parsing with an option which does not have any names should fail.")
+    assert_eq(cmd.parse([]), ERR_PARSE_ERROR, "No names, should fail.")
     opt.names = names
-    
+
     var default_args = opt.default_args
     opt.default_args = ["a", "b"]
-    assert_eq(cmd.parse([]), ERR_PARSE_ERROR,
-            "Expected error: Parsing with an option which has different number of arguments and default arguments should fail.")
+    assert_eq(cmd.parse([]), ERR_PARSE_ERROR, "Different number of arguments and default arguments, should fail.")
     opt.default_args = default_args
 
     var required = opt.required
     opt.required = not required
-    assert_eq(cmd.parse([]), ERR_PARSE_ERROR,
-            "Parsing with an option which is required and have default arguments should fail.")
+    assert_eq(cmd.parse([]), ERR_PARSE_ERROR, "Required and have default arguments, should fail.")
     opt.required = required
 
-    # TODO: checkers here
-
     cmd.add_option(opt)
-    assert_eq(cmd.parse([]), ERR_PARSE_ERROR,
-            "Parsing with multiple options that have the same name should fail.")
+    assert_eq(cmd.parse([]), ERR_PARSE_ERROR, "Same name, should fail.")
     cmd.remove_option(1)
 
     Engine.print_error_messages = true
@@ -134,7 +148,7 @@ func test_validation():
     assert_eq(cmd.parse([]), OK,
             "Parsing with a valid option (after reverting all changes) should be successful.")
 
-        
+
 func test_forwarding_args():
     assert_eq(cmd.parse(["--", "arg1", "arg2"]), ERR_PARSE_ERROR,
             "Parsing forwarded arguments should fail if disabled.")
@@ -159,14 +173,14 @@ func test_short_options():
     new_opt.arg_count = 0
     cmd.add_option(new_opt)
 
-    assert_eq(cmd.parse(["-a", "-i"]), OK, "Two compound options, should succeed.")
-    assert_eq(cmd.parse(["-i", "-a"]), OK, "Two compound options, should succeed")
+    assert_eq(cmd.parse(["-ai"]), OK, "Two compound options, should succeed.")
+    assert_eq(cmd.parse(["-ia"]), OK, "Two compound options, should succeed")
     assert_true(cmd.is_set(opt), "Compound, should succeed")
     assert_true(cmd.is_set(new_opt), "Compound, should succeed")
 
     cmd.allow_compound = false
 
-    assert_eq(cmd.parse(["-a", "-i"]), OK, "Should fail, not allowed if `allow_compound = false`.")
+    assert_eq(cmd.parse(["-ai"]), ERR_PARSE_ERROR, "Should fail, not allowed if `allow_compound = false`.")
 
 
 func test_short_option_not_short():
@@ -179,17 +193,12 @@ func test_short_option_not_short():
 
 
 func test_long_options():
-    add_test_option(0)
+    var file = cmd.new_option("file")
+    file.arg_count = 0
 
     assert_eq(cmd.parse(["--test"]), ERR_PARSE_ERROR, "Unknown option, should fail.")
-    assert_eq(cmd.parse(["--input", "--input"]), ERR_PARSE_ERROR, "Same options, should fail.")
-    assert_eq(cmd.parse(["--input", "value"]), ERR_PARSE_ERROR, "Option should not accept arguments.")
-
-    opt.multitoken = true
-    assert_eq(cmd.parse(["--input", "--input"]), OK, "Same multiple options should be allowed with `multitoken = true`.")
-    assert_eq(cmd.get_occurrence_count(opt), 2)
-
-    assert_eq(cmd.parse(["--input=path"]), ERR_PARSE_ERROR, "Option should not accept arguments")
+    assert_eq(cmd.parse(["--file", "--file"]), ERR_PARSE_ERROR, "Same options, should fail.")
+    assert_eq(cmd.parse(["--file", "value"]), ERR_PARSE_ERROR, "Option should not accept arguments.")
 
 
 func test_one_arg():
@@ -223,16 +232,27 @@ func test_positional():
     add_test_option(-1) # Any number of values.
     opt.positional = true
 
+    var sum = cmd.new_option("sum")
+    sum.arg_count = 0
+
     assert_eq(cmd.parse(["1", "2", "3"]), OK)
     var values = cmd.get_value_list(opt)
     assert_eq(values.size(), 3)
     assert_eq(values[0], "1")
     assert_eq(values[1], "2")
     assert_eq(values[2], "3")
+    assert_false(cmd.is_set(sum))
 
-    assert_eq(cmd.parse(["--input", "1", "2", "3"]), OK)
+    assert_eq(cmd.parse(["--input", "1", "2", "3", "--sum"]), OK)
     values = cmd.get_value_list(opt)
     assert_eq(values.size(), 3)
     assert_eq(values[0], "1")
     assert_eq(values[1], "2")
     assert_eq(values[2], "3")
+    assert_true(cmd.is_set(sum))
+
+    if cmd.is_set(sum):
+        var total = 0
+        for v in values:
+            total += str2var(v)
+        assert_eq(total, 6)
