@@ -516,14 +516,14 @@ bool CommandLineParser::_contains_optional_options(const Vector<Pair<const Comma
 void CommandLineParser::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("parse", "args"), &CommandLineParser::parse);
 
-	ClassDB::bind_method(D_METHOD("add_option", "option"), &CommandLineParser::add_option);
+	ClassDB::bind_method(D_METHOD("append_option", "option"), &CommandLineParser::append_option);
 	ClassDB::bind_method(D_METHOD("get_option_count"), &CommandLineParser::get_option_count);
 	ClassDB::bind_method(D_METHOD("get_option", "index"), &CommandLineParser::get_option);
 	ClassDB::bind_method(D_METHOD("set_option", "index", "option"), &CommandLineParser::set_option);
 	ClassDB::bind_method(D_METHOD("remove_option", "index"), &CommandLineParser::remove_option);
 	ClassDB::bind_method(D_METHOD("find_option", "name"), &CommandLineParser::find_option);
 
-	ClassDB::bind_method(D_METHOD("new_option", "name", "description", "default_value", "allowed_values"), &CommandLineParser::new_option, DEFVAL(""), DEFVAL(""), DEFVAL(PoolStringArray()));
+	ClassDB::bind_method(D_METHOD("add_option", "name", "description", "default_value", "allowed_values"), &CommandLineParser::add_option, DEFVAL(""), DEFVAL(""), DEFVAL(PoolStringArray()));
 	ClassDB::bind_method(D_METHOD("add_help_option"), &CommandLineParser::add_help_option);
 	ClassDB::bind_method(D_METHOD("add_version_option"), &CommandLineParser::add_version_option);
 
@@ -636,7 +636,7 @@ Error CommandLineParser::parse(const PoolStringArray &p_args) {
 	return OK;
 }
 
-void CommandLineParser::add_option(const Ref<CommandLineOption> &p_option) {
+void CommandLineParser::append_option(const Ref<CommandLineOption> &p_option) {
 	ERR_FAIL_COND(p_option.is_null());
 	_options.push_back(p_option);
 }
@@ -669,7 +669,7 @@ Ref<CommandLineOption> CommandLineParser::find_option(const String &p_name) cons
 	return nullptr;
 }
 
-Ref<CommandLineOption> CommandLineParser::new_option(const String &p_name, const String &p_description, const String &p_default_value, const PoolStringArray &p_allowed_values) {
+Ref<CommandLineOption> CommandLineParser::add_option(const String &p_name, const String &p_description, const String &p_default_value, const PoolStringArray &p_allowed_values) {
 	ERR_FAIL_COND_V_MSG(p_name.empty(), Ref<CommandLineOption>(), "Option name cannot be empty.");
 
 	Ref<CommandLineOption> option = memnew(CommandLineOption);
@@ -700,7 +700,7 @@ Ref<CommandLineOption> CommandLineParser::add_help_option() {
 	Ref<CommandLineOption> option = memnew(CommandLineOption(names, 0));
 	option->set_category("General");
 	option->set_description("Display this help message.");
-	add_option(option);
+	append_option(option);
 
 	return option;
 }
@@ -713,7 +713,7 @@ Ref<CommandLineOption> CommandLineParser::add_version_option() {
 	Ref<CommandLineOption> option = memnew(CommandLineOption(names, 0));
 	option->set_category("General");
 	option->set_description("Display version information.");
-	add_option(option);
+	append_option(option);
 
 	return option;
 }

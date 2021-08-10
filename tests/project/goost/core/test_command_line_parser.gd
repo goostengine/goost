@@ -8,7 +8,7 @@ func before_each():
 
 
 func test_parse():
-    var input: CommandLineOption = cmd.new_option("input", "Path to a file.", "file.txt")
+    var input: CommandLineOption = cmd.add_option("input", "Path to a file.", "file.txt")
     print(cmd.get_help_text())
 
     watch_signals(input)
@@ -27,9 +27,9 @@ func test_parse():
 
 
 func test_parse_multiple_options():
-    var input = cmd.new_option("input", "Path to a file.")
-    var verbose = cmd.new_option("verbose", "Run in verbose mode.", "no", ["yes", "no"])
-    var debug = cmd.new_option("debug", "Run in debug mode.", "yes", ["yes", "no"])
+    var input = cmd.add_option("input", "Path to a file.")
+    var verbose = cmd.add_option("verbose", "Run in verbose mode.", "no", ["yes", "no"])
+    var debug = cmd.add_option("debug", "Run in debug mode.", "yes", ["yes", "no"])
 
     assert_true(input.default_args.empty())
     assert_true("no" in verbose.default_args)
@@ -54,8 +54,8 @@ func test_parse_multiple_options():
 
 func test_same_options():
     var _opt
-    _opt = cmd.new_option("verbose")
-    _opt = cmd.new_option("verbose")
+    _opt = cmd.add_option("verbose")
+    _opt = cmd.add_option("verbose")
 
     Engine.print_error_messages = false
 
@@ -66,7 +66,7 @@ func test_same_options():
 
 
 func test_same_options_multitoken():
-    var k = cmd.new_option("k")
+    var k = cmd.add_option("k")
     k.multitoken = true
 
     var err = cmd.parse(["-k -k -k -k"])
@@ -77,7 +77,7 @@ func add_test_option(arg_count):
     opt = CommandLineOption.new()
     opt.names = ["i", "input"]
     opt.arg_count = arg_count
-    cmd.add_option(opt)
+    cmd.append_option(opt)
 
 
 func test_builtin_options():
@@ -103,7 +103,7 @@ func test_options():
     cmd.remove_option(0)
     assert_eq(cmd.get_option_count(), count - 1)
 
-    cmd.add_option(opt)
+    cmd.append_option(opt)
     assert_eq(cmd.get_option_count(), count)
 
     assert_eq(cmd.find_option(opt.names[0]), opt, "Should find option by existing name/alias.")
@@ -139,7 +139,7 @@ func test_validation():
     assert_eq(cmd.parse([]), ERR_PARSE_ERROR, "Required and have default arguments, should fail.")
     opt.required = required
 
-    cmd.add_option(opt)
+    cmd.append_option(opt)
     assert_eq(cmd.parse([]), ERR_PARSE_ERROR, "Same name, should fail.")
     cmd.remove_option(1)
 
@@ -171,7 +171,7 @@ func test_short_options():
     var new_opt = CommandLineOption.new()
     new_opt.names = ["a"]
     new_opt.arg_count = 0
-    cmd.add_option(new_opt)
+    cmd.append_option(new_opt)
 
     assert_eq(cmd.parse(["-ai"]), OK, "Two compound options, should succeed.")
     assert_eq(cmd.parse(["-ia"]), OK, "Two compound options, should succeed")
@@ -187,13 +187,13 @@ func test_short_option_not_short():
     var new_opt = CommandLineOption.new()
     new_opt.names = ["aaaaa", "a", "aaaa"]
     new_opt.arg_count = 0
-    cmd.add_option(new_opt)
+    cmd.append_option(new_opt)
 
     assert_eq(cmd.parse(["-aaaa"]), ERR_PARSE_ERROR)
 
 
 func test_long_options():
-    var file = cmd.new_option("file")
+    var file = cmd.add_option("file")
     file.arg_count = 0
 
     assert_eq(cmd.parse(["--test"]), ERR_PARSE_ERROR, "Unknown option, should fail.")
@@ -207,7 +207,7 @@ func test_one_arg():
     var new_opt = CommandLineOption.new()
     new_opt.names = ["a"]
     new_opt.arg_count = 0
-    cmd.add_option(new_opt)
+    cmd.append_option(new_opt)
 
     assert_eq(cmd.parse(["-ai", "arg"]), OK, "Compound, should succeed.")
     print(cmd.get_error_text())
@@ -232,7 +232,7 @@ func test_positional():
     add_test_option(-1) # Any number of values.
     opt.positional = true
 
-    var sum = cmd.new_option("sum")
+    var sum = cmd.add_option("sum")
     sum.arg_count = 0
 
     assert_eq(cmd.parse(["1", "2", "3"]), OK)

@@ -17,22 +17,18 @@
 		var input = CommandLineOption.new()
 
 		func _init():
-		    input.names = ["i", "input"]
-		    input.category = "General"
-		    input.arg_text = "&lt;filename&gt;"
-		    input.description = "Specify filename to process."
-		    parser.add_option(input)
+		    var input: CommandLineOption = parser.add_option(input", "Specify filename to process.")
 
-		    if parser.parse(OS.get_cmdline_args()) != OK:
+		    if parser.parse("--input /path/to/file.txt") != OK:
 		        print(parser.get_error_text())
 		        return
 
 		    if parser.is_set(help):
-		        print(parser.get_help_text(CommandLineHelpFormat.new()))
+		        print(parser.get_help_text())
 		        return
 
 		    if parser.is_set(version):
-		        print(ProjectSettings.get_setting("application/config/version"))
+		        print(GoostEngine.get_version_info().string)
 		        return
 
 		    print(parser.get_value(input))
@@ -48,16 +44,26 @@
 			</description>
 		</method>
 		<method name="add_option">
-			<return type="void" />
-			<argument index="0" name="option" type="CommandLineOption" />
+			<return type="CommandLineOption" />
+			<argument index="0" name="name" type="String" />
+			<argument index="1" name="description" type="String" default="&quot;&quot;" />
+			<argument index="2" name="default_value" type="String" default="&quot;&quot;" />
+			<argument index="3" name="allowed_values" type="PoolStringArray" default="PoolStringArray(  )" />
 			<description>
-				Adds the option to look for while parsing.
+				Instantiates a new [CommandLineOption] with a single name and adds it to the parser. Description, default value, and a list of allowed values can be optionally specified. Note that this method provides common parameters only, you can create [CommandLineOption] and use [method append_option] manually if you need to configure other properties for a new option, or modify the properties of the option returned by this method instead.
 			</description>
 		</method>
 		<method name="add_version_option">
 			<return type="CommandLineOption" />
 			<description>
 				Adds the version option (-v, --version) with default description.
+			</description>
+		</method>
+		<method name="append_option">
+			<return type="void" />
+			<argument index="0" name="option" type="CommandLineOption" />
+			<description>
+				Adds an existing option to look for while parsing.
 			</description>
 		</method>
 		<method name="clear">
@@ -151,16 +157,6 @@
 			<argument index="0" name="option" type="CommandLineOption" />
 			<description>
 				Returns [code]true[/code] if [code]option[/code] was specified.
-			</description>
-		</method>
-		<method name="new_option">
-			<return type="CommandLineOption" />
-			<argument index="0" name="name" type="String" />
-			<argument index="1" name="description" type="String" default="&quot;&quot;" />
-			<argument index="2" name="default_value" type="String" default="&quot;&quot;" />
-			<argument index="3" name="allowed_values" type="PoolStringArray" default="PoolStringArray(  )" />
-			<description>
-				Instantiates a new [CommandLineOption] with a single name and adds it to the parser. Description, default value, and a list of allowed values can be optionally specified. Note that this method provides common parameters only, you should create [CommandLineOption] and use [method add_option] manually if you need to configure other properties for a new option, or modify the properties of the option returned by this method instead.
 			</description>
 		</method>
 		<method name="parse">
