@@ -12,14 +12,12 @@
 		[codeblock]
 		var parser = CommandLineParser.new()
 
-		var help: CommandLineOption = parser.add_help_option()
-		var version: CommandLineOption = parser.add_version_option()
-		var input = CommandLineOption.new()
-
 		func _init():
-		    var input: CommandLineOption = parser.add_option(input", "Specify filename to process.")
+		    var help = parser.add_help_option()
+		    var version = parser.add_version_option()
+		    var input = parser.add_option("input", "Specify filename to process.")
 
-		    if parser.parse("--input /path/to/file.txt") != OK:
+		    if parser.parse(["--input", "/path/to/file.txt"]) != OK:
 		        print(parser.get_error_text())
 		        return
 
@@ -31,7 +29,7 @@
 		        print(GoostEngine.get_version_info().string)
 		        return
 
-		    print(parser.get_value(input))
+		    print("Parsed value from '--input': ", parser.get_value(input))
 		[/codeblock]
 	</description>
 	<tutorials>
