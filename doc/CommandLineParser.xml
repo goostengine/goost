@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="CommandLineParser" inherits="Reference" version="3.4">
 	<brief_description>
-		Provides a means for handling the command line options.
+		Enables parsing of command-line arguments.
 	</brief_description>
 	<description>
-		[CommandLineParser] gives an ability to define a set of options, parse the command-line arguments, and store which options have actually been used, as well as option values. The class is mainly useful for parsing arguments from [method OS.get_cmdline_args], but can be used for other purposes as well.
-		Options on the command line are recognized as starting with any of the specified [member long_prefixes] or [member short_prefixes] values. Long options consist of more than one character. Short options always consist of one character and can be written in an compact form, for instance [code]-abc[/code] is equivalent to [code]-a -b -c[/code]. Option values can be specified either separated by a space or by an [code]=[/code] sign (if the option takes only 1 argument). Short options can also have sticky values (without a space in-between, e.g. [code]-Dvalue[/code]).
+		[CommandLineParser] allows to define a set of [CommandLineOption]s, parse the command-line arguments, store parsed options and respective values. The class is mainly useful for parsing arguments from [method OS.get_cmdline_args], but can be used for other purposes as well.
+		Options on the command line are recognized as starting with any of the specified [member long_prefixes] or [member short_prefixes] values. Long options consist of more than one character. Short options always consist of one character and can be written in a compound form, for instance [code]-abc[/code] is equivalent to [code]-a -b -c[/code].
+		Option values can be specified either separated by a space or by an [code]=[/code] sign (if the option takes only 1 argument). Short options can also have sticky values (without a space in-between, e.g. [code]-Dvalue[/code]).
 		Values can also be specified without an option name and the first option that is marked as [member CommandLineOption.positional] will be assigned automatically. For example, if the [code]input-file[/code] argument is marked as positional, then you can write either [code]--input-file=filename[/code] or just [code]filename[/code].
 		The option [code]--[/code] (without any symbol after) is a special case and means that all following options will be captured as valid and can be obtained later using [method get_forwarding_args].
 		Example:
@@ -48,20 +49,20 @@
 			<argument index="2" name="default_value" type="String" default="&quot;&quot;" />
 			<argument index="3" name="allowed_values" type="PoolStringArray" default="PoolStringArray(  )" />
 			<description>
-				Instantiates a new [CommandLineOption] with a single name and adds it to the parser. Description, default value, and a list of allowed values can be optionally specified. Note that this method provides common parameters only, you can create [CommandLineOption] and use [method append_option] manually if you need to configure other properties for a new option, or modify the properties of the option returned by this method instead.
+				Instantiates a new [CommandLineOption] with a single name and adds it to the parser. Description, default value, and a list of allowed values can be optionally specified. Note that this method provides common parameters only, you can create [CommandLineOption] and use [method append_option] manually if you need to configure other properties for a new option, or modify the properties of the option returned by this method instead before parsing command-line arguments with [method parse].
 			</description>
 		</method>
 		<method name="add_version_option">
 			<return type="CommandLineOption" />
 			<description>
-				Adds the version option (-v, --version) with default description.
+				Adds the version option (-v, --version) with the default description.
 			</description>
 		</method>
 		<method name="append_option">
 			<return type="void" />
 			<argument index="0" name="option" type="CommandLineOption" />
 			<description>
-				Adds an existing option to look for while parsing.
+				Adds an existing option to look for while parsing. Prefer to use [method add_option] for defining new command-line options.
 			</description>
 		</method>
 		<method name="clear">
@@ -74,7 +75,7 @@
 			<return type="CommandLineOption" />
 			<argument index="0" name="name" type="String" />
 			<description>
-				Finds an option by name.
+				Finds an option by name, returns [code]null[/code] if it doesn't exist.
 			</description>
 		</method>
 		<method name="get_args" qualifiers="const">
@@ -99,21 +100,21 @@
 			<return type="String" />
 			<argument index="0" name="format" type="CommandLineHelpFormat" default="null" />
 			<description>
-				Returns a string containing the complete help information generated from the added options.
+				Returns a string containing the complete help information generated from the added options. If [code]format[/code] is not [code]null[/code], the returned text will be formatted with a custom format defined via [CommandLineHelpFormat] object, otherwise the default format is used.
 			</description>
 		</method>
 		<method name="get_occurrence_count" qualifiers="const">
 			<return type="int" />
 			<argument index="0" name="option" type="CommandLineOption" />
 			<description>
-				Returns the number of times the option was parsed.
+				Returns the number of times the option was parsed. Mostly useful for options which are defined as multitoken, see [member CommandLineOption.multitoken].
 			</description>
 		</method>
 		<method name="get_option" qualifiers="const">
 			<return type="CommandLineOption" />
 			<argument index="0" name="index" type="int" />
 			<description>
-				Returns the option at index position [code]idx[/code]. Negative indices can be used to count from the back, like in Python (-1 is the last element, -2 the second to last, etc.).
+				Returns the option at index position [code]index[/code]. Negative indices can be used to count from the back, like in Python (-1 is the last element, -2 the second to last, etc.).
 			</description>
 		</method>
 		<method name="get_option_count" qualifiers="const">
@@ -154,21 +155,23 @@
 			<return type="bool" />
 			<argument index="0" name="option" type="CommandLineOption" />
 			<description>
-				Returns [code]true[/code] if [code]option[/code] was specified.
+				Returns [code]true[/code] if [code]option[/code] was specified. If the option does not accept any arguments ([member CommandLineOption.arg_count] is equal to [code]0[/code]), this is the only way to check whether the option was specified on the command-line.
 			</description>
 		</method>
 		<method name="parse">
 			<return type="int" enum="Error" />
 			<argument index="0" name="args" type="PoolStringArray" />
 			<description>
-				Parses command-line [code]args[/code]. Returns [constant OK] upon success. In case of error, refer to [method get_error_text] which returns human-readable error message.
+				Parses command-line [code]args[/code]. Returns [constant OK] upon success, or [constant ERR_PARSE_ERROR] upon failure. In case of user error, refer to [method get_error_text] which returns human-readable error message which can be printed to a user.
+				The method can accept command-line arguments returned by [method OS.get_cmdline_args].
+				[b]Note[/b]: this method accepts a list of strings. Do not attempt to parse a single string containing command-line arguments with this method. You should split the string into components prior to parsing using [method String.split].
 			</description>
 		</method>
 		<method name="remove_option">
 			<return type="void" />
 			<argument index="0" name="index" type="int" />
 			<description>
-				Removes option at specified index [code]idx[/code].
+				Removes option at specified [code]index[/code].
 			</description>
 		</method>
 		<method name="set_option">
@@ -176,7 +179,7 @@
 			<argument index="0" name="index" type="int" />
 			<argument index="1" name="option" type="CommandLineOption" />
 			<description>
-				Replaces option at specified index [code]idx[/code] with [code]option[/code].
+				Replaces option at specified [code]index[/code] with another [code]option[/code].
 			</description>
 		</method>
 	</methods>
@@ -188,7 +191,7 @@
 			If [code]true[/code], short options can be specified without a space. Example: [code]-aux[/code] will be equivalent to [code]-a -u -x[/code].
 		</member>
 		<member name="allow_forwarding_args" type="bool" setter="set_allow_forwarding_args" getter="are_forwarding_args_allowed" default="false">
-			If [code]true[/code], all arguments after [code]--[/code] will be treated as forwarding arguments and will be available using the [method get_forwarding_args]. Such arguments will not be parsed as options.
+			If [code]true[/code], all arguments after [code]--[/code] will be treated as forwarding arguments and will be available using the [method get_forwarding_args]. Such arguments won't be parsed as options.
 		</member>
 		<member name="allow_sticky" type="bool" setter="set_allow_sticky" getter="is_sticky_allowed" default="true">
 			If [code]true[/code], values for short options can be specified without a space. Example: [code]-ifilename.png[/code].
@@ -200,7 +203,7 @@
 			A list of prefixes after which an argument will be considered a short option.
 		</member>
 		<member name="similarity_bias" type="float" setter="set_similarity_bias" getter="get_similarity_bias" default="0.3">
-			If a user entered the wrong option, the parser will try to suggest the most similar one (in case a user made a typo). If the most similar option found has a similarity value lower than the specified one, then it will not be suggested.
+			If a user entered a wrong option, the parser will suggest the most similar one in the error text returned by [method get_error_text]. If the most similar option found has a similarity value lower than the specified one, then it won't be suggested. Similarity is determined by [method String.similarity].
 		</member>
 	</members>
 	<constants>

@@ -666,7 +666,7 @@ Ref<CommandLineOption> CommandLineParser::find_option(const String &p_name) cons
 			return _options[i];
 		}
 	}
-	return nullptr;
+	return Ref<CommandLineOption>();
 }
 
 Ref<CommandLineOption> CommandLineParser::add_option(const String &p_name, const String &p_description, const String &p_default_value, const PoolStringArray &p_allowed_values) {
