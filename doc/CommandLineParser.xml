@@ -164,7 +164,7 @@
 			<description>
 				Parses command-line [code]args[/code]. Returns [constant OK] upon success, or [constant ERR_PARSE_ERROR] upon failure. In case of user error, refer to [method get_error_text] which returns human-readable error message which can be printed to a user.
 				The method can accept command-line arguments returned by [method OS.get_cmdline_args].
-				[b]Note[/b]: this method accepts a list of strings. Do not attempt to parse a single string containing command-line arguments with this method. You should split the string into components prior to parsing using [method String.split].
+				[b]Note[/b]: this method accepts a list of strings. Do not attempt to parse a single string containing command-line arguments with this method. You should split the string into components prior to parsing using [method String.split], if needed.
 			</description>
 		</method>
 		<method name="remove_option">
@@ -197,7 +197,7 @@
 			If [code]true[/code], values for short options can be specified without a space. Example: [code]-ifilename.png[/code].
 		</member>
 		<member name="long_prefixes" type="PoolStringArray" setter="set_long_prefixes" getter="get_long_prefixes" default="PoolStringArray( &quot;--&quot; )">
-			A list of prefixes after which an argument will be considered a long option.
+			A list of prefixes after which an argument will be considered a long option. If two or more prefixes share the same set of characters (e.g. [code]--[/code] and [code]--no-[/code]), prefixes added near to the beginning of the list have higher parsing precedence.
 		</member>
 		<member name="short_prefixes" type="PoolStringArray" setter="set_short_prefixes" getter="get_short_prefixes" default="PoolStringArray( &quot;-&quot; )">
 			A list of prefixes after which an argument will be considered a short option.

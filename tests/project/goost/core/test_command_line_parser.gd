@@ -73,6 +73,61 @@ func test_same_options_multitoken():
     assert_eq(err, OK)
 
 
+# func test_get_prefix():
+#     cmd.long_prefixes = ["--", "--no-"]
+
+#     var debug = cmd.add_option("debug")
+#     debug.arg_count = 0
+#     var no_debug = cmd.add_option("no-debug")
+#     no_debug.arg_count = 0
+
+#     assert_eq(cmd.parse(["--debug"]), OK)
+#     assert_true(cmd.is_set(debug))
+#     assert_false(cmd.is_set(no_debug))
+    
+#     assert_eq(cmd.parse(["--no-debug"]), OK)
+#     assert_true(cmd.is_set(no_debug))
+#     assert_false(cmd.is_set(debug))
+    
+
+func test_long_prefixes_precedence():
+    var debug = cmd.add_option("debug")
+    debug.arg_count = 0
+
+    cmd.long_prefixes = ["--no-", "--"]
+
+    assert_eq(cmd.parse(["--debug"]), OK)
+    assert_true(cmd.is_set(debug))
+    assert_eq(cmd.get_prefix(debug), "--")
+
+    assert_eq(cmd.parse(["--no-debug"]), OK)
+    assert_true(cmd.is_set(debug))
+    assert_eq(cmd.get_prefix(debug), "--no-")
+    
+    cmd.long_prefixes = ["--", "--no-"] # Swap precedence.
+
+    assert_eq(cmd.parse(["--debug"]), OK)
+    assert_true(cmd.is_set(debug))
+    assert_eq(cmd.get_prefix(debug), "--")
+
+    assert_eq(cmd.parse(["--no-debug"]), ERR_PARSE_ERROR,
+            "Precedence of `--` prefix is higher than `--no-`, should fail.")
+    assert_false(cmd.is_set(debug))
+
+
+func test_prefix_and_names_collision():
+    var debug = cmd.add_option("debug")
+    debug.arg_count = 0
+
+    cmd.long_prefixes = ["--debug"]
+    assert_eq(cmd.parse(["--debug"]), ERR_PARSE_ERROR,
+            "Option should not be recognized: prefix and name are the same.")
+
+    cmd.long_prefixes = ["++"]
+    assert_eq(cmd.parse(["++"]), ERR_PARSE_ERROR,
+            "Option should not be recognized: prefix and name are the same.")
+
+
 func add_test_option(arg_count):
     opt = CommandLineOption.new()
     opt.names = ["i", "input"]
