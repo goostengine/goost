@@ -135,6 +135,7 @@ bool CommandLineParser::_are_options_valid() const {
 				vformat("Option '%s' cannot have default arguments and be required.", _to_string(option->get_names())));
 
 		// Compare with other options.
+		// TODO: all of this can be ported to PackedStringArray::operator==() in Godot 4.0.
 		for (int j = i + 1; j < _options.size(); ++j) {
 			const CommandLineOption *another_option = _options[j].ptr();
 
@@ -336,6 +337,7 @@ int CommandLineParser::_validate_option_args(const CommandLineOption *p_option, 
 	return validated_arg_count;
 }
 
+// TODO: can be ported to PackedStringArray::has() method in Godot 4.0.
 static bool has_arg(const PoolStringArray &p_args, const String &p_arg) {
 	for (int i = 0; i < p_args.size(); ++i) {
 		if (p_args[i] == p_arg) {
@@ -345,6 +347,7 @@ static bool has_arg(const PoolStringArray &p_args, const String &p_arg) {
 	return false;
 }
 
+// TODO: can be ported to PackedStringArray::join() method in Godot 4.0.
 static String join_args(const PoolStringArray &p_args) {
 	Vector<String> to_join;
 	for (int i = 0; i < p_args.size(); ++i) {
@@ -575,6 +578,7 @@ void CommandLineParser::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "allow_compound"), "set_allow_compound", "is_compound_allowed");
 }
 
+// TODO: can be ported to PackedStringArray::find() method in Godot 4.0.
 static int find_arg(const PoolStringArray &p_args, const String &p_arg) {
 	for (int i = 0; i < p_args.size(); ++i) {
 		if (p_args[i] == p_arg) {
