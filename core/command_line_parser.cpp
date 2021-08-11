@@ -106,7 +106,7 @@ struct CommandLineParser::ParsedPrefix {
 	String string;
 	bool is_short = false;
 
-	_FORCE_INLINE_ bool is_exists() const {
+	_FORCE_INLINE_ bool exists() const {
 		return !string.empty();
 	}
 
@@ -175,7 +175,7 @@ int CommandLineParser::_validate_arguments(int p_current_idx) {
 	const String &current_arg = _args[p_current_idx];
 	const ParsedPrefix prefix = _parse_prefix(current_arg);
 
-	if (!prefix.is_exists()) {
+	if (!prefix.exists()) {
 		return _validate_positional(current_arg, p_current_idx);
 	}
 	if (_allow_adjacent) {
@@ -312,7 +312,7 @@ int CommandLineParser::_validate_option_args(const CommandLineOption *p_option, 
 		const String &arg = _args[p_current_idx + i];
 
 		// Stop parsing on new option.
-		if (_parse_prefix(arg).is_exists()) {
+		if (_parse_prefix(arg).exists()) {
 			break;
 		}
 		if (unlikely(!_validate_option_arg(p_option, p_display_name, arg))) {
