@@ -146,6 +146,16 @@ func test_default_not_allowed_arg():
     Engine.print_error_messages = true
 
 
+func test_unrecognized_options():
+    var _input = cmd.add_option("input", "Input to file", "file.txt")
+
+    Engine.print_error_messages = false
+
+    assert_eq(cmd.parse(["--debug"]), ERR_PARSE_ERROR, "Parsing unknown options is not supported.")
+
+    Engine.print_error_messages = true
+
+
 func add_test_option(arg_count):
     opt = CommandLineOption.new()
     opt.names = ["i", "input"]
