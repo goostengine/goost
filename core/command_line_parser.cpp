@@ -650,15 +650,15 @@ Error CommandLineParser::parse(const PoolStringArray &p_args) {
 
 	_read_default_args();
 
-	bool has_meta_options = false;
+	bool meta_options_parsed = false;
 	for (int i = 0; i < _options.size(); ++i) {
 		const CommandLineOption *option = _options[i].ptr();
-		if (option->is_meta()) {
-			has_meta_options = true;
+		if (_parsed_values.has(option) && option->is_meta()) {
+			meta_options_parsed = true;
 			break;
 		}
 	}
-	if (!has_meta_options) {
+	if (!meta_options_parsed) {
 		for (int i = 0; i < _options.size(); ++i) {
 			const CommandLineOption *option = _options[i].ptr();
 			if (unlikely(option->is_required() && !_parsed_values.has(option))) {
