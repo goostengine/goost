@@ -172,7 +172,6 @@ bool CommandLineParser::_are_options_valid() const {
 	for (int i = 0; i < _options.size(); ++i) {
 		const CommandLineOption *option = _options[i].ptr();
 		const PoolStringArray default_args = option->get_default_args();
-		const PoolStringArray allowed_args = option->get_allowed_args();
 
 		ERR_FAIL_COND_V_MSG(option->is_positional() && option->get_arg_count() == 0, false,
 				vformat("Option '%s' cannot be positional and take no arguments.", _to_string(option->get_names())));
@@ -183,6 +182,7 @@ bool CommandLineParser::_are_options_valid() const {
 		ERR_FAIL_COND_V_MSG(!default_args.empty() && option->is_required(), false,
 				vformat("Option '%s' cannot have default arguments and be required.", _to_string(option->get_names())));
 
+		const PoolStringArray allowed_args = option->get_allowed_args();
 		for (int j = 0; j < default_args.size(); ++j) {
 			if (!allowed_args.empty() && find_arg(allowed_args, default_args[j]) == -1) {
 				ERR_PRINT(vformat("Option '%s' cannot have default argument '%s', because it's not allowed.", _to_string(option->get_names()), default_args[j]));
@@ -195,10 +195,10 @@ bool CommandLineParser::_are_options_valid() const {
 		for (int j = i + 1; j < _options.size(); ++j) {
 			const CommandLineOption *another_option = _options[j].ptr();
 
-			bool same_name = true;
-
 			PoolStringArray opt_names = option->get_names();
 			PoolStringArray another_opt_names = another_option->get_names();
+
+			bool same_name = true;
 
 			if (opt_names.size() != another_opt_names.size()) {
 				same_name = false;
