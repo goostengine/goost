@@ -133,14 +133,17 @@ func test_prefix_and_names_collision():
             "Option should not be recognized: prefix and name are the same.")
 
 
-# TODO: This fails.
-# func test_default_not_allowed_arg():
-#     var filetype = cmd.add_option("filetype", "Input to file")
-#     filetype.add_default_arg("png")
-#     filetype.add_allowed_arg("jpg")
+func test_default_not_allowed_arg():
+    var filetype = cmd.add_option("filetype", "Input to file")
+    filetype.add_default_arg("png")
+    filetype.add_allowed_arg("jpg")
 
-#     assert_eq(cmd.parse([]), ERR_PARSE_ERROR, "Default argument `png` is not allowed one, should fail.")
-#     assert_eq(cmd.get_value(filetype), "")
+    Engine.print_error_messages = false
+
+    assert_eq(cmd.parse([]), ERR_PARSE_ERROR, "Default argument `png` is not allowed one, should fail.")
+    assert_eq(cmd.get_value(filetype), "")
+
+    Engine.print_error_messages = true
 
 
 func add_test_option(arg_count):

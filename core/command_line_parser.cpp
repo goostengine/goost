@@ -136,6 +136,35 @@ struct CommandLineParser::ParsedPrefix {
 
 // CommandLineParser
 
+// TODO: can be ported to PackedStringArray::find() method in Godot 4.0.
+static int find_arg(const PoolStringArray &p_args, const String &p_arg) {
+	for (int i = 0; i < p_args.size(); ++i) {
+		if (p_args[i] == p_arg) {
+			return i;
+		}
+	}
+	return -1;
+}
+
+// TODO: can be ported to PackedStringArray::has() method in Godot 4.0.
+static bool has_arg(const PoolStringArray &p_args, const String &p_arg) {
+	for (int i = 0; i < p_args.size(); ++i) {
+		if (p_args[i] == p_arg) {
+			return true;
+		}
+	}
+	return false;
+}
+
+// TODO: can be ported to PackedStringArray::join() method in Godot 4.0.
+static String join_args(const PoolStringArray &p_args) {
+	Vector<String> to_join;
+	for (int i = 0; i < p_args.size(); ++i) {
+		to_join.push_back(p_args[i]);
+	}
+	return String(",").join(to_join);
+}
+
 bool CommandLineParser::_are_options_valid() const {
 	ERR_FAIL_COND_V_MSG(_short_prefixes.empty(), false, "Short prefixes cannot be empty");
 	ERR_FAIL_COND_V_MSG(_long_prefixes.empty(), false, "Long prefixes cannot be empty");
@@ -143,6 +172,7 @@ bool CommandLineParser::_are_options_valid() const {
 	for (int i = 0; i < _options.size(); ++i) {
 		const CommandLineOption *option = _options[i].ptr();
 		const PoolStringArray default_args = option->get_default_args();
+		const PoolStringArray allowed_args = option->get_allowed_args();
 
 		ERR_FAIL_COND_V_MSG(option->is_positional() && option->get_arg_count() == 0, false,
 				vformat("Option '%s' cannot be positional and take no arguments.", _to_string(option->get_names())));
@@ -152,6 +182,13 @@ bool CommandLineParser::_are_options_valid() const {
 				vformat("Option '%s' has %d default arguments, but requires %d.", _to_string(option->get_names()), default_args.size(), option->get_arg_count()));
 		ERR_FAIL_COND_V_MSG(!default_args.empty() && option->is_required(), false,
 				vformat("Option '%s' cannot have default arguments and be required.", _to_string(option->get_names())));
+
+		for (int j = 0; j < default_args.size(); ++j) {
+			if (!allowed_args.empty() && find_arg(allowed_args, default_args[j]) == -1) {
+				ERR_PRINT(vformat("Option '%s' cannot have default argument '%s', because it's not allowed.", _to_string(option->get_names()), default_args[j]));
+				return false;
+			}
+		}
 
 		// Compare with other options.
 		// TODO: all of this can be ported to PackedStringArray::operator==() in Godot 4.0.
@@ -354,25 +391,6 @@ int CommandLineParser::_validate_option_args(const CommandLineOption *p_option, 
 	}
 
 	return validated_arg_count;
-}
-
-// TODO: can be ported to PackedStringArray::has() method in Godot 4.0.
-static bool has_arg(const PoolStringArray &p_args, const String &p_arg) {
-	for (int i = 0; i < p_args.size(); ++i) {
-		if (p_args[i] == p_arg) {
-			return true;
-		}
-	}
-	return false;
-}
-
-// TODO: can be ported to PackedStringArray::join() method in Godot 4.0.
-static String join_args(const PoolStringArray &p_args) {
-	Vector<String> to_join;
-	for (int i = 0; i < p_args.size(); ++i) {
-		to_join.push_back(p_args[i]);
-	}
-	return String(",").join(to_join);
 }
 
 bool CommandLineParser::_validate_option_arg(const CommandLineOption *p_option, const String &p_display_name, const String &p_arg) {
@@ -595,16 +613,6 @@ void CommandLineParser::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "allow_adjacent"), "set_allow_adjacent", "is_adjacent_allowed");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "allow_sticky"), "set_allow_sticky", "is_sticky_allowed");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "allow_compound"), "set_allow_compound", "is_compound_allowed");
-}
-
-// TODO: can be ported to PackedStringArray::find() method in Godot 4.0.
-static int find_arg(const PoolStringArray &p_args, const String &p_arg) {
-	for (int i = 0; i < p_args.size(); ++i) {
-		if (p_args[i] == p_arg) {
-			return i;
-		}
-	}
-	return -1;
 }
 
 Error CommandLineParser::parse(const PoolStringArray &p_args) {
