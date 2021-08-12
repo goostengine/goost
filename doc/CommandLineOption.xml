@@ -53,6 +53,9 @@
 		<member name="hidden" type="bool" setter="set_hidden" getter="is_hidden" default="false">
 			If [code]true[/code], the option will [b]not[/b] be displayed in the help message.
 		</member>
+		<member name="meta" type="bool" setter="set_as_meta" getter="is_meta" default="false">
+			If [code]true[/code], the option will be treated as a meta option, such as [code]--help[/code] or [code]--version[/code]. If [CommandLineParser] parses such option, any [member required] options will not throw an error if they are not specified on the command-line.
+		</member>
 		<member name="multitoken" type="bool" setter="set_multitoken" getter="is_multitoken" default="false">
 			If [code]true[/code], option can be specified multiple times. Total count can be obtained using [method CommandLineParser.get_occurrence_count].
 		</member>

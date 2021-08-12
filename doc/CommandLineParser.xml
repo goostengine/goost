@@ -39,7 +39,7 @@
 		<method name="add_help_option">
 			<return type="CommandLineOption" />
 			<description>
-				Adds the help option (-h, --help) with the default description.
+				Adds the help option (-h, --help) with the default description. The option is automatically marked as [member CommandLineOption.meta].
 			</description>
 		</method>
 		<method name="add_option">
@@ -55,7 +55,7 @@
 		<method name="add_version_option">
 			<return type="CommandLineOption" />
 			<description>
-				Adds the version option (-v, --version) with the default description.
+				Adds the version option (-v, --version) with the default description. The option is automatically marked as [member CommandLineOption.meta].
 			</description>
 		</method>
 		<method name="append_option">

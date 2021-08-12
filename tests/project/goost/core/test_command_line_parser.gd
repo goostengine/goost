@@ -157,8 +157,10 @@ func test_unrecognized_options():
 
 
 func test_get_help_with_required_option():
-    var _h = cmd.add_help_option()
-    var _v = cmd.add_version_option()
+    var help = cmd.add_help_option()
+    assert_true(help.meta)
+    var version = cmd.add_version_option()
+    assert_true(version.meta)
 
     var input = cmd.add_option("input", "Input to file")
     input.required = true

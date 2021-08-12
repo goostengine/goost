@@ -38,6 +38,9 @@ void CommandLineOption::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_multitoken", "multitoken"), &CommandLineOption::set_multitoken);
 	ClassDB::bind_method(D_METHOD("is_multitoken"), &CommandLineOption::is_multitoken);
 
+	ClassDB::bind_method(D_METHOD("set_as_meta", "meta"), &CommandLineOption::set_as_meta);
+	ClassDB::bind_method(D_METHOD("is_meta"), &CommandLineOption::is_meta);
+
 	ClassDB::bind_method(D_METHOD("add_name", "name"), &CommandLineOption::add_name);
 	ClassDB::bind_method(D_METHOD("add_default_arg", "arg"), &CommandLineOption::add_default_arg);
 	ClassDB::bind_method(D_METHOD("add_allowed_arg", "arg"), &CommandLineOption::add_allowed_arg);
@@ -53,6 +56,7 @@ void CommandLineOption::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "positional"), "set_positional", "is_positional");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "required"), "set_required", "is_required");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "multitoken"), "set_multitoken", "is_multitoken");
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "meta"), "set_as_meta", "is_meta");
 
 	ADD_SIGNAL(MethodInfo("parsed", PropertyInfo(Variant::POOL_STRING_ARRAY, "values")));
 }
