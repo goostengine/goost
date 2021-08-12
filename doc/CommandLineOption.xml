@@ -70,7 +70,7 @@
 		<signal name="parsed">
 			<argument index="0" name="values" type="PoolStringArray" />
 			<description>
-				Emitted after calling [method CommandLineParser.parse] if it returns [constant OK] and this option was specified in the argument list. [code]values[/code] contains all values that were passed to the option.
+				Emitted after calling [method CommandLineParser.parse] if it returns [constant OK]. The [code]values[/code] list contains all values that were passed to the option.
 			</description>
 		</signal>
 	</signals>

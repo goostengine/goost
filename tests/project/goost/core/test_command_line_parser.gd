@@ -156,6 +156,20 @@ func test_unrecognized_options():
     Engine.print_error_messages = true
 
 
+func test_get_help_with_required_option():
+    var _h = cmd.add_help_option()
+    var _v = cmd.add_version_option()
+
+    var input = cmd.add_option("input", "Input to file")
+    input.required = true
+
+    assert_eq(cmd.parse(["--help"]), OK,
+            "Parsing with required option should not fail if `help` option is found.")
+
+    assert_eq(cmd.parse(["--version"]), OK,
+            "Parsing with required option should not fail if `version` option is found.")
+
+
 func add_test_option(arg_count):
     opt = CommandLineOption.new()
     opt.names = ["i", "input"]
@@ -293,7 +307,6 @@ func test_one_arg():
     cmd.append_option(new_opt)
 
     assert_eq(cmd.parse(["-ai", "arg"]), OK, "Compound, should succeed.")
-    print(cmd.get_error_text())
     assert_eq(cmd.get_value(opt), "arg")
 
     assert_true(cmd.is_set(new_opt))

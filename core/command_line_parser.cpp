@@ -650,11 +650,21 @@ Error CommandLineParser::parse(const PoolStringArray &p_args) {
 
 	_read_default_args();
 
+	bool has_meta_options = false;
 	for (int i = 0; i < _options.size(); ++i) {
 		const CommandLineOption *option = _options[i].ptr();
-		if (unlikely(option->is_required() && !_parsed_values.has(option))) {
-			_error_text = vformat(RTR("Option '%s' is required but missing."), _to_string(option->get_names()));
-			return ERR_PARSE_ERROR;
+		if (option->is_meta()) {
+			has_meta_options = true;
+			break;
+		}
+	}
+	if (!has_meta_options) {
+		for (int i = 0; i < _options.size(); ++i) {
+			const CommandLineOption *option = _options[i].ptr();
+			if (unlikely(option->is_required() && !_parsed_values.has(option))) {
+				_error_text = vformat(RTR("Option '%s' is required but missing."), _to_string(option->get_names()));
+				return ERR_PARSE_ERROR;
+			}
 		}
 	}
 	for (int i = 0; i < _options.size(); ++i) {
@@ -731,6 +741,7 @@ Ref<CommandLineOption> CommandLineParser::add_help_option() {
 	Ref<CommandLineOption> option = memnew(CommandLineOption(names, 0));
 	option->set_category("General");
 	option->set_description("Display this help message.");
+	option->set_as_meta(true);
 	append_option(option);
 
 	return option;
@@ -744,6 +755,7 @@ Ref<CommandLineOption> CommandLineParser::add_version_option() {
 	Ref<CommandLineOption> option = memnew(CommandLineOption(names, 0));
 	option->set_category("General");
 	option->set_description("Display version information.");
+	option->set_as_meta(true);
 	append_option(option);
 
 	return option;

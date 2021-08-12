@@ -28,6 +28,9 @@ class CommandLineOption : public Reference {
 	bool _multitoken = false;
 	// Arguments count required for the option, -1 for all arguments left.
 	int _arg_count = 1;
+	// Options marked as meta, such as --help, --version etc.
+	// Allows to skip some validation checks such as required options.
+	bool _meta = false; 
 
 protected:
 	static void _bind_methods();
@@ -65,6 +68,9 @@ public:
 
 	void set_multitoken(bool p_multitoken) { _multitoken = p_multitoken; }
 	bool is_multitoken() const { return _multitoken; }
+
+	void set_as_meta(bool p_meta) { _meta = p_meta; }
+	bool is_meta() const { return _meta; }
 
 	// Utility methods.
 	void add_name(const String &p_name);
