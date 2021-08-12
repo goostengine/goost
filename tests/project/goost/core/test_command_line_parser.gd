@@ -9,10 +9,12 @@ func before_each():
 
 func test_parse():
     var input: CommandLineOption = cmd.add_option("input", "Path to a file.", "file.txt")
+    input.add_name("i") # Add short name, if needed.
     print(cmd.get_help_text())
 
     watch_signals(input)
 
+    # Parse with long prefix.
     var err = cmd.parse(["--input", "my_file.txt"])
     if err:
         print(cmd.get_error_text())
@@ -24,6 +26,9 @@ func test_parse():
     assert_eq(input, i)
 
     assert_eq(cmd.get_value(i), "my_file.txt")
+
+    # Parse with short prefix.
+    assert_eq(cmd.parse(["-i", "my_file.txt"]), OK)
 
 
 func test_parse_multiple_options():
@@ -126,6 +131,16 @@ func test_prefix_and_names_collision():
     cmd.long_prefixes = ["++"]
     assert_eq(cmd.parse(["++"]), ERR_PARSE_ERROR,
             "Option should not be recognized: prefix and name are the same.")
+
+
+# TODO: This fails.
+# func test_default_not_allowed_arg():
+#     var filetype = cmd.add_option("filetype", "Input to file")
+#     filetype.add_default_arg("png")
+#     filetype.add_allowed_arg("jpg")
+
+#     assert_eq(cmd.parse([]), ERR_PARSE_ERROR, "Default argument `png` is not allowed one, should fail.")
+#     assert_eq(cmd.get_value(filetype), "")
 
 
 func add_test_option(arg_count):

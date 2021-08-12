@@ -38,6 +38,10 @@ void CommandLineOption::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_multitoken", "multitoken"), &CommandLineOption::set_multitoken);
 	ClassDB::bind_method(D_METHOD("is_multitoken"), &CommandLineOption::is_multitoken);
 
+	ClassDB::bind_method(D_METHOD("add_name", "name"), &CommandLineOption::add_name);
+	ClassDB::bind_method(D_METHOD("add_default_arg", "arg"), &CommandLineOption::add_default_arg);
+	ClassDB::bind_method(D_METHOD("add_allowed_arg", "arg"), &CommandLineOption::add_allowed_arg);
+
 	ADD_PROPERTY(PropertyInfo(Variant::POOL_STRING_ARRAY, "names"), "set_names", "get_names");
 	ADD_PROPERTY(PropertyInfo(Variant::POOL_STRING_ARRAY, "default_args"), "set_default_args", "get_default_args");
 	ADD_PROPERTY(PropertyInfo(Variant::POOL_STRING_ARRAY, "allowed_args"), "set_allowed_args", "get_allowed_args");
@@ -54,10 +58,25 @@ void CommandLineOption::_bind_methods() {
 }
 
 void CommandLineOption::set_names(const PoolStringArray &p_names) {
+	_names.resize(0);
 	for (int i = 0; i < p_names.size(); ++i) {
-		ERR_FAIL_COND_MSG(p_names[i].find_char(' ') != -1, "Option name cannot contain spaces: " + p_names[i]);
+		add_name(p_names[i]);
 	}
-	_names = p_names;
+}
+
+void CommandLineOption::add_name(const String &p_name) {
+	ERR_FAIL_COND_MSG(p_name.empty(), "Option name cannot be empty.");
+	ERR_FAIL_COND_MSG(p_name.find_char(' ') != -1, "Option name cannot contain spaces: " + p_name);
+
+	_names.push_back(p_name);
+}
+
+void CommandLineOption::add_default_arg(const String &p_arg) {
+	_default_args.push_back(p_arg);
+}
+
+void CommandLineOption::add_allowed_arg(const String &p_arg) {
+	_allowed_args.push_back(p_arg);
 }
 
 CommandLineOption::CommandLineOption(const PoolStringArray &p_names, int p_arg_count) :
@@ -519,16 +538,16 @@ bool CommandLineParser::_contains_optional_options(const Vector<Pair<const Comma
 void CommandLineParser::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("parse", "args"), &CommandLineParser::parse);
 
-	ClassDB::bind_method(D_METHOD("append_option", "option"), &CommandLineParser::append_option);
-	ClassDB::bind_method(D_METHOD("get_option_count"), &CommandLineParser::get_option_count);
-	ClassDB::bind_method(D_METHOD("get_option", "index"), &CommandLineParser::get_option);
-	ClassDB::bind_method(D_METHOD("set_option", "index", "option"), &CommandLineParser::set_option);
-	ClassDB::bind_method(D_METHOD("remove_option", "index"), &CommandLineParser::remove_option);
-	ClassDB::bind_method(D_METHOD("find_option", "name"), &CommandLineParser::find_option);
-
 	ClassDB::bind_method(D_METHOD("add_option", "name", "description", "default_value", "allowed_values"), &CommandLineParser::add_option, DEFVAL(""), DEFVAL(""), DEFVAL(PoolStringArray()));
 	ClassDB::bind_method(D_METHOD("add_help_option"), &CommandLineParser::add_help_option);
 	ClassDB::bind_method(D_METHOD("add_version_option"), &CommandLineParser::add_version_option);
+
+	ClassDB::bind_method(D_METHOD("append_option", "option"), &CommandLineParser::append_option);
+	ClassDB::bind_method(D_METHOD("set_option", "index", "option"), &CommandLineParser::set_option);
+	ClassDB::bind_method(D_METHOD("get_option", "index"), &CommandLineParser::get_option);
+	ClassDB::bind_method(D_METHOD("get_option_count"), &CommandLineParser::get_option_count);
+	ClassDB::bind_method(D_METHOD("remove_option", "index"), &CommandLineParser::remove_option);
+	ClassDB::bind_method(D_METHOD("find_option", "name"), &CommandLineParser::find_option);
 
 	ClassDB::bind_method(D_METHOD("is_set", "option"), &CommandLineParser::is_set);
 

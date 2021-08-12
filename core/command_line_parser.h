@@ -66,6 +66,11 @@ public:
 	void set_multitoken(bool p_multitoken) { _multitoken = p_multitoken; }
 	bool is_multitoken() const { return _multitoken; }
 
+	// Utility methods.
+	void add_name(const String &p_name);
+	void add_default_arg(const String &p_arg);
+	void add_allowed_arg(const String &p_arg);
+
 	CommandLineOption() = default;
 	explicit CommandLineOption(const PoolStringArray &p_names, int p_arg_count = 1);
 };
@@ -178,15 +183,15 @@ public:
 	Error parse(const PoolStringArray &p_args);
 
 	Ref<CommandLineOption> add_option(const String &p_name, const String &p_description = "", const String &p_default_value = "", const PoolStringArray &p_allowed_values = PoolStringArray());
+	Ref<CommandLineOption> add_help_option();
+	Ref<CommandLineOption> add_version_option();
+
 	void append_option(const Ref<CommandLineOption> &p_option);
 	void set_option(int p_idx, const Ref<CommandLineOption> &p_option);
 	Ref<CommandLineOption> get_option(int p_idx) const;
 	int get_option_count() const;
 	void remove_option(int p_idx);
 	Ref<CommandLineOption> find_option(const String &p_name) const;
-
-	Ref<CommandLineOption> add_help_option();
-	Ref<CommandLineOption> add_version_option();
 
 	bool is_set(const Ref<CommandLineOption> &p_option) const;
 

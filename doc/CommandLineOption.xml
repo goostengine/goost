@@ -9,6 +9,27 @@
 	<tutorials>
 	</tutorials>
 	<methods>
+		<method name="add_allowed_arg">
+			<return type="void" />
+			<argument index="0" name="arg" type="String" />
+			<description>
+				Appends a new allowed argument to the list of [member allowed_args].
+			</description>
+		</method>
+		<method name="add_default_arg">
+			<return type="void" />
+			<argument index="0" name="arg" type="String" />
+			<description>
+				Appends a new default argument to the list of [member default_args].
+			</description>
+		</method>
+		<method name="add_name">
+			<return type="void" />
+			<argument index="0" name="name" type="String" />
+			<description>
+				Appends a new name (alias) to the list of [member names].
+			</description>
+		</method>
 	</methods>
 	<members>
 		<member name="allowed_args" type="PoolStringArray" setter="set_allowed_args" getter="get_allowed_args" default="PoolStringArray(  )">
