@@ -514,10 +514,22 @@ CommandLineParser::ParsedPrefix CommandLineParser::_parse_prefix(const String &p
 	if (p_arg.is_valid_float()) {
 		return ParsedPrefix();
 	}
+	// Find longest prefix to match to properly distinguish between prefixes
+	// such as `--` and `--no-`, so that shorter prefixes don't prematurely
+	// match option names that have longer prefixes.
+	int longest_idx = -1;
+	int longest_size = 0;
 	for (int i = 0; i < _long_prefixes.size(); ++i) {
-		if (p_arg.begins_with(_long_prefixes[i])) {
-			return ParsedPrefix{ _long_prefixes[i], false };
+		const String &prefix = _long_prefixes[i];
+		if (p_arg.begins_with(prefix)) {
+			if (prefix.length() > longest_size) {
+				longest_idx = i;
+				longest_size = prefix.length();
+			}
 		}
+	}
+	if (longest_idx != -1) {
+		return ParsedPrefix{ _long_prefixes[longest_idx], false };
 	}
 	for (int i = 0; i < _short_prefixes.size(); ++i) {
 		if (p_arg.begins_with(_short_prefixes[i])) {

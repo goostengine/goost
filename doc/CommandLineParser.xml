@@ -197,7 +197,7 @@
 			If [code]true[/code], values for short options can be specified without a space. Example: [code]-ifilename.png[/code].
 		</member>
 		<member name="long_prefixes" type="PoolStringArray" setter="set_long_prefixes" getter="get_long_prefixes" default="PoolStringArray( &quot;--&quot; )">
-			A list of prefixes after which an argument will be considered a long option. If two or more prefixes share the same set of characters (e.g. [code]--[/code] and [code]--no-[/code]), prefixes added near to the beginning of the list have higher parsing precedence.
+			A list of prefixes after which an argument will be considered a long option. If two or more prefixes share the same set of characters (e.g. [code]--[/code] and [code]--no-[/code]), longest prefixes have higher precedence for parsing. For instance, [code]--no-debug[/code] won't be parsed as a separate [code]no-debug[/code] option, but as [code]debug[/code].
 		</member>
 		<member name="short_prefixes" type="PoolStringArray" setter="set_short_prefixes" getter="get_short_prefixes" default="PoolStringArray( &quot;-&quot; )">
 			A list of prefixes after which an argument will be considered a short option.
