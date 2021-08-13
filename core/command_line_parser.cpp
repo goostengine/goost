@@ -718,16 +718,11 @@ Ref<CommandLineOption> CommandLineParser::add_option(const String &p_name, const
 	ERR_FAIL_COND_V_MSG(p_name.empty(), Ref<CommandLineOption>(), "Option name cannot be empty.");
 
 	Ref<CommandLineOption> option = memnew(CommandLineOption);
-	PoolVector<String> names;
-	names.push_back(p_name);
-	option->set_names(names);
-
+	option->add_name(p_name);
 	option->set_description(p_description);
 
 	if (!p_default_value.empty()) {
-		PoolVector<String> default_args;
-		default_args.push_back(p_default_value);
-		option->set_default_args(default_args);
+		option->add_default_arg(p_default_value);
 	}
 	if (!p_allowed_values.empty()) {
 		option->set_allowed_args(p_allowed_values);
