@@ -172,6 +172,27 @@ func test_get_help_with_required_option():
             "Parsing with required option should not fail if `version` option is found.")
 
 
+func test_several_positional_options():
+    var opts = []
+    for i in 10:
+        var opt_pos = cmd.add_option("input-%s" % i)
+        opt_pos.positional = true
+        opts.append(opt_pos)
+
+    var args = []
+    for i in 10:
+        args.append("%s.txt" % i)
+
+    print(cmd.get_help_text())
+    assert_eq(cmd.parse(args), OK)
+
+    for i in 10:
+        assert_eq(cmd.get_value(opts[i]), "%s.txt" % i)
+
+    assert_eq(cmd.parse(["0.txt", "1.txt", "--input-2", "2.txt"]), OK)
+    assert_eq(cmd.get_value(opts[2]), "2.txt")
+
+
 func add_test_option(arg_count):
     opt = CommandLineOption.new()
     opt.names = ["i", "input"]
