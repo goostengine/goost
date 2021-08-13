@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="CommandLineOption" inherits="Reference" version="3.4">
+	<brief_description>
+		Defines a command-line option for [CommandLineParser].
+	</brief_description>
+	<description>
+		This class is used to define an option on the command line. The same option is allowed to have multiple aliases. It is also used to describe how the option is used: it may be a flag (e.g. [code]-v[/code]) or take a value (e.g. [code]-o file[/code]).
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="add_allowed_arg">
+			<return type="void" />
+			<argument index="0" name="arg" type="String" />
+			<description>
+				Appends a new allowed argument to the list of [member allowed_args].
+			</description>
+		</method>
+		<method name="add_default_arg">
+			<return type="void" />
+			<argument index="0" name="arg" type="String" />
+			<description>
+				Appends a new default argument to the list of [member default_args].
+			</description>
+		</method>
+		<method name="add_name">
+			<return type="void" />
+			<argument index="0" name="name" type="String" />
+			<description>
+				Appends a new name (alias) to the list of [member names].
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="allowed_args" type="PoolStringArray" setter="set_allowed_args" getter="get_allowed_args" default="PoolStringArray(  )">
+			A set of values that are allowed by the option. If a different value is passed, the parsing will fail. Empty if any value is allowed.
+		</member>
+		<member name="arg_count" type="int" setter="set_arg_count" getter="get_arg_count" default="1">
+			The number of arguments required for the option. A value less than 0 means all remaining values up to the next option or the end of the argument list.
+		</member>
+		<member name="arg_text" type="String" setter="set_arg_text" getter="get_arg_text" default="&quot;&lt;arg&gt;&quot;">
+			Name for the option arguments that will be displayed in the help message. For example: [code]--input &lt;filename&gt;[/code], where [code]&lt;filename&gt;[/code] is [code]arg_text[/code].
+		</member>
+		<member name="category" type="String" setter="set_category" getter="get_category" default="&quot;&quot;">
+			Category name, options sharing the same category are grouped together in the help message.
+		</member>
+		<member name="default_args" type="PoolStringArray" setter="set_default_args" getter="get_default_args" default="PoolStringArray(  )">
+			A set of values that will be used by default if no value specified.
+		</member>
+		<member name="description" type="String" setter="set_description" getter="get_description" default="&quot;&quot;">
+			Description that will be displayed in the help message.
+		</member>
+		<member name="hidden" type="bool" setter="set_hidden" getter="is_hidden" default="false">
+			If [code]true[/code], the option will [b]not[/b] be displayed in the help message.
+		</member>
+		<member name="meta" type="bool" setter="set_as_meta" getter="is_meta" default="false">
+			If [code]true[/code], the option will be treated as a meta option, such as [code]--help[/code] or [code]--version[/code]. If [CommandLineParser] parses such option, any [member required] options will not throw an error if they are not specified on the command-line.
+		</member>
+		<member name="multitoken" type="bool" setter="set_multitoken" getter="is_multitoken" default="false">
+			If [code]true[/code], option can be specified multiple times. Total count can be obtained using [method CommandLineParser.get_occurrence_count].
+		</member>
+		<member name="names" type="PoolStringArray" setter="set_names" getter="get_names" default="PoolStringArray(  )">
+			Specifies all valid names (aliases) for this option.
+		</member>
+		<member name="positional" type="bool" setter="set_positional" getter="is_positional" default="false">
+			If [code]true[/code], option can be specified without a name. In this case, the first unparsed option marked as [member positional] will be selected.
+		</member>
+		<member name="required" type="bool" setter="set_required" getter="is_required" default="false">
+			If [code]true[/code], [method CommandLineParser.parse] will return an error if the option was not specified in the argument list.
+		</member>
+	</members>
+	<signals>
+		<signal name="parsed">
+			<argument index="0" name="values" type="PoolStringArray" />
+			<description>
+				Emitted after calling [method CommandLineParser.parse] if it returns [constant OK]. The [code]values[/code] list contains all values that were passed to the option.
+			</description>
+		</signal>
+	</signals>
+	<constants>
+	</constants>
+</class>

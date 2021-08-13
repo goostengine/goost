@@ -147,6 +147,9 @@ class GoostClass:
 # Only rightmost child components are specified.
 classes = {
     "EditorVCSInterfaceGit": "vcs",  # modules/git
+	"CommandLineHelpFormat": "core",
+    "CommandLineOption": "core",
+	"CommandLineParser": "core",
     "GoostEngine": "core",
     "GoostGeometry2D": "geometry",
     "GoostImage": "image",
@@ -203,6 +206,7 @@ classes = _classes
 # compile/link errors or failing unit tests, it's likely a dependency issue.
 # If so, define them here explicitly so that they're automatically enabled.
 class_dependencies = {
+    "CommandLineParser": ["CommandLineOption", "CommandLineHelpFormat"],
     "GoostEngine" : "InvokeState",
     "GoostGeometry2D" : ["PolyBoolean2D", "PolyDecomp2D", "PolyOffset2D"],
     "LightTexture" : "GradientTexture2D",
