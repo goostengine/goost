@@ -695,6 +695,13 @@ Error CommandLineParser::parse(const PoolStringArray &p_args) {
 
 void CommandLineParser::append_option(const Ref<CommandLineOption> &p_option) {
 	ERR_FAIL_COND(p_option.is_null());
+	ERR_FAIL_COND_MSG(p_option->get_names().empty(), "Option does not have any names.");
+
+	const String &opt_name = p_option->get_names()[0];
+	const Ref<CommandLineOption> &existing_option = find_option(opt_name);
+	ERR_FAIL_COND_MSG(existing_option.is_valid(),
+			"Found existing option with the same name which is already added to the parser.");
+
 	_options.push_back(p_option);
 }
 
@@ -708,6 +715,7 @@ Ref<CommandLineOption> CommandLineParser::get_option(int p_idx) const {
 }
 
 void CommandLineParser::set_option(int p_idx, const Ref<CommandLineOption> &p_option) {
+	ERR_FAIL_COND(p_option.is_null());
 	ERR_FAIL_INDEX(p_idx, _options.size());
 	_options.set(p_idx, p_option);
 }
@@ -719,8 +727,10 @@ void CommandLineParser::remove_option(int p_idx) {
 
 Ref<CommandLineOption> CommandLineParser::find_option(const String &p_name) const {
 	for (int i = 0; i < _options.size(); ++i) {
-		if (has_arg(_options[i]->get_names(), p_name)) {
-			return _options[i];
+		const Ref<CommandLineOption> &opt = _options[i];
+		ERR_CONTINUE(opt.is_null());
+		if (has_arg(opt->get_names(), p_name)) {
+			return opt;
 		}
 	}
 	return Ref<CommandLineOption>();
@@ -739,7 +749,7 @@ Ref<CommandLineOption> CommandLineParser::add_option(const String &p_name, const
 	if (!p_allowed_values.empty()) {
 		option->set_allowed_args(p_allowed_values);
 	}
-	_options.push_back(option);
+	append_option(option);
 
 	return option;
 }

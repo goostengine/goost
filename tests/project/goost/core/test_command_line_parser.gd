@@ -58,14 +58,14 @@ func test_parse_multiple_options():
 
 
 func test_same_options():
+    Engine.print_error_messages = false
+
     var _opt
     _opt = cmd.add_option("verbose")
     _opt = cmd.add_option("verbose")
 
-    Engine.print_error_messages = false
-
     var err = cmd.parse(["--verbose=yes"])
-    assert_eq(err, ERR_PARSE_ERROR)
+    assert_eq(err, OK)
 
     Engine.print_error_messages = true
 
@@ -169,7 +169,6 @@ func test_several_positional_options():
     for i in 10:
         args.append("%s.txt" % i)
 
-    print(cmd.get_help_text())
     assert_eq(cmd.parse(args), OK)
 
     for i in 10:
@@ -177,6 +176,14 @@ func test_several_positional_options():
 
     assert_eq(cmd.parse(["0.txt", "1.txt", "--input-2", "2.txt"]), OK)
     assert_eq(cmd.get_value(opts[2]), "2.txt")
+
+
+func test_find_non_existing_option():
+    var _version = cmd.add_version_option()
+    Engine.print_error_messages = false
+    cmd.set_option(0, null)
+    Engine.print_error_messages = true
+    assert_null(cmd.find_option("help"))
 
 
 func add_test_option(arg_count):
@@ -244,10 +251,6 @@ func test_validation():
     opt.required = not required
     assert_eq(cmd.parse([]), ERR_PARSE_ERROR, "Required and have default arguments, should fail.")
     opt.required = required
-
-    cmd.append_option(opt)
-    assert_eq(cmd.parse([]), ERR_PARSE_ERROR, "Same name, should fail.")
-    cmd.remove_option(1)
 
     Engine.print_error_messages = true
 
