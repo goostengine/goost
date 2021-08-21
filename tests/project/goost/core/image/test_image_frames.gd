@@ -37,26 +37,67 @@ func test_save_gif_animated():
 	# Different image sizes are tested here.
 
 	var frame = Image.new()
-	frame.create(90, 90, false, Image.FORMAT_RGBA8)
+	frame.create(90, 90, false, Image.FORMAT_RGB8)
 	frame.fill(Color.white)
 	image_frames.add_frame(frame, 1.0)
 
 	frame = Image.new()
-	frame.create(90, 90, false, Image.FORMAT_RGBA8)
+	frame.create(90, 90, false, Image.FORMAT_RGB8)
 	frame.fill(Color.red)
 	image_frames.add_frame(frame, 1.0)
 
 	frame = Image.new()
-	frame.create(60, 60, false, Image.FORMAT_RGBA8)
+	frame.create(60, 60, false, Image.FORMAT_RGB8)
 	frame.fill(Color.green)
 	image_frames.add_frame(frame, 1.0)
 
 	frame = Image.new()
-	frame.create(30, 30, false, Image.FORMAT_RGBA8)
+	frame.create(30, 30, false, Image.FORMAT_RGB8)
 	frame.fill(Color.blue)
 	image_frames.add_frame(frame, 1.0)
 
 	var err = image_frames.save_gif("res://out/animated.gif")
+	assert_eq(err, OK)
+
+
+func test_save_gif_animated_transparency():
+	var image_frames = ImageFrames.new()
+
+	var a = Image.new()
+	a.create(50, 50, false, Image.FORMAT_RGBA8)
+	a.fill(Color.orange)
+
+	var b = Image.new()
+	b.create(50, 50, false, Image.FORMAT_RGBA8)
+	b.fill(Color.blue)
+
+	var frame_a = Image.new()
+	frame_a.create(100, 100, false, Image.FORMAT_RGBA8)
+	frame_a.blit_rect(a, Rect2(0, 0, 49, 49), Vector2(0, 0))
+	image_frames.add_frame(frame_a, 1.0)
+
+	var frame_b = Image.new()
+	frame_b.create(100, 100, false, Image.FORMAT_RGBA8)
+	frame_b.blit_rect(b, Rect2(0, 0, 50, 50), Vector2(50, 50))
+	image_frames.add_frame(frame_b, 1.0)
+
+	var err = image_frames.save_gif("res://out/animated_transparency.gif")
+	assert_eq(err, OK)
+
+
+func test_save_gif_static_transparency():
+	var image_frames = ImageFrames.new()
+
+	var a = Image.new()
+	a.create(25, 25, false, Image.FORMAT_RGBA8)
+	a.fill(Color.orange)
+
+	var frame_a = Image.new()
+	frame_a.create(100, 100, false, Image.FORMAT_RGBA8)
+	frame_a.blit_rect(a, Rect2(0, 0, 24, 24), Vector2(25, 25))
+	image_frames.add_frame(frame_a, 1.0)
+
+	var err = image_frames.save_gif("res://out/animated_static_transparency.gif")
 	assert_eq(err, OK)
 
 
@@ -67,6 +108,7 @@ func test_save_gif_animated_rotation():
 	for i in 8:
 		var frame = TestUtils.image_load(SAMPLES.icon)
 		GoostImage.rotate(frame, angle, false)
+		frame.convert(Image.FORMAT_RGB8)
 		image_frames.add_frame(frame, 0.02)
 		angle += TAU / 8.0
 
