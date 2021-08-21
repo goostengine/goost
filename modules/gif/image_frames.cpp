@@ -49,11 +49,10 @@ Error ImageFrames::save_gif(const String &p_filepath, int p_color_count) {
 	ERR_FAIL_COND_V_MSG(get_frame_count() == 0, ERR_CANT_CREATE,
 			"ImageFrames must have at least one frame added.");
 
-	int error;
-
 	FileAccess *f = FileAccess::open(p_filepath, FileAccess::WRITE);
 	ERR_FAIL_COND_V_MSG(!f, ERR_CANT_OPEN, "Error opening file.");
 
+	int error;
 	GifFileType *gif = EGifOpen(f, save_gif_func, &error);
 	if (!gif) {
 		memdelete(f);
@@ -64,6 +63,8 @@ Error ImageFrames::save_gif(const String &p_filepath, int p_color_count) {
 	// Using dimensions of the first image as the base.
 	const Ref<Image> &first = get_frame_image(0);
 	ERR_FAIL_COND_V(first.is_null(), ERR_CANT_CREATE);
+
+	const bool has_alpha = first->detect_alpha();
 
 	gif->SWidth = first->get_width();
 	gif->SHeight = first->get_height();
@@ -92,7 +93,7 @@ Error ImageFrames::save_gif(const String &p_filepath, int p_color_count) {
 			indexed->convert(Image::FORMAT_RGBA8);
 			int num_colors = CLAMP(p_color_count, 1, 256);
 			num_colors = next_power_of_2(num_colors);
-			indexed->generate_palette(num_colors, ImageIndexed::DITHER_ORDERED, false, true);
+			indexed->generate_palette(num_colors, ImageIndexed::DITHER_ORDERED, has_alpha, true);
 		} else {
 			ERR_FAIL_COND_V_MSG(!indexed->has_palette(), ERR_CANT_CREATE,
 					"Custom ImageIndexed passed to ImagesFrames must have palette already generated.");
@@ -118,18 +119,21 @@ Error ImageFrames::save_gif(const String &p_filepath, int p_color_count) {
 		}
 
 		// Add delay.
-		if (get_frame_count() > 1) {
-			EGifPutExtensionLeader(gif, GRAPHICS_EXT_FUNC_CODE);
-			uint16_t d = 100 * delay;
-			uint8_t gfx_ext_data[4] = {
-				0x04,
-				static_cast<uint8_t>((d >> 0) & 0xff),
-				static_cast<uint8_t>((d >> 8) & 0xff),
-				0x00, // Transparency.
-			};
-			EGifPutExtensionBlock(gif, 4, gfx_ext_data);
-			EGifPutExtensionTrailer(gif);
+		EGifPutExtensionLeader(gif, GRAPHICS_EXT_FUNC_CODE);
+		uint16_t d = 100 * delay;
+		// 000: reserved; 010: disposal; 0: no user input; 1: handle transparency.
+		uint8_t packed_fields = 0x08;
+		if (has_alpha) {
+			packed_fields |= 1;
 		}
+		uint8_t gfx_ext_data[4] = {
+			packed_fields,
+			static_cast<uint8_t>((d >> 0) & 0xff),
+			static_cast<uint8_t>((d >> 8) & 0xff),
+			0x00, // Transparent color index (can we always assume 0x00 to represent black color?)
+		};
+		EGifPutExtensionBlock(gif, 4, gfx_ext_data);
+		EGifPutExtensionTrailer(gif);
 
 		// Write!
 		if (EGifPutImageDesc(gif, 0, 0, frame->get_width(), frame->get_height(), false, gif_color_map) == GIF_ERROR) {
