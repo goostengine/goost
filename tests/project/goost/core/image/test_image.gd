@@ -14,7 +14,8 @@ var output
 
 
 func after_each():
-	output.save_png("res://out/%s.png" % [gut._current_test.name])
+	if output:
+		output.save_png("res://out/%s.png" % [gut._current_test.name])
 
 
 func test_replace_color():
@@ -145,6 +146,14 @@ func test_render_polygon_filled():
 	var pixel = output.get_pixelv(output.get_size() / 2)
 	assert_eq(pixel, Color.white, "Center of the image should be white.")
 	output.unlock()
+
+
+func test_render_polygon_invalid():
+	# Input from the fuzzer...
+	Engine.print_error_messages = false
+	output = GoostImage.render_polygon([Vector2(0.695821, 0.718215), Vector2(-30.700972, -42.334), Vector2(0.959952, -0.280165), Vector2(-11.923018, 20.621294), Vector2(-0.594874, 0.803819), Vector2(0.801119, -0.598505), Vector2(-0.129389, 0.991594), Vector2(-8.80065, -27.064463), Vector2(-0.987193, -0.159532), Vector2(-0.778665, 0.62744), Vector2(0.764317, 0.644841), Vector2(2.220136, 26.017015), Vector2(0.986621, -0.163031), Vector2(-0.935623, 0.353002), Vector2(0.904148, 0.427219)], true)
+	Engine.print_error_messages = true
+	assert_null(output)
 
 
 func test_render_polygon_filled_color():

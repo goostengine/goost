@@ -227,7 +227,7 @@ void GoostImage::binarize(Ref<Image> p_image, real_t p_threshold, bool p_invert)
 	ERR_FAIL_COND(p_image.is_null());
 
 	PIX *pix_in = pix_create_from_image(p_image);
-	
+
 	PIX *pix_bin = nullptr;
 	if (p_threshold < 0) {
 		pix_bin = pixConvertTo1Adaptive(pix_in);
@@ -467,7 +467,15 @@ Color GoostImage::get_pixel_average(const Ref<Image> &p_image, const Rect2 &p_re
 
 Ref<Image> GoostImage::render_polygon(Vector<Point2> p_polygon, bool p_fill, const Color &p_color, const Color &p_bg_color) {
 	ERR_FAIL_COND_V_MSG(p_polygon.size() < 3, Variant(), "Bad polygon!")
-
+#ifdef DEBUG_ENABLED
+	for (int i = 0; i < p_polygon.size(); ++i) {
+		if (p_polygon[i].x < 0 || p_polygon[i].y < 0) {
+			ERR_PRINT("Polygon must not contain vertices with negative coordinates.");
+			// Leptonica throws an error: "Error in pixFindHorizontalRuns: y not in [0 ... h - 1]"
+			return Ref<Image>();
+		}
+	}
+#endif
 	PTA *pta_in = ptaCreate(p_polygon.size());
 	for (int i = 0; i < p_polygon.size(); ++i) {
 		ptaAddPt(pta_in, p_polygon[i].x, p_polygon[i].y);
