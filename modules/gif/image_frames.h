@@ -35,6 +35,7 @@ public:
 	void set_frame_delay(int p_idx, float p_delay);
 	float get_frame_delay(int p_idx) const;
 
+	Rect2 get_bounding_rect() const;
 	int get_frame_count() const;
 
 	void clear();
