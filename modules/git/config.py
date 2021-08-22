@@ -19,9 +19,5 @@ def configure(env):
 	pass
 
 
-def get_doc_path():
-    return "doc"
-
-
 def get_doc_classes():
     return ["EditorVCSInterfaceGit"]
