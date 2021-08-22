@@ -23,6 +23,12 @@
 				Removes all frames.
 			</description>
 		</method>
+		<method name="get_bounding_rect" qualifiers="const">
+			<return type="Rect2" />
+			<description>
+				Returns the bounding rectangle which encloses all added images starting from position [code]Vector2(0, 0)[/code].
+			</description>
+		</method>
 		<method name="get_frame_count" qualifiers="const">
 			<return type="int" />
 			<description>
