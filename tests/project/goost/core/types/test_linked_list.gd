@@ -698,3 +698,9 @@ class TestInvalidData extends "res://addons/gut/test.gd":
 		list.pop_front()
 		var _v = list._iter_get(Array([]))
 		assert_true(list.empty())
+
+	func test_invalid_cast():
+		var not_a_node = ClassDB.instance("_GoostGeometry2D")
+		list.move_to_back(not_a_node)
+		not_a_node.free()
+		assert_true(list.empty())

@@ -185,7 +185,9 @@ public:
 template <>
 struct VariantCaster<ListNode *> {
 	static _FORCE_INLINE_ ListNode *cast(const Variant &p_variant) {
-		return (ListNode *)p_variant.operator Object *();
+		if (p_variant.get_type() == Variant::OBJECT) {
+			return Object::cast_to<ListNode>(p_variant);
+		}
+		return nullptr;
 	}
 };
-
