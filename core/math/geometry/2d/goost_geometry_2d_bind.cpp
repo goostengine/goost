@@ -230,5 +230,6 @@ void _GoostGeometry2D::_bind_methods() {
 }
 
 _GoostGeometry2D::_GoostGeometry2D() {
+	ERR_FAIL_COND_MSG(singleton != nullptr, "Singleton already exists");
 	singleton = this;
 }

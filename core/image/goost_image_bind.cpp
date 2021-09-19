@@ -140,5 +140,6 @@ void _GoostImage::_bind_methods() {
 }
 
 _GoostImage::_GoostImage() {
+	ERR_FAIL_COND_MSG(singleton != nullptr, "Singleton already exists");
 	singleton = this;
 }

@@ -24,5 +24,6 @@ void _GDScriptTranspiler::_bind_methods() {
 }
 
 _GDScriptTranspiler::_GDScriptTranspiler() {
+	ERR_FAIL_COND_MSG(singleton != nullptr, "Singleton already exists");
 	singleton = this;
 }

@@ -509,6 +509,7 @@ void MixinScriptLanguage::get_recognized_extensions(List<String> *p_extensions) 
 }
 
 MixinScriptLanguage::MixinScriptLanguage() {
+	ERR_FAIL_COND_MSG(singleton != nullptr, "Singleton already exists");
 	singleton = this;
 }
 
