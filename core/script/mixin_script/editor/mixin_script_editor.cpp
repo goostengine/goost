@@ -180,6 +180,10 @@ void MixinScriptEditor::_on_add_mixin_pressed() {
 }
 
 void MixinScriptEditor::_on_mixin_created(Ref<Script> p_script) {
+	if (script == p_script) {
+		EditorNode::get_singleton()->show_warning(TTR("Cannot add MixinScript to itself."));
+		return;
+	}
 	if (p_script.is_valid()) {
 		for (int i = 0; i < script->get_mixin_count(); ++i) {
 			Ref<Script> m = script->get_mixin(i);

@@ -133,3 +133,16 @@ func test_mixin_get_owner():
 	assert_null(o)
 	m.free()
 	assert_freed(m, "Freed")
+
+
+func test_mixin_set_to_self():
+	var ms = MixinScript.new()
+	Engine.print_error_messages = false
+	ms.add_mixin(ms)
+	Engine.print_error_messages = true
+
+	var n = Node.new()
+	n.set_script(ms)
+	add_child_autofree(n)
+
+	assert_not_null(ms)
