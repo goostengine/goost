@@ -501,8 +501,11 @@ class TestInvalidData extends "res://addons/gut/test.gd":
 		GoostImage.dilate(image, 9000)
 		GoostImage.erode(image, 9000)
 		GoostImage.morph(image, -1, Vector2(9000, -9000))
-		var _centroid = GoostImage.get_centroid(image)
-		var _average = GoostImage.get_pixel_average(image)
+		var _centroid = GoostImage.get_centroid(Image.new())
+		var average = GoostImage.get_pixel_average(image)
+		assert_eq(average, Color())
+		average = GoostImage.get_pixel_average(Image.new(), Rect2(Vector2(-0.371352, -0.928492), Vector2(-0.643768, -0.76522)), null)
+		assert_eq(average, Color())
 		var _has = GoostImage.get_pixel_or_null(image, -1, -1)
 		_has = GoostImage.get_pixelv_or_null(image, Vector2(-1, 1))
 
