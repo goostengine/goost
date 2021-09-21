@@ -84,7 +84,7 @@ Variant Random::choice(const Variant &p_sequence) {
 			return arr[randi() % arr.size()];
 		} break;
 		default: {
-			ERR_FAIL_V_MSG(Variant(), "Unsupported type: the sequence must be indexable.")
+			ERR_FAIL_V_MSG(Variant(), "Unsupported type: the sequence must be indexable.");
 		}
 	}
 	return Variant();

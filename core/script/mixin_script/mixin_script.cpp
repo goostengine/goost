@@ -263,7 +263,7 @@ void MixinScript::move_mixin(int p_to_pos, const Ref<Script> &p_script) {
 			break;
 		}
 	}
-	ERR_FAIL_COND_MSG(from_pos == -1, "Cannot move script: not part of MixinScript.")
+	ERR_FAIL_COND_MSG(from_pos == -1, "Cannot move script: not part of MixinScript.");
 
 	if (from_pos == to_pos) {
 		return;
