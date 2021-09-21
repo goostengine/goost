@@ -48,6 +48,11 @@ static int save_gif_func(GifFileType *gif, const GifByteType *data, int length) 
 Error ImageFrames::save_gif(const String &p_filepath, int p_color_count) {
 	ERR_FAIL_COND_V_MSG(get_frame_count() == 0, ERR_CANT_CREATE, "ImageFrames must have at least one frame added.");
 
+	// GIF allows to add images of different sizes,
+	// but we need to determine the canvas size that could contain all frames.
+	const Rect2 &rect = get_bounding_rect();
+	ERR_FAIL_COND_V_MSG(rect.has_no_area(), ERR_CANT_CREATE, "ImageFrames contain uninitialized images.");
+
 	FileAccess *f = FileAccess::open(p_filepath, FileAccess::WRITE);
 	ERR_FAIL_COND_V_MSG(!f, ERR_CANT_OPEN, "Error opening file.");
 
@@ -58,10 +63,6 @@ Error ImageFrames::save_gif(const String &p_filepath, int p_color_count) {
 		ERR_PRINT(vformat("EGifOpen() failed - %s.", error));
 		return ERR_CANT_CREATE;
 	}
-	// GIF allows to add images of different sizes,
-	// but we need to determine the canvas size that could contain all frames.
-	const Rect2 &rect = get_bounding_rect();
-	ERR_FAIL_COND_V_MSG(rect.has_no_area(), ERR_CANT_CREATE, "ImageFrames contain uninitialized images.");
 
 	gif->SWidth = rect.size.x;
 	gif->SHeight = rect.size.y;
