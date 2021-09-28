@@ -13,8 +13,10 @@ func test_circle():
 	var outlines_size = circle.size()
 	assert_ne(outlines_size, 26)
 	assert_eq(outlines_size, 51)
-	
+
 	assert_true(GoostGeometry2D.point_in_polygon(Vector2(n.radius - 1, 0), circle) as bool)
+
+	assert_true(GoostGeometry2D.polygon_area(circle) > 0.0)
 
 	n.queue_free()
 
@@ -39,6 +41,10 @@ func test_capsule():
 		points.push_back(p)
 
 	assert_true(GoostGeometry2D.point_in_polygon(Vector2(-73, -229.5), capsule) as bool)
+	assert_true(GoostGeometry2D.point_in_polygon(Vector2(0, -240), capsule) as bool)
+	assert_true(GoostGeometry2D.point_in_polygon(Vector2(0, 240), capsule) as bool)
+
+	assert_true(GoostGeometry2D.polygon_area(capsule) > 0.0)
 
 	n.queue_free()
 
@@ -56,6 +62,8 @@ func test_rectangle():
 	assert_eq(outlines_size, 4)
 
 	assert_true(GoostGeometry2D.point_in_polygon(Vector2(128, 0), rectangle) as bool)
+
+	assert_true(GoostGeometry2D.polygon_area(rectangle) > 0.0)
 
 	n.queue_free()
 
@@ -90,3 +98,5 @@ func test_poly_path():
 	]
 	for p in control:
 		assert_true(GoostGeometry2D.point_in_polygon(p, deflated) as bool)
+
+	assert_true(GoostGeometry2D.polygon_area(deflated) > 0.0)
