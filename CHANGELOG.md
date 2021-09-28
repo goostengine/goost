@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 - A `CommandLineParser` class which allows to parse arguments from `OS.get_cmdline_args()`.
 - An experimental support for cross-language mixin using `MixinScript` (aka `MultiScript`).
 - A `PolyPath2D` node, which takes `Path2D` nodes to buffer curves into polygons.
+- A `PolyCapsule2D` node, which generates capsule polygon.
 - A `Stopwatch` node, which complements Godot's `Timer` node.
 - A `ImageFrames.save_gif()` method which allows to save both static and animated GIF images.
 - A `geometry` option/component, which is separate from `math` now.
