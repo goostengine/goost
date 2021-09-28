@@ -486,14 +486,14 @@ Vector<Point2> GoostGeometry2D::capsule(real_t p_radius, real_t p_height, real_t
 	Vector<Point2> vertices;
 	for (int i = 0; i < vertex_count + 1; ++i) {
 		real_t phi = (Math_PI / vertex_count) * i;
-		Vector2 v = Vector2(Math::cos(-phi), -Math::sin(phi)) * p_radius;
-		v.y -= p_height * 0.5;
+		Vector2 v = Vector2(Math::cos(phi), Math::sin(phi)) * p_radius;
+		v.y += p_height * 0.5;
 		vertices.push_back(v);
 	}
 	for (int i = 0; i < vertex_count + 1; ++i) {
 		real_t phi = (Math_PI / vertex_count) * i;
-		Vector2 v = Vector2(-Math::cos(phi), Math::sin(phi)) * p_radius;
-		v.y += p_height * 0.5;
+		Vector2 v = Vector2(-Math::cos(phi), Math::sin(-phi)) * p_radius;
+		v.y -= p_height * 0.5;
 		vertices.push_back(v);
 	}
 	return vertices;
