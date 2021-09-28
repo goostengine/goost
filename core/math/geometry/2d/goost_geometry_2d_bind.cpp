@@ -154,6 +154,10 @@ Vector<Point2> _GoostGeometry2D::circle(real_t p_radius, real_t p_max_error) con
 	return GoostGeometry2D::circle(p_radius, p_max_error);
 }
 
+Vector<Point2> _GoostGeometry2D::capsule(real_t p_radius, real_t p_height, real_t p_max_error) const {
+	return GoostGeometry2D::capsule(p_radius, p_height, p_max_error);
+}
+
 // Note: this can be converted to use `Vector2i` in Godot 4.x.
 Vector<Point2> _GoostGeometry2D::pixel_line(const Point2 &p_start, const Point2 &p_end) const {
 	const Vector<Point2i> &line = GoostGeometry2D::pixel_line(p_start, p_end);
@@ -222,6 +226,7 @@ void _GoostGeometry2D::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("regular_polygon", "sides", "size"), &_GoostGeometry2D::regular_polygon);
 	ClassDB::bind_method(D_METHOD("circle", "radius", "max_error"), &_GoostGeometry2D::circle, DEFVAL(0.25));
+	ClassDB::bind_method(D_METHOD("capsule", "radius", "height", "max_error"), &_GoostGeometry2D::capsule, DEFVAL(0.25));
 
 	ClassDB::bind_method(D_METHOD("pixel_line", "start", "end"), &_GoostGeometry2D::pixel_line);
 	ClassDB::bind_method(D_METHOD("pixel_circle", "radius", "origin"), &_GoostGeometry2D::pixel_circle, DEFVAL(Vector2(0, 0)));

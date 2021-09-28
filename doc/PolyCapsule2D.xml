@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="PolyCapsule2D" inherits="PolyNode2D" version="3.4">
+	<brief_description>
+		A capsule [PolyNode2D] shape.
+	</brief_description>
+	<description>
+		Builds a polygon outline closely approximating a capsule in 2D (also known as "stadium").
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+	</methods>
+	<members>
+		<member name="height" type="float" setter="set_height" getter="get_height" default="64.0">
+			Capsule's total height. When [code]height == 0.0[/code], then a circle is generated instead.
+		</member>
+		<member name="max_error" type="float" setter="set_max_error" getter="get_max_error" default="0.25">
+			Represents the maximum gap in pixels allowed between capsule's half circle segment and the boundary of the mathematical circle, with low values increasing the accuracy.
+		</member>
+		<member name="radius" type="float" setter="set_radius" getter="get_radius" default="32.0">
+			Capsule's semicircle radius, applies to both ends.
+		</member>
+	</members>
+	<constants>
+	</constants>
+</class>

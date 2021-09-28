@@ -19,6 +19,30 @@ func test_circle():
 	n.queue_free()
 
 
+func test_capsule():
+	var n = PolyCapsule2D.new()
+	add_child_autofree(n)
+	n.radius = 128
+	n.height = 256
+
+	var outlines = n.build_outlines()
+	assert_false(outlines.empty())
+
+	var capsule = outlines[0]
+
+	var outlines_size = capsule.size()
+	assert_eq(outlines_size, 54)
+
+	var points = []
+	for p in capsule:
+		assert_false(points.has(p), "Capsule polygon has duplicate points.")
+		points.push_back(p)
+
+	assert_true(GoostGeometry2D.point_in_polygon(Vector2(-73, -229.5), capsule) as bool)
+
+	n.queue_free()
+
+
 func test_rectangle():
 	var n = PolyRectangle2D.new()
 	add_child_autofree(n)

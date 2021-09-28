@@ -18,13 +18,23 @@
 				Computes the axis-aligned bounding rectangle of given points.
 			</description>
 		</method>
+		<method name="capsule" qualifiers="const">
+			<return type="PoolVector2Array" />
+			<argument index="0" name="radius" type="float" />
+			<argument index="1" name="height" type="float" />
+			<argument index="2" name="max_error" type="float" default="0.25" />
+			<description>
+				Generates a closed path approximating the shape of a capsule (stadium) with the specified radius and height.
+				The [code]max_error[/code] parameter represents the maximum gap in pixels allowed between capsule's half circle segment and the boundary of the mathematical circle, with low values increasing the number of vertices, hence accuracy.
+			</description>
+		</method>
 		<method name="circle" qualifiers="const">
 			<return type="PoolVector2Array" />
 			<argument index="0" name="radius" type="float" />
 			<argument index="1" name="max_error" type="float" default="0.25" />
 			<description>
 				Generates a closed path approximating the shape of a circle with the specified radius.
-				The [code]max_error[/code] parameter represents the maximum gap in pixels allowed between a circle segment and the boundary of the mathematical circle, with low values increasing the number of vertices. The maximum number of vertices returned is 4096. See also [method regular_polygon].
+				The [code]max_error[/code] parameter represents the maximum gap in pixels allowed between a circle segment and the boundary of the mathematical circle, with low values increasing the number of vertices, hence accuracy.
 			</description>
 		</method>
 		<method name="clip_polygons" qualifiers="const">

@@ -472,6 +472,33 @@ Vector<Point2> GoostGeometry2D::circle(real_t p_radius, real_t p_max_error) {
 	return regular_polygon(edge_count, p_radius);
 }
 
+Vector<Point2> GoostGeometry2D::capsule(real_t p_radius, real_t p_height, real_t p_max_error) {
+	ERR_FAIL_COND_V(p_radius < 0.0, Vector<Point2>());
+	ERR_FAIL_COND_V(p_height < 0.0, Vector<Point2>());
+	ERR_FAIL_COND_V(p_max_error < 0.0, Vector<Point2>());
+
+	if (p_height <= 0.0) {
+		return circle(p_radius, p_max_error);
+	}
+	int vertex_count = static_cast<int>(Math::ceil((Math_PI * 0.5) / acos(1.0 - p_max_error / p_radius)));
+	vertex_count = MAX(vertex_count, 2);
+
+	Vector<Point2> vertices;
+	for (int i = 0; i < vertex_count + 1; ++i) {
+		real_t phi = (Math_PI / vertex_count) * i;
+		Vector2 v = Vector2(Math::cos(phi), Math::sin(phi)) * p_radius;
+		v.y += p_height * 0.5;
+		vertices.push_back(v);
+	}
+	for (int i = 0; i < vertex_count + 1; ++i) {
+		real_t phi = (Math_PI / vertex_count) * i;
+		Vector2 v = Vector2(-Math::cos(phi), Math::sin(-phi)) * p_radius;
+		v.y -= p_height * 0.5;
+		vertices.push_back(v);
+	}
+	return vertices;
+}
+
 // Implementation borrowed from `TileMap` editor plugin:
 // https://github.com/godotengine/godot/blob/0d819ae5f5/editor/plugins/tile_map_editor_plugin.cpp#L982-L1023
 //
