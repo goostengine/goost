@@ -39,6 +39,8 @@ func test_capsule():
 		points.push_back(p)
 
 	assert_true(GoostGeometry2D.point_in_polygon(Vector2(-73, -229.5), capsule) as bool)
+	assert_true(GoostGeometry2D.point_in_polygon(Vector2(0, -240), capsule) as bool)
+	assert_true(GoostGeometry2D.point_in_polygon(Vector2(0, 240), capsule) as bool)
 
 	n.queue_free()
 
