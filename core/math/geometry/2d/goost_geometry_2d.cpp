@@ -449,6 +449,15 @@ int GoostGeometry2D::point_in_polygon(const Point2 &p_point, const Vector<Point2
 	return pip_result;
 }
 
+Vector<Point2> GoostGeometry2D::rectangle(const Point2 &p_extents) {
+	Vector<Point2> vertices;
+	vertices.push_back(Point2(-p_extents.x, -p_extents.y));
+	vertices.push_back(Point2(+p_extents.x, -p_extents.y));
+	vertices.push_back(Point2(+p_extents.x, +p_extents.y));
+	vertices.push_back(Point2(-p_extents.x, +p_extents.y));
+	return vertices;
+}
+
 Vector<Point2> GoostGeometry2D::regular_polygon(int p_edge_count, real_t p_size) {
 	ERR_FAIL_COND_V(p_edge_count < 3, Vector<Point2>());
 

@@ -146,6 +146,10 @@ int _GoostGeometry2D::point_in_polygon(const Point2 &p_point, const Vector<Point
 	return GoostGeometry2D::point_in_polygon(p_point, p_polygon);
 }
 
+Vector<Point2> _GoostGeometry2D::rectangle(const Vector2 &p_extents) const {
+	return GoostGeometry2D::rectangle(p_extents);
+}
+
 Vector<Point2> _GoostGeometry2D::regular_polygon(int p_edge_count, real_t p_size) const {
 	return GoostGeometry2D::regular_polygon(p_edge_count, p_size);
 }
@@ -224,9 +228,10 @@ void _GoostGeometry2D::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("point_in_polygon", "point", "polygon"), &_GoostGeometry2D::point_in_polygon);
 
-	ClassDB::bind_method(D_METHOD("regular_polygon", "sides", "size"), &_GoostGeometry2D::regular_polygon);
+	ClassDB::bind_method(D_METHOD("rectangle", "extents"), &_GoostGeometry2D::rectangle);
 	ClassDB::bind_method(D_METHOD("circle", "radius", "max_error"), &_GoostGeometry2D::circle, DEFVAL(0.25));
 	ClassDB::bind_method(D_METHOD("capsule", "radius", "height", "max_error"), &_GoostGeometry2D::capsule, DEFVAL(0.25));
+	ClassDB::bind_method(D_METHOD("regular_polygon", "sides", "size"), &_GoostGeometry2D::regular_polygon);
 
 	ClassDB::bind_method(D_METHOD("pixel_line", "start", "end"), &_GoostGeometry2D::pixel_line);
 	ClassDB::bind_method(D_METHOD("pixel_circle", "radius", "origin"), &_GoostGeometry2D::pixel_circle, DEFVAL(Vector2(0, 0)));

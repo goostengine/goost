@@ -85,8 +85,8 @@ void PolyCapsule2D::_bind_methods() {
 // PolyRectangle2D
 
 void PolyRectangle2D::set_extents(const Vector2 &p_extents) {
-	ERR_FAIL_COND(p_extents.x <= 0);
-	ERR_FAIL_COND(p_extents.y <= 0);
+	ERR_FAIL_COND(p_extents.x <= 0.0);
+	ERR_FAIL_COND(p_extents.y <= 0.0);
 	extents = p_extents;
 	_queue_update();
 	_change_notify("extents");
@@ -94,12 +94,7 @@ void PolyRectangle2D::set_extents(const Vector2 &p_extents) {
 
 Vector<Vector<Point2>> PolyRectangle2D::_build_outlines() {
 	Vector<Vector<Point2>> outlines;
-	Vector<Point2> rect;
-	rect.push_back(Point2(-extents.x, -extents.y));
-	rect.push_back(Point2(+extents.x, -extents.y));
-	rect.push_back(Point2(+extents.x, +extents.y));
-	rect.push_back(Point2(-extents.x, +extents.y));
-	outlines.push_back(rect);
+	outlines.push_back(GoostGeometry2D::rectangle(extents));
 	return outlines;
 }
 

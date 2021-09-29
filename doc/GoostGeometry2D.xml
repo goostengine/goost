@@ -184,6 +184,13 @@
 				Returns an array of 2D-dimensional raster coordinates approximating a polyline going through [code]points[/code] using [method pixel_line]. Point coordinates in the input [code]points[/code] are rounded to nearest integer values.
 			</description>
 		</method>
+		<method name="rectangle" qualifiers="const">
+			<return type="PoolVector2Array" />
+			<argument index="0" name="extents" type="Vector2" />
+			<description>
+				Generates rectangle vertices grown from the origin to specified half [code]extents[/code] in all directions. The total width and height is twice the half extents.
+			</description>
+		</method>
 		<method name="regular_polygon" qualifiers="const">
 			<return type="PoolVector2Array" />
 			<argument index="0" name="sides" type="int" />
