@@ -187,6 +187,7 @@ Error ImageFrames::save_gif(const String &p_filepath, int p_color_count) {
 
 void ImageFrames::add_frame(const Ref<Image> &p_image, float p_delay) {
 	ERR_FAIL_COND(p_image.is_null());
+	ERR_FAIL_COND(p_image->empty());
 
 	Frame frame;
 	frame.image = p_image;
@@ -222,7 +223,9 @@ float ImageFrames::get_frame_delay(int p_idx) const {
 Rect2 ImageFrames::get_bounding_rect() const {
 	Rect2 rect;
 	for (int i = 0; i < frames.size(); ++i) {
-		rect.expand_to(frames[i].image->get_size());
+		const Ref<Image> &image = frames[i].image;
+		ERR_CONTINUE_MSG(image.is_null(), "Uninitialized or invalid image detected, skipping.");
+		rect.expand_to(image->get_size());
 	}
 	return rect;
 }

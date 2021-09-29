@@ -167,4 +167,8 @@ func test_image_frames_invalid_data():
 	frames.add_frame(null, -46.891228)
 	frames.save_gif("res://out/3857695334", -28)
 
+	frames = ImageFrames.new()
+	frames.add_frame(ImageIndexed.new(), 3.580552)
+	frames.save_gif("1866356978", 26)
+
 	Engine.print_error_messages = true
