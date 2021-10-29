@@ -11,7 +11,7 @@ env:
   GOOST_BASE_BRANCH: gd3
   SCONSFLAGS: godot_modules_enabled=no platform=javascript verbose=yes warnings=all werror=yes debug_symbols=no --jobs=4
   SCONS_CACHE_LIMIT: 8192
-  EM_VERSION: 2.0.15
+  EM_VERSION: 2.0.25
   EM_CACHE_FOLDER: 'emsdk-cache'
 
 jobs:
@@ -59,7 +59,7 @@ jobs:
           scons --version
 
       - name: Set up Emscripten latest
-        uses: mymindstorm/setup-emsdk@v7
+        uses: mymindstorm/setup-emsdk@v10
         with:
           version: ${{env.EM_VERSION}}
           actions-cache-folder: ${{env.EM_CACHE_FOLDER}}
