@@ -6,6 +6,7 @@ class Test:
 	var pass_texts = []
 	var fail_texts = []
 	var pending_texts = []
+	var orphans = 0
 
 	# NOTE:  The "failed" and "pending" text must match what is outputted by
 	# the logger in order for text highlighting to occur in summary.
@@ -16,6 +17,17 @@ class Test:
 			to_return += str(pad, '[Failed]:  ', fail_texts[i], "\n")
 		for i in range(pending_texts.size()):
 			to_return += str(pad, '[Pending]:  ', pending_texts[i], "\n")
+		return to_return
+
+	func get_status():
+		var to_return = 'no asserts'
+		if(pending_texts.size() > 0):
+			to_return = 'pending'
+		elif(fail_texts.size() > 0):
+			to_return = 'fail'
+		elif(pass_texts.size() > 0):
+			to_return = 'pass'
+
 		return to_return
 
 # ------------------------------------------------------------------------------
@@ -66,12 +78,15 @@ class TestScript:
 		var t = get_test_obj(test_name)
 		t.pending_texts.append(reason)
 
+	func get_tests():
+		return _tests
+
 # ------------------------------------------------------------------------------
 # Summary Class
 #
 # This class holds the results of all the test scripts and Inner Classes that
 # were run.
-# -------------------------------------------d-----------------------------------
+# ------------------------------------------------------------------------------
 var _scripts = []
 
 func add_script(name):
@@ -84,7 +99,7 @@ func get_current_script():
 	return _scripts[_scripts.size() - 1]
 
 func add_test(test_name):
-	get_current_script().get_test_obj(test_name)
+	return get_current_script().get_test_obj(test_name)
 
 func add_pass(test_name, reason = ''):
 	get_current_script().add_pass(test_name, reason)

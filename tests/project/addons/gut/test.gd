@@ -348,14 +348,13 @@ func assert_ne(got, not_expected, text=""):
 		else:
 			_pass(disp)
 
-
 # ------------------------------------------------------------------------------
 # Asserts that the expected value almost equals the value got.
 # ------------------------------------------------------------------------------
 func assert_almost_eq(got, expected, error_interval, text=''):
 	var disp = "[" + _str(got) + "] expected to equal [" + _str(expected) + "] +/- [" + str(error_interval) + "]:  " + text
 	if(_do_datatypes_match__fail_if_not(got, expected, text) and _do_datatypes_match__fail_if_not(got, error_interval, text)):
-		if(got < (expected - error_interval) or got > (expected + error_interval)):
+		if not _is_almost_eq(got, expected, error_interval):
 			_fail(disp)
 		else:
 			_pass(disp)
@@ -366,10 +365,29 @@ func assert_almost_eq(got, expected, error_interval, text=''):
 func assert_almost_ne(got, not_expected, error_interval, text=''):
 	var disp = "[" + _str(got) + "] expected to not equal [" + _str(not_expected) + "] +/- [" + str(error_interval) + "]:  " + text
 	if(_do_datatypes_match__fail_if_not(got, not_expected, text) and _do_datatypes_match__fail_if_not(got, error_interval, text)):
-		if(got < (not_expected - error_interval) or got > (not_expected + error_interval)):
-			_pass(disp)
-		else:
+		if _is_almost_eq(got, not_expected, error_interval):
 			_fail(disp)
+		else:
+			_pass(disp)
+
+# ------------------------------------------------------------------------------
+# Helper function which correctly compares two variables,
+# while properly handling vector2/3 types
+# ------------------------------------------------------------------------------
+func _is_almost_eq(got, expected, error_interval) -> bool:
+	var result = false
+	if typeof(got) == TYPE_VECTOR2:
+		if got.x >= (expected.x - error_interval.x) and got.x <= (expected.x + error_interval.x):
+			if got.y >= (expected.y - error_interval.y) and got.y <= (expected.y + error_interval.y):
+				result = true
+	elif typeof(got) == TYPE_VECTOR3:
+		if got.x >= (expected.x - error_interval.x) and got.x <= (expected.x + error_interval.x):
+			if got.y >= (expected.y - error_interval.y) and got.y <= (expected.y + error_interval.y):
+				if got.z >= (expected.z - error_interval.z) and got.z <= (expected.z + error_interval.z):
+					result = true
+	elif(got >= (expected - error_interval) and got <= (expected + error_interval)):
+		result = true
+	return(result)
 
 # ------------------------------------------------------------------------------
 # Asserts got is greater than expected
@@ -687,6 +705,11 @@ func assert_signal_not_emitted(object, signal_name, text=""):
 # the object does not have the specified signal
 # ------------------------------------------------------------------------------
 func assert_signal_emitted_with_parameters(object, signal_name, parameters, index=-1):
+	if(typeof(parameters) != TYPE_ARRAY):
+		_lgr.error("The expected parameters must be wrapped in an array, you passed:  " + _str(parameters))
+		_fail("Bad Parameters")
+		return
+
 	var disp = str('Expected object ', _str(object), ' to emit signal [', signal_name, '] with parameters ', parameters, ', got ')
 	if(_can_make_signal_assertions(object, signal_name)):
 		if(_signal_watcher.did_emit(object, signal_name)):
@@ -707,7 +730,6 @@ func assert_signal_emitted_with_parameters(object, signal_name, parameters, inde
 # the object does not have the specified signal
 # ------------------------------------------------------------------------------
 func assert_signal_emit_count(object, signal_name, times, text=""):
-
 	if(_can_make_signal_assertions(object, signal_name)):
 		var count = _signal_watcher.get_emit_count(object, signal_name)
 		var disp = str('Expected the signal [', signal_name, '] emit count of [', count, '] to equal [', times, ']: ', text)
@@ -760,6 +782,12 @@ func get_call_parameters(object, method_name, index=-1):
 		_lgr.error('You must pass a doulbed object to get_call_parameters.')
 
 	return to_return
+
+# ------------------------------------------------------------------------------
+# Returns the call count for a method with optional paramter matching.
+# ------------------------------------------------------------------------------
+func get_call_count(object, method_name, parameters=null):
+	return gut.get_spy().call_count(object, method_name, parameters)
 
 # ------------------------------------------------------------------------------
 # Assert that object is an instance of a_class
@@ -1172,10 +1200,6 @@ func pending(text=""):
 		_lgr.pending(text)
 		gut._pending(text)
 
-# ------------------------------------------------------------------------------
-# Returns the number of times a signal was emitted.  -1 returned if the object
-# is not being watched.
-# ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
 # Yield for the time sent in.  The optional message will be printed when
@@ -1193,6 +1217,20 @@ func yield_to(obj, signal_name, max_wait, msg=''):
 	watch_signals(obj)
 	gut.set_yield_signal_or_time(obj, signal_name, max_wait, msg)
 
+	return gut
+
+# ------------------------------------------------------------------------------
+# Yield for a number of frames.  The optional message will be printed. when
+# Gut detects a yield.  When the number of frames have elapsed (counted in gut's
+# _process function) the YIELD signal will be emitted.
+# ------------------------------------------------------------------------------
+func yield_frames(frames, msg=''):
+	if(frames <= 0):
+		var text = str('yeild_frames:  frames must be > 0, you passed  ', frames, '.  0 frames waited.')
+		_lgr.error(text)
+		frames = 0
+
+	gut.set_yield_frames(frames, msg)
 	return gut
 
 # ------------------------------------------------------------------------------
@@ -1340,6 +1378,7 @@ func ignore_method_when_doubling(thing, method_name):
 			path = inst.get_script().get_path()
 
 	gut.get_doubler().add_ignored_method(path, method_name)
+
 
 # ------------------------------------------------------------------------------
 # Stub something.

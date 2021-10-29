@@ -71,6 +71,7 @@ class ScriptMethods:
 			text += str("  ", built_ins[i].name, "\n")
 		return text
 
+
 # ------------------------------------------------------------------------------
 # Helper class to deal with objects and inner classes.
 # ------------------------------------------------------------------------------
@@ -87,7 +88,8 @@ class ObjectInfo:
 	func _init(path, subpath=null):
 		_path = path
 		if(subpath != null):
-			_subpaths = _utils.split_string(subpath, '/')
+			_subpaths = Array(subpath.split('/'))
+
 
 	# Returns an instance of the class/inner class
 	func instantiate():
@@ -114,7 +116,7 @@ class ObjectInfo:
 		return _path
 
 	func get_subpath():
-		return _utils.join_array(_subpaths, '/')
+		return PoolStringArray(_subpaths).join('/')
 
 	func has_subpath():
 		return _subpaths.size() != 0
@@ -198,10 +200,11 @@ class FileOrString:
 		else:
 			return load(_path)
 
+
 # ------------------------------------------------------------------------------
 # A stroke of genius if I do say so.  This allows for doubling a scene without
-# having  to write any files.  By overloading instance we can make whatever
-# we want.
+# having  to write any files.  By overloading the "instance" method  we can
+# make whatever we want.
 # ------------------------------------------------------------------------------
 class PackedSceneDouble:
 	extends PackedScene
@@ -219,7 +222,6 @@ class PackedSceneDouble:
 
 	func load_scene(path):
 		_scene = load(path)
-
 
 
 
@@ -325,11 +327,11 @@ func _write_file(obj_info, dest_path, override_path=null):
 	for i in range(script_methods.local_methods.size()):
 		if(obj_info.make_partial_double):
 			_stub_to_call_super(obj_info, script_methods.local_methods[i].name)
-		f.store_string(_get_func_text(script_methods.local_methods[i]))
+		f.store_string(_get_func_text(script_methods.local_methods[i], obj_info.get_path()))
 
 	for i in range(script_methods.built_ins.size()):
 		_stub_to_call_super(obj_info, script_methods.built_ins[i].name)
-		f.store_string(_get_func_text(script_methods.built_ins[i]))
+		f.store_string(_get_func_text(script_methods.built_ins[i], obj_info.get_path()))
 
 	f.close()
 	return f
@@ -385,8 +387,14 @@ func _get_inst_id_ref_str(inst):
 		ref_str = str('instance_from_id(', inst.get_instance_id(),')')
 	return ref_str
 
-func _get_func_text(method_hash):
-	return _method_maker.get_function_text(method_hash) + "\n"
+func _get_func_text(method_hash, path):
+	var override_count = null;
+	if(_stubber != null):
+		override_count = _stubber.get_parameter_count(path, method_hash.name)
+
+	var text = _method_maker.get_function_text(method_hash, path, override_count) + "\n"
+
+	return text
 
 # returns the path to write the double file to
 func _get_temp_path(object_info):
@@ -554,3 +562,6 @@ func get_make_files():
 func set_make_files(make_files):
 	_make_files = make_files
 	set_output_dir(_output_dir)
+
+func get_method_maker():
+	return _method_maker

@@ -26,7 +26,8 @@
 # THE SOFTWARE.
 #
 # ##############################################################################
-# View readme for usage details.
+# View the readme at https://github.com/bitwes/Gut/blob/master/README.md for usage details.
+# You should also check out the github wiki at: https://github.com/bitwes/Gut/wiki
 # ##############################################################################
 extends Control
 
@@ -48,6 +49,8 @@ var _double_strategy = 1  setget set_double_strategy, get_double_strategy
 var _pre_run_script = '' setget set_pre_run_script, get_pre_run_script
 var _post_run_script = '' setget set_post_run_script, get_post_run_script
 var _color_output = false setget set_color_output, get_color_output
+var _junit_xml_file = '' setget set_junit_xml_file, get_junit_xml_file
+var _junit_xml_timestamp = false setget set_junit_xml_timestamp, get_junit_xml_timestamp
 # -- End Settings --
 
 
@@ -103,6 +106,7 @@ var _was_yield_method_called = false
 # used when yielding to gut instead of some other
 # signal.  Start with set_yield_time()
 var _yield_timer = Timer.new()
+var _yield_frames = 0
 
 var _unit_test_name = ''
 var _new_summary = null
@@ -139,6 +143,8 @@ const SIGNAL_STOP_YIELD_BEFORE_TEARDOWN = 'stop_yield_before_teardown'
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
 var  _should_print_versions = true # used to cut down on output in tests.
+
+
 func _init():
 	_before_all_test_obj.name = 'before_all'
 	_after_all_test_obj.name = 'after_all'
@@ -164,6 +170,14 @@ func _init():
 	_test_collector.set_logger(_lgr)
 
 	_gui = load('res://addons/gut/GutScene.tscn').instance()
+
+
+func _process(delta):
+	if(_yield_frames > 0):
+		_yield_frames -= 1
+
+		if(_yield_frames <= 0):
+			emit_signal('timeout')
 
 # ------------------------------------------------------------------------------
 # Initialize controls
@@ -301,8 +315,15 @@ func _on_log_level_changed(value):
 # ------------------------------------------------------------------------------
 # Timeout for the built in timer.  emits the timeout signal.  Start timer
 # with set_yield_time()
+#
+# signal_watcher._on_watched_signal supports up to 9 additional arguments.
+# This is the most number of parameters GUT supports on signals.  The comment
+# on _on_watched_signal explains reasoning.
 # ------------------------------------------------------------------------------
-func _yielding_callback(from_obj=false):
+func _yielding_callback(from_obj=false,
+		__arg1=null, __arg2=null, __arg3=null,
+		__arg4=null, __arg5=null, __arg6=null,
+		__arg7=null, __arg8=null, __arg9=null):
 	_lgr.end_yield()
 	if(_yielding_to.obj):
 		_yielding_to.obj.call_deferred(
@@ -313,7 +334,7 @@ func _yielding_callback(from_obj=false):
 		_yielding_to.signal_name = ''
 
 	if(from_obj):
-		# we must yiled for a little longer after the signal is emitted so that
+		# we must yield for a little longer after the signal is emitted so that
 		# the signal can propagate to other objects.  This was discovered trying
 		# to assert that obj/signal_name was emitted.  Without this extra delay
 		# the yield returns and processing finishes before the rest of the
@@ -486,9 +507,37 @@ func _end_run():
 	_is_running = false
 	update()
 	_run_hook_script(_post_run_script_instance)
+	_export_results()
 	emit_signal(SIGNAL_TESTS_FINISHED)
 
+	if _utils.should_display_latest_version:
+		p("")
+		p(str("GUT version ",_utils.latest_version," is now available."))
+
 	_gui.set_title("Finished.")
+
+
+# ------------------------------------------------------------------------------
+# Add additional export types here.
+# ------------------------------------------------------------------------------
+func _export_results():
+	if(_junit_xml_file != ''):
+		_export_junit_xml()
+
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+func _export_junit_xml():
+	var exporter = _utils.JunitXmlExport.new()
+	var output_file = _junit_xml_file
+
+	if(_junit_xml_timestamp):
+		var ext = "." + output_file.get_extension()
+		output_file = output_file.replace(ext, str("_", OS.get_unix_time(), ext))
+
+	var f_result = exporter.write_file(self, output_file)
+	if(f_result == OK):
+		p(str("Results saved to ", output_file))
+
 
 
 # ------------------------------------------------------------------------------
@@ -515,12 +564,6 @@ func _print_script_heading(script):
 		else:
 			text = script.path + '.' + script.inner_class_name
 		_lgr.log("\n\n" + text, fmt)
-
-		if(!_utils.is_null_or_empty(_inner_class_name) and _does_class_name_match(_inner_class_name, script.inner_class_name)):
-			_lgr.log(str('  [',script.inner_class_name, '] matches [', _inner_class_name, ']'), fmt)
-
-		if(!_utils.is_null_or_empty(_unit_test_name)):
-			_lgr.log('  Only running tests like: "' + _unit_test_name + '"', fmt)
 
 
 # ------------------------------------------------------------------------------
@@ -553,10 +596,9 @@ func _setup_script(test_script):
 
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
-func _do_yield_between(time):
-	_yield_between.timer.set_wait_time(time)
-	_yield_between.timer.start()
-	return _yield_between.timer
+func _do_yield_between(frames=2):
+	_yield_frames = frames
+	return self
 
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
@@ -662,7 +704,7 @@ func _run_test(script_inst, test_name):
 
 	# When the script yields it will return a GDScriptFunctionState object
 	script_result = script_inst.call(test_name)
-	_new_summary.add_test(test_name)
+	var test_summary = _new_summary.add_test(test_name)
 
 	# Cannot detect future yields since we never tell the method to resume.  If
 	# there was some way to tell the method to resume we could use what comes
@@ -692,8 +734,9 @@ func _run_test(script_inst, test_name):
 	var aqf_count = _autofree.get_queue_free_count()
 	_autofree.free_all()
 	if(aqf_count > 0):
-		yield(_do_yield_between(0.1), 'timeout')
+		yield(_do_yield_between(), 'timeout')
 
+	test_summary.orphans = _orphan_counter.get_counter('test')
 	if(_log_level > 0):
 		_orphan_counter.print_orphans('test', _lgr)
 
@@ -797,7 +840,7 @@ func _test_the_scripts(indexes=[]):
 
 		# yield between test scripts so things paint
 		if(_yield_between.should):
-			yield(_do_yield_between(0.01), 'timeout')
+			yield(_do_yield_between(), 'timeout')
 
 		# !!!
 		# Hack so there isn't another indent to this monster of a method.  if
@@ -828,7 +871,7 @@ func _test_the_scripts(indexes=[]):
 
 				# yield so things paint
 				if(_should_yield_now()):
-					yield(_do_yield_between(0.001), 'timeout')
+					yield(_do_yield_between(), 'timeout')
 
 				if(_current_test.arg_count > 1):
 					_lgr.error(str('Parameterized test ', _current_test.name,
@@ -1081,6 +1124,7 @@ func add_directory(path, prefix=_file_prefix, suffix=_file_extension):
 # ------------------------------------------------------------------------------
 func select_script(script_name):
 	_script_name = script_name
+	_select_script = script_name
 
 
 # ------------------------------------------------------------------------------
@@ -1306,6 +1350,27 @@ func set_yield_time(time, text=''):
 	return self
 
 # ------------------------------------------------------------------------------
+# Sets a counter that is decremented each time _process is called.  When the
+# counter reaches 0 the 'timeout' signal is emitted.
+#
+# This actually results in waiting N+1 frames since that appears to be what is
+# required for _process in test.gd scripts to count N frames.
+# ------------------------------------------------------------------------------
+func set_yield_frames(frames, text=''):
+	var msg = '-- Yielding (' + str(frames) + ' frames)'
+	if(text == ''):
+		msg += ' --'
+	else:
+		msg +=  ':  ' + text + ' --'
+	_lgr.log(msg, _lgr.fmts.yellow)
+
+	_was_yield_method_called = true
+	_yield_frames = max(frames + 1, 1)
+	return self
+
+# ------------------------------------------------------------------------------
+# This method handles yielding to a signal from an object or a maximum
+# number of seconds, whichever comes first.
 # ------------------------------------------------------------------------------
 func set_yield_signal_or_time(obj, signal_name, max_wait, text=''):
 	obj.connect(signal_name, self, '_yielding_callback', [true])
@@ -1564,3 +1629,25 @@ func show_orphans(should):
 # ------------------------------------------------------------------------------
 func get_autofree():
 	return _autofree
+
+
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+func get_junit_xml_file():
+	return _junit_xml_file
+
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+func set_junit_xml_file(junit_xml_file):
+	_junit_xml_file = junit_xml_file
+
+
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+func get_junit_xml_timestamp():
+	return _junit_xml_timestamp
+
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+func set_junit_xml_timestamp(junit_xml_timestamp):
+	_junit_xml_timestamp = junit_xml_timestamp
