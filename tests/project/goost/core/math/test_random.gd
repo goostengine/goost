@@ -143,8 +143,12 @@ func test_choice():
 	assert_eq(element, "Goost")
 
 	rng.seed = 222
-	var ch = rng.choice("Goost")
-	assert_eq(ch, "G")
+	element = rng.choice("Goost")
+	assert_eq(element, "G")
+
+	rng.seed = 335
+	element = rng.choice({0 : "Godot", 1 : "Goost", 2 : "Godex"})
+	assert_eq(element, "Goost")
 
 	Engine.print_error_messages = false
 
