@@ -509,7 +509,7 @@ if __name__ == "__main__":
             sys.exit(255)
 
         subprocess.run([sys.executable,
-            "godot/doc/tools/makerst.py",
+            "godot/doc/tools/make_rst.py",
             "godot/doc/classes",
             "godot/modules",
             "doc",
