@@ -21,9 +21,9 @@
 	<methods>
 		<method name="choice">
 			<return type="Variant" />
-			<argument index="0" name="from_sequence" type="Variant" />
+			<argument index="0" name="from" type="Variant" />
 			<description>
-				Returns a random element from indexable sequence-based types, such as [Array] or [String]. If the sequence is empty, prints an error and returns [code]null[/code].
+				Returns a random element from a container or indexable sequence, such as [Array], [Dictionary], [String]. If container is empty, prints an error and returns [code]null[/code].
 			</description>
 		</method>
 		<method name="color_hsv">

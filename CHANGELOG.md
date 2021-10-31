@@ -19,6 +19,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 - A `geometry` option/component, which is separate from `math` now.
 - Numerous `GoostEngine` methods to retrieve copyright/license information, such as `get_license_text()`.
 - "About Goost" editor dialog, which lists Goost authors, Goost license, and third-party licenses.
+- Support for `Dictionary` for choosing a random value with `Random.choice()`.
 
 ### Changed
 - Refactor the process of configuring components and classes. You can use `python goost.py config` to configure components and individual classes now.

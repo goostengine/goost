@@ -64,10 +64,10 @@ Color Random::color_rgb(float r_min, float r_max, float g_min, float g_max, floa
 			randf_range(a_min, a_max));
 }
 
-Variant Random::choice(const Variant &p_sequence) {
-	switch (p_sequence.get_type()) {
+Variant Random::choice(const Variant &p_from) {
+	switch (p_from.get_type()) {
 		case Variant::STRING: {
-			String str = p_sequence;
+			String str = p_from;
 			ERR_FAIL_COND_V_MSG(str.empty(), Variant(), "String is empty.");
 			return str.substr(randi() % str.length(), 1); // Not size().
 		} break;
@@ -79,12 +79,17 @@ Variant Random::choice(const Variant &p_sequence) {
 		case Variant::POOL_VECTOR3_ARRAY:
 		case Variant::POOL_COLOR_ARRAY:
 		case Variant::ARRAY: {
-			Array arr = p_sequence;
+			Array arr = p_from;
 			ERR_FAIL_COND_V_MSG(arr.empty(), Variant(), "Array is empty.");
 			return arr[randi() % arr.size()];
 		} break;
+		case Variant::DICTIONARY: {
+			Dictionary dict = p_from;
+			ERR_FAIL_COND_V_MSG(dict.empty(), Variant(), "Dictionary is empty.");
+			return dict.get_value_at_index(randi() % dict.size());
+		} break;
 		default: {
-			ERR_FAIL_V_MSG(Variant(), "Unsupported type: the sequence must be indexable.");
+			ERR_FAIL_V_MSG(Variant(), "Unsupported: the type must be indexable.");
 		}
 	}
 	return Variant();
@@ -120,7 +125,7 @@ void Random::_bind_methods() {
 			&Random::color_rgb, DEFVAL(0.0), DEFVAL(1.0), DEFVAL(0.0), DEFVAL(1.0), DEFVAL(0.0), DEFVAL(1.0), DEFVAL(1.0), DEFVAL(1.0));
 
 	ClassDB::bind_method(D_METHOD("range", "from", "to"), &Random::range);
-	ClassDB::bind_method(D_METHOD("choice", "from_sequence"), &Random::choice);
+	ClassDB::bind_method(D_METHOD("choice", "from"), &Random::choice);
 	ClassDB::bind_method(D_METHOD("shuffle", "array"), &Random::shuffle);
 	ClassDB::bind_method(D_METHOD("decision", "probability"), &Random::decision);
 
