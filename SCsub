@@ -1,11 +1,17 @@
 #!/usr/bin/env python
 import re
+import os
 import glob
 
 import builders
 
 Import("env")
 env_goost = env.Clone()
+
+# Make include paths independent of Goost location.
+# This is needed for modules copied directly under `modules/` directory,
+# but not if someone uses `custom_modules` option.
+env_goost.Prepend(CPPPATH=[os.path.dirname(os.path.realpath(os.curdir))])
 
 # Define components to build.
 for name in env["goost_components_enabled"]:
