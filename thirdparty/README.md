@@ -12,16 +12,16 @@ The following lists C/C++ libraries which are bundled and used by Goost.
 
 ## HQX
 - Upstream: https://github.com/brunexgeek/hqx
-- Version: git (e8088f0 2020), file structure differs
+- Version: git (0c1caa3120685c4607cc1a312e7877d8dc3828ab, 2020), file structure differs
 - License: Apache 2.0
 
 ### Notes
-- Godot 3.2 includes `hq2x` version only. This module includes `hq3x` as well.
+- Godot 3.x includes `hq2x` version only. This module includes `hq3x` as well.
 
 ## Leptonica
 - Upstream: https://github.com/DanBloomberg/leptonica
-- Version: git (2bb50cb34b8dc6243c4e82d227bc903d83b59f04, 2021), file structure differs (extracted `src`)
-- License: [BSD-2-Clause](leptonica/leptonica-license.txt)
+- Version: git (4177ef0680eced5f3cc35804039e93e8eb1d1a52, 2021), file structure differs (extracted `src`)
+- License: BSD-2-Clause
 
 ### Notes
 - Function prototypes are generated inline in `allheaders.h` with the suggested
@@ -54,5 +54,5 @@ file for the exact changes.
 
 ## libgit2
 - Upstream: https://github.com/libgit2/libgit2
-- Version: v1.1.1
+- Version: v1.3.0
 - License: GPLv2-only with linking exception

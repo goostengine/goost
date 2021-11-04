@@ -29,7 +29,7 @@
 
 
 #define LIBLEPT_MAJOR_VERSION   1
-#define LIBLEPT_MINOR_VERSION   80
+#define LIBLEPT_MINOR_VERSION   83
 #define LIBLEPT_PATCH_VERSION   0
 
 #include "alltypes.h"
@@ -334,11 +334,8 @@ LEPT_DLL extern PIX * boxaDisplayTiled ( BOXA *boxas, PIXA *pixa, l_int32 first,
 LEPT_DLL extern BOXA * boxaSmoothSequenceMedian ( BOXA *boxas, l_int32 halfwin, l_int32 subflag, l_int32 maxdiff, l_int32 extrapixels, l_int32 debug );
 LEPT_DLL extern BOXA * boxaWindowedMedian ( BOXA *boxas, l_int32 halfwin, l_int32 debug );
 LEPT_DLL extern BOXA * boxaModifyWithBoxa ( BOXA *boxas, BOXA *boxam, l_int32 subflag, l_int32 maxdiff, l_int32 extrapixels );
-LEPT_DLL extern BOXA * boxaConstrainSize ( BOXA *boxas, l_int32 width, l_int32 widthflag, l_int32 height, l_int32 heightflag );
-LEPT_DLL extern BOXA * boxaReconcileEvenOddHeight ( BOXA *boxas, l_int32 sides, l_int32 delh, l_int32 op, l_float32 factor, l_int32 start );
 LEPT_DLL extern BOXA * boxaReconcilePairWidth ( BOXA *boxas, l_int32 delw, l_int32 op, l_float32 factor, NUMA *na );
-LEPT_DLL extern l_ok boxaSizeConsistency1 ( BOXA *boxas, l_int32 type, l_float32 threshp, l_float32 threshm, l_float32 *pfvarp, l_float32 *pfvarm, l_int32 *psame );
-LEPT_DLL extern l_ok boxaSizeConsistency2 ( BOXA *boxas, l_float32 *pfdevw, l_float32 *pfdevh, l_int32 debug );
+LEPT_DLL extern l_ok boxaSizeConsistency ( BOXA *boxas, l_int32 type, l_float32 threshp, l_float32 threshm, l_float32 *pfvarp, l_float32 *pfvarm, l_int32 *psame );
 LEPT_DLL extern BOXA * boxaReconcileAllByMedian ( BOXA *boxas, l_int32 select1, l_int32 select2, l_int32 thresh, l_int32 extra, PIXA *pixadb );
 LEPT_DLL extern BOXA * boxaReconcileSidesByMedian ( BOXA *boxas, l_int32 select, l_int32 thresh, l_int32 extra, PIXA *pixadb );
 LEPT_DLL extern BOXA * boxaReconcileSizeByMedian ( BOXA *boxas, l_int32 type, l_float32 dfract, l_float32 sfract, l_float32 factor, NUMA **pnadelw, NUMA **pnadelh, l_float32 *pratiowh );
@@ -445,6 +442,7 @@ LEPT_DLL extern l_ok pixcmapSetAlpha ( PIXCMAP *cmap, l_int32 index, l_int32 ava
 LEPT_DLL extern l_int32 pixcmapGetIndex ( PIXCMAP *cmap, l_int32 rval, l_int32 gval, l_int32 bval, l_int32 *pindex );
 LEPT_DLL extern l_ok pixcmapHasColor ( PIXCMAP *cmap, l_int32 *pcolor );
 LEPT_DLL extern l_ok pixcmapIsOpaque ( PIXCMAP *cmap, l_int32 *popaque );
+LEPT_DLL extern l_ok pixcmapNonOpaqueColorsInfo ( PIXCMAP *cmap, l_int32 *pntrans, l_int32 *pmax_trans, l_int32 *pmin_opaque );
 LEPT_DLL extern l_ok pixcmapIsBlackAndWhite ( PIXCMAP *cmap, l_int32 *pblackwhite );
 LEPT_DLL extern l_ok pixcmapCountGrayColors ( PIXCMAP *cmap, l_int32 *pngray );
 LEPT_DLL extern l_ok pixcmapGetRankIntensity ( PIXCMAP *cmap, l_float32 rankval, l_int32 *pindex );
@@ -927,6 +925,10 @@ LEPT_DLL extern PIX * pixGenerateMaskByBand32 ( PIX *pixs, l_uint32 refval, l_in
 LEPT_DLL extern PIX * pixGenerateMaskByDiscr32 ( PIX *pixs, l_uint32 refval1, l_uint32 refval2, l_int32 distflag );
 LEPT_DLL extern PIX * pixGrayQuantFromHisto ( PIX *pixd, PIX *pixs, PIX *pixm, l_float32 minfract, l_int32 maxsize );
 LEPT_DLL extern PIX * pixGrayQuantFromCmap ( PIX *pixs, PIXCMAP *cmap, l_int32 mindepth );
+LEPT_DLL extern L_HASHMAP * l_hmapCreate ( l_int32 ninit, l_int32 maxocc );
+LEPT_DLL extern void l_hmapDestroy ( L_HASHMAP **phmap );
+LEPT_DLL extern L_HASHITEM * l_hmapLookup ( L_HASHMAP *hmap, l_uint64 key, l_uint64 val, l_int32 op );
+LEPT_DLL extern l_ok l_hmapRehash ( L_HASHMAP *hmap );
 LEPT_DLL extern L_HEAP * lheapCreate ( l_int32 n, l_int32 direction );
 LEPT_DLL extern void lheapDestroy ( L_HEAP **plh, l_int32 freeflag );
 LEPT_DLL extern l_ok lheapAdd ( L_HEAP *lh, void *item );
@@ -936,14 +938,14 @@ LEPT_DLL extern void * lheapGetElement ( L_HEAP *lh, l_int32 index );
 LEPT_DLL extern l_ok lheapSort ( L_HEAP *lh );
 LEPT_DLL extern l_ok lheapSortStrictOrder ( L_HEAP *lh );
 LEPT_DLL extern l_ok lheapPrint ( FILE *fp, L_HEAP *lh );
-LEPT_DLL extern l_ok readHeaderJp2k ( const char *filename, l_int32 *pw, l_int32 *ph, l_int32 *pbps, l_int32 *pspp );
-LEPT_DLL extern l_ok freadHeaderJp2k ( FILE *fp, l_int32 *pw, l_int32 *ph, l_int32 *pbps, l_int32 *pspp );
-LEPT_DLL extern l_ok readHeaderMemJp2k ( const l_uint8 *cdata, size_t size, l_int32 *pw, l_int32 *ph, l_int32 *pbps, l_int32 *pspp );
+LEPT_DLL extern l_ok readHeaderJp2k ( const char *filename, l_int32 *pw, l_int32 *ph, l_int32 *pbps, l_int32 *pspp, l_int32 *pcodec );
+LEPT_DLL extern l_ok freadHeaderJp2k ( FILE *fp, l_int32 *pw, l_int32 *ph, l_int32 *pbps, l_int32 *pspp, l_int32 *pcodec );
+LEPT_DLL extern l_ok readHeaderMemJp2k ( const l_uint8 *cdata, size_t size, l_int32 *pw, l_int32 *ph, l_int32 *pbps, l_int32 *pspp, l_int32 *pcodec );
 LEPT_DLL extern l_int32 fgetJp2kResolution ( FILE *fp, l_int32 *pxres, l_int32 *pyres );
 LEPT_DLL extern PIX * pixReadJp2k ( const char *filename, l_uint32 reduction, BOX *box, l_int32 hint, l_int32 debug );
 LEPT_DLL extern PIX * pixReadStreamJp2k ( FILE *fp, l_uint32 reduction, BOX *box, l_int32 hint, l_int32 debug );
 LEPT_DLL extern l_ok pixWriteJp2k ( const char *filename, PIX *pix, l_int32 quality, l_int32 nlevels, l_int32 hint, l_int32 debug );
-LEPT_DLL extern l_ok pixWriteStreamJp2k ( FILE *fp, PIX *pix, l_int32 quality, l_int32 nlevels, l_int32 hint, l_int32 debug );
+LEPT_DLL extern l_ok pixWriteStreamJp2k ( FILE *fp, PIX *pix, l_int32 quality, l_int32 nlevels, l_int32 codec, l_int32 hint, l_int32 debug );
 LEPT_DLL extern PIX * pixReadMemJp2k ( const l_uint8 *data, size_t size, l_uint32 reduction, BOX *box, l_int32 hint, l_int32 debug );
 LEPT_DLL extern l_ok pixWriteMemJp2k ( l_uint8 **pdata, size_t *psize, PIX *pix, l_int32 quality, l_int32 nlevels, l_int32 hint, l_int32 debug );
 LEPT_DLL extern PIX * pixReadJpeg ( const char *filename, l_int32 cmflag, l_int32 reduction, l_int32 *pnwarn, l_int32 hint );
@@ -2408,6 +2410,7 @@ LEPT_DLL extern l_int32 lept_roundftoi ( l_float32 fval );
 LEPT_DLL extern l_ok l_hashStringToUint64 ( const char *str, l_uint64 *phash );
 LEPT_DLL extern l_ok l_hashStringToUint64Fast ( const char *str, l_uint64 *phash );
 LEPT_DLL extern l_ok l_hashPtToUint64 ( l_int32 x, l_int32 y, l_uint64 *phash );
+LEPT_DLL extern l_ok l_hashFloat64ToUint64 ( l_float64 val, l_uint64 *phash );
 LEPT_DLL extern l_ok findNextLargerPrime ( l_int32 start, l_uint32 *pprime );
 LEPT_DLL extern l_ok lept_isPrime ( l_uint64 n, l_int32 *pis_prime, l_uint32 *pfactor );
 LEPT_DLL extern l_uint32 convertIntToGrayCode ( l_uint32 val );
