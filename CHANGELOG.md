@@ -4,9 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
-## [Unreleased]
-
-## [1.1] - 2021-XX-XX
+## [1.1] - 2021-11-07
 
 ### Added
 - Built-in implementation of Git version control plugin.
@@ -45,5 +43,5 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 Initial release.
 
-[Unreleased]: https://github.com/goostengine/goost/compare/1.0-stable+3.3.2...HEAD
+[1.1]: https://github.com/goostengine/goost/compare/1.0-stable+3.3.2...1.1-stable+3.4
 [1.0]: https://github.com/goostengine/goost/compare/1.0-beta-gd3...1.0-stable+3.3.2

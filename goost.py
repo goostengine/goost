@@ -6,7 +6,7 @@ version = {
     "minor": 1,
     "patch": 0,
     "branch": "gd3",
-    "status": "beta",
+    "status": "stable",
     "year": 2021,
 }
 url = "https://github.com/goostengine/goost"
