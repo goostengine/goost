@@ -5,7 +5,7 @@ version = {
     "major": 1,
     "minor": 1,
     "patch": 0,
-    "branch": "gd3",
+    "branch": "1.1-gd3",
     "status": "stable",
     "year": 2021,
 }
