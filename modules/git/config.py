@@ -12,7 +12,7 @@ def can_build(env, platform):
     else:
         return False
 
-    build = env["tools"] and env["platform"] != "server"
+    build = env["tools"] and env["platform"] not in ["server", "javascript"]
 
     if "goost_vcs_enabled" in env:
         return build and env["goost_vcs_enabled"]
