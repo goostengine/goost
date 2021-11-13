@@ -1,0 +1,44 @@
+diff --git a/SConstruct b/SConstruct
+index 8eccce9d38..14ec4915ab 100644
+--- a/SConstruct
++++ b/SConstruct
+@@ -147,7 +147,12 @@ opts.Add(
+ )
+ opts.Add(BoolVariable("disable_3d", "Disable 3D nodes for a smaller executable", False))
+ opts.Add(BoolVariable("disable_advanced_gui", "Disable advanced GUI nodes and behaviors", False))
++
++opts.Add("app_icon", "A path to the application icon image.", "#main/app_icon.png")
++opts.Add("splash", "A path to the splash screen image.", "#main/splash.png")
++opts.Add("splash_editor", "A path to the splash screen image for the editor.", "#main/splash_editor.png")
+ opts.Add(BoolVariable("no_editor_splash", "Don't use the custom splash screen for the editor", False))
++
+ opts.Add("system_certs_path", "Use this path as SSL certificates default for editor (for package maintainers)", "")
+ opts.Add(BoolVariable("use_precise_math_checks", "Math checks use very precise epsilon (debug option)", False))
+ 
+diff --git a/main/SCsub b/main/SCsub
+index 473c157467..577a1326cd 100644
+--- a/main/SCsub
++++ b/main/SCsub
+@@ -20,16 +20,16 @@ gensource = env.CommandNoCache(
+ 
+ env.add_source_files(env.main_sources, gensource)
+ 
+-env.Depends("#main/splash.gen.h", "#main/splash.png")
+-env.CommandNoCache("#main/splash.gen.h", "#main/splash.png", run_in_subprocess(main_builders.make_splash))
++env.Depends("#main/splash.gen.h", env["splash"])
++env.CommandNoCache("#main/splash.gen.h", env["splash"], run_in_subprocess(main_builders.make_splash))
+ 
+-env.Depends("#main/splash_editor.gen.h", "#main/splash_editor.png")
++env.Depends("#main/splash_editor.gen.h", env["splash_editor"])
+ env.CommandNoCache(
+-    "#main/splash_editor.gen.h", "#main/splash_editor.png", run_in_subprocess(main_builders.make_splash_editor)
++    "#main/splash_editor.gen.h", env["splash_editor"], run_in_subprocess(main_builders.make_splash_editor)
+ )
+ 
+-env.Depends("#main/app_icon.gen.h", "#main/app_icon.png")
+-env.CommandNoCache("#main/app_icon.gen.h", "#main/app_icon.png", run_in_subprocess(main_builders.make_app_icon))
++env.Depends("#main/app_icon.gen.h", env["app_icon"])
++env.CommandNoCache("#main/app_icon.gen.h", env["app_icon"], run_in_subprocess(main_builders.make_app_icon))
+ 
+ if env["tools"]:
+     SConscript("tests/SCsub")
