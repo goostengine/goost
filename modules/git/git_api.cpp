@@ -246,14 +246,22 @@ bool EditorVCSInterfaceGit::_initialize(const String p_project_root_path) {
 		return true;
 	}
 
-	CharString project_root_path_utf8 = p_project_root_path.utf8();
+	String path = GLOBAL_GET("version_control/git/repository_path");
+	if (path.empty()) {
+		path = p_project_root_path;
+	} else if (!DirAccess::exists(path)) {
+		WARN_PRINT(vformat("Repository path \"%s\" does not exist, please configure \"version_control/git/repository_path\" project setting.", path));
+		path = p_project_root_path;
+	}
 
-	GIT2_CALL(git_repository_init(&repo, project_root_path_utf8.get_data(), 0), "Could not initialize repository", nullptr);
+	CharString repo_path = path.utf8();
+
+	GIT2_CALL(git_repository_init(&repo, repo_path.get_data(), 0), "Could not initialize repository", nullptr);
 
 	if (git_repository_head_unborn(repo) == 1) {
 		create_gitignore_and_gitattributes();
 	}
-	GIT2_CALL(git_repository_open(&repo, project_root_path_utf8.get_data()), "Could not open a repository", nullptr);
+	GIT2_CALL(git_repository_open(&repo, repo_path.get_data()), "Could not open a repository", nullptr);
 	is_initialized = true;
 
 	return is_initialized;
@@ -271,7 +279,7 @@ bool EditorVCSInterfaceGit::_shut_down() {
 void EditorVCSInterfaceGitManager::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_WM_FOCUS_IN: {
-			if (!DirAccess::exists(".git") && EditorVCSInterface::get_singleton()) {
+			if (!repository_exists() && EditorVCSInterface::get_singleton()) {
 				_shutdown();
 				WARN_PRINT("Git plugin shutdown: no valid repository is found.");
 			}
@@ -279,7 +287,7 @@ void EditorVCSInterfaceGitManager::_notification(int p_what) {
 				VersionControlEditorPlugin::get_singleton()->call_deferred("_refresh_stage_area");
 				vcs_popup->set_item_text(vcs_popup->get_item_index(OPTION_SETUP_SHUTDOWN_REPOSITORY), TTR("Shut Down Git Plugin"));
 			} else {
-				if (!DirAccess::exists(".git")) {
+				if (!repository_exists()) {
 					vcs_popup->set_item_text(vcs_popup->get_item_index(OPTION_SETUP_SHUTDOWN_REPOSITORY), TTR("Set Up Git Repository"));
 				} else {
 					vcs_popup->set_item_text(vcs_popup->get_item_index(OPTION_SETUP_SHUTDOWN_REPOSITORY), TTR("Set Up Git Plugin"));
@@ -310,7 +318,7 @@ void EditorVCSInterfaceGitManager::_project_menu_option_pressed(int p_id, Object
 	} else {
 		_shutdown();
 
-		if (!DirAccess::exists(".git")) {
+		if (!repository_exists()) {
 			popup->set_item_text(popup->get_item_index(p_id), TTR("Set Up Git Repository"));
 		} else {
 			popup->set_item_text(popup->get_item_index(p_id), TTR("Set Up Git Plugin"));
@@ -346,4 +354,16 @@ bool EditorVCSInterfaceGitManager::_setup() {
 
 void EditorVCSInterfaceGitManager::_shutdown() {
 	VersionControlEditorPlugin::get_singleton()->shut_down();
+}
+
+bool EditorVCSInterfaceGitManager::repository_exists() {
+	if (DirAccess::exists(".git")) {
+		return true;
+	} else {
+		String custom_path = GLOBAL_GET("version_control/git/repository_path");
+		if (!custom_path.empty() && DirAccess::exists(custom_path)) {
+			return true;
+		}
+	}
+	return false;
 }

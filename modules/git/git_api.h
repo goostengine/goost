@@ -63,5 +63,7 @@ public:
 	};
 	void set_popup_menu(PopupMenu *p_popup) { vcs_popup = p_popup; }
 	PopupMenu *get_popup_menu(PopupMenu *p_popup) { return vcs_popup; }
+	
+	static bool repository_exists();
 };
 

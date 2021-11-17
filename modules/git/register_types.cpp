@@ -20,10 +20,13 @@ static void setup_git() {
 	EDITOR_DEF("version_control/git/user/email", "");
 	EDITOR_DEF("version_control/git/initialize_plugin_at_editor_startup", true);
 
+	GLOBAL_DEF("version_control/git/repository_path", "");
+
 	// Add as a child, so it receives notifications like window focus.
 	VersionControlEditorPlugin::get_singleton()->add_child(git_manager);
 
-	if (DirAccess::exists(".git") && bool(EDITOR_GET("version_control/git/initialize_plugin_at_editor_startup"))) {
+	bool init = bool(EDITOR_GET("version_control/git/initialize_plugin_at_editor_startup"));
+	if (EditorVCSInterfaceGitManager::repository_exists() && init) {
 		// This is hacky, but required to prevent crash when `VersionControlEditorPlugin`
 		// is added to the right dock before editor GUI is ready. Normally, this
 		// wouldn't lead to crash because a user is supposed to click on the
@@ -38,15 +41,17 @@ static void add_initialize_git_button() {
 
 	// Use https://github.com/Zylann/godot_editor_debugger_plugin if this breaks at some point.
 	auto *gui_base = EditorNode::get_singleton()->get_gui_base();
+
 	auto *main_vbox = Object::cast_to<VBoxContainer>(gui_base->get_child(1));
 	ERR_FAIL_NULL_MSG(main_vbox, "Goost: Could not find main VBoxContainer.");
+
 	auto *menu_hb = Object::cast_to<HBoxContainer>(main_vbox->get_child(0));
 	auto *left_menu_hb = Object::cast_to<HBoxContainer>(menu_hb->get_child(0));
 
 	bool found_vcs_popup = false;
 	for (int i = 0; i < left_menu_hb->get_child_count(); ++i) {
 		MenuButton *mb = Object::cast_to<MenuButton>(left_menu_hb->get_child(i));
-		
+
 		if (mb && mb->get_text() == TTR("Project")) {
 			PopupMenu *p = mb->get_popup();
 
@@ -55,9 +60,11 @@ static void add_initialize_git_button() {
 					// See godot/editor/editor_node.cpp for exact node name.
 					auto *vc = Object::cast_to<PopupMenu>(p->get_node(NodePath("Version Control")));
 					ERR_FAIL_NULL(vc);
+
 					vc->add_separator(TTR("Built-in"));
 					Ref<Texture> git_icon = gui_base->get_icon("Git", "EditorIcons");
-					if (!DirAccess::exists(".git")) {
+
+					if (!EditorVCSInterfaceGitManager::repository_exists()) {
 						vc->add_icon_item(git_icon, TTR("Set Up Git Repository"), EditorVCSInterfaceGitManager::OPTION_SETUP_SHUTDOWN_REPOSITORY);
 					} else {
 						if (bool(EDITOR_GET("version_control/git/initialize_plugin_at_editor_startup"))) {
@@ -68,6 +75,7 @@ static void add_initialize_git_button() {
 					}
 					vc->connect("id_pressed", git_manager, "_project_menu_option_pressed", varray(vc));
 					git_manager->set_popup_menu(vc);
+
 					found_vcs_popup = true;
 					break;
 				}
