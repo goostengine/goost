@@ -29,7 +29,6 @@ extern "C" int diff_line_callback_function(const git_diff_delta *delta, const gi
 
 	String prefix = "";
 	switch (line->origin) {
-
 		case GIT_DIFF_LINE_DEL_EOFNL:
 		case GIT_DIFF_LINE_DELETION:
 			prefix = "-"; break;
@@ -40,6 +39,7 @@ extern "C" int diff_line_callback_function(const git_diff_delta *delta, const gi
 	}
 
 	String content_str = content;
+	delete[] content;
 
 	Dictionary result;
 	result["content"] = prefix + content_str;
