@@ -24,7 +24,7 @@ void EditorInspectorPluginMixinScript::parse_begin(Object *p_object) {
 void EditorInspectorPluginMixinScript::_on_edit_pressed() {
 	ERR_FAIL_COND(script.is_null());
 	
-	//ScriptEditor::get_singleton()->set_meta("_edit_mixin", true);
+	ScriptEditor::get_singleton()->set_meta("_edit_mixin", true);
 	ScriptEditor::get_singleton()->edit(script);
 }
 
@@ -36,4 +36,8 @@ MixinScriptEditorPlugin::MixinScriptEditorPlugin(EditorNode *p_node) {
 	Ref<EditorInspectorPluginMixinScript> inspector_plugin;
 	inspector_plugin.instance();
 	add_inspector_plugin(inspector_plugin);
+
+	if (!EditorSettings::get_singleton()->has_setting("text_editor/files/open_first_script_on_editing_mixin_script")) {
+		EditorSettings::get_singleton()->set_setting("text_editor/files/open_first_script_on_editing_mixin_script", false);
+	}
 }

@@ -145,13 +145,9 @@ void MixinScriptEditor::_notification(int p_what) {
 }
 
 void MixinScriptEditor::_on_editor_script_changed(Ref<Script> p_script) {
-	Ref<MixinScript> ms = p_script;
-	if (ms.is_valid()) {
-		ScriptEditor::get_singleton()->edit(p_script);
-	}
-	
+
 	// Edit `MixinScript` itself if requested explicitly via editor inspector.
-	/* if (ScriptEditor::get_singleton()->has_meta("_edit_mixin")) {
+	if (ScriptEditor::get_singleton()->has_meta("_edit_mixin")) {
 		bool edit = (bool)ScriptEditor::get_singleton()->get_meta("_edit_mixin");
 		if (edit) {
 			ScriptEditor::get_singleton()->set_meta("_edit_mixin", false);
@@ -160,12 +156,18 @@ void MixinScriptEditor::_on_editor_script_changed(Ref<Script> p_script) {
 	}
 	// Otherwise, delegate editing to other script editors automatically.
 	Ref<MixinScript> ms = p_script;
-	if (ms.is_valid() && ms->get_mixin_count() > 0) {
-		Ref<Script> first_script = ms->get_mixin(0);
-		if (first_script.is_valid()) {
-			ScriptEditor::get_singleton()->edit(first_script);
+	if (EditorSettings::get_singleton()->get_setting("text_editor/files/open_first_script_on_editing_mixin_script")) {
+		if (ms.is_valid() && ms->get_mixin_count() > 0) {
+			Ref<Script> first_script = ms->get_mixin(0);
+			if (first_script.is_valid()) {
+				ScriptEditor::get_singleton()->edit(first_script);
+			}
 		}
-	} */
+	} else {
+		if (ms.is_valid()) {
+			ScriptEditor::get_singleton()->edit(p_script);
+		}
+	}
 }
 
 void MixinScriptEditor::_on_add_mixin_pressed() {
