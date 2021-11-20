@@ -145,6 +145,7 @@ void MixinScriptEditor::_notification(int p_what) {
 }
 
 void MixinScriptEditor::_on_editor_script_changed(Ref<Script> p_script) {
+
 	// Edit `MixinScript` itself if requested explicitly via editor inspector.
 	if (ScriptEditor::get_singleton()->has_meta("_edit_mixin")) {
 		bool edit = (bool)ScriptEditor::get_singleton()->get_meta("_edit_mixin");
@@ -155,10 +156,16 @@ void MixinScriptEditor::_on_editor_script_changed(Ref<Script> p_script) {
 	}
 	// Otherwise, delegate editing to other script editors automatically.
 	Ref<MixinScript> ms = p_script;
-	if (ms.is_valid() && ms->get_mixin_count() > 0) {
-		Ref<Script> first_script = ms->get_mixin(0);
-		if (first_script.is_valid()) {
-			ScriptEditor::get_singleton()->edit(first_script);
+	if (bool(EDITOR_GET("text_editor/files/open_first_script_on_editing_mixin_script"))) {
+		if (ms.is_valid() && ms->get_mixin_count() > 0) {
+			Ref<Script> first_script = ms->get_mixin(0);
+			if (first_script.is_valid()) {
+				ScriptEditor::get_singleton()->edit(first_script);
+			}
+		}
+	} else {
+		if (ms.is_valid()) {
+			ScriptEditor::get_singleton()->edit(p_script);
 		}
 	}
 }
@@ -287,6 +294,13 @@ void MixinScriptEditor::_update_list() {
 	update_queued = false;
 }
 
+void MixinScriptEditor::_on_mixin_activated(){
+	Ref<Script> mixin = tree_mixins->get_selected()->get_meta("script");
+	if (mixin.is_valid()) {
+		ScriptEditor::get_singleton()->edit(mixin);
+	}
+}
+
 void MixinScriptEditor::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_update_list"), &MixinScriptEditor::_update_list);
 	ClassDB::bind_method(D_METHOD("queue_update"), &MixinScriptEditor::queue_update);
@@ -297,6 +311,7 @@ void MixinScriptEditor::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_on_mixin_created"), &MixinScriptEditor::_on_mixin_created);
 	ClassDB::bind_method(D_METHOD("_on_mixin_creation_closed"), &MixinScriptEditor::_on_mixin_creation_closed);
 	ClassDB::bind_method(D_METHOD("_on_mixin_button_pressed"), &MixinScriptEditor::_on_mixin_button_pressed);
+	ClassDB::bind_method(D_METHOD("_on_mixin_activated"), &MixinScriptEditor::_on_mixin_activated);
 }
 
 MixinScriptEditor::MixinScriptEditor() {
@@ -321,7 +336,7 @@ MixinScriptEditor::MixinScriptEditor() {
 	// tree_mixins->connect("cell_selected", this, "_on_mixin_selected");
 	// tree_mixins->connect("item_edited", this, "_on_mixin_edited");
 	tree_mixins->connect("button_pressed", this, "_on_mixin_button_pressed");
-	// tree_mixins->connect("item_activated", this, "_on_mixin_activated");
+	tree_mixins->connect("item_activated", this, "_on_mixin_activated");
 
 	tree_mixins->set_column_titles_visible(true);
 	tree_mixins->set_hide_root(true);
