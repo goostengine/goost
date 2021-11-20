@@ -24,7 +24,7 @@ void EditorInspectorPluginMixinScript::parse_begin(Object *p_object) {
 void EditorInspectorPluginMixinScript::_on_edit_pressed() {
 	ERR_FAIL_COND(script.is_null());
 	
-	ScriptEditor::get_singleton()->set_meta("_edit_mixin", true);
+	//ScriptEditor::get_singleton()->set_meta("_edit_mixin", true);
 	ScriptEditor::get_singleton()->edit(script);
 }
 

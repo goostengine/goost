@@ -33,6 +33,7 @@ class MixinScriptEditor : public ScriptEditorBase {
 	void _on_mixin_created(Ref<Script> p_script);
 	void _on_mixin_creation_closed();
 	void _on_mixin_button_pressed(Object *p_item, int p_column, int p_button);
+	void _on_mixin_activated();
 
 protected:
 	void _notification(int p_what);
