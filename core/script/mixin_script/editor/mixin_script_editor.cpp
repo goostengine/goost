@@ -156,7 +156,7 @@ void MixinScriptEditor::_on_editor_script_changed(Ref<Script> p_script) {
 	}
 	// Otherwise, delegate editing to other script editors automatically.
 	Ref<MixinScript> ms = p_script;
-	if (EditorSettings::get_singleton()->get_setting("text_editor/files/open_first_script_on_editing_mixin_script")) {
+	if (bool(EDITOR_GET("text_editor/files/open_first_script_on_editing_mixin_script"))) {
 		if (ms.is_valid() && ms->get_mixin_count() > 0) {
 			Ref<Script> first_script = ms->get_mixin(0);
 			if (first_script.is_valid()) {

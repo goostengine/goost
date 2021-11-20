@@ -37,7 +37,5 @@ MixinScriptEditorPlugin::MixinScriptEditorPlugin(EditorNode *p_node) {
 	inspector_plugin.instance();
 	add_inspector_plugin(inspector_plugin);
 
-	if (!EditorSettings::get_singleton()->has_setting("text_editor/files/open_first_script_on_editing_mixin_script")) {
-		EditorSettings::get_singleton()->set_setting("text_editor/files/open_first_script_on_editing_mixin_script", false);
-	}
+	EDITOR_DEF("text_editor/files/open_first_script_on_editing_mixin_script", false);
 }
