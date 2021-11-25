@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="GoostMath" inherits="Object" version="3.4">
+	<brief_description>
+		Math functions.
+	</brief_description>
+	<description>
+		The singleton which provides various math functions such as interpolation.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="bezier">
+			<return type="Variant" />
+			<argument index="0" name="a" type="Variant" />
+			<argument index="1" name="ac" type="Variant" />
+			<argument index="2" name="bc" type="Variant" />
+			<argument index="3" name="b" type="Variant" />
+			<argument index="4" name="weight" type="float" />
+			<description>
+				Interpolates a cubic Bézier curve between the four control points [code]a[/code], [code]ac[/code], [code]bc[/code], [code]b[/code]. Points [code]ac[/code] and [code]bc[/code] provide directional information, and the distance between these points determines how fast the curve moves towards [code]ac[/code] before turning towards [code]bc[/code].
+				The following types are supported: [float], [Vector2], [Vector3].
+			</description>
+		</method>
+		<method name="catmull_rom">
+			<return type="Variant" />
+			<argument index="0" name="ac" type="Variant" />
+			<argument index="1" name="a" type="Variant" />
+			<argument index="2" name="b" type="Variant" />
+			<argument index="3" name="bc" type="Variant" />
+			<argument index="4" name="weight" type="float" />
+			<description>
+				Interpolates a centripetal Catmull–Rom spline between the four control points [code]ac[/code], [code]a[/code], [code]b[/code], [code]bc[/code].  Points [code]ac[/code] and [code]bc[/code] provide directional information, and the interpolated values lie between [code]a[/code] and [code]b[/code] points.
+				The following types are supported: [float], [Vector2], [Vector3].
+			</description>
+		</method>
+		<method name="is_equal_approx">
+			<return type="bool" />
+			<argument index="0" name="a" type="float" />
+			<argument index="1" name="b" type="float" />
+			<argument index="2" name="tolerance" type="float" default="1e-06" />
+			<description>
+				Returns [code]true[/code] if [code]a[/code] and [code]b[/code] are approximately equal to each other.
+				Here, approximately equal means that [code]a[/code] and [code]b[/code] are within [code]tolerance[/code] of each other.
+				Infinity values of the same sign are considered equal.
+			</description>
+		</method>
+		<method name="is_zero_approx">
+			<return type="bool" />
+			<argument index="0" name="s" type="float" />
+			<argument index="1" name="tolerance" type="float" default="1e-06" />
+			<description>
+				Returns [code]true[/code] if [code]s[/code] is zero or almost zero.
+				This method is faster than using [method is_equal_approx] with one value as zero.
+			</description>
+		</method>
+	</methods>
+	<constants>
+	</constants>
+</class>
