@@ -21,6 +21,7 @@ website = "https://goostengine.github.io/"
 components = [
     "core/script",
     "core/image",
+    "core/math",
     "core/math/geometry",
     "scene/physics",
     "scene/gui",
@@ -31,6 +32,7 @@ def get_component_readable_name(component):
     name = {
         "script": "Scripting",
         "image": "Image Processing",
+        "math": "Mathematics",
         "geometry": "Geometry",
         "physics": "Physics",
         "gui": "User Interface",
@@ -151,6 +153,7 @@ classes = {
     "CommandLineOption": "core",
 	"CommandLineParser": "core",
     "GoostEngine": "core",
+    "GoostMath": "math",
     "GoostGeometry2D": "geometry",
     "GoostImage": "image",
     "GradientTexture2D": "scene",
