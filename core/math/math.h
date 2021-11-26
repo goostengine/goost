@@ -16,8 +16,9 @@ protected:
 public:
 	static GoostMath *get_singleton() { return singleton; }
 
-    bool is_equal_approx(real_t a, real_t b, real_t tolerance = GOOST_CMP_EPSILON);
-    bool is_zero_approx(real_t s, real_t tolerance = GOOST_CMP_EPSILON);
+	bool is_equal_approx(real_t a, real_t b, real_t tolerance = GOOST_CMP_EPSILON);
+	bool is_zero_approx(real_t s, real_t tolerance = GOOST_CMP_EPSILON);
+	bool is_between(real_t s, real_t a, real_t b);
 
 	Variant catmull_rom(const Variant &p0, const Variant &p1, const Variant &p2, const Variant &p3, float t);
 	Variant bezier(const Variant &p0, const Variant &p1, const Variant &p2, const Variant &p3, float t);
