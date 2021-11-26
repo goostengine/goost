@@ -23,13 +23,13 @@ Variant GoostMath::catmull_rom(const Variant &p0, const Variant &p1, const Varia
     switch (p0.get_type()) {
         case Variant::INT:
         case Variant::REAL: {
-            return goost::catmull_rom(p0.operator real_t(), p1.operator real_t(), p2.operator real_t(), p3.operator real_t(), t);
+            return goost::math::catmull_rom(p0.operator real_t(), p1.operator real_t(), p2.operator real_t(), p3.operator real_t(), t);
         } break;
         case Variant::VECTOR2: {
-            return goost::catmull_rom(p0.operator Vector2(), p1.operator Vector2(), p2.operator Vector2(), p3.operator Vector2(), t);
+            return goost::math::catmull_rom(p0.operator Vector2(), p1.operator Vector2(), p2.operator Vector2(), p3.operator Vector2(), t);
         } break;
         case Variant::VECTOR3: {
-            return goost::catmull_rom(p0.operator Vector3(), p1.operator Vector3(), p2.operator Vector3(), p3.operator Vector3(), t);
+            return goost::math::catmull_rom(p0.operator Vector3(), p1.operator Vector3(), p2.operator Vector3(), p3.operator Vector3(), t);
         } break;
         default: {
             ERR_FAIL_V_MSG(Variant(), "Unsupported types.");
@@ -46,13 +46,13 @@ Variant GoostMath::bezier(const Variant &p0, const Variant &p1, const Variant &p
     switch (p0.get_type()) {
         case Variant::INT:
         case Variant::REAL: {
-            return goost::bezier(p0.operator real_t(), p1.operator real_t(), p2.operator real_t(), p3.operator real_t(), t);
+            return goost::math::bezier(p0.operator real_t(), p1.operator real_t(), p2.operator real_t(), p3.operator real_t(), t);
         } break;
         case Variant::VECTOR2: {
-            return goost::bezier(p0.operator Vector2(), p1.operator Vector2(), p2.operator Vector2(), p3.operator Vector2(), t);
+            return goost::math::bezier(p0.operator Vector2(), p1.operator Vector2(), p2.operator Vector2(), p3.operator Vector2(), t);
         } break;
         case Variant::VECTOR3: {
-            return goost::bezier(p0.operator Vector3(), p1.operator Vector3(), p2.operator Vector3(), p3.operator Vector3(), t);
+            return goost::math::bezier(p0.operator Vector3(), p1.operator Vector3(), p2.operator Vector3(), p3.operator Vector3(), t);
         } break;
         default: {
             ERR_FAIL_V_MSG(Variant(), "Unsupported types.");

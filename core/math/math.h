@@ -30,6 +30,8 @@ public:
 
 namespace goost {
 
+namespace math {
+
 template <class T>
 T catmull_rom(const T &p0, const T &p1, const T &p2, const T &p3, float t) {
 	float t2 = t * t;
@@ -48,5 +50,7 @@ T bezier(T start, T control_1, T control_2, T end, float t) {
 
 	return start * it3 + control_1 * it2 * t * 3.0 + control_2 * it * t2 * 3.0 + end * t3;
 }
+
+} // namespace math
 
 } // namespace goost
