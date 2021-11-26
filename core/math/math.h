@@ -20,6 +20,10 @@ public:
 	bool is_zero_approx(real_t s, real_t tolerance = GOOST_CMP_EPSILON);
 	bool is_between(real_t s, real_t a, real_t b);
 
+	real_t log(real_t x, real_t base = Math_E);
+	real_t log2(real_t x) { return ::log2(x); }
+	real_t log10(real_t x) { return ::log10(x); }
+
 	Variant catmull_rom(const Variant &p0, const Variant &p1, const Variant &p2, const Variant &p3, float t);
 	Variant bezier(const Variant &p0, const Variant &p1, const Variant &p2, const Variant &p3, float t);
 

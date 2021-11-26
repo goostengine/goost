@@ -4,7 +4,7 @@
 		Math functions.
 	</brief_description>
 	<description>
-		The singleton which provides various math functions such as interpolation.
+		The singleton which provides various mathematical functions.
 	</description>
 	<tutorials>
 	</tutorials>
@@ -61,6 +61,28 @@
 			<description>
 				Returns [code]true[/code] if [code]s[/code] is zero or almost zero.
 				This method is faster than using [method is_equal_approx] with one value as zero.
+			</description>
+		</method>
+		<method name="log">
+			<return type="float" />
+			<argument index="0" name="x" type="float" />
+			<argument index="1" name="base" type="float" default="2.71828" />
+			<description>
+				Computes logarithm of [code]x[/code] with arbitrary base. If [code]base[/code] is not specified, returns natural logarithm of [code]x[/code].
+			</description>
+		</method>
+		<method name="log10">
+			<return type="float" />
+			<argument index="0" name="x" type="float" />
+			<description>
+				Computes common logarithm of [code]x[/code].
+			</description>
+		</method>
+		<method name="log2">
+			<return type="float" />
+			<argument index="0" name="x" type="float" />
+			<description>
+				Computes binary logarithm of [code]x[/code].
 			</description>
 		</method>
 	</methods>
