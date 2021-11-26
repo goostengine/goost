@@ -33,6 +33,16 @@
 				The following types are supported: [float], [Vector2], [Vector3].
 			</description>
 		</method>
+		<method name="is_between">
+			<return type="bool" />
+			<argument index="0" name="s" type="float" />
+			<argument index="1" name="a" type="float" />
+			<argument index="2" name="b" type="float" />
+			<description>
+				Returns [code]true[/code] if [code]s[/code] lies between [code]a[/code] and [code]b[/code] values. Here, "between" means that [code]s[/code] lies within the range of [code][a, b][/code] [b]or[/b] [code][b, a][/code] ranges, so [code]a[/code] and [code]b[/code] should not be seen as min and max values, but rather as two extremes of the range.
+				Values are compared using non-strict inequality. If [code]a[/code] and [code]b[/code] are the same, then [code]s[/code] will still return [code]true[/code] if [code]s[/code] equals to [code]a[/code] and [code]b[/code].
+			</description>
+		</method>
 		<method name="is_equal_approx">
 			<return type="bool" />
 			<argument index="0" name="a" type="float" />
