@@ -22,6 +22,16 @@ bool GoostMath::is_between(real_t s, real_t a, real_t b) {
 	return s >= a && s <= b;
 }
 
+real_t GoostMath::log(real_t x, real_t base) {
+	if (base == 1.0) {
+		return NAN;
+	}
+	if (x != 1.0 && (base == 0.0 || Math::is_inf(base))) {
+		return NAN;
+	}
+	return Math::log(x) / Math::log(base);
+}
+
 Variant GoostMath::catmull_rom(const Variant &p0, const Variant &p1, const Variant &p2, const Variant &p3, float t) {
 #ifdef DEBUG_ENABLED
 	ERR_FAIL_COND_V(t < 0.0f, Variant());
@@ -72,6 +82,10 @@ void GoostMath::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("is_equal_approx", "a", "b", "tolerance"), &GoostMath::is_equal_approx, DEFVAL(GOOST_CMP_EPSILON));
 	ClassDB::bind_method(D_METHOD("is_zero_approx", "s", "tolerance"), &GoostMath::is_zero_approx, DEFVAL(GOOST_CMP_EPSILON));
 	ClassDB::bind_method(D_METHOD("is_between", "s", "a", "b"), &GoostMath::is_between);
+
+	ClassDB::bind_method(D_METHOD("log", "x", "base"), &GoostMath::log, DEFVAL(Math_E));
+	ClassDB::bind_method(D_METHOD("log2", "x"), &GoostMath::log2);
+	ClassDB::bind_method(D_METHOD("log10", "x"), &GoostMath::log10);
 
 	ClassDB::bind_method(D_METHOD("catmull_rom", "ac", "a", "b", "bc", "weight"), &GoostMath::catmull_rom);
 	ClassDB::bind_method(D_METHOD("bezier", "a", "ac", "bc", "b", "weight"), &GoostMath::bezier);

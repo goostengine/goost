@@ -22,6 +22,16 @@ func test_is_between():
 	assert_true(GoostMath.is_between(s, 37, 37), "If a and b are the same, then s should be considered in range.")
 
 
+func test_log():
+	assert_almost_eq(GoostMath.log(0.99, 0.9), 0.095389964549, 0.000001)
+	assert_almost_eq(GoostMath.log(10), 2.302585092994046, 0.000001, "ln(10)")
+	assert_true(is_nan(GoostMath.log(-1, 10)))
+	assert_true(is_nan(GoostMath.log(-1, 10)))
+
+	assert_eq(GoostMath.log2(16), 4.0)
+	assert_eq(GoostMath.log10(1000), 3.0)
+
+
 func test_catmull_rom():
 	var r = GoostMath.catmull_rom(0, 1, 2, 3, 0.5)
 	assert_eq(r, 1.5)
