@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 def can_build(env, platform):
     # This module is part of the Goost project, but can be built independently.
     # Refer to https://github.com/goostengine/goost for more information.

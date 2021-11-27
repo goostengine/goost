@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import os
 from compat import iteritems, itervalues, open_utf8, escape_string
 

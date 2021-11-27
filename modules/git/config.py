@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import os
 
 # This module is maintained as part of Goost, but can be built independently.

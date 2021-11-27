@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # Upstream: https://github.com/goostengine/goost
 # Version: 2.2 (Godot Engine 3.x)

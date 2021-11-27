@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 # General informational properties of the project, including version.
 name = "Goost: Godot Engine Extension"
 short_name = "goost"
