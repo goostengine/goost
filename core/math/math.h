@@ -18,7 +18,9 @@ public:
 
 	bool is_equal_approx(real_t a, real_t b, real_t tolerance = GOOST_CMP_EPSILON);
 	bool is_zero_approx(real_t s, real_t tolerance = GOOST_CMP_EPSILON);
+
 	bool is_between(real_t s, real_t a, real_t b);
+	bool is_in_range(real_t s, real_t min, real_t max);
 
 	real_t log(real_t x, real_t base = Math_E);
 	real_t log2(real_t x) { return ::log2(x); }

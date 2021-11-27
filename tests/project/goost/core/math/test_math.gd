@@ -19,7 +19,21 @@ func test_is_between():
 	assert_false(GoostMath.is_between(s, 0, 10))
 	assert_false(GoostMath.is_between(s, 10, 0), "Min and max values should be determined automatically.")
 
-	assert_true(GoostMath.is_between(s, 37, 37), "If a and b are the same, then s should be considered in range.")
+	assert_true(GoostMath.is_between(s, 37, 37), "If a and b are the same, then `s` should be considered in range.")
+
+
+func test_is_in_range():
+	var s = 37
+
+	assert_true(GoostMath.is_in_range(s, 0, 100))
+	assert_true(GoostMath.is_in_range(s, -100, 100), "Must handle negative values.")
+
+	Engine.print_error_messages = false
+	assert_false(GoostMath.is_in_range(s, 100, -100), "Invalid range should be detected.")
+	Engine.print_error_messages = true
+
+	assert_false(GoostMath.is_in_range(s, 0, 10))
+	assert_true(GoostMath.is_in_range(s, 37, 37), "If `min` and `max` are the same, then `s` should be considered in range.")
 
 
 func test_log():
