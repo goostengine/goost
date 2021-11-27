@@ -39,7 +39,7 @@
 			<argument index="1" name="a" type="float" />
 			<argument index="2" name="b" type="float" />
 			<description>
-				Returns [code]true[/code] if [code]s[/code] lies between [code]a[/code] and [code]b[/code] values. Here, "between" means that [code]s[/code] lies within the range of [code][a, b][/code] [b]or[/b] [code][b, a][/code] ranges, so [code]a[/code] and [code]b[/code] should not be seen as min and max values, but rather as two extremes of the range.
+				Returns [code]true[/code] if [code]s[/code] lies between [code]a[/code] and [code]b[/code] values. Here, "between" means that [code]s[/code] lies within the range of [code][a, b][/code] [b]or[/b] [code][b, a][/code] ranges, so [code]a[/code] and [code]b[/code] should not be seen as min and max values, but rather as two extremes of the range. To prevent this, use [method is_in_range] instead.
 				Values are compared using non-strict inequality. If [code]a[/code] and [code]b[/code] are the same, then [code]s[/code] will still return [code]true[/code] if [code]s[/code] equals to [code]a[/code] and [code]b[/code].
 			</description>
 		</method>
@@ -52,6 +52,16 @@
 				Returns [code]true[/code] if [code]a[/code] and [code]b[/code] are approximately equal to each other.
 				Here, approximately equal means that [code]a[/code] and [code]b[/code] are within [code]tolerance[/code] of each other.
 				Infinity values of the same sign are considered equal.
+			</description>
+		</method>
+		<method name="is_in_range">
+			<return type="bool" />
+			<argument index="0" name="s" type="float" />
+			<argument index="1" name="min" type="float" />
+			<argument index="2" name="max" type="float" />
+			<description>
+				Returns [code]true[/code] if [code]s[/code] is in the range of [code]min[/code] and [code]max[/code] values. If [code]min > max[/code], the range is considered invalid and an error is printed. To prevent this, use [method is_between] instead.
+				Values are compared using non-strict inequality. If [code]min[/code] and [code]max[/code] are the same, then [code]s[/code] will still return [code]true[/code] if [code]s[/code] equals to [code]min[/code] and [code]max[/code].
 			</description>
 		</method>
 		<method name="is_zero_approx">
