@@ -24,7 +24,7 @@ def get_engine_executable_path():
 
 
 def run(p_args, windowed=False, verbose=False): # Assumes the first arg is the binary path.
-    args = p_args.copy()
+    args = list(p_args)
     if not windowed:
         args.insert(1, "--no-window")
     if verbose:

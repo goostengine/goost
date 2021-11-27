@@ -52,9 +52,9 @@ def get_components(config={}, enabled_by_default=True):
             config[name] = enabled_by_default
 
     components_enabled = []
-    components_enabled = component_list.copy()
+    components_enabled = list(component_list)
     components_disabled = []
-    components_disabled = component_list.copy()
+    components_disabled = list(component_list)
 
     try:
         if enabled_by_default:
