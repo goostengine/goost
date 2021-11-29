@@ -1,7 +1,7 @@
 #include "register_math_types.h"
 
 #include "geometry/register_geometry_types.h"
-#include "math.h"
+#include "goost_math.h"
 #include "random.h"
 
 #include "goost/classes_enabled.gen.h"

@@ -1,4 +1,4 @@
-#include "math.h"
+#include "goost_math.h"
 
 GoostMath *GoostMath::singleton = nullptr;
 
