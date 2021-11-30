@@ -25,6 +25,7 @@ components = [
     "core/image",
     "core/math",
     "core/math/geometry",
+    "scene/audio",
     "scene/physics",
     "scene/gui",
     "editor/vcs",
@@ -167,6 +168,8 @@ classes = {
     "LightTexture": "scene",
     "LinkedList": "core",
     "ListNode": "core",
+    "MidiFile": "audio",
+    "MidiPlayer": "audio",
     "MixinScript": "script",
     "Mixin": "script",
     "PolyBoolean2D": "geometry",
@@ -189,8 +192,6 @@ classes = {
     "VariantMap": "core",
     "VariantResource": "core",
     "VisualShape2D": "scene",
-    "MidiPlayer": "audio",
-    "MidiFile": "audio",
 }
 
 # This is a list of all classes registered from within `modules/` directory.

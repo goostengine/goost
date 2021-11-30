@@ -31,7 +31,7 @@ SOFTWARE.
 
 //GENERIC MIDI OBJECT
 void MidiFile::_bind_methods() {
-	//ClassDB::bind_method(D_METHOD("set_data", "data"), &MidiFile::set_data);
+	ClassDB::bind_method(D_METHOD("set_data", "data"), &MidiFile::set_data);
 	ClassDB::bind_method(D_METHOD("get_data"), &MidiFile::get_data);
 	ADD_PROPERTY(PropertyInfo(Variant::POOL_BYTE_ARRAY, "data", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NOEDITOR), "", "get_data");
 

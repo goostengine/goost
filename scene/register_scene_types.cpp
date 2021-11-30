@@ -1,6 +1,8 @@
 #include "register_scene_types.h"
 
 #include "physics/register_physics_types.h"
+#include "audio/register_audio_types.h"
+
 #include "goost/classes_enabled.gen.h"
 
 namespace goost {
@@ -17,6 +19,10 @@ void register_scene_types() {
 	ClassDB::register_class<VisualShape2D>();
 	ClassDB::register_class<GradientTexture2D>();
 	ClassDB::register_class<LightTexture>();
+
+#ifdef GOOST_AUDIO_ENABLED
+	register_audio_types();
+#endif
 
 #ifdef GOOST_GUI_ENABLED
 	ClassDB::register_class<GridRect>();
@@ -37,6 +43,9 @@ void register_scene_types() {
 }
 
 void unregister_scene_types() {
+#ifdef GOOST_AUDIO_ENABLED
+	unregister_audio_types();
+#endif
 #ifdef GOOST_PHYSICS_ENABLED
 	unregister_physics_types();
 #endif

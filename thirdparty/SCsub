@@ -49,9 +49,6 @@ if env["goost_image_enabled"]:
     # HQX
     env_thirdparty.add_source_files(env.modules_sources, "hqx/*.cc")
 
-    # TML
-    env_thirdparty.add_source_files(env.modules_sources, "tsf/*.h")
-
 env_thirdparty.disable_warnings()
 
 if env["platform"] in ["server"]:
