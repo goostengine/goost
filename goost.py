@@ -33,6 +33,7 @@ components = [
 
 def get_component_readable_name(component):
     name = {
+        "audio": "Audio",
         "script": "Scripting",
         "image": "Image Processing",
         "math": "Mathematics",
