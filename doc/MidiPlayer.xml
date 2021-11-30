@@ -150,7 +150,7 @@
 		<method name="channel_set_preset_index">
 			<return type="void" />
 			<argument index="0" name="channel" type="int" />
-			<argument index="1" name="preset" type="int" />
+			<argument index="1" name="preset_index" type="int" />
 			<description>
 				Set the preset index for a channel.
 			</description>
@@ -158,7 +158,7 @@
 		<method name="channel_set_preset_number">
 			<return type="int" />
 			<argument index="0" name="channel" type="int" />
-			<argument index="1" name="preset" type="int" />
+			<argument index="1" name="preset_number" type="int" />
 			<argument index="2" name="drums" type="int" />
 			<description>
 				Set the preset number of a channel. Drums is usually preset 10.

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="MidiFile" inherits="Resource" version="3.5">
+	<brief_description>
+		MIDI data file.
+	</brief_description>
+	<description>
+		This is a resource which represents the internal MIDI data used by [MidiPlayer].
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+	</methods>
+	<members>
+		<member name="data" type="PoolByteArray" setter="set_data" getter="get_data" default="PoolByteArray(  )">
+			A stream of bytes which represents MIDI data. This data is not meant to be modified, as MIDI files are imported or loaded via [method MidiPlayer.load_midi].
+		</member>
+	</members>
+	<constants>
+	</constants>
+</class>
