@@ -115,6 +115,8 @@ if env["goost_scene_enabled"]:
 if env["goost_editor_enabled"]:
     SConscript("editor/SCsub")
 
+SConscript("audio/SCsub")
+
 SConscript("thirdparty/SCsub")
 
 env_goost.add_source_files(env.modules_sources, "*.cpp")

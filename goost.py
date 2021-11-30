@@ -189,6 +189,8 @@ classes = {
     "VariantMap": "core",
     "VariantResource": "core",
     "VisualShape2D": "scene",
+    "MidiPlayer": "audio",
+    "MidiFile": "audio",
 }
 
 # This is a list of all classes registered from within `modules/` directory.

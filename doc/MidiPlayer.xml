@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="MidiPlayer" inherits="AudioStreamPlayer" version="3.5">
+	<brief_description>
+		[b]A MIDI player class.[/b]
+	</brief_description>
+	<description>
+		The MidiPlayer class can play MIDI files. It does this using a collection of sounds called SoundFont which was originally invented in the early 1990s by Creative Labs for their SoundBlaser AWE32 sound card. The MIDI specification is even older from 1983.
+		Although these technologies old, they are still used today in music industry because they are so incredibly handy. MIDI specifically has seen continous with minimal changes since since inception.
+		In order to use this class you will need to setup a few things. First you will need to add this node to the tree. Then you will need to add an AudioStreamGenerator. Finally you will need to load a SoundFont and the MIDI file. You can find MIDI music and General Midi SoundFonts online.
+		[b]List of keywords:[/b]
+		[code]channel:[/code] Audio channels allow notes to play at the same time on top of each other. Usually there are maximum of 16 channel (depending on the implementation).  
+		[code]preset:[/code] The preset is an instrument (Piano, Harpsichord, etc) which is organized in sound banks. 
+		[code]bank:[/code] Each sound back contains a number of samples. Drums (usually preset 10) contain very different sample and are usually handled by a special drum mode.
+		[code]note:[/code] is the note to play (also called key from keyboard). It must be a value between 0 and 127. Here 60 is middle C (C4).
+		[code]volume:[/code] Also called velocity. A value of 0.0 means no sound, a value of 1.0 means maximum volume.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="channel_get_pan">
+			<return type="float" />
+			<argument index="0" name="channel" type="int" />
+			<description>
+				Returns the panning of the specified channel.
+			</description>
+		</method>
+		<method name="channel_get_pitchrange">
+			<return type="float" />
+			<argument index="0" name="channel" type="int" />
+			<description>
+				Get the pitch range of a channel.
+			</description>
+		</method>
+		<method name="channel_get_pitchwheel">
+			<return type="int" />
+			<argument index="0" name="channel" type="int" />
+			<description>
+				Get the pitch wheel value for the specified channel.
+			</description>
+		</method>
+		<method name="channel_get_preset_bank">
+			<return type="int" />
+			<argument index="0" name="channel" type="int" />
+			<description>
+				Get the preset sample bank for the specified channel.
+			</description>
+		</method>
+		<method name="channel_get_preset_index">
+			<return type="int" />
+			<argument index="0" name="channel" type="int" />
+			<description>
+				Get the preset index for the specified channel.
+			</description>
+		</method>
+		<method name="channel_get_preset_number">
+			<return type="int" />
+			<argument index="0" name="channel" type="int" />
+			<description>
+				Get the preset number for the specified channel.
+			</description>
+		</method>
+		<method name="channel_get_tuning">
+			<return type="float" />
+			<argument index="0" name="channel" type="int" />
+			<description>
+				Get the tuning of a channel.
+			</description>
+		</method>
+		<method name="channel_get_volume">
+			<return type="float" />
+			<argument index="0" name="channel" type="int" />
+			<description>
+				Get the volume of a channel.
+			</description>
+		</method>
+		<method name="channel_midi_control">
+			<return type="void" />
+			<argument index="0" name="channel" type="int" />
+			<argument index="1" name="control" type="int" />
+			<argument index="2" name="value" type="int" />
+			<description>
+				MIDI controls are used to produce specialized effects.
+			</description>
+		</method>
+		<method name="channel_note_off">
+			<return type="void" />
+			<argument index="0" name="channel" type="int" />
+			<argument index="1" name="note" type="int" />
+			<description>
+				Stop playing a specific note on a specific channel.
+			</description>
+		</method>
+		<method name="channel_note_off_all">
+			<return type="void" />
+			<argument index="0" name="channel" type="int" />
+			<description>
+				Stop all notes on a channel.
+			</description>
+		</method>
+		<method name="channel_note_on">
+			<return type="void" />
+			<argument index="0" name="channel" type="int" />
+			<argument index="1" name="note" type="int" />
+			<argument index="2" name="volume" type="float" />
+			<description>
+				Start playing a note on a specific channel.
+			</description>
+		</method>
+		<method name="channel_set_bank">
+			<return type="void" />
+			<argument index="0" name="channel" type="int" />
+			<argument index="1" name="bank" type="int" />
+			<description>
+				Defines the bank number for the specified channel. Bank is a collection of sound samples.
+			</description>
+		</method>
+		<method name="channel_set_bank_preset">
+			<return type="int" />
+			<argument index="0" name="channel" type="int" />
+			<argument index="1" name="bank" type="int" />
+			<argument index="2" name="preset" type="int" />
+			<description>
+				Defines the bank and preset for a channel.
+			</description>
+		</method>
+		<method name="channel_set_pan">
+			<return type="void" />
+			<argument index="0" name="channel" type="int" />
+			<argument index="1" name="pan" type="float" />
+			<description>
+				Defines left and right panning of a channel.
+			</description>
+		</method>
+		<method name="channel_set_pitchrange">
+			<return type="void" />
+			<argument index="0" name="channel" type="int" />
+			<argument index="1" name="pitchrange" type="float" />
+			<description>
+				The the pitch range  for a channel.
+			</description>
+		</method>
+		<method name="channel_set_pitchwheel">
+			<return type="void" />
+			<argument index="0" name="channel" type="int" />
+			<argument index="1" name="pitchwheel" type="int" />
+			<description>
+				Set the pitch wheel value for a channel.
+			</description>
+		</method>
+		<method name="channel_set_preset_index">
+			<return type="void" />
+			<argument index="0" name="channel" type="int" />
+			<argument index="1" name="preset" type="int" />
+			<description>
+				Set the preset index for a channel.
+			</description>
+		</method>
+		<method name="channel_set_preset_number">
+			<return type="int" />
+			<argument index="0" name="channel" type="int" />
+			<argument index="1" name="preset" type="int" />
+			<argument index="2" name="drums" type="int" />
+			<description>
+				Set the preset number of a channel. Drums is usually preset 10.
+			</description>
+		</method>
+		<method name="channel_set_tuning">
+			<return type="void" />
+			<argument index="0" name="channel" type="int" />
+			<argument index="1" name="tuning" type="float" />
+			<description>
+				Set the tuning of a channel. Tuning is a float value between -1.0 and 1.0.
+			</description>
+		</method>
+		<method name="channel_set_volume">
+			<return type="void" />
+			<argument index="0" name="channel" type="int" />
+			<argument index="1" name="volume" type="float" />
+			<description>
+				Set volume of a channel.
+			</description>
+		</method>
+		<method name="get_midi" qualifiers="const">
+			<return type="String" />
+			<description>
+				Return the Midi file name and path.
+			</description>
+		</method>
+		<method name="get_preset_names" qualifiers="const">
+			<return type="PoolStringArray" />
+			<description>
+				Returns a list of preset names stored in the SoundFont.
+			</description>
+		</method>
+		<method name="get_soundfont" qualifiers="const">
+			<return type="String" />
+			<description>
+				Returns the full path of the soundfont currently loaded.
+			</description>
+		</method>
+		<method name="load_midi">
+			<return type="void" />
+			<argument index="0" name="midi_file" type="String" />
+			<description>
+				Loads a MIDI file. It must be a .mid or .midi file and the correct format.
+				[b]Note:[/b] A SoundFont file and a playback stream must exist in order for the file to actually play.
+			</description>
+		</method>
+		<method name="load_soundfont">
+			<return type="void" />
+			<argument index="0" name="soundfont_file" type="String" />
+			<description>
+				Loads a SoundFont 2 file. It must be an .sf2 file.
+			</description>
+		</method>
+		<method name="note_off">
+			<return type="void" />
+			<argument index="0" name="preset" type="int" />
+			<argument index="1" name="note" type="int" />
+			<description>
+				Stop playing a specific note.
+			</description>
+		</method>
+		<method name="note_off_all">
+			<return type="void" />
+			<description>
+				Stop playing all notes.
+			</description>
+		</method>
+		<method name="note_on">
+			<return type="void" />
+			<argument index="0" name="preset" type="int" />
+			<argument index="1" name="note" type="int" />
+			<argument index="2" name="volume" type="float" />
+			<description>
+				Start playing a single note.
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="looping" type="bool" setter="set_looping" getter="get_looping" default="true">
+			When set to [code]true[/code], MIDI file will loop forever.
+		</member>
+		<member name="midi_speed" type="float" setter="set_midi_speed" getter="get_midi_speed" default="1.0">
+			Controls the MIDI file playback speed.
+		</member>
+	</members>
+	<signals>
+		<signal name="loop_finished">
+			<description>
+				Emitted when the MIDI song finished playing one single loop. This signal is emitted only if looping is [code]true[/code].
+			</description>
+		</signal>
+	</signals>
+	<constants>
+	</constants>
+</class>
