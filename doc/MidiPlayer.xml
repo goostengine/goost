@@ -6,7 +6,14 @@
 	<description>
 		The MidiPlayer class can play MIDI files. It does this using a collection of sounds called SoundFont which was originally invented in the early 1990s by Creative Labs for their SoundBlaser AWE32 sound card. The MIDI specification is even older from 1983.
 		Although these technologies old, they are still used today in music industry because they are so incredibly handy. MIDI specifically has seen continous with minimal changes since since inception.
-		In order to use this class you will need to setup a few things. First you will need to add this node to the tree. Then you will need to add an AudioStreamGenerator. Finally you will need to load a SoundFont and the MIDI file. You can find MIDI music and General Midi SoundFonts online.
+		In order to use this class, the node should be added to the scene tree. Create a new [AudioStreamGenerator] via inspector in [member AudioStreamPlayer.stream] and then load a SoundFont using [method load_soundfont] and the MIDI file using [method load_midi]. For instance:
+		[codeblock]
+		func _ready():
+		    $MidiPlayer.load_midi("res://moonlight.mid")
+		    $MidiPlayer.load_soundfont("res://piano.sf2")
+		    $MidiPlayer.play()
+		[/codeblock]
+		You can find MIDI music and General Midi SoundFonts online.
 		[b]List of keywords:[/b]
 		[code]channel:[/code] Audio channels allow notes to play at the same time on top of each other. Usually there are maximum of 16 channel (depending on the implementation).  
 		[code]preset:[/code] The preset is an instrument (Piano, Harpsichord, etc) which is organized in sound banks. 
