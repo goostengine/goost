@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="ListNode" inherits="Object" version="3.4">
+<class name="ListNode" inherits="Object" version="3.5">
 	<brief_description>
 		A single element in the [LinkedList].
 	</brief_description>

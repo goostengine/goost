@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="CommandLineParser" inherits="Reference" version="3.4">
+<class name="CommandLineParser" inherits="Reference" version="3.5">
 	<brief_description>
 		Enables parsing of command-line arguments.
 	</brief_description>

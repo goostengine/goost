@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="EditorVCSInterfaceGit" inherits="EditorVCSInterface" version="3.4">
+<class name="EditorVCSInterfaceGit" inherits="EditorVCSInterface" version="3.5">
 	<brief_description>
 		A built-in version control plugin which provides [url=https://git-scm.com/]Git[/url] functionality.
 	</brief_description>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="GoostMath" inherits="Object" version="3.4">
+<class name="GoostMath" inherits="Object" version="3.5">
 	<brief_description>
 		Math functions.
 	</brief_description>
@@ -60,7 +60,7 @@
 			<argument index="1" name="min" type="float" />
 			<argument index="2" name="max" type="float" />
 			<description>
-				Returns [code]true[/code] if [code]s[/code] is in the range of [code]min[/code] and [code]max[/code] values. If [code]min > max[/code], the range is considered invalid and an error is printed. To prevent this, use [method is_between] instead.
+				Returns [code]true[/code] if [code]s[/code] is in the range of [code]min[/code] and [code]max[/code] values. If [code]min &gt; max[/code], the range is considered invalid and an error is printed. To prevent this, use [method is_between] instead.
 				Values are compared using non-strict inequality. If [code]min[/code] and [code]max[/code] are the same, then [code]s[/code] will still return [code]true[/code] if [code]s[/code] equals to [code]min[/code] and [code]max[/code].
 			</description>
 		</method>
