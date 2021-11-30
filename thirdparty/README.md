@@ -56,3 +56,8 @@ file for the exact changes.
 - Upstream: https://github.com/libgit2/libgit2
 - Version: v1.3.0
 - License: GPLv2-only with linking exception
+
+## TinySoundFont
+- Upstream: https://github.com/schellingb/TinySoundFont
+- Version: git (e86d986ed6ccb93b4ee41d2de656c49c721b18db, 2021)
+- License: MIT

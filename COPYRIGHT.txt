@@ -52,7 +52,10 @@ Comment: libgit2: A cross-platform, linkable library implementation of Git.
 Copyright: the libgit2 contributors
 License: GPL-2.0-only (with linking exception)
 
-
+Files: ./thirdparty/tsf/
+Comment: SoundFont2 synthesizer library in a single C/C++ file
+Copyright: 2017, 2018, 2020 Bernhard Schelling
+License: Expat
 
 License: Apache-2.0
  Licensed under the Apache License, Version 2.0 (the "License");
