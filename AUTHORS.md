@@ -35,6 +35,7 @@ See also a full list of
     98teg
     Andrii Doroshenko (Xrayez)
     Daw11
+    Filip Anton (filipworks)
     Hennadii Chernyshchyk (Shatur)
     lupoDharkael
     Mariano Suligoy (MarianoGnu)
