@@ -503,12 +503,12 @@ void MidiPlayer::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("load_soundfont", "soundfont_resource_path"), &MidiPlayer::load_soundfont);
 	ClassDB::bind_method(D_METHOD("set_soundfont", "soundfont_resource"), &MidiPlayer::set_soundfont);
 	ClassDB::bind_method(D_METHOD("get_soundfont"), &MidiPlayer::get_soundfont);
-	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "soundfont"), "set_soundfont", "get_soundfont");
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "soundfont", PROPERTY_HINT_RESOURCE_TYPE, "MidiFile"), "set_soundfont", "get_soundfont");
 
 	ClassDB::bind_method(D_METHOD("load_midi", "midi_resource_path"), &MidiPlayer::load_midi);
 	ClassDB::bind_method(D_METHOD("set_midi", "midi_resource"), &MidiPlayer::set_midi);
 	ClassDB::bind_method(D_METHOD("get_midi"), &MidiPlayer::get_midi);
-	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "midi"), "set_midi", "get_midi");
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "midi", PROPERTY_HINT_RESOURCE_TYPE, "MidiFile"), "set_midi", "get_midi");
 
 	ClassDB::bind_method(D_METHOD("get_preset_names"), &MidiPlayer::get_preset_names);
 
