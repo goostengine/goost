@@ -4,7 +4,7 @@
 		MIDI data file.
 	</brief_description>
 	<description>
-	This is a resource which represents the internal MIDI data used by [MidiPlayer]. Depending on the file type, format will be set accordingly.
+		This is a resource which represents the internal MIDI data used by [MidiPlayer]. Depending on the file type, format will be set accordingly.
 	To load data into the MidiPlayer simply call on [method MidiPlayer.load_midi] or [method MidiPlayer.set_midi] for a midi file or [method MidiPlayer.load_soundfont] or [method MidiPlayer.set_soundfont] for a SoundFont file.
 	[b]Note[/b]: It is not recommended that you set byte data directly using [method=set_data] or change the format using [method=set_format]. These methods are more useful when loading midi data from a [File] and you need to set byte data and format manually.
 	</description>
@@ -14,7 +14,7 @@
 	</methods>
 	<members>
 		<member name="data" type="PoolByteArray" setter="set_data" getter="get_data" default="PoolByteArray(  )">
-			A stream of bytes which represents MIDI data. This data is not meant to be modified, as MIDI files are imported automatically. 
+			A stream of bytes which represents MIDI data. This data is not meant to be modified, as MIDI files are imported automatically.
 		</member>
 		<member name="format" type="int" setter="set_format" getter="get_format" default="0">
 			Represents the internal format of the Midi data. This is set automatically when data gets set.
