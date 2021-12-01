@@ -5,7 +5,7 @@
 	</brief_description>
 	<description>
 		The MidiPlayer class can play MIDI files. It does this using a collection of sounds called SoundFont which was originally invented in the early 1990s by Creative Labs for their SoundBlaser AWE32 sound card. The MIDI specification is even older from 1983.
-		Although these technologies old, they are still used today in music industry because they are so incredibly handy. MIDI specifically has seen continous with minimal changes since since inception.
+		Although these technologies old, they are still used today in music industry because they are so incredibly handy. MIDI specifically has seen continous with minimal changes since since inception. 
 		In order to use this class, the node should be added to the scene tree. Create a new [AudioStreamGenerator] via inspector in [member AudioStreamPlayer.stream] and then load a SoundFont using [method load_soundfont] and the MIDI file using [method load_midi]. For instance:
 		[codeblock]
 		func _ready():
@@ -13,13 +13,13 @@
 		    $MidiPlayer.load_soundfont("res://piano.sf2")
 		    $MidiPlayer.play()
 		[/codeblock]
-		You can find MIDI music and General Midi SoundFonts online.
+		You can find MIDI music and General Midi SoundFonts online. Here are just a few completely free ones that you might want to look for: [code]ChoriumRevA.sf2[/code], [code]WeedsGM3.sf2[/code], [code]SGM-V2.01FluidR3_GM.sf2[/code], [code][TimGM6mb.sf2[/code] (close to the original Sound Blaster sound), [code]Timbres Of Heaven GM_GS_XG_SFX V 3.0 Final.sf2[/code] (very high quality). 
 		[b]List of keywords:[/b]
-		[code]channel:[/code] Audio channels allow notes to play at the same time on top of each other. Usually there are maximum of 16 channel (depending on the implementation).  
-		[code]preset:[/code] The preset is an instrument (Piano, Harpsichord, etc) which is organized in sound banks. 
-		[code]bank:[/code] Each sound back contains a number of samples. Drums (usually preset 10) contain very different sample and are usually handled by a special drum mode.
-		[code]note:[/code] is the note to play (also called key from keyboard). It must be a value between 0 and 127. Here 60 is middle C (C4).
-		[code]volume:[/code] Also called velocity. A value of 0.0 means no sound, a value of 1.0 means maximum volume.
+		[code]channel:[/code] Audio channels (or tracks) are a kind of an audio layer that allows various instruments to play on top of each other. Channel 10 is always set to Drums and is handled differently. Channel is equivalent to a modern concept of track in a modern DAW. The number of channels depends on implementation but commonly you have 16 maximum channels.
+		[code]preset:[/code] The preset is the instrument (Piano, Harpsichord, etc) which is organized in sound banks. Drums (usually set to channel 10) are special in that each key has a unique sample (bank) and the entire instrument is handled by a drum program.
+		[code]bank:[/code] A soundfont bank contains the actual audio sample in PCM format. A bank is mapped to a section of the keyboard. The audio is not simply scaled to different pitches but is actually sampled at various pitches from a real instrument then pitched only to a small range of keys. This ensures a more natural sound.
+		[code]note:[/code] This is the note to play (also called key). It must be a value between 0 and 127. A value of 60 is middle C (C4).
+		[code]volume:[/code] Also called velocity. A value of 0.0 means no sound (mute) while a value of 1.0 is maximum volume.
 	</description>
 	<tutorials>
 	</tutorials>
@@ -187,10 +187,17 @@
 				Set volume of a channel.
 			</description>
 		</method>
+		<method name="set_midi">
+			<return type="void" />
+			<argument index="0" name="midi_resource" type="String" />
+			<description>
+				Sets the midi file to a MidiFile resource. Must be the appropriate format to work. 
+			</description>
+		</method>
 		<method name="get_midi" qualifiers="const">
 			<return type="String" />
 			<description>
-				Return the Midi file name and path.
+				Return the MidiFile song resource currently loaded.
 			</description>
 		</method>
 		<method name="get_preset_names" qualifiers="const">
@@ -199,10 +206,17 @@
 				Returns a list of preset names stored in the SoundFont.
 			</description>
 		</method>
+		<method name="set_soundfont">
+			<return type="void" />
+			<argument index="0" name="soundfont_resource" type="String" />
+			<description>
+				Sets the soundfont to a MidiFile SoundFont resource. It must be the correct format.
+			</description>
+		</method>
 		<method name="get_soundfont" qualifiers="const">
 			<return type="String" />
 			<description>
-				Returns the full path of the soundfont currently loaded.
+				Returns the MidiFile soundfont resource currently loaded.
 			</description>
 		</method>
 		<method name="load_midi">
@@ -246,16 +260,23 @@
 	</methods>
 	<members>
 		<member name="looping" type="bool" setter="set_looping" getter="get_looping" default="true">
-			When set to [code]true[/code], MIDI file will loop forever.
+			When set to [code]true[/code], midi file will loop forever.
+		</member>
+		<member name="midi" type="MidiFile" setter="set_midi" getter="get_midi">
+			This is the [MidiFile] resource that contains the SoundFont data.
 		</member>
 		<member name="midi_speed" type="float" setter="set_midi_speed" getter="get_midi_speed" default="1.0">
-			Controls the MIDI file playback speed.
+			Controls the midi file playback speed.
+		</member>
+		<member name="soundfont" type="MidiFile" setter="set_soundfont" getter="get_soundfont">
+			This is the [MidiFile] resource that contains the midi song data.
 		</member>
 	</members>
 	<signals>
 		<signal name="loop_finished">
 			<description>
-				Emitted when the MIDI song finished playing one single loop. This signal is emitted only if looping is [code]true[/code].
+				Emitted when the MIDI song finishes playing one single loop. This signal is emitted only if looping is [code]true[/code].
+				[b]Note[/b]: When not looping, a [code]finished[/code] signal is emitted and the MidiPlayer will automatically stop itself when reaching the end of the song.
 			</description>
 		</signal>
 	</signals>
