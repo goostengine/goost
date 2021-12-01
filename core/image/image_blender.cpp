@@ -177,26 +177,27 @@ void ImageBlender::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("set_rgb_equation", "equation"), &ImageBlender::set_rgb_equation);
 	ClassDB::bind_method(D_METHOD("get_rgb_equation"), &ImageBlender::get_rgb_equation);
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "rgb_equation"), "set_rgb_equation", "get_rgb_equation");
 
 	ClassDB::bind_method(D_METHOD("set_alpha_equation", "equation"), &ImageBlender::set_alpha_equation);
 	ClassDB::bind_method(D_METHOD("get_alpha_equation"), &ImageBlender::get_alpha_equation);
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "alpha_equation"), "set_alpha_equation", "get_alpha_equation");
 
 	ClassDB::bind_method(D_METHOD("set_rgb_src_factor", "factor"), &ImageBlender::set_rgb_src_factor);
 	ClassDB::bind_method(D_METHOD("get_rgb_src_factor"), &ImageBlender::get_rgb_src_factor);
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "rgb_src_factor"), "set_rgb_src_factor", "get_rgb_src_factor");
 
 	ClassDB::bind_method(D_METHOD("set_rgb_dst_factor", "factor"), &ImageBlender::set_rgb_dst_factor);
 	ClassDB::bind_method(D_METHOD("get_rgb_dst_factor"), &ImageBlender::get_rgb_dst_factor);
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "rgb_dst_factor"), "set_rgb_dst_factor", "get_rgb_dst_factor");
 
 	ClassDB::bind_method(D_METHOD("set_alpha_src_factor", "factor"), &ImageBlender::set_alpha_src_factor);
 	ClassDB::bind_method(D_METHOD("get_alpha_src_factor"), &ImageBlender::get_alpha_src_factor);
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "alpha_src_factor"), "set_alpha_src_factor", "get_alpha_src_factor");
 
 	ClassDB::bind_method(D_METHOD("set_alpha_dst_factor", "factor"), &ImageBlender::set_alpha_dst_factor);
 	ClassDB::bind_method(D_METHOD("get_alpha_dst_factor"), &ImageBlender::get_alpha_dst_factor);
+
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "rgb_equation"), "set_rgb_equation", "get_rgb_equation");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "alpha_equation"), "set_alpha_equation", "get_alpha_equation");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "rgb_src_factor"), "set_rgb_src_factor", "get_rgb_src_factor");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "rgb_dst_factor"), "set_rgb_dst_factor", "get_rgb_dst_factor");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "alpha_src_factor"), "set_alpha_src_factor", "get_alpha_src_factor");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "alpha_dst_factor"), "set_alpha_dst_factor", "get_alpha_dst_factor");
 
 	BIND_ENUM_CONSTANT(FUNC_ADD);
