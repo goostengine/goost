@@ -31,8 +31,7 @@ void register_core_types() {
 #ifdef GOOST_GoostEngine
 	_goost = memnew(GoostEngine);
 	ClassDB::register_class<GoostEngine>();
-	Engine::get_singleton()->add_singleton(
-			Engine::Singleton("GoostEngine", GoostEngine::get_singleton()));
+	Engine::get_singleton()->add_singleton(Engine::Singleton("GoostEngine", GoostEngine::get_singleton()));
 	SceneTree::add_idle_callback(&GoostEngine::flush_calls);
 #endif
 	ClassDB::register_class<InvokeState>();

@@ -156,6 +156,7 @@ classes = {
 	"CommandLineHelpFormat": "core",
     "CommandLineOption": "core",
 	"CommandLineParser": "core",
+    "Debug2D": "scene",
     "GoostEngine": "core",
     "GoostMath": "math",
     "GoostGeometry2D": "geometry",
