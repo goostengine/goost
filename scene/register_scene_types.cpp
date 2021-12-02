@@ -50,6 +50,8 @@ void register_scene_types() {
 	Engine::get_singleton()->add_singleton(Engine::Singleton("Debug2D", Debug2D::get_singleton()));
 	SceneTree::add_idle_callback(&_debug_2d_add_to_scene_tree);
 
+	ClassDB::register_class<DebugDrawState>();
+
 #ifdef GOOST_AUDIO_ENABLED
 	register_audio_types();
 #endif
