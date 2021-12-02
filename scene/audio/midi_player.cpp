@@ -187,16 +187,13 @@ PoolStringArray MidiPlayer::get_preset_names() const {
 }
 
 int MidiPlayer::get_preset_index(int inBank, int inPresetNumber) {
-	if (mTsf == nullptr) {
-		return -1;
-	}
+	ERR_FAIL_NULL_V_MSG(mTsf, -1, "SoundFont is not loaded.");
 	return tsf_get_presetindex(mTsf, inBank, inPresetNumber);
 }
 
 void MidiPlayer::note_on(int inPresetIndex, int inKey, float inVelocity) {
-	if (mTsf == nullptr) {
-		return;
-	}
+	ERR_FAIL_NULL_MSG(mTsf, "SoundFont is not loaded.");
+
 	if (inVelocity > 0.0) {
 		tsf_note_on(mTsf, inPresetIndex, inKey, inVelocity);
 	} else {
@@ -205,167 +202,122 @@ void MidiPlayer::note_on(int inPresetIndex, int inKey, float inVelocity) {
 }
 
 void MidiPlayer::note_off(int inPresetIndex, int inKey) {
-	tsf_note_on(mTsf, inPresetIndex, inKey, 0.0);
+	ERR_FAIL_NULL_MSG(mTsf, "SoundFont is not loaded.");
+	tsf_note_off(mTsf, inPresetIndex, inKey);
 }
 
 void MidiPlayer::note_off_all() {
-	if (mTsf == nullptr) {
-		return;
-	}
+	ERR_FAIL_NULL_MSG(mTsf, "SoundFont is not loaded.");
 	tsf_note_off_all(mTsf);
 }
 
 void MidiPlayer::channel_set_preset_index(int inChannel, int inPresetIndex) {
-	if (mTsf == nullptr) {
-		return;
-	}
+	ERR_FAIL_NULL_MSG(mTsf, "SoundFont is not loaded.");
 	tsf_channel_set_presetindex(mTsf, inChannel, inPresetIndex);
 }
 
 int MidiPlayer::channel_set_preset_number(int inChannel, int inPresetNumber, int inDrums) {
-	if (mTsf == nullptr) {
-		return -1;
-	}
+	ERR_FAIL_NULL_V_MSG(mTsf, -1, "SoundFont is not loaded.");
 	return tsf_channel_set_presetnumber(mTsf, inChannel, inPresetNumber, inDrums);
 }
 
 void MidiPlayer::channel_set_bank(int inChannel, int inBank) {
-	if (mTsf == nullptr) {
-		return;
-	}
+	ERR_FAIL_NULL_MSG(mTsf, "SoundFont is not loaded.");
 	tsf_channel_set_bank(mTsf, inChannel, inBank);
 }
 
 int MidiPlayer::channel_set_bank_preset(int inChannel, int inBank, int inPresetNumber) {
-	if (mTsf == nullptr) {
-		return -1;
-	}
+	ERR_FAIL_NULL_V_MSG(mTsf, -1, "SoundFont is not loaded.");
 	return tsf_channel_set_bank_preset(mTsf, inChannel, inBank, inPresetNumber);
 }
 
 void MidiPlayer::channel_set_pan(int inChannel, float inPan) {
-	if (mTsf == nullptr) {
-		return;
-	}
+	ERR_FAIL_NULL_MSG(mTsf, "SoundFont is not loaded.");
 	tsf_channel_set_pan(mTsf, inChannel, inPan);
 }
 
 void MidiPlayer::channel_set_volume(int inChannel, float inVolume) {
-	if (mTsf == nullptr) {
-		return;
-	}
+	ERR_FAIL_NULL_MSG(mTsf, "SoundFont is not loaded.");
 	tsf_channel_set_volume(mTsf, inChannel, inVolume);
 }
 
 void MidiPlayer::channel_set_pitchwheel(int inChannel, int inPitchWheel) {
-	if (mTsf == nullptr) {
-		return;
-	}
+	ERR_FAIL_NULL_MSG(mTsf, "SoundFont is not loaded.");
 	tsf_channel_set_pitchwheel(mTsf, inChannel, inPitchWheel);
 }
 
 void MidiPlayer::channel_set_pitchrange(int inChannel, float inPitchRange) {
-	if (mTsf == nullptr) {
-		return;
-	}
+	ERR_FAIL_NULL_MSG(mTsf, "SoundFont is not loaded.");
 	tsf_channel_set_pitchrange(mTsf, inChannel, inPitchRange);
 }
 
 void MidiPlayer::channel_set_tuning(int inChannel, float inTuning) {
-	if (mTsf == nullptr) {
-		return;
-	}
+	ERR_FAIL_NULL_MSG(mTsf, "SoundFont is not loaded.");
 	tsf_channel_set_tuning(mTsf, inChannel, inTuning);
 }
 
 void MidiPlayer::channel_note_on(int inChannel, int inKey, float inVelocity) {
-	if (mTsf == nullptr) {
-		return;
-	}
+	ERR_FAIL_NULL_MSG(mTsf, "SoundFont is not loaded.");
 	tsf_channel_note_on(mTsf, inChannel, inKey, inVelocity);
 }
 
 void MidiPlayer::channel_note_off(int inChannel, int inKey) {
-	if (mTsf == nullptr) {
-		return;
-	}
+	ERR_FAIL_NULL_MSG(mTsf, "SoundFont is not loaded.");
 	tsf_channel_note_off(mTsf, inChannel, inKey);
 }
 
 void MidiPlayer::channel_note_off_all(int inChannel) {
-	if (mTsf == nullptr) {
-		return;
-	}
+	ERR_FAIL_NULL_MSG(mTsf, "SoundFont is not loaded.");
 	tsf_channel_note_off_all(mTsf, inChannel);
 }
 
 void MidiPlayer::channel_sounds_off_all(int inChannel) {
-	if (mTsf == nullptr) {
-		return;
-	}
+	ERR_FAIL_NULL_MSG(mTsf, "SoundFont is not loaded.");
 	tsf_channel_sounds_off_all(mTsf, inChannel);
 }
 
 void MidiPlayer::channel_midi_control(int inChannel, int inController, int inValue) {
-	if (mTsf == nullptr) {
-		return;
-	}
+	ERR_FAIL_NULL_MSG(mTsf, "SoundFont is not loaded.");
 	tsf_channel_midi_control(mTsf, inChannel, inController, inValue);
 }
 
 int MidiPlayer::channel_get_preset_index(int inChannel) {
-	if (mTsf == nullptr) {
-		return -1;
-	}
+	ERR_FAIL_NULL_V_MSG(mTsf, -1, "SoundFont is not loaded.");
 	return tsf_channel_get_preset_index(mTsf, inChannel);
 }
 
 int MidiPlayer::channel_get_preset_bank(int inChannel) {
-	if (mTsf == nullptr) {
-		return -1;
-	}
+	ERR_FAIL_NULL_V_MSG(mTsf, -1, "SoundFont is not loaded.");
 	return tsf_channel_get_preset_bank(mTsf, inChannel);
 }
 
 int MidiPlayer::channel_get_preset_number(int inChannel) {
-	if (mTsf == nullptr) {
-		return -1;
-	}
+	ERR_FAIL_NULL_V_MSG(mTsf, -1, "SoundFont is not loaded.");
 	return tsf_channel_get_preset_number(mTsf, inChannel);
 }
 
 float MidiPlayer::channel_get_pan(int inChannel) {
-	if (mTsf == nullptr) {
-		return 0.0;
-	}
+	ERR_FAIL_NULL_V_MSG(mTsf, 0.0, "SoundFont is not loaded.");
 	return tsf_channel_get_pan(mTsf, inChannel);
 }
 
 float MidiPlayer::channel_get_volume(int inChannel) {
-	if (mTsf == nullptr) {
-		return 0.0;
-	}
+	ERR_FAIL_NULL_V_MSG(mTsf, 0.0, "SoundFont is not loaded.");
 	return tsf_channel_get_volume(mTsf, inChannel);
 }
 
 int MidiPlayer::channel_get_pitchwheel(int inChannel) {
-	if (mTsf == nullptr) {
-		return 0;
-	}
+	ERR_FAIL_NULL_V_MSG(mTsf, 0, "SoundFont is not loaded.");
 	return tsf_channel_get_pitchwheel(mTsf, inChannel);
 }
 
 float MidiPlayer::channel_get_pitchrange(int inChannel) {
-	if (mTsf == nullptr) {
-		return 0.0;
-	}
+	ERR_FAIL_NULL_V_MSG(mTsf, 0.0, "SoundFont is not loaded.");
 	return tsf_channel_get_pitchrange(mTsf, inChannel);
 }
 
 float MidiPlayer::channel_get_tuning(int inChannel) {
-	if (mTsf == nullptr) {
-		return 0.0;
-	}
+	ERR_FAIL_NULL_V_MSG(mTsf, 0.0, "SoundFont is not loaded.");
 	return tsf_channel_get_tuning(mTsf, inChannel);
 }
 
