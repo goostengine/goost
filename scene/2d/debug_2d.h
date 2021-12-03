@@ -19,7 +19,6 @@ private:
 	struct DrawCommand {
 		enum Type {
 			POLYLINE,
-			CLEAR,
 		};
 		ObjectID canvas_item;
 		Type type;
