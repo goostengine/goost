@@ -50,7 +50,7 @@ void register_scene_types() {
 
 #if defined(GOOST_GEOMETRY_ENABLED) && defined(GOOST_Debug2D)
 	// Define project settings before registering classes.
-	GLOBAL_DEF("debug/draw/default_color", Color(1, 1, 1));
+	GLOBAL_DEF("debug/draw/default_color", Color(0.0, 0.6, 0.7, 0.42)); // Sync with "debug/shapes/collision/shape_color"
 
 	ClassDB::register_class<Debug2D>();
 	ClassDB::register_virtual_class<DebugCapture>();
