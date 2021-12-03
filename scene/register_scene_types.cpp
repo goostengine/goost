@@ -13,6 +13,8 @@
 
 namespace goost {
 
+#if defined(GOOST_GEOMETRY_ENABLED) && defined(GOOST_Debug2D)
+
 static Debug2D *_debug_2d = nullptr;
 static bool _debug_2d_added = false;
 
@@ -31,6 +33,7 @@ static void _debug_2d_add_to_scene_tree() {
 	tree->get_root()->add_child(Debug2D::get_singleton());
 	_debug_2d_added = true;
 }
+#endif
 
 void register_scene_types() {
 #if defined(GOOST_GEOMETRY_ENABLED) && defined(GOOST_PolyNode2D)
@@ -45,7 +48,8 @@ void register_scene_types() {
 	ClassDB::register_class<GradientTexture2D>();
 	ClassDB::register_class<LightTexture>();
 
-#if defined(GOOST_Debug2D)
+#if defined(GOOST_GEOMETRY_ENABLED) && defined(GOOST_Debug2D)
+	// Define project settings before registering classes.
 	GLOBAL_DEF("debug/draw/default_color", Color(1, 1, 1));
 
 	ClassDB::register_class<Debug2D>();
@@ -78,11 +82,13 @@ void register_scene_types() {
 }
 
 void unregister_scene_types() {
+#if defined(GOOST_GEOMETRY_ENABLED) && defined(GOOST_Debug2D)
 	// There's no need to free `Debug2D` instance manually because it's added to
 	// the `SceneTree`, but lets play safe and prevent memory leak in any case.
 	if (_debug_2d && ObjectDB::instance_validate(_debug_2d)) {
 		memdelete(_debug_2d);
 	}
+#endif
 #ifdef GOOST_AUDIO_ENABLED
 	unregister_audio_types();
 #endif
