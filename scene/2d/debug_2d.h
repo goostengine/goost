@@ -4,7 +4,7 @@
 #include "core/resource.h"
 #include "scene/2d/node_2d.h"
 
-class DebugDrawState;
+class DebugCapture;
 
 class Debug2D : public Node {
 	GDCLASS(Debug2D, Node);
@@ -13,7 +13,7 @@ private:
 	static Debug2D *singleton;
 
 	Node2D *canvas_item = nullptr;
-	Ref<DebugDrawState> state;
+	Ref<DebugCapture> state;
 
 	struct DrawCommand {
 		enum Type {
@@ -37,13 +37,14 @@ protected:
 
 public:
 	static Debug2D *get_singleton() { return singleton; }
-	Ref<DebugDrawState> get_state() const { return state; }
 
 	void draw_polyline(const Vector<Point2> &p_polyline, const Color &p_color, real_t p_width = 1.0);
 	void draw_clear();
 
-	void update();
 	void capture();
+	Ref<DebugCapture> get_capture() const { return state; }
+
+	void update();
 	void clear();
 
 	Debug2D() {
@@ -53,8 +54,8 @@ public:
 	}
 };
 
-class DebugDrawState : public Reference {
-	GDCLASS(DebugDrawState, Reference);
+class DebugCapture : public Reference {
+	GDCLASS(DebugCapture, Reference);
 
 	friend class Debug2D;
 
@@ -65,11 +66,11 @@ protected:
 	int snapshot = -1;
 
 public:
-	void draw_snapshot(int p_index);
-	void draw_next_snapshot();
-	void draw_prev_snapshot();
+	void draw(int p_index);
+	void draw_next();
+	void draw_prev();
 
-	int get_snapshot_count() { return snapshots.size() / 2; }
+	int get_count() { return snapshots.size() / 2; }
 
 	void reset();
 };

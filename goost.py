@@ -157,6 +157,7 @@ classes = {
     "CommandLineOption": "core",
 	"CommandLineParser": "core",
     "Debug2D": "scene",
+    "DebugCapture": "scene",
     "GoostEngine": "core",
     "GoostMath": "math",
     "GoostGeometry2D": "geometry",
@@ -218,6 +219,7 @@ classes = _classes
 # If so, define them here explicitly so that they're automatically enabled.
 class_dependencies = {
     "CommandLineParser": ["CommandLineOption", "CommandLineHelpFormat"],
+    "Debug2D": "DebugCapture",
     "GoostEngine" : "InvokeState",
     "GoostGeometry2D" : ["PolyBoolean2D", "PolyDecomp2D", "PolyOffset2D"],
     "LightTexture" : "GradientTexture2D",

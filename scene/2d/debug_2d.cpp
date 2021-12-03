@@ -108,45 +108,45 @@ void Debug2D::_on_canvas_item_draw() {
 void Debug2D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_on_canvas_item_draw"), &Debug2D::_on_canvas_item_draw);
 
-	ClassDB::bind_method(D_METHOD("get_state"), &Debug2D::get_state);
-
 	ClassDB::bind_method(D_METHOD("draw_polyline", "polyline", "color", "width"), &Debug2D::draw_polyline, DEFVAL(1.0));
 	ClassDB::bind_method(D_METHOD("draw_clear"), &Debug2D::draw_clear);
 
-	ClassDB::bind_method(D_METHOD("update"), &Debug2D::update);
+	ClassDB::bind_method(D_METHOD("get_capture"), &Debug2D::get_capture);
 	ClassDB::bind_method(D_METHOD("capture"), &Debug2D::capture);
+
+	ClassDB::bind_method(D_METHOD("update"), &Debug2D::update);
 	ClassDB::bind_method(D_METHOD("clear"), &Debug2D::clear);
 }
 
-// DebugDrawState
+// DebugCapture
 
-void DebugDrawState::draw_snapshot(int p_index) {
-	ERR_FAIL_INDEX(p_index, get_snapshot_count());
+void DebugCapture::draw(int p_index) {
+	ERR_FAIL_INDEX(p_index, get_count());
 	snapshot = p_index;
 	Debug2D::get_singleton()->update();
 }
 
-void DebugDrawState::draw_next_snapshot() {
-	snapshot = CLAMP(snapshot + 1, 0, get_snapshot_count() - 1);
+void DebugCapture::draw_next() {
+	snapshot = CLAMP(snapshot + 1, 0, get_count() - 1);
 	Debug2D::get_singleton()->update();
 }
 
-void DebugDrawState::draw_prev_snapshot() {
-	snapshot = CLAMP(snapshot - 1, 0, get_snapshot_count() - 1);
+void DebugCapture::draw_prev() {
+	snapshot = CLAMP(snapshot - 1, 0, get_count() - 1);
 	Debug2D::get_singleton()->update();
 }
 
-void DebugDrawState::reset() {
+void DebugCapture::reset() {
 	snapshot = -1;
 	Debug2D::get_singleton()->update();
 }
 
-void DebugDrawState::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("draw_snapshot", "index"), &DebugDrawState::draw_snapshot);
-	ClassDB::bind_method(D_METHOD("draw_next_snapshot"), &DebugDrawState::draw_next_snapshot);
-	ClassDB::bind_method(D_METHOD("draw_prev_snapshot"), &DebugDrawState::draw_prev_snapshot);
+void DebugCapture::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("draw", "index"), &DebugCapture::draw);
+	ClassDB::bind_method(D_METHOD("draw_next"), &DebugCapture::draw_next);
+	ClassDB::bind_method(D_METHOD("draw_prev"), &DebugCapture::draw_prev);
 
-	ClassDB::bind_method(D_METHOD("get_snapshot_count"), &DebugDrawState::get_snapshot_count);
+	ClassDB::bind_method(D_METHOD("get_count"), &DebugCapture::get_count);
 
-	ClassDB::bind_method(D_METHOD("reset"), &DebugDrawState::reset);
+	ClassDB::bind_method(D_METHOD("reset"), &DebugCapture::reset);
 }
