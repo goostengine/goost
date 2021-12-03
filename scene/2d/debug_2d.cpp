@@ -44,11 +44,11 @@ void Debug2D::draw_polyline(const Vector<Point2> &p_polyline, const Color &p_col
 	_push_command(c);
 }
 
-void Debug2D::draw_circle(real_t p_radius, const Vector2 &p_offset, const Color &p_color) {
+void Debug2D::draw_circle(real_t p_radius, const Vector2 &p_position, const Color &p_color) {
 	DrawCommand c;
 	c.type = DrawCommand::CIRCLE;
 	c.args.push_back(p_radius);
-	c.args.push_back(_option_get_value("offset", p_offset));
+	c.args.push_back(_option_get_value("position", p_position));
 	c.args.push_back(_option_get_value("color", p_color));
 	_push_command(c);
 }
@@ -57,8 +57,8 @@ void Debug2D::draw_set_color(const Color &p_color) {
 	draw_override["color"] = p_color;
 }
 
-void Debug2D::draw_set_offset(const Vector2 &p_offset) {
-	draw_override["offset"] = p_offset;
+void Debug2D::draw_set_position(const Vector2 &p_position) {
+	draw_override["position"] = p_position;
 }
 
 void Debug2D::draw_set_filled(bool p_filled) {
@@ -72,7 +72,7 @@ void Debug2D::draw_set_line_width(real_t p_width) {
 void Debug2D::draw_reset(const String &p_option) {
 	if (p_option.empty()) {
 		draw_override["color"] = Variant();
-		draw_override["offset"] = Variant();
+		draw_override["position"] = Variant();
 		draw_override["filled"] = Variant();
 		draw_override["line_width"] = Variant();
 	} else {
@@ -231,7 +231,7 @@ Debug2D::Debug2D() {
 	draw_reset();
 
 	default_value["color"] = GLOBAL_GET("debug/draw/default_color");
-	default_value["offset"] = Vector2();
+	default_value["position"] = Vector2();
 	default_value["filled"] = true;
 	default_value["line_width"] = 1.0;
 }
@@ -247,10 +247,10 @@ void Debug2D::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("draw", "method", "args"), &Debug2D::draw, DEFVAL(Variant()));
 	ClassDB::bind_method(D_METHOD("draw_polyline", "polyline", "color", "width"), &Debug2D::draw_polyline, default_color, DEFVAL(1.0));
-	ClassDB::bind_method(D_METHOD("draw_circle", "radius", "offset", "color"), &Debug2D::draw_circle, DEFVAL(Vector2()), default_color);
+	ClassDB::bind_method(D_METHOD("draw_circle", "radius", "position", "color"), &Debug2D::draw_circle, DEFVAL(Vector2()), default_color);
 
 	ClassDB::bind_method(D_METHOD("draw_set_color", "color"), &Debug2D::draw_set_color);
-	ClassDB::bind_method(D_METHOD("draw_set_offset", "offset"), &Debug2D::draw_set_offset);
+	ClassDB::bind_method(D_METHOD("draw_set_position", "position"), &Debug2D::draw_set_position);
 	ClassDB::bind_method(D_METHOD("draw_set_filled", "filled"), &Debug2D::draw_set_filled);
 	ClassDB::bind_method(D_METHOD("draw_set_line_width", "width"), &Debug2D::draw_set_line_width);
 	ClassDB::bind_method(D_METHOD("draw_reset", "option"), &Debug2D::draw_reset, DEFVAL(""));
