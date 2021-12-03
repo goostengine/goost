@@ -15,6 +15,9 @@ private:
 	Node2D *base = nullptr;
 	ObjectID canvas_item; // Currently used item passed to draw commands.
 
+	Dictionary draw_override;
+	HashMap<String, Variant> default_value;
+
 	struct DrawCommand {
 		enum Type {
 			POLYLINE,
@@ -26,6 +29,7 @@ private:
 		Vector<Variant> args;
 	};
 	Vector<DrawCommand> commands;
+
 	Ref<DebugCapture> state;
 	int capture_begin = 0;
 	int capture_end = 0;
@@ -37,6 +41,8 @@ protected:
 	void _push_command(DrawCommand &p_command);
 	void _draw_command(const DrawCommand &p_command, CanvasItem *p_item);
 
+	Variant _option_get_value(const String &p_option, const Variant &p_value);
+
 public:
 	static Debug2D *get_singleton() { return singleton; }
 
@@ -46,7 +52,9 @@ public:
 
 	void draw(const StringName &p_method, const Array &p_args = Array());
 	void draw_polyline(const Vector<Point2> &p_polyline, const Color &p_color, real_t p_width = 1.0);
-	void draw_circle(real_t p_radius, const Vector2 &p_offset, const Color &p_color);
+	void draw_circle(real_t p_radius, const Vector2 &p_offset, const Color &p_color = Color(1, 1, 1));
+
+	void draw_set_color(const Color &p_color);
 
 	void capture();
 	Ref<DebugCapture> get_capture() const { return state; }

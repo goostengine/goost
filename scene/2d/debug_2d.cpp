@@ -1,14 +1,14 @@
 #include "debug_2d.h"
 
-#include "scene/scene_string_names.h"
 #include "goost/core/math/geometry/2d/goost_geometry_2d.h"
+#include "scene/scene_string_names.h"
 
 Debug2D *Debug2D::singleton = nullptr;
 
-void Debug2D::set_canvas_item(Object* p_canvas_item) {
+void Debug2D::set_canvas_item(Object *p_canvas_item) {
 	ERR_FAIL_NULL_MSG(p_canvas_item, "Invalid object");
 
-	CanvasItem* item = nullptr;
+	CanvasItem *item = nullptr;
 	if (p_canvas_item) {
 		item = Object::cast_to<CanvasItem>(p_canvas_item);
 	}
@@ -21,7 +21,7 @@ void Debug2D::set_canvas_item(Object* p_canvas_item) {
 	}
 }
 
-Object* Debug2D::get_canvas_item() const {
+Object *Debug2D::get_canvas_item() const {
 	return ObjectDB::get_instance(canvas_item);
 }
 
@@ -49,8 +49,28 @@ void Debug2D::draw_circle(real_t p_radius, const Vector2 &p_offset, const Color 
 	c.type = DrawCommand::CIRCLE;
 	c.args.push_back(p_radius);
 	c.args.push_back(p_offset);
-	c.args.push_back(p_color);
+	c.args.push_back(_option_get_value("color", p_color));
 	_push_command(c);
+}
+
+void Debug2D::draw_set_color(const Color &p_color) {
+	draw_override["color"] = p_color;
+}
+
+Variant Debug2D::_option_get_value(const String &p_option, const Variant &p_value) {
+	Variant ret;
+
+	Variant def_value = default_value[p_option];
+	Variant::Type type = def_value.get_type();
+
+	if (p_value != def_value) {
+		ret = p_value;
+	} else if (draw_override[p_option].get_type() == type) {
+		ret = draw_override[p_option];
+	} else {
+		ret = p_value;
+	}
+	return ret;
 }
 
 void Debug2D::_push_command(DrawCommand &p_command) {
@@ -76,7 +96,7 @@ void Debug2D::_draw_command(const DrawCommand &p_command, CanvasItem *p_item) {
 			}
 		} break;
 		case DrawCommand::CIRCLE: {
-			Vector<Vector2> circle = GoostGeometry2D::circle(p_command.args[0]);
+			const Vector<Vector2> &circle = GoostGeometry2D::circle(p_command.args[0]);
 			item->draw_set_transform(p_command.args[1], 0, Size2(1, 1));
 			item->draw_colored_polygon(circle, p_command.args[2], Vector<Point2>(), nullptr, nullptr, true);
 		} break;
@@ -183,9 +203,14 @@ Debug2D::Debug2D() {
 
 	base->set_name("Canvas");
 	add_child(base);
+
+	draw_override["color"] = Variant();
+	default_value["color"] = GLOBAL_GET("debug/draw/default_color");
 }
 
 void Debug2D::_bind_methods() {
+	Color default_color = GLOBAL_GET("debug/draw/default_color");
+
 	ClassDB::bind_method(D_METHOD("_on_canvas_item_draw", "item"), &Debug2D::_on_canvas_item_draw);
 
 	ClassDB::bind_method(D_METHOD("set_canvas_item", "canvas_item"), &Debug2D::set_canvas_item);
@@ -194,7 +219,9 @@ void Debug2D::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("draw", "method", "args"), &Debug2D::draw, DEFVAL(Variant()));
 	ClassDB::bind_method(D_METHOD("draw_polyline", "polyline", "color", "width"), &Debug2D::draw_polyline, DEFVAL(1.0));
-	ClassDB::bind_method(D_METHOD("draw_circle", "radius", "offset", "color"), &Debug2D::draw_circle);
+	ClassDB::bind_method(D_METHOD("draw_circle", "radius", "offset", "color"), &Debug2D::draw_circle, default_color);
+
+	ClassDB::bind_method(D_METHOD("draw_set_color", "color"), &Debug2D::draw_set_color);
 
 	ClassDB::bind_method(D_METHOD("get_capture"), &Debug2D::get_capture);
 	ClassDB::bind_method(D_METHOD("capture"), &Debug2D::capture);

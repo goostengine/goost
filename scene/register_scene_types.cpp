@@ -46,6 +46,8 @@ void register_scene_types() {
 	ClassDB::register_class<LightTexture>();
 
 #if defined(GOOST_Debug2D)
+	GLOBAL_DEF("debug/draw/default_color", Color(1, 1, 1));
+
 	ClassDB::register_class<Debug2D>();
 	ClassDB::register_virtual_class<DebugCapture>();
 
