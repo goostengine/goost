@@ -42,6 +42,7 @@ void Debug2D::_push_command(DrawCommand &p_command) {
 }
 
 void Debug2D::_draw_command(const DrawCommand &p_command, CanvasItem *p_item) {
+#ifdef DEBUG_ENABLED
 	CanvasItem *item = Object::cast_to<CanvasItem>(ObjectDB::get_instance(p_command.canvas_item));
 	if (!item) {
 		return;
@@ -57,6 +58,7 @@ void Debug2D::_draw_command(const DrawCommand &p_command, CanvasItem *p_item) {
 			}
 		} break;
 	}
+#endif
 }
 
 void Debug2D::capture() {

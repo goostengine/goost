@@ -45,13 +45,13 @@ void register_scene_types() {
 	ClassDB::register_class<GradientTexture2D>();
 	ClassDB::register_class<LightTexture>();
 
-#ifdef GOOST_Debug2D
-	_debug_2d = memnew(Debug2D);
+#if defined(GOOST_Debug2D)
 	ClassDB::register_class<Debug2D>();
+	ClassDB::register_virtual_class<DebugCapture>();
+
+	_debug_2d = memnew(Debug2D);
 	Engine::get_singleton()->add_singleton(Engine::Singleton("Debug2D", Debug2D::get_singleton()));
 	SceneTree::add_idle_callback(&_debug_2d_add_to_scene_tree);
-
-	ClassDB::register_class<DebugCapture>();
 #endif
 #ifdef GOOST_AUDIO_ENABLED
 	register_audio_types();

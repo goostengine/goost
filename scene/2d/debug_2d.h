@@ -13,8 +13,7 @@ private:
 	static Debug2D *singleton;
 
 	Node2D *base = nullptr;
-	ObjectID canvas_item = 0; // Currently used item passed to draw commands.
-	Ref<DebugCapture> state;
+	ObjectID canvas_item; // Currently used item passed to draw commands.
 
 	struct DrawCommand {
 		enum Type {
@@ -25,6 +24,7 @@ private:
 		Vector<Variant> args;
 	};
 	Vector<DrawCommand> commands;
+	Ref<DebugCapture> state;
 	int capture_begin = 0;
 	int capture_end = 0;
 
