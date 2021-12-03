@@ -5,13 +5,16 @@
 Debug2D *Debug2D::singleton = nullptr;
 
 void Debug2D::set_canvas_item(Object* p_canvas_item) {
-	Object* item;
+	ERR_FAIL_NULL_MSG(p_canvas_item, "Invalid object");
+
+	CanvasItem* item = nullptr;
 	if (p_canvas_item) {
-		item = p_canvas_item;
-	} else {
-		item = default_canvas_item;
+		item = Object::cast_to<CanvasItem>(p_canvas_item);
 	}
+	ERR_FAIL_NULL_MSG(item, "Object does inherit CanvasItem");
+
 	canvas_item = item->get_instance_id();
+
 	if (!item->is_connected(SceneStringNames::get_singleton()->draw, this, "_on_canvas_item_draw")) {
 		item->connect(SceneStringNames::get_singleton()->draw, this, "_on_canvas_item_draw", varray(item));
 	}
@@ -84,8 +87,12 @@ void Debug2D::clear() {
 	}
 	commands.clear();
 	state->snapshots.clear();
+
 	capture_begin = 0;
 	capture_end = 0;
+
+	set_canvas_item(base);
+
 	update();
 }
 
@@ -137,11 +144,11 @@ Debug2D::Debug2D() {
 	singleton = this;
 	state.instance();
 
-	default_canvas_item = memnew(Node2D);
-	set_canvas_item(default_canvas_item);
+	base = memnew(Node2D);
+	set_canvas_item(base);
 
-	default_canvas_item->set_name("Canvas");
-	add_child(default_canvas_item);
+	base->set_name("Canvas");
+	add_child(base);
 }
 
 void Debug2D::_bind_methods() {
@@ -149,6 +156,7 @@ void Debug2D::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("set_canvas_item", "canvas_item"), &Debug2D::set_canvas_item);
 	ClassDB::bind_method(D_METHOD("get_canvas_item"), &Debug2D::get_canvas_item);
+	ClassDB::bind_method(D_METHOD("get_base"), &Debug2D::get_base);
 
 	ClassDB::bind_method(D_METHOD("draw_polyline", "polyline", "color", "width"), &Debug2D::draw_polyline, DEFVAL(1.0));
 

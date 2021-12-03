@@ -12,8 +12,8 @@ class Debug2D : public Node {
 private:
 	static Debug2D *singleton;
 
-	Node2D *default_canvas_item = nullptr;
-	ObjectID canvas_item = 0;
+	Node2D *base = nullptr;
+	ObjectID canvas_item = 0; // Currently used item passed to draw commands.
 	Ref<DebugCapture> state;
 
 	struct DrawCommand {
@@ -41,6 +41,7 @@ public:
 
 	void set_canvas_item(Object* p_canvas_item);
 	Object* get_canvas_item() const;
+	Object* get_base() const { return base; } 
 
 	void draw_polyline(const Vector<Point2> &p_polyline, const Color &p_color, real_t p_width = 1.0);
 
