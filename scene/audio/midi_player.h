@@ -57,6 +57,8 @@ public:
 
 	void set_data(const PoolVector<uint8_t> &p_data);
 	PoolVector<uint8_t> get_data() const;
+
+	~MidiFile();
 };
 
 VARIANT_ENUM_CAST(MidiFile::Format);
