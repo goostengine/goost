@@ -12,7 +12,8 @@ class Debug2D : public Node {
 private:
 	static Debug2D *singleton;
 
-	Node2D *canvas_item = nullptr;
+	Node2D *default_canvas_item = nullptr;
+	ObjectID canvas_item = 0;
 	Ref<DebugCapture> state;
 
 	struct DrawCommand {
@@ -20,6 +21,7 @@ private:
 			POLYLINE,
 			CLEAR,
 		};
+		ObjectID canvas_item;
 		Type type;
 		Vector<Variant> args;
 	};
@@ -30,12 +32,15 @@ private:
 protected:
 	static void _bind_methods();
 
-	void _on_canvas_item_draw();
-	void _push_command(const DrawCommand &p_command);
-	void _draw_command(const DrawCommand &p_command);
+	void _on_canvas_item_draw(Object *p_item);
+	void _push_command(DrawCommand &p_command);
+	void _draw_command(const DrawCommand &p_command, CanvasItem *p_item);
 
 public:
 	static Debug2D *get_singleton() { return singleton; }
+
+	void set_canvas_item(Object* p_canvas_item);
+	Object* get_canvas_item() const;
 
 	void draw_polyline(const Vector<Point2> &p_polyline, const Color &p_color, real_t p_width = 1.0);
 

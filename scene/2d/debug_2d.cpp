@@ -4,6 +4,23 @@
 
 Debug2D *Debug2D::singleton = nullptr;
 
+void Debug2D::set_canvas_item(Object* p_canvas_item) {
+	Object* item;
+	if (p_canvas_item) {
+		item = p_canvas_item;
+	} else {
+		item = default_canvas_item;
+	}
+	canvas_item = item->get_instance_id();
+	if (!item->is_connected(SceneStringNames::get_singleton()->draw, this, "_on_canvas_item_draw")) {
+		item->connect(SceneStringNames::get_singleton()->draw, this, "_on_canvas_item_draw", varray(item));
+	}
+}
+
+Object* Debug2D::get_canvas_item() const {
+	return ObjectDB::get_instance(canvas_item);
+}
+
 void Debug2D::draw_polyline(const Vector<Point2> &p_polyline, const Color &p_color, real_t p_width) {
 	ERR_FAIL_COND(p_polyline.size() < 2);
 
@@ -15,17 +32,25 @@ void Debug2D::draw_polyline(const Vector<Point2> &p_polyline, const Color &p_col
 	_push_command(c);
 }
 
-void Debug2D::_push_command(const DrawCommand &p_command) {
+void Debug2D::_push_command(DrawCommand &p_command) {
+	p_command.canvas_item = canvas_item;
 	commands.push_back(p_command);
 	capture_end += 1;
 }
 
-void Debug2D::_draw_command(const DrawCommand &p_command) {
+void Debug2D::_draw_command(const DrawCommand &p_command, CanvasItem *p_item) {
+	CanvasItem *item = Object::cast_to<CanvasItem>(ObjectDB::get_instance(p_command.canvas_item));
+	if (!item) {
+		return;
+	}
+	if (item != p_item) {
+		return;
+	}
 	switch (p_command.type) {
 		case DrawCommand::POLYLINE: {
 			const PoolVector2Array &polyline = p_command.args[0];
 			for (int i = 0; i < polyline.size() - 1; ++i) {
-				canvas_item->draw_line(polyline[i], polyline[i + 1], p_command.args[1], p_command.args[2], true);
+				item->draw_line(polyline[i], polyline[i + 1], p_command.args[1], p_command.args[2], true);
 			}
 		} break;
 	}
@@ -40,10 +65,23 @@ void Debug2D::capture() {
 }
 
 void Debug2D::update() {
-	canvas_item->update();
+	for (int i = 0; i < commands.size(); ++i) {
+		CanvasItem *item = Object::cast_to<CanvasItem>(ObjectDB::get_instance(commands[i].canvas_item));
+		if (!item) {
+			continue;
+		}
+		item->update();
+	}
 }
 
 void Debug2D::clear() {
+	for (int i = 0; i < commands.size(); ++i) {
+		CanvasItem *item = Object::cast_to<CanvasItem>(ObjectDB::get_instance(commands[i].canvas_item));
+		if (!item) {
+			continue;
+		}
+		item->disconnect(SceneStringNames::get_singleton()->draw, this, "_on_canvas_item_draw");
+	}
 	commands.clear();
 	state->snapshots.clear();
 	capture_begin = 0;
@@ -51,7 +89,10 @@ void Debug2D::clear() {
 	update();
 }
 
-void Debug2D::_on_canvas_item_draw() {
+void Debug2D::_on_canvas_item_draw(Object *p_item) {
+	CanvasItem *item = Object::cast_to<CanvasItem>(p_item);
+	ERR_FAIL_NULL(item);
+
 	int snapshot_idx = 0;
 	int begin = capture_begin;
 	int end = capture_end;
@@ -68,7 +109,7 @@ void Debug2D::_on_canvas_item_draw() {
 			}
 		}
 		for (int j = begin; j < end; ++j) {
-			_draw_command(commands[j]);
+			_draw_command(commands[j], item);
 		}
 		++snapshot_idx;
 		if (state->snapshot >= 0 && snapshot_idx > state->snapshot) {
@@ -80,13 +121,13 @@ void Debug2D::_on_canvas_item_draw() {
 	// These type of commands will be drawn regardless.
 	if (state->snapshots.empty()) {
 		for (int j = 0; j < commands.size(); ++j) {
-			_draw_command(commands[j]);
+			_draw_command(commands[j], item);
 		}
 	} else {
 		begin = state->snapshots[state->snapshots.size() - 1];
 		end = commands.size();
 		for (int j = begin; j < end; ++j) {
-			_draw_command(commands[j]);
+			_draw_command(commands[j], item);
 		}
 	}
 }
@@ -96,14 +137,18 @@ Debug2D::Debug2D() {
 	singleton = this;
 	state.instance();
 
-	canvas_item = memnew(Node2D);
-	canvas_item->connect(SceneStringNames::get_singleton()->draw, this, "_on_canvas_item_draw");
-	canvas_item->set_name("Canvas");
-	add_child(canvas_item);
+	default_canvas_item = memnew(Node2D);
+	set_canvas_item(default_canvas_item);
+
+	default_canvas_item->set_name("Canvas");
+	add_child(default_canvas_item);
 }
 
 void Debug2D::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("_on_canvas_item_draw"), &Debug2D::_on_canvas_item_draw);
+	ClassDB::bind_method(D_METHOD("_on_canvas_item_draw", "item"), &Debug2D::_on_canvas_item_draw);
+
+	ClassDB::bind_method(D_METHOD("set_canvas_item", "canvas_item"), &Debug2D::set_canvas_item);
+	ClassDB::bind_method(D_METHOD("get_canvas_item"), &Debug2D::get_canvas_item);
 
 	ClassDB::bind_method(D_METHOD("draw_polyline", "polyline", "color", "width"), &Debug2D::draw_polyline, DEFVAL(1.0));
 
@@ -112,6 +157,8 @@ void Debug2D::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("update"), &Debug2D::update);
 	ClassDB::bind_method(D_METHOD("clear"), &Debug2D::clear);
+
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "canvas_item"), "set_canvas_item", "get_canvas_item");
 }
 
 // DebugCapture
