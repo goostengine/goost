@@ -1,6 +1,7 @@
 #include "debug_2d.h"
 
 #include "scene/scene_string_names.h"
+#include "goost/core/math/geometry/2d/goost_geometry_2d.h"
 
 Debug2D *Debug2D::singleton = nullptr;
 
@@ -35,6 +36,15 @@ void Debug2D::draw_polyline(const Vector<Point2> &p_polyline, const Color &p_col
 	_push_command(c);
 }
 
+void Debug2D::draw_circle(real_t p_radius, const Vector2 &p_offset, const Color &p_color) {
+	DrawCommand c;
+	c.type = DrawCommand::CIRCLE;
+	c.args.push_back(p_radius);
+	c.args.push_back(p_offset);
+	c.args.push_back(p_color);
+	_push_command(c);
+}
+
 void Debug2D::_push_command(DrawCommand &p_command) {
 	p_command.canvas_item = canvas_item;
 	commands.push_back(p_command);
@@ -56,6 +66,11 @@ void Debug2D::_draw_command(const DrawCommand &p_command, CanvasItem *p_item) {
 			for (int i = 0; i < polyline.size() - 1; ++i) {
 				item->draw_line(polyline[i], polyline[i + 1], p_command.args[1], p_command.args[2], true);
 			}
+		} break;
+		case DrawCommand::CIRCLE: {
+			Vector<Vector2> circle = GoostGeometry2D::circle(p_command.args[0]);
+			item->draw_set_transform(p_command.args[1], 0, Size2(1, 1));
+			item->draw_colored_polygon(circle, p_command.args[2], Vector<Point2>(), nullptr, nullptr, true);
 		} break;
 	}
 #endif
@@ -161,6 +176,7 @@ void Debug2D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_base"), &Debug2D::get_base);
 
 	ClassDB::bind_method(D_METHOD("draw_polyline", "polyline", "color", "width"), &Debug2D::draw_polyline, DEFVAL(1.0));
+	ClassDB::bind_method(D_METHOD("draw_circle", "radius", "offset", "color"), &Debug2D::draw_circle);
 
 	ClassDB::bind_method(D_METHOD("get_capture"), &Debug2D::get_capture);
 	ClassDB::bind_method(D_METHOD("capture"), &Debug2D::capture);

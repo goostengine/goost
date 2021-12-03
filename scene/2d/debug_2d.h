@@ -18,6 +18,7 @@ private:
 	struct DrawCommand {
 		enum Type {
 			POLYLINE,
+			CIRCLE,
 		};
 		ObjectID canvas_item;
 		Type type;
@@ -43,6 +44,7 @@ public:
 	Object* get_base() const { return base; } 
 
 	void draw_polyline(const Vector<Point2> &p_polyline, const Color &p_color, real_t p_width = 1.0);
+	void draw_circle(real_t p_radius, const Vector2 &p_offset, const Color &p_color);
 
 	void capture();
 	Ref<DebugCapture> get_capture() const { return state; }
