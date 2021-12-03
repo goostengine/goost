@@ -38,7 +38,6 @@ public:
 	static Debug2D *get_singleton() { return singleton; }
 
 	void draw_polyline(const Vector<Point2> &p_polyline, const Color &p_color, real_t p_width = 1.0);
-	void draw_clear();
 
 	void capture();
 	Ref<DebugCapture> get_capture() const { return state; }

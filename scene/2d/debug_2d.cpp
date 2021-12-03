@@ -15,12 +15,6 @@ void Debug2D::draw_polyline(const Vector<Point2> &p_polyline, const Color &p_col
 	_push_command(c);
 }
 
-void Debug2D::draw_clear() {
-	DrawCommand c;
-	c.type = DrawCommand::CLEAR;
-	_push_command(c);
-}
-
 void Debug2D::_push_command(const DrawCommand &p_command) {
 	commands.push_back(p_command);
 	capture_end += 1;
@@ -33,10 +27,6 @@ void Debug2D::_draw_command(const DrawCommand &p_command) {
 			for (int i = 0; i < polyline.size() - 1; ++i) {
 				canvas_item->draw_line(polyline[i], polyline[i + 1], p_command.args[1], p_command.args[2], true);
 			}
-		} break;
-		case DrawCommand::CLEAR: {
-			// This clears all internal draw commands in CanvasItem itself.
-			VisualServer::get_singleton()->canvas_item_clear(canvas_item->get_canvas_item());
 		} break;
 	}
 }
@@ -116,7 +106,6 @@ void Debug2D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_on_canvas_item_draw"), &Debug2D::_on_canvas_item_draw);
 
 	ClassDB::bind_method(D_METHOD("draw_polyline", "polyline", "color", "width"), &Debug2D::draw_polyline, DEFVAL(1.0));
-	ClassDB::bind_method(D_METHOD("draw_clear"), &Debug2D::draw_clear);
 
 	ClassDB::bind_method(D_METHOD("get_capture"), &Debug2D::get_capture);
 	ClassDB::bind_method(D_METHOD("capture"), &Debug2D::capture);
