@@ -25,6 +25,14 @@ Object* Debug2D::get_canvas_item() const {
 	return ObjectDB::get_instance(canvas_item);
 }
 
+void Debug2D::draw(const StringName &p_method, const Array &p_args) {
+	DrawCommand c;
+	c.type = DrawCommand::CUSTOM;
+	c.args.push_back(p_method);
+	c.args.push_back(p_args);
+	_push_command(c);
+}
+
 void Debug2D::draw_polyline(const Vector<Point2> &p_polyline, const Color &p_color, real_t p_width) {
 	ERR_FAIL_COND(p_polyline.size() < 2);
 
@@ -72,6 +80,13 @@ void Debug2D::_draw_command(const DrawCommand &p_command, CanvasItem *p_item) {
 			item->draw_set_transform(p_command.args[1], 0, Size2(1, 1));
 			item->draw_colored_polygon(circle, p_command.args[2], Vector<Point2>(), nullptr, nullptr, true);
 		} break;
+		case DrawCommand::CUSTOM: {
+			String method = p_command.args[0];
+			if (!item->has_method(method)) {
+				method = "draw_" + method; // Try this one.
+			}
+			item->callv(method, p_command.args[1]);
+		} break;
 	}
 #endif
 }
@@ -100,7 +115,9 @@ void Debug2D::clear() {
 		if (!item) {
 			continue;
 		}
-		item->disconnect(SceneStringNames::get_singleton()->draw, this, "_on_canvas_item_draw");
+		if (item->is_connected(SceneStringNames::get_singleton()->draw, this, "_on_canvas_item_draw")) {
+			item->disconnect(SceneStringNames::get_singleton()->draw, this, "_on_canvas_item_draw");
+		}
 	}
 	commands.clear();
 	state->snapshots.clear();
@@ -175,6 +192,7 @@ void Debug2D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_canvas_item"), &Debug2D::get_canvas_item);
 	ClassDB::bind_method(D_METHOD("get_base"), &Debug2D::get_base);
 
+	ClassDB::bind_method(D_METHOD("draw", "method", "args"), &Debug2D::draw, DEFVAL(Variant()));
 	ClassDB::bind_method(D_METHOD("draw_polyline", "polyline", "color", "width"), &Debug2D::draw_polyline, DEFVAL(1.0));
 	ClassDB::bind_method(D_METHOD("draw_circle", "radius", "offset", "color"), &Debug2D::draw_circle);
 

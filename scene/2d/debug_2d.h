@@ -19,6 +19,7 @@ private:
 		enum Type {
 			POLYLINE,
 			CIRCLE,
+			CUSTOM,
 		};
 		ObjectID canvas_item;
 		Type type;
@@ -39,10 +40,11 @@ protected:
 public:
 	static Debug2D *get_singleton() { return singleton; }
 
-	void set_canvas_item(Object* p_canvas_item);
-	Object* get_canvas_item() const;
-	Object* get_base() const { return base; } 
+	void set_canvas_item(Object *p_canvas_item);
+	Object *get_canvas_item() const;
+	Object *get_base() const { return base; }
 
+	void draw(const StringName &p_method, const Array &p_args = Array());
 	void draw_polyline(const Vector<Point2> &p_polyline, const Color &p_color, real_t p_width = 1.0);
 	void draw_circle(real_t p_radius, const Vector2 &p_offset, const Color &p_color);
 
