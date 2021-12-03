@@ -41,17 +41,6 @@ void Debug2D::_draw_command(const DrawCommand &p_command) {
 	}
 }
 
-void Debug2D::_notification(int p_what) {
-	switch (p_what) {
-		case NOTIFICATION_ENTER_TREE: {
-			canvas_item = memnew(Node2D);
-			canvas_item->connect(SceneStringNames::get_singleton()->draw, this, "_on_canvas_item_draw");
-			canvas_item->set_name("Canvas");
-			add_child(canvas_item);
-		} break;
-	}
-}
-
 void Debug2D::capture() {
 	state->snapshots.push_back(capture_begin);
 	state->snapshots.push_back(capture_end);
@@ -81,6 +70,13 @@ void Debug2D::_on_canvas_item_draw() {
 		begin = state->snapshots[i];
 		end = state->snapshots[i + 1];
 
+		if (!state->accumulate) {
+			if (snapshot_idx != state->snapshot) {
+				// Do not accumulate drawings on top of each command.
+				++snapshot_idx;
+				continue;
+			}
+		}
 		for (int j = begin; j < end; ++j) {
 			_draw_command(commands[j]);
 		}
@@ -103,6 +99,17 @@ void Debug2D::_on_canvas_item_draw() {
 			_draw_command(commands[j]);
 		}
 	}
+}
+
+Debug2D::Debug2D() {
+	ERR_FAIL_COND_MSG(singleton != nullptr, "Singleton already exists");
+	singleton = this;
+	state.instance();
+
+	canvas_item = memnew(Node2D);
+	canvas_item->connect(SceneStringNames::get_singleton()->draw, this, "_on_canvas_item_draw");
+	canvas_item->set_name("Canvas");
+	add_child(canvas_item);
 }
 
 void Debug2D::_bind_methods() {
@@ -136,6 +143,11 @@ void DebugCapture::draw_prev() {
 	Debug2D::get_singleton()->update();
 }
 
+void DebugCapture::set_accumulate(bool p_accumulate) {
+	accumulate = p_accumulate;
+	Debug2D::get_singleton()->update();
+}
+
 void DebugCapture::reset() {
 	snapshot = -1;
 	Debug2D::get_singleton()->update();
@@ -149,4 +161,9 @@ void DebugCapture::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_count"), &DebugCapture::get_count);
 
 	ClassDB::bind_method(D_METHOD("reset"), &DebugCapture::reset);
+
+	ClassDB::bind_method(D_METHOD("set_accumulate", "accumulate"), &DebugCapture::set_accumulate);
+	ClassDB::bind_method(D_METHOD("is_accumulating"), &DebugCapture::is_accumulating);
+
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "accumulate"), "set_accumulate", "is_accumulating");
 }

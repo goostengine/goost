@@ -28,7 +28,6 @@ private:
 	int capture_end = 0;
 
 protected:
-	void _notification(int p_what);
 	static void _bind_methods();
 
 	void _on_canvas_item_draw();
@@ -47,11 +46,7 @@ public:
 	void update();
 	void clear();
 
-	Debug2D() {
-		ERR_FAIL_COND_MSG(singleton != nullptr, "Singleton already exists");
-		singleton = this;
-		state.instance();
-	}
+	Debug2D();
 };
 
 class DebugCapture : public Reference {
@@ -64,6 +59,7 @@ protected:
 
 	Vector<int> snapshots;
 	int snapshot = -1;
+	bool accumulate = true;
 
 public:
 	void draw(int p_index);
@@ -71,6 +67,9 @@ public:
 	void draw_prev();
 
 	int get_count() { return snapshots.size() / 2; }
+
+	void set_accumulate(bool p_accumulate);
+	bool is_accumulating() const { return accumulate; }
 
 	void reset();
 };
