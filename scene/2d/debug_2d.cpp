@@ -7,6 +7,11 @@
 
 Debug2D *Debug2D::singleton = nullptr;
 
+void Debug2D::set_enabled(bool p_enabled) {
+	enabled = p_enabled;
+	update();
+}
+
 void Debug2D::set_canvas_item(Object *p_canvas_item) {
 	ERR_FAIL_NULL_MSG(p_canvas_item, "Invalid object");
 
@@ -156,6 +161,9 @@ void Debug2D::_push_command(DrawCommand &p_command) {
 
 void Debug2D::_draw_command(const DrawCommand &p_command, CanvasItem *p_item) {
 #ifdef DEBUG_ENABLED
+	if (!enabled) {
+		return;
+	}
 	CanvasItem *item = Object::cast_to<CanvasItem>(ObjectDB::get_instance(p_command.canvas_item));
 	if (!item) {
 		return;
@@ -290,6 +298,10 @@ void Debug2D::clear() {
 }
 
 void Debug2D::_on_canvas_item_draw(Object *p_item) {
+#ifdef DEBUG_ENABLED
+	if (!enabled) {
+		return;
+	}
 	CanvasItem *item = Object::cast_to<CanvasItem>(p_item);
 	ERR_FAIL_NULL(item);
 
@@ -330,6 +342,7 @@ void Debug2D::_on_canvas_item_draw(Object *p_item) {
 			_draw_command(commands[j], item);
 		}
 	}
+#endif
 }
 
 Debug2D::Debug2D() {
@@ -345,29 +358,34 @@ Debug2D::Debug2D() {
 
 	draw_reset();
 
-	default_value["color"] = GLOBAL_GET("debug/draw/default_color");
-	default_value["filled"] = true;
-	default_value["line_width"] = 1.0;
+	default_value["color"] = GLOBAL_GET("debug/draw/color");
+	default_value["filled"] = GLOBAL_GET("debug/draw/filled");
+	default_value["line_width"] = GLOBAL_GET("debug/draw/line_width");
 
 	antialiased = GLOBAL_GET("debug/draw/antialiased");
 }
 
 void Debug2D::_bind_methods() {
-	Color default_color = GLOBAL_GET("debug/draw/default_color");
+	Color color = GLOBAL_GET("debug/draw/color");
+	bool filled = GLOBAL_GET("debug/draw/filled");
+	float line_width = GLOBAL_GET("debug/draw/line_width");
 
 	ClassDB::bind_method(D_METHOD("_on_canvas_item_draw", "item"), &Debug2D::_on_canvas_item_draw);
+
+	ClassDB::bind_method(D_METHOD("set_enabled", "enabled"), &Debug2D::set_enabled);
+	ClassDB::bind_method(D_METHOD("is_enabled"), &Debug2D::is_enabled);
 
 	ClassDB::bind_method(D_METHOD("set_canvas_item", "canvas_item"), &Debug2D::set_canvas_item);
 	ClassDB::bind_method(D_METHOD("get_canvas_item"), &Debug2D::get_canvas_item);
 	ClassDB::bind_method(D_METHOD("get_base"), &Debug2D::get_base);
 
 	ClassDB::bind_method(D_METHOD("draw", "method", "args"), &Debug2D::draw, DEFVAL(Variant()));
-	ClassDB::bind_method(D_METHOD("draw_line", "from", "to", "color", "width"), &Debug2D::draw_line, default_color, DEFVAL(1.0));
-	ClassDB::bind_method(D_METHOD("draw_polyline", "polyline", "color", "width"), &Debug2D::draw_polyline, default_color, DEFVAL(1.0));
-	ClassDB::bind_method(D_METHOD("draw_polygon", "polygon", "color", "filled", "width"), &Debug2D::draw_polygon, default_color, DEFVAL(true), DEFVAL(1.0));
-	ClassDB::bind_method(D_METHOD("draw_rect", "rect", "color", "filled", "width"), &Debug2D::draw_rect, default_color, DEFVAL(true), DEFVAL(1.0));
-	ClassDB::bind_method(D_METHOD("draw_circle", "radius", "position", "color"), &Debug2D::draw_circle, DEFVAL(Vector2()), default_color);
-	
+	ClassDB::bind_method(D_METHOD("draw_line", "from", "to", "color", "width"), &Debug2D::draw_line, color, line_width);
+	ClassDB::bind_method(D_METHOD("draw_polyline", "polyline", "color", "width"), &Debug2D::draw_polyline, color, line_width);
+	ClassDB::bind_method(D_METHOD("draw_polygon", "polygon", "color", "filled", "width"), &Debug2D::draw_polygon, color, filled, line_width);
+	ClassDB::bind_method(D_METHOD("draw_rect", "rect", "color", "filled", "width"), &Debug2D::draw_rect, color, filled, line_width);
+	ClassDB::bind_method(D_METHOD("draw_circle", "radius", "position", "color"), &Debug2D::draw_circle, DEFVAL(Vector2()), color);
+
 	ClassDB::bind_method(D_METHOD("draw_text", "text", "position", "color"), &Debug2D::draw_text, DEFVAL(Vector2()), Color(1, 1, 1)); // White by default.
 
 	ClassDB::bind_method(D_METHOD("draw_set_transform", "position", "rotation", "scale"), &Debug2D::draw_set_transform, DEFVAL(0), DEFVAL(Size2(1, 1)));
@@ -384,6 +402,7 @@ void Debug2D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("update"), &Debug2D::update);
 	ClassDB::bind_method(D_METHOD("clear"), &Debug2D::clear);
 
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "enabled"), "set_enabled", "is_enabled");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "canvas_item"), "set_canvas_item", "get_canvas_item");
 }
 

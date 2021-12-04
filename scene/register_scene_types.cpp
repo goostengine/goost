@@ -31,6 +31,9 @@ static void _debug_2d_add_to_scene_tree() {
 	}
 	Debug2D::get_singleton()->set_name("Debug2D");
 	tree->get_root()->add_child(Debug2D::get_singleton());
+
+	Debug2D::get_singleton()->set_enabled(GLOBAL_GET("debug/draw/enabled"));
+
 	_debug_2d_added = true;
 }
 #endif
@@ -50,7 +53,11 @@ void register_scene_types() {
 
 #if defined(GOOST_GEOMETRY_ENABLED) && defined(GOOST_Debug2D)
 	// Define project settings before registering classes.
-	GLOBAL_DEF("debug/draw/default_color", Color(0.0, 0.6, 0.7, 0.5));
+	GLOBAL_DEF("debug/draw/enabled", true);
+	GLOBAL_DEF("debug/draw/color", Color(0.0, 0.6, 0.7, 0.5));
+	GLOBAL_DEF("debug/draw/filled", true);
+	GLOBAL_DEF("debug/draw/line_width", 1.0);
+	ProjectSettings::get_singleton()->set_custom_property_info("debug/draw/line_width", PropertyInfo(Variant::REAL, "debug/draw/line_width", PROPERTY_HINT_RANGE, "0.1,5.0,0.1,or_greater"));
 	GLOBAL_DEF("debug/draw/antialiased", false);
 
 	ClassDB::register_class<Debug2D>();

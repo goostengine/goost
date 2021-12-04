@@ -12,6 +12,8 @@ class Debug2D : public Node {
 private:
 	static Debug2D *singleton;
 
+	bool enabled = true;
+
 	Node2D *base = nullptr;
 	ObjectID canvas_item; // Currently used item passed to draw commands.
 
@@ -51,6 +53,9 @@ protected:
 
 public:
 	static Debug2D *get_singleton() { return singleton; }
+
+	void set_enabled(bool p_enabled);
+	bool is_enabled() const { return enabled; }
 
 	void set_canvas_item(Object *p_canvas_item);
 	Object *get_canvas_item() const;
