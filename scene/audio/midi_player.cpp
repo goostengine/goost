@@ -59,6 +59,10 @@ PoolByteArray MidiFile::get_data() const {
 void MidiFile::set_data(const PoolVector<uint8_t> &dataIn) {
 	data_len = dataIn.size();
 	ERR_FAIL_COND(data_len == 0);
+
+	if (data) {
+		memfree(data);
+	}
 	data = memalloc(data_len);
 	memcpy(data, dataIn.read().ptr(), data_len);
 }
