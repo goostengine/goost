@@ -42,12 +42,15 @@ private:
 	int capture_begin = 0;
 	int capture_end = 0;
 
+	bool update_queued = false;
+
 protected:
 	static void _bind_methods();
 
 	void _on_canvas_item_draw(Object *p_item);
 	void _push_command(DrawCommand &p_command);
 	void _draw_command(const DrawCommand &p_command, CanvasItem *p_item);
+	void _update_draw_commands();
 
 	Variant _option_get_value(const String &p_option, const Variant &p_value);
 

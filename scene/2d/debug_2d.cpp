@@ -159,6 +159,7 @@ void Debug2D::_push_command(DrawCommand &p_command) {
 	p_command.canvas_item = canvas_item;
 	commands.push_back(p_command);
 	capture_end += 1;
+	update();
 }
 
 void Debug2D::_draw_command(const DrawCommand &p_command, CanvasItem *p_item) {
@@ -279,6 +280,17 @@ void Debug2D::capture() {
 }
 
 void Debug2D::update() {
+	if (!is_inside_tree()) {
+		return;
+	}
+	if (update_queued) {
+		return;
+	}
+	update_queued = true;
+	call_deferred("_update_draw_commands");
+}
+
+void Debug2D::_update_draw_commands() {
 	for (int i = 0; i < commands.size(); ++i) {
 		CanvasItem *item = Object::cast_to<CanvasItem>(ObjectDB::get_instance(commands[i].canvas_item));
 		if (!item) {
@@ -286,6 +298,7 @@ void Debug2D::update() {
 		}
 		item->update();
 	}
+	update_queued = false;
 }
 
 void Debug2D::clear() {
@@ -384,6 +397,7 @@ void Debug2D::_bind_methods() {
 	float line_width = GLOBAL_GET("debug/draw/2d/line_width");
 
 	ClassDB::bind_method(D_METHOD("_on_canvas_item_draw", "item"), &Debug2D::_on_canvas_item_draw);
+	ClassDB::bind_method(D_METHOD("_update_draw_commands"), &Debug2D::_update_draw_commands);
 
 	ClassDB::bind_method(D_METHOD("set_enabled", "enabled"), &Debug2D::set_enabled);
 	ClassDB::bind_method(D_METHOD("is_enabled"), &Debug2D::is_enabled);
