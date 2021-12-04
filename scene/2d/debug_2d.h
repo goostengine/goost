@@ -55,7 +55,6 @@ public:
 	void draw_circle(real_t p_radius, const Vector2 &p_position = Vector2(), const Color &p_color = Color(1, 1, 1));
 
 	void draw_set_color(const Color &p_color);
-	void draw_set_position(const Vector2 &p_position);
 	void draw_set_filled(bool p_filled);
 	void draw_set_line_width(real_t p_width);
 	void draw_reset(const String &p_option = "");
