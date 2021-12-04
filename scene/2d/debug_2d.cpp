@@ -1,6 +1,7 @@
 #include "debug_2d.h"
 
 #include "goost/core/math/geometry/2d/goost_geometry_2d.h"
+
 #include "scene/scene_string_names.h"
 
 Debug2D *Debug2D::singleton = nullptr;
@@ -33,6 +34,16 @@ void Debug2D::draw(const StringName &p_method, const Array &p_args) {
 	_push_command(c);
 }
 
+void Debug2D::draw_line(const Point2 &p_from, const Point2 &p_to, const Color &p_color, float p_width) {
+	DrawCommand c;
+	c.type = DrawCommand::LINE;
+	c.args.push_back(p_from);
+	c.args.push_back(p_to);
+	c.args.push_back(_option_get_value("color", p_color));
+	c.args.push_back(_option_get_value("line_width", p_width));
+	_push_command(c);
+}
+
 void Debug2D::draw_polyline(const Vector<Point2> &p_polyline, const Color &p_color, real_t p_width) {
 	ERR_FAIL_COND(p_polyline.size() < 2);
 
@@ -40,6 +51,28 @@ void Debug2D::draw_polyline(const Vector<Point2> &p_polyline, const Color &p_col
 	c.type = DrawCommand::POLYLINE;
 	c.args.push_back(p_polyline);
 	c.args.push_back(_option_get_value("color", p_color));
+	c.args.push_back(_option_get_value("line_width", p_width));
+	_push_command(c);
+}
+
+void Debug2D::draw_polygon(const Vector<Point2> &p_polygon, const Color &p_color, bool p_filled, float p_width) {
+	ERR_FAIL_COND(p_polygon.size() < 3);
+
+	DrawCommand c;
+	c.type = DrawCommand::POLYGON;
+	c.args.push_back(p_polygon);
+	c.args.push_back(_option_get_value("color", p_color));
+	c.args.push_back(_option_get_value("filled", p_filled));
+	c.args.push_back(_option_get_value("line_width", p_width));
+	_push_command(c);
+}
+
+void Debug2D::draw_rect(const Rect2 &p_rect, const Color &p_color, bool p_filled, float p_width) {
+	DrawCommand c;
+	c.type = DrawCommand::RECT;
+	c.args.push_back(p_rect);
+	c.args.push_back(_option_get_value("color", p_color));
+	c.args.push_back(_option_get_value("filled", p_filled));
 	c.args.push_back(_option_get_value("line_width", p_width));
 	_push_command(c);
 }
@@ -120,16 +153,70 @@ void Debug2D::_draw_command(const DrawCommand &p_command, CanvasItem *p_item) {
 	if (item != p_item) {
 		return;
 	}
-	const DrawCommand &c = p_command; 
+	const DrawCommand &c = p_command;
 
 	switch (c.type) {
+		case DrawCommand::LINE: {
+			item->draw_line(c.args[0], c.args[1], c.args[2], c.args[3], true);
+		} break;
 		case DrawCommand::POLYLINE: {
 			item->draw_polyline(c.args[0], c.args[1], c.args[2], true);
 		} break;
+		case DrawCommand::POLYGON: {
+			// Godot's `draw_polygon()` is not as robust as it could be.
+			// The following works better for rendering degenerate polygons.
+			Vector<Vector2> polygon = c.args[0];
+			Color color = c.args[1];
+			bool filled = c.args[2];
+			float width = c.args[3];
+
+			if (filled) {
+				const Vector<Vector<Point2>> &triangles = GoostGeometry2D::triangulate_polygon(polygon);
+				if (triangles.empty()) {
+					break;
+				}
+				Vector<Point2> vertices;
+				for (int i = 0; i < triangles.size(); ++i) {
+					const Vector<Point2> &part = triangles[i];
+					for (int j = 0; j < part.size(); ++j) {
+						vertices.push_back(part[j]);
+					}
+				}
+				const int indices_count = triangles.size() * 3;
+				Vector<int> indices;
+				for (int i = 0; i < indices_count; ++i) {
+					indices.push_back(i);
+				}
+				Vector<Color> colors;
+				colors.push_back(color);
+
+				VS::get_singleton()->canvas_item_add_triangle_array(
+						item->get_canvas_item(), indices, vertices, colors, Vector<Point2>(),
+						Vector<int>(), Vector<float>(), RID(), -1, RID(), true);
+			} else {
+				polygon.push_back(polygon[0]); // Close it.
+				item->draw_polyline(polygon, color, width, true);
+			}
+		} break;
+		case DrawCommand::RECT: {
+			bool filled = c.args[2];
+			// Get rid of annoying warnings, because that's an implementation detail.
+			if (filled) {
+				item->draw_rect(c.args[0], c.args[1], true);
+			} else {
+				item->draw_rect(c.args[0], c.args[1], false, c.args[3], true);
+			}
+		} break;
 		case DrawCommand::CIRCLE: {
+			// Godot's `draw_circle()` produces fixed number of vertices.
+			// The following works better with large circles.
 			const Vector<Vector2> &circle = GoostGeometry2D::circle(c.args[0]);
-			item->draw_set_transform(c.args[1], 0, Size2(1, 1));
-			item->draw_colored_polygon(circle, c.args[2], Vector<Point2>(), nullptr, nullptr, true);
+			Vector2 position = c.args[1];
+			Vector<Vector2> circle_moved;
+			for (int i = 0; i < circle.size(); ++i) {
+				circle_moved.push_back(circle[i] + position);
+			}
+			item->draw_colored_polygon(circle_moved, c.args[2], Vector<Point2>(), nullptr, nullptr, true);
 		} break;
 		case DrawCommand::TRANSFORM: {
 			item->draw_set_transform_matrix(c.args[0]);
@@ -256,7 +343,10 @@ void Debug2D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_base"), &Debug2D::get_base);
 
 	ClassDB::bind_method(D_METHOD("draw", "method", "args"), &Debug2D::draw, DEFVAL(Variant()));
+	ClassDB::bind_method(D_METHOD("draw_line", "from", "to", "color", "width"), &Debug2D::draw_line, default_color, DEFVAL(1.0));
 	ClassDB::bind_method(D_METHOD("draw_polyline", "polyline", "color", "width"), &Debug2D::draw_polyline, default_color, DEFVAL(1.0));
+	ClassDB::bind_method(D_METHOD("draw_polygon", "polygon", "color", "filled", "width"), &Debug2D::draw_polygon, default_color, DEFVAL(true), DEFVAL(1.0));
+	ClassDB::bind_method(D_METHOD("draw_rect", "rect", "color", "filled", "width"), &Debug2D::draw_rect, default_color, DEFVAL(true), DEFVAL(1.0));
 	ClassDB::bind_method(D_METHOD("draw_circle", "radius", "position", "color"), &Debug2D::draw_circle, DEFVAL(Vector2()), default_color);
 
 	ClassDB::bind_method(D_METHOD("draw_set_transform", "position", "rotation", "scale"), &Debug2D::draw_set_transform, DEFVAL(0), DEFVAL(Size2(1, 1)));

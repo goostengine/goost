@@ -20,7 +20,10 @@ private:
 
 	struct DrawCommand {
 		enum Type {
+			LINE,
 			POLYLINE,
+			POLYGON,
+			RECT,
 			CIRCLE,
 			TRANSFORM,
 			CUSTOM,
@@ -51,8 +54,11 @@ public:
 	Object *get_canvas_item() const;
 	Object *get_base() const { return base; }
 
-	void draw(const StringName &p_method, const Array &p_args = Array());
-	void draw_polyline(const Vector<Point2> &p_polyline, const Color &p_color = Color(1, 1, 1), real_t p_width = 1.0);
+	void draw(const StringName &p_method, const Array &p_args = Array()); // Custom.
+	void draw_line(const Point2 &p_from, const Point2 &p_to, const Color &p_color = Color(1, 1, 1), float p_width = 1.0);
+	void draw_polyline(const Vector<Point2> &p_polyline, const Color &p_color = Color(1, 1, 1), float p_width = 1.0);
+	void draw_polygon(const Vector<Point2> &p_polygon, const Color &p_color = Color(1, 1, 1), bool p_filled = true, float p_width = 1.0);
+	void draw_rect(const Rect2 &p_rect, const Color &p_color = Color(1, 1, 1), bool p_filled = true, float p_width = 1.0);
 	void draw_circle(real_t p_radius, const Vector2 &p_position = Vector2(), const Color &p_color = Color(1, 1, 1));
 
 	void draw_set_transform(const Point2 &p_offset, float p_rotation = 0.0, const Size2 &p_scale = Size2(1, 1));
