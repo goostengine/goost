@@ -53,6 +53,19 @@ void Debug2D::draw_circle(real_t p_radius, const Vector2 &p_position, const Colo
 	_push_command(c);
 }
 
+void Debug2D::draw_set_transform(const Point2 &p_offset, float p_rotation, const Size2 &p_scale) {
+	Transform2D matrix(p_rotation, p_offset);
+	matrix.scale_basis(p_scale);
+	draw_set_transform_matrix(matrix);
+}
+
+void Debug2D::draw_set_transform_matrix(const Transform2D &p_matrix) {
+	DrawCommand c;
+	c.type = DrawCommand::TRANSFORM;
+	c.args.push_back(p_matrix);
+	_push_command(c);
+}
+
 void Debug2D::draw_set_color(const Color &p_color) {
 	draw_override["color"] = p_color;
 }
@@ -117,6 +130,9 @@ void Debug2D::_draw_command(const DrawCommand &p_command, CanvasItem *p_item) {
 			const Vector<Vector2> &circle = GoostGeometry2D::circle(c.args[0]);
 			item->draw_set_transform(c.args[1], 0, Size2(1, 1));
 			item->draw_colored_polygon(circle, c.args[2], Vector<Point2>(), nullptr, nullptr, true);
+		} break;
+		case DrawCommand::TRANSFORM: {
+			item->draw_set_transform_matrix(c.args[0]);
 		} break;
 		case DrawCommand::CUSTOM: {
 			String method = c.args[0];
@@ -242,6 +258,9 @@ void Debug2D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("draw", "method", "args"), &Debug2D::draw, DEFVAL(Variant()));
 	ClassDB::bind_method(D_METHOD("draw_polyline", "polyline", "color", "width"), &Debug2D::draw_polyline, default_color, DEFVAL(1.0));
 	ClassDB::bind_method(D_METHOD("draw_circle", "radius", "position", "color"), &Debug2D::draw_circle, DEFVAL(Vector2()), default_color);
+
+	ClassDB::bind_method(D_METHOD("draw_set_transform", "position", "rotation", "scale"), &Debug2D::draw_set_transform, DEFVAL(0), DEFVAL(Size2(1, 1)));
+	ClassDB::bind_method(D_METHOD("draw_set_transform_matrix", "matrix"), &Debug2D::draw_set_transform_matrix);
 
 	ClassDB::bind_method(D_METHOD("draw_set_color", "color"), &Debug2D::draw_set_color);
 	ClassDB::bind_method(D_METHOD("draw_set_filled", "filled"), &Debug2D::draw_set_filled);
