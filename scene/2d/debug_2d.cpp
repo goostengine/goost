@@ -358,17 +358,17 @@ Debug2D::Debug2D() {
 
 	draw_reset();
 
-	default_value["color"] = GLOBAL_GET("debug/draw/color");
-	default_value["filled"] = GLOBAL_GET("debug/draw/filled");
-	default_value["line_width"] = GLOBAL_GET("debug/draw/line_width");
+	default_value["color"] = GLOBAL_GET("debug/draw/2d/color");
+	default_value["filled"] = GLOBAL_GET("debug/draw/2d/filled");
+	default_value["line_width"] = GLOBAL_GET("debug/draw/2d/line_width");
 
-	antialiased = GLOBAL_GET("debug/draw/antialiased");
+	antialiased = GLOBAL_GET("debug/draw/2d/antialiased");
 }
 
 void Debug2D::_bind_methods() {
-	Color color = GLOBAL_GET("debug/draw/color");
-	bool filled = GLOBAL_GET("debug/draw/filled");
-	float line_width = GLOBAL_GET("debug/draw/line_width");
+	Color color = GLOBAL_GET("debug/draw/2d/color");
+	bool filled = GLOBAL_GET("debug/draw/2d/filled");
+	float line_width = GLOBAL_GET("debug/draw/2d/line_width");
 
 	ClassDB::bind_method(D_METHOD("_on_canvas_item_draw", "item"), &Debug2D::_on_canvas_item_draw);
 
