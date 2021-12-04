@@ -73,10 +73,10 @@ void Debug2D::draw_polygon(const Vector<Point2> &p_polygon, const Color &p_color
 	_push_command(c);
 }
 
-void Debug2D::draw_rect(const Rect2 &p_rect, const Color &p_color, bool p_filled, float p_width) {
+void Debug2D::draw_region(const Rect2 &p_region, const Color &p_color, bool p_filled, float p_width) {
 	DrawCommand c;
-	c.type = DrawCommand::RECT;
-	c.args.push_back(p_rect);
+	c.type = DrawCommand::REGION;
+	c.args.push_back(p_region);
 	c.args.push_back(_option_get_value("color", p_color));
 	c.args.push_back(_option_get_value("filled", p_filled));
 	c.args.push_back(_option_get_value("line_width", p_width));
@@ -219,7 +219,7 @@ void Debug2D::_draw_command(const DrawCommand &p_command, CanvasItem *p_item) {
 				item->draw_polyline(polygon, color, width, antialiased);
 			}
 		} break;
-		case DrawCommand::RECT: {
+		case DrawCommand::REGION: {
 			bool filled = c.args[2];
 			// Get rid of annoying warnings, because that's an implementation detail.
 			if (filled) {
@@ -410,7 +410,7 @@ void Debug2D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("draw_line", "from", "to", "color", "width"), &Debug2D::draw_line, color, line_width);
 	ClassDB::bind_method(D_METHOD("draw_polyline", "polyline", "color", "width"), &Debug2D::draw_polyline, color, line_width);
 	ClassDB::bind_method(D_METHOD("draw_polygon", "polygon", "color", "filled", "width"), &Debug2D::draw_polygon, color, filled, line_width);
-	ClassDB::bind_method(D_METHOD("draw_rect", "rect", "color", "filled", "width"), &Debug2D::draw_rect, color, filled, line_width);
+	ClassDB::bind_method(D_METHOD("draw_region", "region", "color", "filled", "width"), &Debug2D::draw_region, color, filled, line_width);
 	ClassDB::bind_method(D_METHOD("draw_circle", "radius", "position", "color", "filled", "width"), &Debug2D::draw_circle, DEFVAL(Vector2()), color, filled, line_width);
 
 	ClassDB::bind_method(D_METHOD("draw_text", "text", "position", "color"), &Debug2D::draw_text, DEFVAL(Vector2()), Color(1, 1, 1)); // White by default!

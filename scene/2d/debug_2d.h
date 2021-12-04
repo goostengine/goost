@@ -26,7 +26,7 @@ private:
 			LINE,
 			POLYLINE,
 			POLYGON,
-			RECT,
+			REGION,
 			CIRCLE,
 			TEXT,
 			TRANSFORM,
@@ -68,7 +68,7 @@ public:
 	void draw_line(const Point2 &p_from, const Point2 &p_to, const Color &p_color = Color(1, 1, 1), float p_width = 1.0);
 	void draw_polyline(const Vector<Point2> &p_polyline, const Color &p_color = Color(1, 1, 1), float p_width = 1.0);
 	void draw_polygon(const Vector<Point2> &p_polygon, const Color &p_color = Color(1, 1, 1), bool p_filled = true, float p_width = 1.0);
-	void draw_rect(const Rect2 &p_rect, const Color &p_color = Color(1, 1, 1), bool p_filled = true, float p_width = 1.0);
+	void draw_region(const Rect2 &p_region, const Color &p_color = Color(1, 1, 1), bool p_filled = true, float p_width = 1.0);
 	void draw_circle(real_t p_radius, const Vector2 &p_position = Vector2(), const Color &p_color = Color(1, 1, 1), bool p_filled = true, float p_width = 1.0);
 
 	void draw_text(const String &p_text, const Vector2 &p_position = Vector2(), const Color &p_color = Color(1, 1, 1));
