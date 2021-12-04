@@ -83,12 +83,14 @@ void Debug2D::draw_rect(const Rect2 &p_rect, const Color &p_color, bool p_filled
 	_push_command(c);
 }
 
-void Debug2D::draw_circle(real_t p_radius, const Vector2 &p_position, const Color &p_color) {
+void Debug2D::draw_circle(real_t p_radius, const Vector2 &p_position, const Color &p_color, bool p_filled, float p_width) {
 	DrawCommand c;
 	c.type = DrawCommand::CIRCLE;
 	c.args.push_back(p_radius);
 	c.args.push_back(p_position);
 	c.args.push_back(_option_get_value("color", p_color));
+	c.args.push_back(_option_get_value("filled", p_filled));
+	c.args.push_back(_option_get_value("line_width", p_width));
 	_push_command(c);
 }
 
@@ -229,12 +231,23 @@ void Debug2D::_draw_command(const DrawCommand &p_command, CanvasItem *p_item) {
 			// Godot's `draw_circle()` produces fixed number of vertices.
 			// The following works better with large circles.
 			const Vector<Vector2> &circle = GoostGeometry2D::circle(c.args[0]);
+			ERR_FAIL_COND(circle.size() < 3);
+
 			Vector2 position = c.args[1];
+			Color color = c.args[2];
+			bool filled = c.args[3];
+
 			Vector<Vector2> circle_moved;
 			for (int i = 0; i < circle.size(); ++i) {
 				circle_moved.push_back(circle[i] + position);
 			}
-			item->draw_colored_polygon(circle_moved, c.args[2], Vector<Point2>(), nullptr, nullptr, antialiased);
+			if (filled) {
+				item->draw_colored_polygon(circle_moved, color, Vector<Point2>(), nullptr, nullptr, antialiased);
+			} else {
+				circle_moved.push_back(circle[0]);
+				float line_width = c.args[4];
+				item->draw_polyline(circle_moved, color, line_width, antialiased);
+			}
 		} break;
 		case DrawCommand::TEXT: {
 			const Ref<Font> &font = Theme::get_default()->get_font("font", "Control");
@@ -384,9 +397,9 @@ void Debug2D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("draw_polyline", "polyline", "color", "width"), &Debug2D::draw_polyline, color, line_width);
 	ClassDB::bind_method(D_METHOD("draw_polygon", "polygon", "color", "filled", "width"), &Debug2D::draw_polygon, color, filled, line_width);
 	ClassDB::bind_method(D_METHOD("draw_rect", "rect", "color", "filled", "width"), &Debug2D::draw_rect, color, filled, line_width);
-	ClassDB::bind_method(D_METHOD("draw_circle", "radius", "position", "color"), &Debug2D::draw_circle, DEFVAL(Vector2()), color);
+	ClassDB::bind_method(D_METHOD("draw_circle", "radius", "position", "color", "filled", "width"), &Debug2D::draw_circle, DEFVAL(Vector2()), color, filled, line_width);
 
-	ClassDB::bind_method(D_METHOD("draw_text", "text", "position", "color"), &Debug2D::draw_text, DEFVAL(Vector2()), Color(1, 1, 1)); // White by default.
+	ClassDB::bind_method(D_METHOD("draw_text", "text", "position", "color"), &Debug2D::draw_text, DEFVAL(Vector2()), Color(1, 1, 1)); // White by default!
 
 	ClassDB::bind_method(D_METHOD("draw_set_transform", "position", "rotation", "scale"), &Debug2D::draw_set_transform, DEFVAL(0), DEFVAL(Size2(1, 1)));
 	ClassDB::bind_method(D_METHOD("draw_set_transform_matrix", "matrix"), &Debug2D::draw_set_transform_matrix);
