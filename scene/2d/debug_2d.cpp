@@ -83,6 +83,17 @@ void Debug2D::draw_region(const Rect2 &p_region, const Color &p_color, bool p_fi
 	_push_command(c);
 }
 
+void Debug2D::draw_rectangle(const Vector2 &p_extents, const Vector2 &p_position, const Color &p_color, bool p_filled, float p_width) {
+	DrawCommand c;
+	c.type = DrawCommand::RECTANGLE;
+	c.args.push_back(p_extents);
+	c.args.push_back(p_position);
+	c.args.push_back(_option_get_value("color", p_color));
+	c.args.push_back(_option_get_value("filled", p_filled));
+	c.args.push_back(_option_get_value("line_width", p_width));
+	_push_command(c);
+}
+
 void Debug2D::draw_circle(real_t p_radius, const Vector2 &p_position, const Color &p_color, bool p_filled, float p_width) {
 	DrawCommand c;
 	c.type = DrawCommand::CIRCLE;
@@ -228,27 +239,24 @@ void Debug2D::_draw_command(const DrawCommand &p_command, CanvasItem *p_item) {
 				item->draw_rect(c.args[0], c.args[1], false, c.args[3], antialiased);
 			}
 		} break;
-		case DrawCommand::CIRCLE: {
-			// Godot's `draw_circle()` produces fixed number of vertices.
-			// The following works better with large circles.
-			const Vector<Vector2> &circle = GoostGeometry2D::circle(c.args[0]);
-			ERR_FAIL_COND(circle.size() < 3);
-
+		case DrawCommand::RECTANGLE: {
+			Vector2 extents = c.args[0];
 			Vector2 position = c.args[1];
 			Color color = c.args[2];
 			bool filled = c.args[3];
 
-			Vector<Vector2> circle_moved;
-			for (int i = 0; i < circle.size(); ++i) {
-				circle_moved.push_back(circle[i] + position);
-			}
+			Rect2 rect = Rect2(position - extents, extents * 2);
 			if (filled) {
-				item->draw_colored_polygon(circle_moved, color, Vector<Point2>(), nullptr, nullptr, antialiased);
+				item->draw_rect(rect, color, true);
 			} else {
-				circle_moved.push_back(circle[0]);
-				float line_width = c.args[4];
-				item->draw_polyline(circle_moved, color, line_width, antialiased);
+				item->draw_rect(rect, color, false, c.args[4], antialiased);
 			}
+		} break;
+		case DrawCommand::CIRCLE: {
+			// Godot's `draw_circle()` produces fixed number of vertices.
+			// The following works better with large circles.
+			const Vector<Vector2> &circle = GoostGeometry2D::circle(c.args[0]);
+			_draw_shape(item, circle, c.args[1], c.args[2], c.args[3], c.args[4]);
 		} break;
 		case DrawCommand::TEXT: {
 			const Ref<Font> &font = Theme::get_default()->get_font("font", "Control");
@@ -269,6 +277,19 @@ void Debug2D::_draw_command(const DrawCommand &p_command, CanvasItem *p_item) {
 		} break;
 	}
 #endif
+}
+
+void Debug2D::_draw_shape(CanvasItem *p_item, const Vector<Point2> &p_points, const Vector2 &p_position, const Color &p_color, bool p_filled, float p_width) {
+	Vector<Vector2> points;
+	for (int i = 0; i < p_points.size(); ++i) {
+		points.push_back(p_points[i] + p_position);
+	}
+	if (p_filled) {
+		p_item->draw_colored_polygon(points, p_color, Vector<Point2>(), nullptr, nullptr, antialiased);
+	} else {
+		points.push_back(points[0]);
+		p_item->draw_polyline(points, p_color, p_width, antialiased);
+	}
 }
 
 void Debug2D::capture() {
@@ -411,6 +432,7 @@ void Debug2D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("draw_polyline", "polyline", "color", "width"), &Debug2D::draw_polyline, color, line_width);
 	ClassDB::bind_method(D_METHOD("draw_polygon", "polygon", "color", "filled", "width"), &Debug2D::draw_polygon, color, filled, line_width);
 	ClassDB::bind_method(D_METHOD("draw_region", "region", "color", "filled", "width"), &Debug2D::draw_region, color, filled, line_width);
+	ClassDB::bind_method(D_METHOD("draw_rectangle", "extents", "position", "color", "filled", "width"), &Debug2D::draw_rectangle, color, filled, line_width);
 	ClassDB::bind_method(D_METHOD("draw_circle", "radius", "position", "color", "filled", "width"), &Debug2D::draw_circle, DEFVAL(Vector2()), color, filled, line_width);
 
 	ClassDB::bind_method(D_METHOD("draw_text", "text", "position", "color"), &Debug2D::draw_text, DEFVAL(Vector2()), Color(1, 1, 1)); // White by default!

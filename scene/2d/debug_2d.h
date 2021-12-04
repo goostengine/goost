@@ -27,6 +27,7 @@ private:
 			POLYLINE,
 			POLYGON,
 			REGION,
+			RECTANGLE,
 			CIRCLE,
 			TEXT,
 			TRANSFORM,
@@ -50,6 +51,7 @@ protected:
 	void _on_canvas_item_draw(Object *p_item);
 	void _push_command(DrawCommand &p_command);
 	void _draw_command(const DrawCommand &p_command, CanvasItem *p_item);
+	void _draw_shape(CanvasItem *p_item, const Vector<Point2> &p_points, const Vector2 &p_position, const Color &p_color, bool p_filled, float p_width);
 	void _update_draw_commands();
 
 	Variant _option_get_value(const String &p_option, const Variant &p_value);
@@ -69,6 +71,7 @@ public:
 	void draw_polyline(const Vector<Point2> &p_polyline, const Color &p_color = Color(1, 1, 1), float p_width = 1.0);
 	void draw_polygon(const Vector<Point2> &p_polygon, const Color &p_color = Color(1, 1, 1), bool p_filled = true, float p_width = 1.0);
 	void draw_region(const Rect2 &p_region, const Color &p_color = Color(1, 1, 1), bool p_filled = true, float p_width = 1.0);
+	void draw_rectangle(const Vector2 &p_extents, const Vector2 &p_position = Vector2(), const Color &p_color = Color(1, 1, 1), bool p_filled = true, float p_width = 1.0);
 	void draw_circle(real_t p_radius, const Vector2 &p_position = Vector2(), const Color &p_color = Color(1, 1, 1), bool p_filled = true, float p_width = 1.0);
 
 	void draw_text(const String &p_text, const Vector2 &p_position = Vector2(), const Color &p_color = Color(1, 1, 1));
