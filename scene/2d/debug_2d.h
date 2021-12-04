@@ -26,6 +26,7 @@ private:
 			POLYGON,
 			RECT,
 			CIRCLE,
+			TEXT,
 			TRANSFORM,
 			CUSTOM,
 		};
@@ -61,6 +62,8 @@ public:
 	void draw_polygon(const Vector<Point2> &p_polygon, const Color &p_color = Color(1, 1, 1), bool p_filled = true, float p_width = 1.0);
 	void draw_rect(const Rect2 &p_rect, const Color &p_color = Color(1, 1, 1), bool p_filled = true, float p_width = 1.0);
 	void draw_circle(real_t p_radius, const Vector2 &p_position = Vector2(), const Color &p_color = Color(1, 1, 1));
+
+	void draw_text(const String &p_text, const Vector2 &p_position = Vector2(), const Color &p_color = Color(1, 1, 1));
 
 	void draw_set_transform(const Point2 &p_offset, float p_rotation = 0.0, const Size2 &p_scale = Size2(1, 1));
 	void draw_set_transform_matrix(const Transform2D &p_matrix);

@@ -3,6 +3,7 @@
 #include "goost/core/math/geometry/2d/goost_geometry_2d.h"
 
 #include "scene/scene_string_names.h"
+#include "scene/resources/theme.h"
 
 Debug2D *Debug2D::singleton = nullptr;
 
@@ -81,6 +82,15 @@ void Debug2D::draw_circle(real_t p_radius, const Vector2 &p_position, const Colo
 	DrawCommand c;
 	c.type = DrawCommand::CIRCLE;
 	c.args.push_back(p_radius);
+	c.args.push_back(p_position);
+	c.args.push_back(_option_get_value("color", p_color));
+	_push_command(c);
+}
+
+void Debug2D::draw_text(const String &p_text, const Vector2 &p_position, const Color &p_color) {
+	DrawCommand c;
+	c.type = DrawCommand::TEXT;
+	c.args.push_back(p_text);
 	c.args.push_back(p_position);
 	c.args.push_back(_option_get_value("color", p_color));
 	_push_command(c);
@@ -218,6 +228,13 @@ void Debug2D::_draw_command(const DrawCommand &p_command, CanvasItem *p_item) {
 			}
 			item->draw_colored_polygon(circle_moved, c.args[2], Vector<Point2>(), nullptr, nullptr, antialiased);
 		} break;
+		case DrawCommand::TEXT: {
+			const Ref<Font> &font = Theme::get_default()->get_font("font", "Control");
+			String text = c.args[0];
+			Vector2 position = c.args[1];
+			Color color = c.args[2];
+			item->draw_string(font, position, text, color);
+		} break;
 		case DrawCommand::TRANSFORM: {
 			item->draw_set_transform_matrix(c.args[0]);
 		} break;
@@ -350,6 +367,8 @@ void Debug2D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("draw_polygon", "polygon", "color", "filled", "width"), &Debug2D::draw_polygon, default_color, DEFVAL(true), DEFVAL(1.0));
 	ClassDB::bind_method(D_METHOD("draw_rect", "rect", "color", "filled", "width"), &Debug2D::draw_rect, default_color, DEFVAL(true), DEFVAL(1.0));
 	ClassDB::bind_method(D_METHOD("draw_circle", "radius", "position", "color"), &Debug2D::draw_circle, DEFVAL(Vector2()), default_color);
+	
+	ClassDB::bind_method(D_METHOD("draw_text", "text", "position", "color"), &Debug2D::draw_text, DEFVAL(Vector2()), Color(1, 1, 1)); // White by default.
 
 	ClassDB::bind_method(D_METHOD("draw_set_transform", "position", "rotation", "scale"), &Debug2D::draw_set_transform, DEFVAL(0), DEFVAL(Size2(1, 1)));
 	ClassDB::bind_method(D_METHOD("draw_set_transform_matrix", "matrix"), &Debug2D::draw_set_transform_matrix);
