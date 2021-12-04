@@ -157,10 +157,10 @@ void Debug2D::_draw_command(const DrawCommand &p_command, CanvasItem *p_item) {
 
 	switch (c.type) {
 		case DrawCommand::LINE: {
-			item->draw_line(c.args[0], c.args[1], c.args[2], c.args[3], true);
+			item->draw_line(c.args[0], c.args[1], c.args[2], c.args[3], antialiased);
 		} break;
 		case DrawCommand::POLYLINE: {
-			item->draw_polyline(c.args[0], c.args[1], c.args[2], true);
+			item->draw_polyline(c.args[0], c.args[1], c.args[2], antialiased);
 		} break;
 		case DrawCommand::POLYGON: {
 			// Godot's `draw_polygon()` is not as robust as it could be.
@@ -192,10 +192,10 @@ void Debug2D::_draw_command(const DrawCommand &p_command, CanvasItem *p_item) {
 
 				VS::get_singleton()->canvas_item_add_triangle_array(
 						item->get_canvas_item(), indices, vertices, colors, Vector<Point2>(),
-						Vector<int>(), Vector<float>(), RID(), -1, RID(), true);
+						Vector<int>(), Vector<float>(), RID(), -1, RID(), antialiased);
 			} else {
 				polygon.push_back(polygon[0]); // Close it.
-				item->draw_polyline(polygon, color, width, true);
+				item->draw_polyline(polygon, color, width, antialiased);
 			}
 		} break;
 		case DrawCommand::RECT: {
@@ -204,7 +204,7 @@ void Debug2D::_draw_command(const DrawCommand &p_command, CanvasItem *p_item) {
 			if (filled) {
 				item->draw_rect(c.args[0], c.args[1], true);
 			} else {
-				item->draw_rect(c.args[0], c.args[1], false, c.args[3], true);
+				item->draw_rect(c.args[0], c.args[1], false, c.args[3], antialiased);
 			}
 		} break;
 		case DrawCommand::CIRCLE: {
@@ -216,7 +216,7 @@ void Debug2D::_draw_command(const DrawCommand &p_command, CanvasItem *p_item) {
 			for (int i = 0; i < circle.size(); ++i) {
 				circle_moved.push_back(circle[i] + position);
 			}
-			item->draw_colored_polygon(circle_moved, c.args[2], Vector<Point2>(), nullptr, nullptr, true);
+			item->draw_colored_polygon(circle_moved, c.args[2], Vector<Point2>(), nullptr, nullptr, antialiased);
 		} break;
 		case DrawCommand::TRANSFORM: {
 			item->draw_set_transform_matrix(c.args[0]);
@@ -331,6 +331,8 @@ Debug2D::Debug2D() {
 	default_value["color"] = GLOBAL_GET("debug/draw/default_color");
 	default_value["filled"] = true;
 	default_value["line_width"] = 1.0;
+
+	antialiased = GLOBAL_GET("debug/draw/antialiased");
 }
 
 void Debug2D::_bind_methods() {

@@ -17,6 +17,7 @@ private:
 
 	Dictionary draw_override;
 	HashMap<String, Variant> default_value;
+	bool antialiased = false;
 
 	struct DrawCommand {
 		enum Type {
