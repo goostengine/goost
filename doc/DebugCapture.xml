@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="DebugCapture" inherits="Reference" version="3.5">
+	<brief_description>
+		Manages draw state in [Debug2D].
+	</brief_description>
+	<description>
+		The class is used as a controller for [Debug2D] which allows to play back draw commands at specified snapshots recorded with [method Debug2D.capture], This is useful for things like visualizing algorithms step-by-step.
+		For example, you can rewind the drawing using left and right keys:
+		[codeblock]
+		func _input(event):
+		    if event.is_action_pressed("ui_left"):
+		        Debug2D.get_capture().draw_prev()
+		    elif event.is_action_pressed("ui_right"):
+		        Debug2D.get_capture().draw_next()
+		[/codeblock]
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="draw">
+			<return type="void" />
+			<argument index="0" name="index" type="int" />
+			<description>
+				Draws a specific snapshot at index.
+			</description>
+		</method>
+		<method name="draw_next">
+			<return type="void" />
+			<description>
+				Draws a next snapshot.
+			</description>
+		</method>
+		<method name="draw_prev">
+			<return type="void" />
+			<description>
+				Draws a previous snapshot.
+			</description>
+		</method>
+		<method name="get_count">
+			<return type="int" />
+			<description>
+				Return the number of draw snapshots previously captured with [method Debug2D.capture].
+			</description>
+		</method>
+		<method name="reset">
+			<return type="void" />
+			<description>
+				Makes [Debug2D] to draw all snapshots if [member accumulate] is [code]true[/code], otherwise only the first snapshot will be drawn.
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="accumulate" type="bool" setter="set_accumulate" getter="is_accumulating">
+			If [code]true[/code], the drawing canvas won't be cleared. Set this to [code]false[/code] if you need to draw each snapshot individually.
+		</member>
+	</members>
+	<constants>
+	</constants>
+</class>

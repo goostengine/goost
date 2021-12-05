@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="Debug2D" inherits="Node" version="3.5">
+	<brief_description>
+		Debug drawing in 2D.
+	</brief_description>
+	<description>
+		A singleton which allows to draw various primitives in order to aid visual debugging in 2D. Unlike other nodes, this allows to draw outside of [method CanvasItem._draw] or [constant CanvasItem.NOTIFICATION_DRAW], so [Debug2D] can be used from everywhere in code, for example:
+		[codeblock]
+		func _ready():
+		    Debug2D.draw_line(Vector2(0, 0), Vector2(100, 100))
+		[/codeblock]
+		When drawing each frame, you should call [method clear] prior to drawing, otherwise draw commands will accumulate infinitely, decreasing performance:
+		[codeblock]
+		func _process(delta):
+		    Debug2D.clear()
+		    Debug2D.draw_line(Vector2(0, 0), Vector2(100, 100))
+		[/codeblock]
+		It's also possible to keep a history of draw commands by calling [method capture]:
+		[codeblock]
+		func _ready():
+		    var points = [Vector2(0, 0), Vector2(100, 0), Vector2(100, 100), Vector2(0, 100)]
+		    for point in points:
+		        Debug2D.draw_circle(8, point)
+		        Debug2D.capture()
+		[/codeblock]
+		You can then access the captured snapshots using [method get_capture], which will return a special [DebugCapture] object, refer to [DebugCapture] documentation for more information on how to playback snapshots.
+		Default draw parameters such as color or line width can be configured via [ProjectSettings] (see [code]debug/draw[/code] section), or using one of the [code]draw_set_*[/code] methods. Arguments passed directly to methods will override parameters set by [code]draw_set_*[/code] methods, and [code]draw_set_*[/code] methods will override parameters defined in [ProjectSettings].
+		[b]List of common parameters:[/b]
+		[code]color:[/code] Specifies draw color.
+		[code]filled:[/code] If [code]true[/code], then all geometrical primitives such as polygon, circle, rectangle etc. will be drawn with a solid color, otherwise only the outline is drawn.
+		[code]line_width:[/code] Specifies line with for methods such as [method draw_line], or line width of unfilled primitives.
+		[b]Note:[/b] the drawing works in debug builds only.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="capture">
+			<return type="void" />
+			<description>
+				Captures a new snapshot of all draw commands that were called to this moment. Can be called multiple times.
+			</description>
+		</method>
+		<method name="clear">
+			<return type="void" />
+			<description>
+				Clears the canvas, all the draw calls from the queue of draw commands are removed.
+			</description>
+		</method>
+		<method name="draw">
+			<return type="void" />
+			<argument index="0" name="method" type="String" />
+			<argument index="1" name="args" type="Array" default="null" />
+			<description>
+				Calls a custom draw method. It's possible to call both built-in [CanvasItem] methods (starting with [code]draw_*[/code]), or methods defined via script.
+			</description>
+		</method>
+		<method name="draw_arrow">
+			<return type="void" />
+			<argument index="0" name="from" type="Vector2" />
+			<argument index="1" name="to" type="Vector2" />
+			<argument index="2" name="color" type="Color" default="Color( 0, 0.6, 0.7, 1 )" />
+			<argument index="3" name="width" type="float" default="1.0" />
+			<argument index="4" name="tip_size" type="Vector2" default="Vector2( 8, 8 )" />
+			<argument index="5" name="tip_offset" type="float" default="0.0" />
+			<description>
+				Draws an arrow. The [code]tip_size[/code] configures the size of the arrow's tip, where X coordinate corresponds to the width, and Y corresponds to the height. The [code]tip_offset[/code] allows to shift the tip towards the beginning along arrow's length, and is specified as a fraction of the arrow's length in the range of [code][0..1][/code].
+				The following snippet shows how to draw a cyclic directed graph with vertices drawn as circles, where the arrow tip is perfectly aligned to circle's boundary:
+				[codeblock]
+				for i in points.size():
+				    var from = points[i]
+				    var to = points[(i + 1) % points.size()]
+
+				    var radius = 8.0
+				    var length = (to - from).length()
+				    var offset = radius / length
+
+				    Debug2D.draw_arrow(from, to, Color.white, 1, Vector2(8, 8), offset)
+				    Debug2D.draw_circle(radius, from, Color.white)
+				[/codeblock]
+			</description>
+		</method>
+		<method name="draw_circle">
+			<return type="void" />
+			<argument index="0" name="radius" type="float" />
+			<argument index="1" name="position" type="Vector2" default="Vector2( 0, 0 )" />
+			<argument index="2" name="color" type="Color" default="Color( 0, 0.6, 0.7, 1 )" />
+			<argument index="3" name="filled" type="bool" default="true" />
+			<argument index="4" name="width" type="float" default="1.0" />
+			<description>
+				Draws a circle. Unlike in [method CanvasItem.draw_circle], the total number of vertices is configured according to predefined arc tolerance to improve accuracy when drawing circles with large radius.
+			</description>
+		</method>
+		<method name="draw_line">
+			<return type="void" />
+			<argument index="0" name="from" type="Vector2" />
+			<argument index="1" name="to" type="Vector2" />
+			<argument index="2" name="color" type="Color" default="Color( 0, 0.6, 0.7, 1 )" />
+			<argument index="3" name="width" type="float" default="1.0" />
+			<description>
+				Draws a line.
+			</description>
+		</method>
+		<method name="draw_polygon">
+			<return type="void" />
+			<argument index="0" name="polygon" type="PoolVector2Array" />
+			<argument index="1" name="color" type="Color" default="Color( 0, 0.6, 0.7, 1 )" />
+			<argument index="2" name="filled" type="bool" default="true" />
+			<argument index="3" name="width" type="float" default="1.0" />
+			<description>
+				Draws a polygon.
+			</description>
+		</method>
+		<method name="draw_polyline">
+			<return type="void" />
+			<argument index="0" name="polyline" type="PoolVector2Array" />
+			<argument index="1" name="color" type="Color" default="Color( 0, 0.6, 0.7, 1 )" />
+			<argument index="2" name="width" type="float" default="1.0" />
+			<description>
+				Draws a polyline.
+			</description>
+		</method>
+		<method name="draw_rectangle">
+			<return type="void" />
+			<argument index="0" name="extents" type="Vector2" />
+			<argument index="1" name="position" type="Vector2" />
+			<argument index="2" name="color" type="Color" default="Color( 0, 0.6, 0.7, 1 )" />
+			<argument index="3" name="filled" type="bool" default="true" />
+			<argument index="4" name="width" type="float" default="1.0" />
+			<description>
+				Draws a rectangle. The total width and height is twice the half [code]extents[/code]. See also [method draw_region].
+			</description>
+		</method>
+		<method name="draw_region">
+			<return type="void" />
+			<argument index="0" name="region" type="Rect2" />
+			<argument index="1" name="color" type="Color" default="Color( 0, 0.6, 0.7, 1 )" />
+			<argument index="2" name="filled" type="bool" default="true" />
+			<argument index="3" name="width" type="float" default="1.0" />
+			<description>
+				Draws a region [Rect2]. For example, you can draw a bounding rectangle of points:
+				[codeblock]
+				Debug2D.draw_region(GoostGeometry2D.bounding_rect(points))
+				[/codeblock]
+				See also [method draw_rectangle].
+			</description>
+		</method>
+		<method name="draw_reset">
+			<return type="void" />
+			<argument index="0" name="option" type="String" default="&quot;&quot;" />
+			<description>
+				Resets all drawing options set with [method draw_set_color], [method draw_set_filled], and [method draw_set_line_width].
+			</description>
+		</method>
+		<method name="draw_set_color">
+			<return type="void" />
+			<argument index="0" name="color" type="Color" />
+			<description>
+				Overrides the [code]color[/code] parameter for all future draw calls.
+			</description>
+		</method>
+		<method name="draw_set_filled">
+			<return type="void" />
+			<argument index="0" name="filled" type="bool" />
+			<description>
+				Overrides the [code]filled[/code] parameter for all future draw calls.
+			</description>
+		</method>
+		<method name="draw_set_line_width">
+			<return type="void" />
+			<argument index="0" name="width" type="float" />
+			<description>
+				Overrides the [code]width[/code] parameter for all future draw calls.
+			</description>
+		</method>
+		<method name="draw_set_transform">
+			<return type="void" />
+			<argument index="0" name="position" type="Vector2" />
+			<argument index="1" name="rotation" type="float" default="0" />
+			<argument index="2" name="scale" type="Vector2" default="Vector2( 1, 1 )" />
+			<description>
+				Sets a custom transform for drawing via components. Anything drawn afterwards will be transformed by this. Equivalent to [method CanvasItem.draw_set_transform].
+			</description>
+		</method>
+		<method name="draw_set_transform_matrix">
+			<return type="void" />
+			<argument index="0" name="matrix" type="Transform2D" />
+			<description>
+				Sets a custom transform for drawing via matrix. Anything drawn afterwards will be transformed by this. Equivalent to [method CanvasItem.draw_set_transform_matrix].
+			</description>
+		</method>
+		<method name="draw_text">
+			<return type="void" />
+			<argument index="0" name="text" type="String" />
+			<argument index="1" name="position" type="Vector2" default="Vector2( 0, 0 )" />
+			<argument index="2" name="color" type="Color" default="Color( 1, 1, 1, 1 )" />
+			<description>
+				Draws text at specified position using the default [Font]. Unlike other draw methods, the default color will not be affected by [method draw_set_color].
+			</description>
+		</method>
+		<method name="get_base" qualifiers="const">
+			<return type="Object" />
+			<description>
+				Returns the default base [CanvasItem] used for drawing.
+			</description>
+		</method>
+		<method name="get_capture" qualifiers="const">
+			<return type="DebugCapture" />
+			<description>
+				Returns [DebugCapture] object to manage history of draw commands.
+			</description>
+		</method>
+		<method name="update">
+			<return type="void" />
+			<description>
+				Update all draw calls to request redraw. Similar to [method CanvasItem update].
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="canvas_item" type="Object" setter="set_canvas_item" getter="get_canvas_item">
+			The current active canvas item used for drawing. To restore the default, assign the base canvas:
+			[codeblock]
+			Debug2D.canvas_item = Debug2D.get_base()
+			[/codeblock]
+		</member>
+		<member name="enabled" type="bool" setter="set_enabled" getter="is_enabled" default="true">
+			If [code]false[/code], then all debug drawing is disabled.
+		</member>
+	</members>
+	<constants>
+	</constants>
+</class>
