@@ -54,7 +54,7 @@ void register_scene_types() {
 #if defined(GOOST_GEOMETRY_ENABLED) && defined(GOOST_Debug2D)
 	// Define project settings before registering classes.
 	GLOBAL_DEF("debug/draw/2d/enabled", true);
-	GLOBAL_DEF("debug/draw/2d/color", Color(0.0, 0.6, 0.7, 0.5));
+	GLOBAL_DEF("debug/draw/2d/color", Color(0.0, 0.6, 0.7, 1));
 	GLOBAL_DEF("debug/draw/2d/filled", true);
 	GLOBAL_DEF("debug/draw/2d/line_width", 1.0);
 	ProjectSettings::get_singleton()->set_custom_property_info("debug/draw/2d/line_width", PropertyInfo(Variant::REAL, "debug/draw/2d/line_width", PROPERTY_HINT_RANGE, "0.1,5.0,0.1,or_greater"));
