@@ -44,7 +44,5 @@ public:
 	bool is_debug_sync_visible_collision_shapes() const;
 
 	String get_configuration_warning() const;
-
-	VisualShape2D(){};
 };
 
