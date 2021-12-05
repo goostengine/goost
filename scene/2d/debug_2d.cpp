@@ -2,8 +2,10 @@
 
 #include "goost/core/math/geometry/2d/goost_geometry_2d.h"
 
-#include "scene/scene_string_names.h"
 #include "scene/resources/theme.h"
+#include "scene/scene_string_names.h"
+
+#include "core/method_bind_ext.gen.inc"
 
 Debug2D *Debug2D::singleton = nullptr;
 
@@ -47,6 +49,21 @@ void Debug2D::draw_line(const Point2 &p_from, const Point2 &p_to, const Color &p
 	c.args.push_back(p_to);
 	c.args.push_back(_option_get_value("color", p_color));
 	c.args.push_back(_option_get_value("line_width", p_width));
+	_push_command(c);
+}
+
+void Debug2D::draw_arrow(const Point2 &p_from, const Point2 &p_to, const Color &p_color, float p_width, const Vector2 &p_tip_size, float p_tip_offset) {
+	ERR_FAIL_COND(p_tip_size.x <= 0);
+	ERR_FAIL_COND(p_tip_size.y <= 0);
+
+	DrawCommand c;
+	c.type = DrawCommand::ARROW;
+	c.args.push_back(p_from);
+	c.args.push_back(p_to);
+	c.args.push_back(_option_get_value("color", p_color));
+	c.args.push_back(_option_get_value("line_width", p_width));
+	c.args.push_back(p_tip_size);
+	c.args.push_back(p_tip_offset);
 	_push_command(c);
 }
 
@@ -158,7 +175,7 @@ Variant Debug2D::_option_get_value(const String &p_option, const Variant &p_valu
 
 	if (p_value != def_value) {
 		ret = p_value;
-	} else if (draw_override[p_option].get_type() == type) {
+	} else if (draw_override[p_option].get_type() == type) { // Not NIL.
 		ret = draw_override[p_option];
 	} else {
 		ret = p_value;
@@ -191,12 +208,48 @@ void Debug2D::_draw_command(const DrawCommand &p_command, CanvasItem *p_item) {
 		case DrawCommand::LINE: {
 			item->draw_line(c.args[0], c.args[1], c.args[2], c.args[3], antialiased);
 		} break;
+		case DrawCommand::ARROW: {
+			Vector2 from = c.args[0];
+			Vector2 to = c.args[1];
+			Color color = c.args[2];
+			float line_width = c.args[3];
+			Vector2 tip_size = c.args[4];
+			float tip_offset = c.args[5];
+
+			Vector2 vector = to - from;
+			real_t half_length = vector.length() * 0.5;
+			tip_size = Vector2(MAX(tip_size.x, line_width), tip_size.y);
+
+			if (half_length < tip_size.y) {
+				float ratio = half_length / tip_size.y;
+				tip_size.y *= ratio;
+				tip_size.x = MAX(tip_size.x * ratio, line_width);
+			}
+			Transform2D trans(vector.angle(), to);
+			Vector2 dest;
+			if (tip_offset <= 0.0) {
+				dest = trans.xform(Vector2(-tip_size.y, 0));
+			} else {
+				dest = to;
+			}
+			item->draw_line(from, dest, color, line_width, antialiased);
+
+			Vector<Point2> tip;
+			Vector2 shift = Vector2(-vector.length() * tip_offset, 0);
+			tip.push_back(trans.xform(shift));
+			tip.push_back(trans.xform(Vector2(-tip_size.y + shift.x, tip_size.x * 0.5)));
+			tip.push_back(trans.xform(Vector2(-tip_size.y + shift.x, -tip_size.x * 0.5)));
+
+			// Could use `draw_primitive()`, but it doesn't support antialiasing.
+			item->draw_colored_polygon(tip, color, Vector<Point2>(), nullptr, nullptr, antialiased);
+		} break;
 		case DrawCommand::POLYLINE: {
 			item->draw_polyline(c.args[0], c.args[1], c.args[2], antialiased);
 		} break;
 		case DrawCommand::POLYGON: {
 			// Godot's `draw_polygon()` is not as robust as it could be.
-			// The following works better for rendering degenerate polygons.
+			// The following works better for rendering degenerate and
+			// self-intersecting polygons.
 			Vector<Vector2> polygon = c.args[0];
 			Color color = c.args[1];
 			bool filled = c.args[2];
@@ -428,10 +481,15 @@ void Debug2D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_base"), &Debug2D::get_base);
 
 	ClassDB::bind_method(D_METHOD("draw", "method", "args"), &Debug2D::draw, DEFVAL(Variant()));
+
 	ClassDB::bind_method(D_METHOD("draw_line", "from", "to", "color", "width"), &Debug2D::draw_line, color, line_width);
+	ClassDB::bind_method(D_METHOD("draw_arrow", "from", "to", "color", "width", "tip_size", "tip_offset"), &Debug2D::draw_arrow, color, line_width, Vector2(8, 8), 0.0);
+
 	ClassDB::bind_method(D_METHOD("draw_polyline", "polyline", "color", "width"), &Debug2D::draw_polyline, color, line_width);
 	ClassDB::bind_method(D_METHOD("draw_polygon", "polygon", "color", "filled", "width"), &Debug2D::draw_polygon, color, filled, line_width);
+
 	ClassDB::bind_method(D_METHOD("draw_region", "region", "color", "filled", "width"), &Debug2D::draw_region, color, filled, line_width);
+
 	ClassDB::bind_method(D_METHOD("draw_rectangle", "extents", "position", "color", "filled", "width"), &Debug2D::draw_rectangle, color, filled, line_width);
 	ClassDB::bind_method(D_METHOD("draw_circle", "radius", "position", "color", "filled", "width"), &Debug2D::draw_circle, DEFVAL(Vector2()), color, filled, line_width);
 

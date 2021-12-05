@@ -24,6 +24,7 @@ private:
 	struct DrawCommand {
 		enum Type {
 			LINE,
+			ARROW,
 			POLYLINE,
 			POLYGON,
 			REGION,
@@ -64,18 +65,27 @@ public:
 
 	void set_canvas_item(Object *p_canvas_item);
 	Object *get_canvas_item() const;
-	Object *get_base() const { return base; }
+	Object *get_base() const { return base; } // The default canvas item.
 
-	void draw(const StringName &p_method, const Array &p_args = Array()); // Custom.
+	// Custom drawing using one of the `CanvasItem.draw_*` methods.
+	void draw(const StringName &p_method, const Array &p_args = Array());
+
+	// Geometry primitives.
 	void draw_line(const Point2 &p_from, const Point2 &p_to, const Color &p_color = Color(1, 1, 1), float p_width = 1.0);
+	void draw_arrow(const Point2 &p_from, const Point2 &p_to, const Color &p_color = Color(1, 1, 1), float p_width = 1.0, const Vector2 &p_tip_size = Vector2(8, 8), float p_tip_offset = 0.0);
+
 	void draw_polyline(const Vector<Point2> &p_polyline, const Color &p_color = Color(1, 1, 1), float p_width = 1.0);
 	void draw_polygon(const Vector<Point2> &p_polygon, const Color &p_color = Color(1, 1, 1), bool p_filled = true, float p_width = 1.0);
+
 	void draw_region(const Rect2 &p_region, const Color &p_color = Color(1, 1, 1), bool p_filled = true, float p_width = 1.0);
+
 	void draw_rectangle(const Vector2 &p_extents, const Vector2 &p_position = Vector2(), const Color &p_color = Color(1, 1, 1), bool p_filled = true, float p_width = 1.0);
 	void draw_circle(real_t p_radius, const Vector2 &p_position = Vector2(), const Color &p_color = Color(1, 1, 1), bool p_filled = true, float p_width = 1.0);
 
+	// User interface.
 	void draw_text(const String &p_text, const Vector2 &p_position = Vector2(), const Color &p_color = Color(1, 1, 1));
 
+	// Transform modifiers.
 	void draw_set_transform(const Point2 &p_offset, float p_rotation = 0.0, const Size2 &p_scale = Size2(1, 1));
 	void draw_set_transform_matrix(const Transform2D &p_matrix);
 
@@ -84,6 +94,7 @@ public:
 	void draw_set_line_width(real_t p_width);
 	void draw_reset(const String &p_option = "");
 
+	// History of draw commands.
 	void capture();
 	Ref<DebugCapture> get_capture() const { return state; }
 
