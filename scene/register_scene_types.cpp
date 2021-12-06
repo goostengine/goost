@@ -7,7 +7,7 @@
 #include "scene/main/scene_tree.h"
 #include "scene/main/viewport.h"
 
-#include "core/goost_engine.h"
+#include "editor/editor_node.h"
 
 #include "goost/classes_enabled.gen.h"
 
@@ -25,13 +25,16 @@ static void _debug_2d_add_to_scene_tree() {
 	if (_debug_2d_added) {
 		return;
 	}
-	auto tree = SceneTree::get_singleton();
-	if (!tree) {
-		return;
-	}
 	Debug2D::get_singleton()->set_name("Debug2D");
-	tree->get_root()->add_child(Debug2D::get_singleton());
 
+	if (Engine::get_singleton()->is_editor_hint()) {
+		EditorNode::get_singleton()->get_scene_root()->add_child(Debug2D::get_singleton());
+	} else {
+		if (!SceneTree::get_singleton()) {
+			return;
+		}
+		SceneTree::get_singleton()->get_root()->add_child(Debug2D::get_singleton());
+	}
 	Debug2D::get_singleton()->set_enabled(GLOBAL_GET("debug/draw/2d/enabled"));
 
 	_debug_2d_added = true;
@@ -66,6 +69,7 @@ void register_scene_types() {
 	_debug_2d = memnew(Debug2D);
 	Engine::get_singleton()->add_singleton(Engine::Singleton("Debug2D", Debug2D::get_singleton()));
 	SceneTree::add_idle_callback(&_debug_2d_add_to_scene_tree);
+
 #endif
 #ifdef GOOST_AUDIO_ENABLED
 	register_audio_types();
