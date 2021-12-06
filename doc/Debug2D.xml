@@ -212,7 +212,7 @@
 		<method name="update">
 			<return type="void" />
 			<description>
-				Update all draw calls to request redraw. Similar to [method CanvasItem update].
+				Update all draw calls to request redraw. Similar to [method CanvasItem.update].
 			</description>
 		</method>
 	</methods>
