@@ -60,7 +60,7 @@ void register_scene_types() {
 	ProjectSettings::get_singleton()->set_custom_property_info("debug/draw/2d/line_width", PropertyInfo(Variant::REAL, "debug/draw/2d/line_width", PROPERTY_HINT_RANGE, "0.1,5.0,0.1,or_greater"));
 	GLOBAL_DEF("debug/draw/2d/antialiased", false);
 
-	ClassDB::register_class<Debug2D>();
+	ClassDB::register_virtual_class<Debug2D>();
 	ClassDB::register_virtual_class<DebugCapture>();
 
 	_debug_2d = memnew(Debug2D);
