@@ -384,6 +384,7 @@ void Debug2D::clear() {
 		if (item->is_connected(SceneStringNames::get_singleton()->draw, this, "_on_canvas_item_draw")) {
 			item->disconnect(SceneStringNames::get_singleton()->draw, this, "_on_canvas_item_draw");
 		}
+		item->update();
 	}
 	commands.clear();
 	state->snapshots.clear();
@@ -394,7 +395,6 @@ void Debug2D::clear() {
 	set_canvas_item(base);
 
 	draw_reset();
-	update();
 }
 
 void Debug2D::_on_canvas_item_draw(Object *p_item) {
