@@ -52,7 +52,7 @@ env_goost.Prepend(CPPDEFINES={"SCALE_FACTOR" : env["goost_scale_factor"]})
 # modifying each and every SCSub file, making it work everywhere in Goost.
 godot_add_source_files = env_goost.__class__.add_source_files
 
-def goost_add_source_files(self, sources, files, warn_duplicates=True):
+def goost_add_source_files(self, sources, files):
     from compat import isbasestring
     # Convert string to list of absolute paths (including expanding wildcard)
     if isbasestring(files):
@@ -63,8 +63,13 @@ def goost_add_source_files(self, sources, files, warn_duplicates=True):
                 return
             files = [files]
         else:
+            # Exclude .gen.cpp files from globbing, to avoid including obsolete ones.
+            # They should instead be added manually.
+            skip_gen_cpp = "*" in files
             dir_path = self.Dir(".").abspath
             files = sorted(glob.glob(dir_path + "/" + files))
+            if skip_gen_cpp:
+                files = [f for f in files if not f.endswith(".gen.cpp")]
     # Flatten.
     _files = []
     for path in files:
@@ -94,10 +99,8 @@ def goost_add_source_files(self, sources, files, warn_duplicates=True):
             continue
         obj = self.Object(path)
         if obj in sources:
-            if warn_duplicates:
-                print('WARNING: Object "{}" already included in environment sources.'.format(obj))
-            else:
-                continue
+            print('WARNING: Object "{}" already included in environment sources.'.format(obj))
+            continue
         sources.append(obj)
 
 # Inject now!
@@ -117,7 +120,8 @@ if env["goost_editor_enabled"]:
 
 SConscript("thirdparty/SCsub")
 
-env_goost.add_source_files(env.modules_sources, "*.cpp")
+env_goost.add_source_files(env.modules_sources, "register_types.cpp")
+env_goost.add_source_files(env.modules_sources, "classes_enabled.gen.cpp")
 
 # Restore the method back (not sure if needed, but good for consistency).
 env_goost.__class__.add_source_files = godot_add_source_files
