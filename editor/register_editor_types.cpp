@@ -3,6 +3,8 @@
 #include "editor/editor_node.h"
 #include "editor_about.h"
 
+#include "goost_editor_plugin.h"
+
 namespace goost {
 
 void editor_init() {
@@ -38,6 +40,7 @@ void editor_init() {
 
 void register_editor_types() {
 	EditorNode::add_init_callback(editor_init);
+	EditorPlugins::add_by_type<GoostEditorPlugin>();
 }
 
 void unregister_editor_types() {
