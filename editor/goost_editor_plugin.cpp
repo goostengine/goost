@@ -1,7 +1,6 @@
 #include "goost_editor_plugin.h"
 
 #include "scene/2d/debug_2d.h"
-
 #include "goost/classes_enabled.gen.h"
 
 void GoostEditorPlugin::_bind_methods() {
@@ -9,7 +8,7 @@ void GoostEditorPlugin::_bind_methods() {
 }
 
 void GoostEditorPlugin::_on_editor_scene_changed(Node *p_scene_root) {
-#if defined(GOOST_GEOMETRY_ENABLED) && defined(GOOST_Debug2D)
+#if defined(GOOST_SCENE_ENABLED) && defined(GOOST_GEOMETRY_ENABLED) && defined(GOOST_Debug2D)
     if (Debug2D::get_singleton()) {
         Debug2D::get_singleton()->clear();
     }
