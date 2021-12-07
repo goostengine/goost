@@ -28,7 +28,9 @@ static void _debug_2d_add_to_scene_tree() {
 	Debug2D::get_singleton()->set_name("Debug2D");
 
 	if (Engine::get_singleton()->is_editor_hint()) {
+#ifdef TOOLS_ENABLED
 		EditorNode::get_singleton()->get_scene_root()->add_child(Debug2D::get_singleton());
+#endif
 	} else {
 		if (!SceneTree::get_singleton()) {
 			return;
