@@ -6,8 +6,12 @@ Import("env_goost")
 
 env_thirdparty = env_goost.Clone()
 
-env_thirdparty.Prepend(CPPPATH=[os.path.realpath(".")])
-env_goost.Prepend(CPPPATH=[os.path.realpath(".")])
+thirdparty_dirs = [
+    os.path.realpath("."),
+    os.path.dirname(os.path.realpath(".")),
+]
+env_thirdparty.Prepend(CPPPATH=thirdparty_dirs)
+env_goost.Prepend(CPPPATH=thirdparty_dirs)
 
 if env["goost_math_enabled"]:
     env_thirdparty.add_source_files(env.modules_sources, "clipper/*.cpp")
