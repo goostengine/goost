@@ -1,13 +1,15 @@
 #include "register_scene_types.h"
 
-#include "2d/debug_2d.h"
-#include "audio/register_audio_types.h"
-#include "physics/register_physics_types.h"
-
 #include "scene/main/scene_tree.h"
 #include "scene/main/viewport.h"
 
 #include "editor/editor_node.h"
+
+#include "audio/register_audio_types.h"
+#include "physics/register_physics_types.h"
+
+#include "2d/debug_2d.h"
+#include "main/spawner.h"
 
 #include "goost/classes_enabled.gen.h"
 
@@ -52,6 +54,7 @@ void register_scene_types() {
 	ClassDB::register_class<PolyShape2D>();
 #endif
 	ClassDB::register_class<Stopwatch>();
+	ClassDB::register_class<Spawner>();
 	ClassDB::register_class<VisualShape2D>();
 	ClassDB::register_class<GradientTexture2D>();
 	ClassDB::register_class<LightTexture>();

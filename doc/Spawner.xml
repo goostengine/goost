@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="Spawner" inherits="Node" version="3.5">
+	<brief_description>
+		Instantiate nodes from scenes automatically.
+	</brief_description>
+	<description>
+		Spawner allows to conveniently instantiate nodes from scenes and scripts automatically into the [SceneTree]. In order to use it, you need to set [member resource] first. Once [Spawner] is added to the [SceneTree], it will start to create new instances immediately.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="spawn">
+			<return type="Node" />
+			<description>
+				Forces instantiation of a [Node] from a [member resource].
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="delay" type="float" setter="set_delay" getter="get_delay" default="0.0">
+			If [code]delay > 0[/code], then spawning is postponed, otherwise instantiates nodes immediately when setting [member spawning] to [code]true[/code]. Measured in seconds.
+		</member>
+		<member name="limit" type="int" setter="set_limit" getter="get_limit" default="0">
+			Limits the number of nodes instantiated. If [code]limit == 0[/code], the number of nodes instantiated is unlimited.
+		</member>
+		<member name="process_mode" type="int" setter="set_process_mode" getter="get_process_mode" enum="Spawner.ProcessMode" default="1">
+			Processing mode allows to configure whether the [method spawn] method is called during idle or physics frame, only applies when [member spawning] is set to [code]true[/code]. See [enum ProcessMode].
+		</member>
+		<member name="rate" type="int" setter="set_rate" getter="get_rate" default="1">
+			The number of nodes instantiated per time [member step].
+		</member>
+		<member name="resource" type="Resource" setter="set_resource" getter="get_resource">
+			The resource from which a new node is instantiated. Accepts [PackedScene] and [Script] only. If the resource is a [Script], make sure that the constructor does not have any [b]required[/b] parameters, otherwise the instantiation will fail.
+		</member>
+		<member name="spawning" type="bool" setter="set_spawning" getter="is_spawning" default="true">
+			Starts or stops the spawn process. The state (number of currently spawned objects, spawn time etc.) is reset at all times.
+		</member>
+		<member name="step" type="float" setter="set_step" getter="get_step" default="1.0">
+			The [member rate] number of nodes will be spawned each time step. Measured in seconds.
+		</member>
+	</members>
+	<constants>
+		<constant name="PROCESS_PHYSICS" value="0" enum="ProcessMode">
+			Update the spawner during the physics step at each frame (fixed framerate processing).
+		</constant>
+		<constant name="PROCESS_IDLE" value="1" enum="ProcessMode">
+			Update the spawner during the idle time at each frame.
+		</constant>
+	</constants>
+</class>
