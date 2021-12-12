@@ -3,6 +3,10 @@
 #include "core/engine.h"
 #include "scene/resources/packed_scene.h"
 
+#include "scene/scene_string_names.h"
+
+StringName Spawner2D::node_spawned;
+
 void Spawner2D::set_resource(const Ref<Resource> &p_resource) {
 	const Ref<PackedScene> &scene = p_resource;
 	const Ref<Script> &script = p_resource;
@@ -77,6 +81,8 @@ Node *Spawner2D::spawn() {
 			}
 		}
 	}
+	emit_signal(node_spawned, node);
+
 	return node;
 }
 
@@ -143,6 +149,7 @@ void Spawner2D::_process_spawn() {
 
 		if (limit > 0 && amount >= limit) {
 			set_enabled(false);
+			emit_signal(SceneStringNames::get_singleton()->finished);
 		}
 	}
 }
@@ -219,6 +226,9 @@ void Spawner2D::_bind_methods() {
 	// ADD_PROPERTY(PropertyInfo(Variant::REAL, "lifetime", PROPERTY_HINT_RANGE, "0.0,5.0,0.1,or_greater"), "set_lifetime", "get_lifetime");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "limit", PROPERTY_HINT_RANGE, "0,20,1,or_greater"), "set_limit", "get_limit");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "process_mode", PROPERTY_HINT_ENUM, "Physics,Idle"), "set_process_mode", "get_process_mode");
+
+	ADD_SIGNAL(MethodInfo("node_spawned", PropertyInfo(Variant::OBJECT, "node", PROPERTY_HINT_RESOURCE_TYPE, "Node")));
+	ADD_SIGNAL(MethodInfo("finished"));
 
 	BIND_ENUM_CONSTANT(PROCESS_PHYSICS);
 	BIND_ENUM_CONSTANT(PROCESS_IDLE);

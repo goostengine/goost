@@ -42,6 +42,19 @@
 			The [member rate] number of nodes will be spawned each time step. Measured in seconds.
 		</member>
 	</members>
+	<signals>
+		<signal name="finished">
+			<description>
+				Emitted when the current number of spawned nodes equals to [member limit].
+			</description>
+		</signal>
+		<signal name="node_spawned">
+			<argument index="0" name="node" type="Object" />
+			<description>
+				Emitted when a new node is spawned automatically when [member enabled] is set to [code]true[/code]. The signal is also emitted when [method spawn] is called manually via code.
+			</description>
+		</signal>
+	</signals>
 	<constants>
 		<constant name="PROCESS_PHYSICS" value="0" enum="ProcessMode">
 			Update the spawner during the physics step at each frame (fixed framerate processing).

@@ -10,6 +10,7 @@ public:
 		PROCESS_PHYSICS,
 		PROCESS_IDLE,
 	};
+	static StringName node_spawned;
 
 private:
 	Ref<Resource> resource; // From which a new node is instantiated.
@@ -41,13 +42,13 @@ public:
 	void set_resource(const Ref<Resource> &p_resource);
 	Ref<Resource> get_resource() const { return resource; }
 
+	Node *spawn();
+
 	void set_enabled(bool p_enabled);
 	bool is_enabled() const { return enabled; }
 
 	void set_local(bool p_local) { local = p_local; }
 	bool is_local() const { return local; }
-
-	Node *spawn();
 
 	void set_rate(int p_rate);
 	int get_rate() const { return rate; }

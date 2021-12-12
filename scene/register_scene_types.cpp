@@ -53,8 +53,10 @@ void register_scene_types() {
 	ClassDB::register_class<PolyPath2D>();
 	ClassDB::register_class<PolyShape2D>();
 #endif
-	ClassDB::register_class<Stopwatch>();
+	Spawner2D::node_spawned = "node_spawned";
 	ClassDB::register_class<Spawner2D>();
+
+	ClassDB::register_class<Stopwatch>();
 	ClassDB::register_class<VisualShape2D>();
 	ClassDB::register_class<GradientTexture2D>();
 	ClassDB::register_class<LightTexture>();
@@ -99,6 +101,8 @@ void register_scene_types() {
 }
 
 void unregister_scene_types() {
+	Spawner2D::node_spawned.~StringName();
+
 #if defined(GOOST_GEOMETRY_ENABLED) && defined(GOOST_Debug2D)
 	// There's no need to free `Debug2D` instance manually because it's added to
 	// the `SceneTree`, but lets play safe and prevent memory leak in any case.
