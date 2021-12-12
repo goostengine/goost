@@ -60,10 +60,23 @@ Node *Spawner2D::spawn() {
 	} else {
 		ERR_FAIL_V_MSG(nullptr, "Could not spawn an object: the resource is not a scene nor a script.");
 	}
-
+	
+	// Add child now, because we may need to set position of the spawned node.
 	add_child(node);
 	amount += 1;
 
+	CanvasItem *canvas_item = Object::cast_to<CanvasItem>(node);
+	if (canvas_item) {
+		if (!local) {
+			canvas_item->set_as_toplevel(true);
+			Node2D *node_2d = Object::cast_to<Node2D>(node);
+			if (node_2d) {
+				// This only sets the position, not transform, because the spawned
+				// root node may override rotation and scale for other purposes.
+				node_2d->set_global_position(get_global_position());
+			}
+		}
+	}
 	return node;
 }
 
@@ -174,6 +187,9 @@ void Spawner2D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_enabled", "enabled"), &Spawner2D::set_enabled);
 	ClassDB::bind_method(D_METHOD("is_enabled"), &Spawner2D::is_enabled);
 
+	ClassDB::bind_method(D_METHOD("set_local", "enabled"), &Spawner2D::set_local);
+	ClassDB::bind_method(D_METHOD("is_local"), &Spawner2D::is_local);
+
 	ClassDB::bind_method(D_METHOD("spawn"), &Spawner2D::spawn);
 
 	ClassDB::bind_method(D_METHOD("set_rate", "rate"), &Spawner2D::set_rate);
@@ -196,6 +212,7 @@ void Spawner2D::_bind_methods() {
 
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "resource", PROPERTY_HINT_RESOURCE_TYPE, "PackedScene,Script"), "set_resource", "get_resource");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "enabled"), "set_enabled", "is_enabled");
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "local"), "set_local", "is_local");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "rate", PROPERTY_HINT_RANGE, "1,20,1,or_greater"), "set_rate", "get_rate");
 	ADD_PROPERTY(PropertyInfo(Variant::REAL, "step", PROPERTY_HINT_RANGE, "0.1,60.0,0.1,or_greater"), "set_step", "get_step");
 	ADD_PROPERTY(PropertyInfo(Variant::REAL, "delay", PROPERTY_HINT_RANGE, "0.0,60.0,0.1,or_greater"), "set_delay", "get_delay");
