@@ -19,14 +19,14 @@ void Spawner2D::set_resource(const Ref<Resource> &p_resource) {
 	}
 }
 
-void Spawner2D::set_spawning(bool p_spawning) {
-	_set_process(p_spawning);
+void Spawner2D::set_enabled(bool p_enabled) {
+	_set_process(p_enabled);
 
 	delay_time = 0.0;
 	time = 0.0;
 	amount = 0;
 
-	if (p_spawning && delay <= 0.0) {
+	if (p_enabled && delay <= 0.0) {
 		spawn();
 	}
 }
@@ -95,12 +95,12 @@ void Spawner2D::set_limit(int p_limit) {
 void Spawner2D::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_READY: {
-			if (spawning) {
-				set_spawning(true);
+			if (enabled) {
+				set_enabled(true);
 			}
 		} break;
 		case NOTIFICATION_INTERNAL_PROCESS: {
-			if (!spawning || process_mode == PROCESS_PHYSICS || !is_processing_internal()) {
+			if (!enabled || process_mode == PROCESS_PHYSICS || !is_processing_internal()) {
 				return;
 			}
 			delay_time += get_process_delta_time();
@@ -108,7 +108,7 @@ void Spawner2D::_notification(int p_what) {
 			_process_spawn();
 		} break;
 		case NOTIFICATION_INTERNAL_PHYSICS_PROCESS: {
-			if (!spawning || process_mode == PROCESS_IDLE || !is_physics_processing_internal()) {
+			if (!enabled || process_mode == PROCESS_IDLE || !is_physics_processing_internal()) {
 				return;
 			}
 			delay_time += get_physics_process_delta_time();
@@ -129,7 +129,7 @@ void Spawner2D::_process_spawn() {
 		time = 0.0;
 
 		if (limit > 0 && amount >= limit) {
-			set_spawning(false);
+			set_enabled(false);
 		}
 	}
 }
@@ -164,15 +164,15 @@ void Spawner2D::_set_process(bool p_process) {
 			set_process_internal(p_process);
 		} break;
 	}
-	spawning = p_process;
+	enabled = p_process;
 }
 
 void Spawner2D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_resource", "object"), &Spawner2D::set_resource);
 	ClassDB::bind_method(D_METHOD("get_resource"), &Spawner2D::get_resource);
 
-	ClassDB::bind_method(D_METHOD("set_spawning", "spawning"), &Spawner2D::set_spawning);
-	ClassDB::bind_method(D_METHOD("is_spawning"), &Spawner2D::is_spawning);
+	ClassDB::bind_method(D_METHOD("set_enabled", "enabled"), &Spawner2D::set_enabled);
+	ClassDB::bind_method(D_METHOD("is_enabled"), &Spawner2D::is_enabled);
 
 	ClassDB::bind_method(D_METHOD("spawn"), &Spawner2D::spawn);
 
@@ -195,7 +195,7 @@ void Spawner2D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_process_mode"), &Spawner2D::get_process_mode);
 
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "resource", PROPERTY_HINT_RESOURCE_TYPE, "PackedScene,Script"), "set_resource", "get_resource");
-	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "spawning"), "set_spawning", "is_spawning");
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "enabled"), "set_enabled", "is_enabled");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "rate", PROPERTY_HINT_RANGE, "1,20,1,or_greater"), "set_rate", "get_rate");
 	ADD_PROPERTY(PropertyInfo(Variant::REAL, "step", PROPERTY_HINT_RANGE, "0.1,60.0,0.1,or_greater"), "set_step", "get_step");
 	ADD_PROPERTY(PropertyInfo(Variant::REAL, "delay", PROPERTY_HINT_RANGE, "0.0,60.0,0.1,or_greater"), "set_delay", "get_delay");

@@ -14,7 +14,7 @@ public:
 private:
 	Ref<Resource> resource; // From which a new node is instantiated.
 
-	bool spawning = true;
+	bool enabled = true;
 
 	uint32_t rate = 1; // Objects per time `step`.
 	double step = 1.0; // The `rate` amount of objects will be spawned each time step.
@@ -40,8 +40,8 @@ public:
 	void set_resource(const Ref<Resource> &p_resource);
 	Ref<Resource> get_resource() const { return resource; }
 
-	void set_spawning(bool p_spawning);
-	bool is_spawning() const { return spawning; }
+	void set_enabled(bool p_enabled);
+	bool is_enabled() const { return enabled; }
 
 	Node *spawn();
 
