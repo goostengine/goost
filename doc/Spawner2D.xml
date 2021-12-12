@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="Spawner" inherits="Node" version="3.5">
+<class name="Spawner2D" inherits="Node" version="3.5">
 	<brief_description>
-		Instantiate nodes from scenes automatically.
+		Automatically instantiate nodes from scenes in 2D.
 	</brief_description>
 	<description>
-		Spawner allows to conveniently instantiate nodes from scenes and scripts automatically into the [SceneTree]. In order to use it, you need to set [member resource] first. Once [Spawner] is added to the [SceneTree], it will start to create new instances immediately.
+		Spawner2D allows to conveniently instantiate nodes from scenes and scripts automatically into the [SceneTree]. In order to use it, you need to set [member resource] first. Once [Spawner2D] is added to the [SceneTree], it will start to create new instances immediately.
 	</description>
 	<tutorials>
 	</tutorials>
@@ -23,7 +23,7 @@
 		<member name="limit" type="int" setter="set_limit" getter="get_limit" default="0">
 			Limits the number of nodes instantiated. If [code]limit == 0[/code], the number of nodes instantiated is unlimited.
 		</member>
-		<member name="process_mode" type="int" setter="set_process_mode" getter="get_process_mode" enum="Spawner.ProcessMode" default="1">
+		<member name="process_mode" type="int" setter="set_process_mode" getter="get_process_mode" enum="Spawner2D.ProcessMode" default="1">
 			Processing mode allows to configure whether the [method spawn] method is called during idle or physics frame, only applies when [member spawning] is set to [code]true[/code]. See [enum ProcessMode].
 		</member>
 		<member name="rate" type="int" setter="set_rate" getter="get_rate" default="1">

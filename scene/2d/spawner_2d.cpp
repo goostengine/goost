@@ -1,9 +1,9 @@
-#include "spawner.h"
+#include "spawner_2d.h"
 
 #include "core/engine.h"
 #include "scene/resources/packed_scene.h"
 
-void Spawner::set_resource(const Ref<Resource> &p_resource) {
+void Spawner2D::set_resource(const Ref<Resource> &p_resource) {
 	const Ref<PackedScene> &scene = p_resource;
 	const Ref<Script> &script = p_resource;
 
@@ -19,7 +19,7 @@ void Spawner::set_resource(const Ref<Resource> &p_resource) {
 	}
 }
 
-void Spawner::set_spawning(bool p_spawning) {
+void Spawner2D::set_spawning(bool p_spawning) {
 	_set_process(p_spawning);
 
 	delay_time = 0.0;
@@ -31,14 +31,14 @@ void Spawner::set_spawning(bool p_spawning) {
 	}
 }
 
-Node *Spawner::spawn() {
+Node *Spawner2D::spawn() {
 #ifdef TOOLS_ENABLED
 	if (Engine::get_singleton()->is_editor_hint()) {
 		return nullptr;
 	}
 #endif
 	ERR_FAIL_COND_V_MSG(!is_inside_tree(), nullptr,
-			"Spawner must be added to the SceneTree in order to spawn nodes");
+			"Spawner2D must be added to the SceneTree in order to spawn nodes");
 
 	const Ref<PackedScene> &scene = resource;
 	const Ref<Script> &script = resource;
@@ -67,32 +67,32 @@ Node *Spawner::spawn() {
 	return node;
 }
 
-void Spawner::set_rate(int p_rate) {
+void Spawner2D::set_rate(int p_rate) {
 	ERR_FAIL_COND(p_rate < 1);
 	rate = p_rate;
 }
 
-void Spawner::set_step(double p_step) {
+void Spawner2D::set_step(double p_step) {
 	ERR_FAIL_COND(p_step <= 0.0);
 	step = p_step;
 }
 
-void Spawner::set_delay(double p_delay) {
+void Spawner2D::set_delay(double p_delay) {
 	ERR_FAIL_COND(p_delay < 0.0);
 	delay = p_delay;
 }
 
-// void Spawner::set_lifetime(double p_lifetime) {
+// void Spawner2D::set_lifetime(double p_lifetime) {
 // 	ERR_FAIL_COND(p_lifetime < 0.0);
 // 	lifetime = p_lifetime;
 // }
 
-void Spawner::set_limit(int p_limit) {
+void Spawner2D::set_limit(int p_limit) {
 	ERR_FAIL_COND(p_limit < 0);
 	limit = p_limit;
 }
 
-void Spawner::_notification(int p_what) {
+void Spawner2D::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_READY: {
 			if (spawning) {
@@ -118,7 +118,7 @@ void Spawner::_notification(int p_what) {
 	}
 }
 
-void Spawner::_process_spawn() {
+void Spawner2D::_process_spawn() {
 	if (delay > 0.0) {
 		if (delay_time < delay) {
 			return;
@@ -134,7 +134,7 @@ void Spawner::_process_spawn() {
 	}
 }
 
-void Spawner::set_process_mode(ProcessMode p_mode) {
+void Spawner2D::set_process_mode(ProcessMode p_mode) {
 	if (process_mode == p_mode) {
 		return;
 	}
@@ -155,7 +155,7 @@ void Spawner::set_process_mode(ProcessMode p_mode) {
 	process_mode = p_mode;
 }
 
-void Spawner::_set_process(bool p_process) {
+void Spawner2D::_set_process(bool p_process) {
 	switch (process_mode) {
 		case PROCESS_PHYSICS: {
 			set_physics_process_internal(p_process);
@@ -167,32 +167,32 @@ void Spawner::_set_process(bool p_process) {
 	spawning = p_process;
 }
 
-void Spawner::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("set_resource", "object"), &Spawner::set_resource);
-	ClassDB::bind_method(D_METHOD("get_resource"), &Spawner::get_resource);
+void Spawner2D::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("set_resource", "object"), &Spawner2D::set_resource);
+	ClassDB::bind_method(D_METHOD("get_resource"), &Spawner2D::get_resource);
 
-	ClassDB::bind_method(D_METHOD("set_spawning", "spawning"), &Spawner::set_spawning);
-	ClassDB::bind_method(D_METHOD("is_spawning"), &Spawner::is_spawning);
+	ClassDB::bind_method(D_METHOD("set_spawning", "spawning"), &Spawner2D::set_spawning);
+	ClassDB::bind_method(D_METHOD("is_spawning"), &Spawner2D::is_spawning);
 
-	ClassDB::bind_method(D_METHOD("spawn"), &Spawner::spawn);
+	ClassDB::bind_method(D_METHOD("spawn"), &Spawner2D::spawn);
 
-	ClassDB::bind_method(D_METHOD("set_rate", "rate"), &Spawner::set_rate);
-	ClassDB::bind_method(D_METHOD("get_rate"), &Spawner::get_rate);
+	ClassDB::bind_method(D_METHOD("set_rate", "rate"), &Spawner2D::set_rate);
+	ClassDB::bind_method(D_METHOD("get_rate"), &Spawner2D::get_rate);
 
-	ClassDB::bind_method(D_METHOD("set_step", "step"), &Spawner::set_step);
-	ClassDB::bind_method(D_METHOD("get_step"), &Spawner::get_step);
+	ClassDB::bind_method(D_METHOD("set_step", "step"), &Spawner2D::set_step);
+	ClassDB::bind_method(D_METHOD("get_step"), &Spawner2D::get_step);
 
-	ClassDB::bind_method(D_METHOD("set_delay", "delay"), &Spawner::set_delay);
-	ClassDB::bind_method(D_METHOD("get_delay"), &Spawner::get_delay);
+	ClassDB::bind_method(D_METHOD("set_delay", "delay"), &Spawner2D::set_delay);
+	ClassDB::bind_method(D_METHOD("get_delay"), &Spawner2D::get_delay);
 
-	// ClassDB::bind_method(D_METHOD("set_lifetime", "lifetime"), &Spawner::set_lifetime);
-	// ClassDB::bind_method(D_METHOD("get_lifetime"), &Spawner::get_lifetime);
+	// ClassDB::bind_method(D_METHOD("set_lifetime", "lifetime"), &Spawner2D::set_lifetime);
+	// ClassDB::bind_method(D_METHOD("get_lifetime"), &Spawner2D::get_lifetime);
 
-	ClassDB::bind_method(D_METHOD("set_limit", "limit"), &Spawner::set_limit);
-	ClassDB::bind_method(D_METHOD("get_limit"), &Spawner::get_limit);
+	ClassDB::bind_method(D_METHOD("set_limit", "limit"), &Spawner2D::set_limit);
+	ClassDB::bind_method(D_METHOD("get_limit"), &Spawner2D::get_limit);
 
-	ClassDB::bind_method(D_METHOD("set_process_mode", "process_mode"), &Spawner::set_process_mode);
-	ClassDB::bind_method(D_METHOD("get_process_mode"), &Spawner::get_process_mode);
+	ClassDB::bind_method(D_METHOD("set_process_mode", "process_mode"), &Spawner2D::set_process_mode);
+	ClassDB::bind_method(D_METHOD("get_process_mode"), &Spawner2D::get_process_mode);
 
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "resource", PROPERTY_HINT_RESOURCE_TYPE, "PackedScene,Script"), "set_resource", "get_resource");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "spawning"), "set_spawning", "is_spawning");

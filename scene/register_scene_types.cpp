@@ -9,7 +9,7 @@
 #include "physics/register_physics_types.h"
 
 #include "2d/debug_2d.h"
-#include "main/spawner.h"
+#include "2d/spawner_2d.h"
 
 #include "goost/classes_enabled.gen.h"
 
@@ -54,7 +54,7 @@ void register_scene_types() {
 	ClassDB::register_class<PolyShape2D>();
 #endif
 	ClassDB::register_class<Stopwatch>();
-	ClassDB::register_class<Spawner>();
+	ClassDB::register_class<Spawner2D>();
 	ClassDB::register_class<VisualShape2D>();
 	ClassDB::register_class<GradientTexture2D>();
 	ClassDB::register_class<LightTexture>();

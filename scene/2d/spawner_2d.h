@@ -1,9 +1,9 @@
 #pragma once
 
-#include "scene/main/node.h"
+#include "scene/2d/node_2d.h"
 
-class Spawner : public Node {
-	GDCLASS(Spawner, Node);
+class Spawner2D : public Node2D {
+	GDCLASS(Spawner2D, Node2D);
 
 public:
 	enum ProcessMode {
@@ -12,7 +12,7 @@ public:
 	};
 
 private:
-	Ref<Resource> resource;
+	Ref<Resource> resource; // From which a new node is instantiated.
 
 	bool spawning = true;
 
@@ -64,4 +64,4 @@ public:
 	ProcessMode get_process_mode() const { return process_mode; };
 };
 
-VARIANT_ENUM_CAST(Spawner::ProcessMode);
+VARIANT_ENUM_CAST(Spawner2D::ProcessMode);

@@ -12,7 +12,7 @@
    width="16"
    version="1.1"
    id="svg4"
-   sodipodi:docname="icon_spawner.svg"
+   sodipodi:docname="icon_spawner_2d.svg"
    inkscape:version="0.92.4 (5da689c313, 2019-01-14)">
   <metadata
      id="metadata10">
@@ -54,11 +54,11 @@
        empspacing="4" />
   </sodipodi:namedview>
   <path
-     style="opacity:1;fill:#e0e0e0;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:2;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:21.53999901;stroke-opacity:1;paint-order:markers fill stroke"
+     style="opacity:1;fill:#a5b7f3;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:2;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:21.53999901;stroke-opacity:1;paint-order:markers fill stroke"
      d="M 1 8 A 7 7 0 0 0 8 15 A 7 7 0 0 0 15 8 L 12 8 A 4 4 0 0 1 8 12 A 4 4 0 0 1 4 8 L 1 8 z "
      id="path812" />
   <circle
-     style="opacity:1;fill:#e0e0e0;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:2;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:21.53999901;stroke-opacity:1;paint-order:markers fill stroke"
+     style="opacity:1;fill:#a5b7f3;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:2;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:21.53999901;stroke-opacity:1;paint-order:markers fill stroke"
      id="path826"
      cx="8"
      cy="5"
