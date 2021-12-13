@@ -41,9 +41,10 @@ Node *Spawner2D::spawn() {
 		return nullptr;
 	}
 #endif
-	ERR_FAIL_COND_V_MSG(!is_inside_tree(), nullptr,
-			"Spawner2D must be added to the SceneTree in order to spawn nodes");
-
+	if (!is_inside_tree()) {
+		set_enabled(false);
+		ERR_FAIL_V_MSG(nullptr, "Spawner2D must be added to the SceneTree in order to spawn nodes");
+	}
 	const Ref<PackedScene> &scene = resource;
 	const Ref<Script> &script = resource;
 
@@ -54,18 +55,20 @@ Node *Spawner2D::spawn() {
 
 	} else if (script.is_valid()) {
 		StringName base_type = script->get_instance_base_type();
-		bool valid = !ClassDB::is_parent_class(base_type, "Node");
-		ERR_FAIL_COND_V_MSG(valid, nullptr, "Script does not inherit a Node: " + script->get_path());
-
+		if (!ClassDB::is_parent_class(base_type, "Node")) {
+			set_enabled(false);
+			ERR_FAIL_V_MSG(nullptr, "Script does not inherit a Node: " + script->get_path());
+		}
 		Object *obj = ClassDB::instance(base_type);
 		node = Object::cast_to<Node>(obj);
 		Variant s = script;
 		node->set_script(s);
 	} else {
+		set_enabled(false);
 		ERR_FAIL_V_MSG(nullptr, "Could not spawn an object: the resource is not a scene nor a script.");
 	}
 
-	// Add child now, because we may need to set position of the spawned node.
+	// Add child now, because we may need to set transform of the spawned node.
 	add_child(node);
 	amount += 1;
 
@@ -126,6 +129,7 @@ Node *Spawner2D::spawn() {
 			}
 		}
 	}
+	// Emit after setting transform, the user may want to customize it.
 	emit_signal(node_spawned, node);
 
 	return node;
