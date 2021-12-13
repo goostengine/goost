@@ -24,6 +24,11 @@ private:
 	// double lifetime = 0.0; // Lifetime of each object before destroying an object.
 	uint32_t limit = 0; // Before spawning stops, zero means unlimited.
 
+	// Modify node's transform on spawning.
+	bool modify_position = true;
+	bool modify_rotation = true;
+	bool modify_scale = true;
+
 	ProcessMode process_mode = PROCESS_IDLE;
 
 	// Internal.
@@ -64,6 +69,15 @@ public:
 
 	void set_limit(int p_limit);
 	int get_limit() const { return limit; }
+
+	void set_modify_position(bool p_enabled) { modify_position = p_enabled; }
+	bool is_modifying_position() const { return modify_position; }
+
+	void set_modify_rotation(bool p_enabled) { modify_rotation = p_enabled; }
+	bool is_modifying_rotation() const { return modify_rotation; }
+
+	void set_modify_scale(bool p_enabled) { modify_scale = p_enabled; }
+	bool is_modifying_scale() const { return modify_scale; }
 
 	void set_process_mode(ProcessMode p_mode);
 	ProcessMode get_process_mode() const { return process_mode; };

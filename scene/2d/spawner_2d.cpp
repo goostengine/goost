@@ -64,20 +64,65 @@ Node *Spawner2D::spawn() {
 	} else {
 		ERR_FAIL_V_MSG(nullptr, "Could not spawn an object: the resource is not a scene nor a script.");
 	}
-	
+
 	// Add child now, because we may need to set position of the spawned node.
 	add_child(node);
 	amount += 1;
 
-	CanvasItem *canvas_item = Object::cast_to<CanvasItem>(node);
-	if (canvas_item) {
+	CanvasItem *c = Object::cast_to<CanvasItem>(node);
+	if (c) {
 		if (!local) {
-			canvas_item->set_as_toplevel(true);
-			Node2D *node_2d = Object::cast_to<Node2D>(node);
-			if (node_2d) {
-				// This only sets the position, not transform, because the spawned
-				// root node may override rotation and scale for other purposes.
-				node_2d->set_global_position(get_global_position());
+			c->set_as_toplevel(true);
+		}
+		Node2D *n = Object::cast_to<Node2D>(node);
+		if (n) {
+			// Implementation from `RemoteTransform2D::_modify_remote()`
+			if (!local) { // Using global coordinates.
+				if (modify_position && modify_rotation && modify_scale) {
+					n->set_global_transform(get_global_transform());
+				} else {
+					Transform2D n_trans = n->get_global_transform();
+					Transform2D our_trans = get_global_transform();
+					Vector2 n_scale = n->get_scale();
+
+					if (!modify_position) {
+						our_trans.set_origin(n_trans.get_origin());
+					}
+					if (!modify_rotation) {
+						our_trans.set_rotation(n_trans.get_rotation());
+					}
+
+					n->set_global_transform(our_trans);
+
+					if (modify_scale) {
+						n->set_scale(get_global_scale());
+					} else {
+						n->set_scale(n_scale);
+					}
+				}
+			}
+		} else { // Using local coordinates.
+			if (modify_position && modify_rotation && modify_scale) {
+				n->set_transform(get_transform());
+			} else {
+				Transform2D n_trans = n->get_transform();
+				Transform2D our_trans = get_transform();
+				Vector2 n_scale = n->get_scale();
+
+				if (!modify_position) {
+					our_trans.set_origin(n_trans.get_origin());
+				}
+				if (!modify_rotation) {
+					our_trans.set_rotation(n_trans.get_rotation());
+				}
+
+				n->set_transform(our_trans);
+
+				if (modify_scale) {
+					n->set_scale(get_scale());
+				} else {
+					n->set_scale(n_scale);
+				}
 			}
 		}
 	}
@@ -214,6 +259,15 @@ void Spawner2D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_limit", "limit"), &Spawner2D::set_limit);
 	ClassDB::bind_method(D_METHOD("get_limit"), &Spawner2D::get_limit);
 
+	ClassDB::bind_method(D_METHOD("set_modify_position", "enabled"), &Spawner2D::set_modify_position);
+	ClassDB::bind_method(D_METHOD("is_modifying_position"), &Spawner2D::is_modifying_position);
+
+	ClassDB::bind_method(D_METHOD("set_modify_rotation", "enabled"), &Spawner2D::set_modify_rotation);
+	ClassDB::bind_method(D_METHOD("is_modifying_rotation"), &Spawner2D::is_modifying_rotation);
+
+	ClassDB::bind_method(D_METHOD("set_modify_scale", "enabled"), &Spawner2D::set_modify_scale);
+	ClassDB::bind_method(D_METHOD("is_modifying_scale"), &Spawner2D::is_modifying_scale);
+
 	ClassDB::bind_method(D_METHOD("set_process_mode", "process_mode"), &Spawner2D::set_process_mode);
 	ClassDB::bind_method(D_METHOD("get_process_mode"), &Spawner2D::get_process_mode);
 
@@ -226,6 +280,11 @@ void Spawner2D::_bind_methods() {
 	// ADD_PROPERTY(PropertyInfo(Variant::REAL, "lifetime", PROPERTY_HINT_RANGE, "0.0,5.0,0.1,or_greater"), "set_lifetime", "get_lifetime");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "limit", PROPERTY_HINT_RANGE, "0,20,1,or_greater"), "set_limit", "get_limit");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "process_mode", PROPERTY_HINT_ENUM, "Physics,Idle"), "set_process_mode", "get_process_mode");
+
+	ADD_GROUP("Modify", "modify_");
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "modify_position"), "set_modify_position", "is_modifying_position");
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "modify_rotation"), "set_modify_rotation", "is_modifying_rotation");
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "modify_scale"), "set_modify_scale", "is_modifying_scale");
 
 	ADD_SIGNAL(MethodInfo("node_spawned", PropertyInfo(Variant::OBJECT, "node", PROPERTY_HINT_RESOURCE_TYPE, "Node")));
 	ADD_SIGNAL(MethodInfo("finished"));
