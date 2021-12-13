@@ -183,6 +183,13 @@ void Spawner2D::_notification(int p_what) {
 			time += get_physics_process_delta_time();
 			_process_spawn();
 		} break;
+		case NOTIFICATION_DRAW: {
+#ifdef TOOLS_ENABLED
+			if (Engine::get_singleton()->is_editor_hint()) {
+				draw_circle(Vector2(), 10, Color(0.1, 1, 0.7, 0.4));
+			}
+#endif
+		} break;
 	}
 }
 
