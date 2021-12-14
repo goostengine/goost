@@ -221,7 +221,7 @@
 		</method>
 	</methods>
 	<members>
-		<member name="looping" type="bool" setter="set_looping" getter="get_looping" default="true">
+		<member name="looping" type="bool" setter="set_looping" getter="is_looping" default="true">
 			When set to [code]true[/code], midi file will loop forever.
 		</member>
 		<member name="midi" type="MidiFile" setter="set_midi" getter="get_midi">

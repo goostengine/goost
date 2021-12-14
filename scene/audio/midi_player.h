@@ -112,11 +112,11 @@ public:
 	void set_midi(Ref<MidiFile> mid);
 	Ref<MidiFile> get_midi() const;
 
-	void set_looping(bool p_looping);
-	bool get_looping();
-
 	void set_midi_speed(float p_speed);
 	float get_midi_speed();
+
+	void set_looping(bool p_looping);
+	bool is_looping();
 
 	PoolStringArray get_preset_names() const;
 	int get_preset_index(int inBank, int inPresetNumber);

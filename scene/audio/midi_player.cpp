@@ -419,7 +419,7 @@ void MidiPlayer::set_looping(bool p_looping) {
 	looping = p_looping;
 }
 
-bool MidiPlayer::get_looping() {
+bool MidiPlayer::is_looping() {
 	return looping;
 }
 
@@ -467,16 +467,15 @@ void MidiPlayer::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("channel_get_tuning", "channel"), &MidiPlayer::channel_get_tuning);
 
 	ClassDB::bind_method(D_METHOD("set_looping", "looping"), &MidiPlayer::set_looping);
-	ClassDB::bind_method(D_METHOD("get_looping"), &MidiPlayer::get_looping);
+	ClassDB::bind_method(D_METHOD("is_looping"), &MidiPlayer::is_looping);
 
 	ClassDB::bind_method(D_METHOD("set_midi_speed", "speed"), &MidiPlayer::set_midi_speed);
 	ClassDB::bind_method(D_METHOD("get_midi_speed"), &MidiPlayer::get_midi_speed);
 
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "soundfont", PROPERTY_HINT_RESOURCE_TYPE, "MidiFile"), "set_soundfont", "get_soundfont");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "midi", PROPERTY_HINT_RESOURCE_TYPE, "MidiFile"), "set_midi", "get_midi");
-
-	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "looping", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_EDITOR), "set_looping", "get_looping");
-	ADD_PROPERTY(PropertyInfo(Variant::REAL, "midi_speed", PROPERTY_HINT_RANGE, "0,8,0.1", PROPERTY_USAGE_EDITOR), "set_midi_speed", "get_midi_speed");
+	ADD_PROPERTY(PropertyInfo(Variant::REAL, "midi_speed", PROPERTY_HINT_RANGE, "0,8,0.1"), "set_midi_speed", "get_midi_speed");
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "looping"), "set_looping", "is_looping");
 
 	ADD_SIGNAL(MethodInfo("loop_finished"));
 }
