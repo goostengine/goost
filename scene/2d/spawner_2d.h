@@ -34,7 +34,7 @@ private:
 
 	// Internal.
 	double time = 0.0;
-	double delay_time = 0.0;
+	bool delayed = false;
 	uint32_t amount = 0;
 
 protected:

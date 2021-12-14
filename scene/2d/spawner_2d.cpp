@@ -26,13 +26,9 @@ void Spawner2D::set_resource(const Ref<Resource> &p_resource) {
 void Spawner2D::set_enabled(bool p_enabled) {
 	_set_process(p_enabled);
 
-	delay_time = 0.0;
+	delayed = delay > 0.0;
 	time = 0.0;
 	amount = 0;
-
-	if (p_enabled && delay <= 0.0) {
-		spawn();
-	}
 }
 
 Node *Spawner2D::spawn() {
@@ -181,16 +177,14 @@ void Spawner2D::_notification(int p_what) {
 			if (!enabled || process_mode == PROCESS_PHYSICS || !is_processing_internal()) {
 				return;
 			}
-			delay_time += get_process_delta_time();
-			time += get_process_delta_time();
+			time -= get_process_delta_time();
 			_process_spawn();
 		} break;
 		case NOTIFICATION_INTERNAL_PHYSICS_PROCESS: {
 			if (!enabled || process_mode == PROCESS_IDLE || !is_physics_processing_internal()) {
 				return;
 			}
-			delay_time += get_physics_process_delta_time();
-			time += get_physics_process_delta_time();
+			time -= get_physics_process_delta_time();
 			_process_spawn();
 		} break;
 		case NOTIFICATION_DRAW: {
@@ -204,14 +198,13 @@ void Spawner2D::_notification(int p_what) {
 }
 
 void Spawner2D::_process_spawn() {
-	if (delay > 0.0) {
-		if (delay_time < delay) {
-			return;
+	if (delayed) {
+		if (ABS(time) > delay) {
+			delayed = false;
 		}
-	}
-	if (time > (step / rate)) {
+	} else if (time < 0.0) {
 		spawn();
-		time = 0.0;
+		time = step / rate;
 
 		if (limit > 0 && amount >= limit) {
 			set_enabled(false);
@@ -256,7 +249,7 @@ void Spawner2D::_set_process(bool p_process) {
 void Spawner2D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_resource", "object"), &Spawner2D::set_resource);
 	ClassDB::bind_method(D_METHOD("get_resource"), &Spawner2D::get_resource);
-	
+
 	ClassDB::bind_method(D_METHOD("set_spawn_path", "path"), &Spawner2D::set_spawn_path);
 	ClassDB::bind_method(D_METHOD("get_spawn_path"), &Spawner2D::get_spawn_path);
 
