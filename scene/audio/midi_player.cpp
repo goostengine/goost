@@ -37,7 +37,7 @@ Error MidiFile::load(const String fileName) {
 	FileAccess *f = FileAccess::open(fileName, FileAccess::READ);
 	ERR_FAIL_COND_V_MSG(!f, FAILED, "Couldn't open file " + fileName + ".");
 
-	uint64_t size = f->get_len();
+	int size = f->get_len();
 
 	PoolVector<uint8_t> theData;
 	theData.resize(size);
