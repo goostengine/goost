@@ -1,38 +1,38 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="MidiFile" inherits="Resource" version="3.5">
 	<brief_description>
-		Midi data file.
+		MIDI data file.
 	</brief_description>
 	<description>
-		This is a resource which stores Midi data used by [MidiPlayer]. At load time, [member format] will be set accordingly.
-		To load data into the MidiPlayer simply load a MidiFile with FORMAT_MIDI into [member MidiPlayer.midi] or a MidiFile with FORMAT_SF2 into [member MidiPlayer.soundfont].
-		[b]Note[/b]: It is not recommended that you set byte data directly using [method set_data] or change the format using [method set_format]. These methods are more useful when loading midi data from a [File] and you need to set byte data and format manually. 
+		This is a resource which stores MIDI data used by [MidiPlayer]. At load time, [member format] will be set accordingly.
+		To load data into the MidiPlayer simply load a [MidiFile] with [constant FORMAT_MIDI] into [member MidiPlayer.midi] or a [MidiFile] with [constant FORMAT_SF2] into [member MidiPlayer.soundfont].
+		[b]Note[/b]: It is not recommended that you set byte [member data] directly or change the [member format]. These methods are more useful when loading MIDI data from a [File] and you need to set byte data and format manually.
 	</description>
 	<tutorials>
 	</tutorials>
 	<methods>
 		<method name="load">
-			<return type="Error" />
+			<return type="int" enum="Error" />
 			<argument index="0" name="file_path" type="String" />
 			<description>
-				Load midi data from a file anywhere on the filesystem. It must be the correct format.
+				Load MIDI data from a file anywhere on the filesystem. It must be the correct format.
 			</description>
 		</method>
 	</methods>
 	<members>
 		<member name="data" type="PoolByteArray" setter="set_data" getter="get_data" default="PoolByteArray(  )">
-			A stream of bytes which represents MIDI data. This data is not meant to be modified, as MIDI files are imported automatically. 
+			A stream of bytes which represents MIDI data. This data is not meant to be modified, as MIDI files are imported automatically.
 		</member>
 		<member name="format" type="int" setter="set_format" getter="get_format" default="0">
-			Represents the internal format of the MidiFile data. This is set automatically at import time.
+			Represents the internal format of the [MidiFile] data. This is set automatically at import time.
 		</member>
 	</members>
 	<constants>
 		<constant name="FORMAT_MIDI" value="0" enum="Format">
-			Midi song data.
+			MIDI song data.
 		</constant>
 		<constant name="FORMAT_SF2" value="1" enum="Format">
-			Soundfont data.
+			SoundFont data.
 		</constant>
 	</constants>
 </class>

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="MidiPlayer" inherits="AudioStreamPlayer" version="3.5">
 	<brief_description>
-		[b]A Midi and SoundFont player class.[/b]
+		A MIDI and SoundFont player class.
 	</brief_description>
 	<description>
 		The MidiPlayer class can play MIDI files. It does this using a collection of sounds called SoundFont which was originally invented in the early 1990s by Creative Labs for their SoundBlaser AWE32 sound card. The MIDI specification is even older from 1983.
-		Although these technologies are old, they are still being used today in music industry because they are incredibly handy. While SoundFont has become less relevant with the development of sampling, MIDI specifically has seen continous use very with minimal changes to the standard since inception. 
+		Although these technologies are old, they are still being used today in music industry because they are incredibly handy. While SoundFont has become less relevant with the development of sampling, MIDI specifically has seen continuos use very with minimal changes to the standard since inception. 
 		In order to use this class, the node should be added to the scene tree. Create a new [AudioStreamGenerator] via inspector in [member AudioStreamPlayer.stream] and then load a [MidiFile] containing a SoundFont should be set to  [member soundfont] and a [MidiFile] midi song set to [member midi]. For instance:
 		[codeblock]
 		func _ready():
@@ -13,7 +13,7 @@
 		    $MidiPlayer.soundfont = preload("res://piano.sf2")
 		    $MidiPlayer.play()
 		[/codeblock]
-		You can find Midi songs and General Midi SoundFonts online. Here are just a few completely free ones that you might want to look for: [code]ChoriumRevA.sf2[/code], [code]WeedsGM3.sf2[/code], [code]SGM-V2.01FluidR3_GM.sf2[/code], [code]TimGM6mb.sf2[/code] (close in sound with the original Sound Blaster soundfont), [code]Timbres Of Heaven GM_GS_XG_SFX V 3.0 Final.sf2[/code] (very high quality). 
+		You can find MIDI songs and General MIDI SoundFonts online. Here are just a few completely free ones that you might want to look for: [code]ChoriumRevA.sf2[/code], [code]WeedsGM3.sf2[/code], [code]SGM-V2.01FluidR3_GM.sf2[/code], [code]TimGM6mb.sf2[/code] (close in sound with the original Sound Blaster soundfont), [code]Timbres Of Heaven GM_GS_XG_SFX V 3.0 Final.sf2[/code] (very high quality). 
 		It should be possible to play notes via [InputEventMIDI] as well.
 		[b]List of keywords:[/b]
 		[code]channel:[/code] And audio channels (or tracks) is the audio route the sound takes and allows one instrument to play. Multiple channels allow for different instruments to play on top of each other. Channel 10 is always set to Drums and is handled differently. The number of channels depends on implementation most commonly 16. Tiny Sound Font (which MidiPlayer uses) allocates channels dynamically so you can have as many as you want.
@@ -190,41 +190,15 @@
 				Set volume of a channel.
 			</description>
 		</method>
-		<method name="set_midi">
-			<return type="void" />
-			<argument index="0" name="midi_resource" type="String" />
-			<description>
-				Sets the midi file to a MidiFile resource. Must be the appropriate format to work. 
-			</description>
-		</method>
-		<method name="get_midi" qualifiers="const">
-			<return type="String" />
-			<description>
-				Return the MidiFile song resource currently loaded.
-			</description>
-		</method>
 		<method name="get_preset_names" qualifiers="const">
 			<return type="PoolStringArray" />
 			<description>
 				Returns a list of preset names stored in the SoundFont.
 			</description>
 		</method>
-		<method name="set_soundfont">
-			<return type="void" />
-			<argument index="0" name="soundfont_resource" type="String" />
-			<description>
-				Sets the soundfont to a MidiFile SoundFont resource. It must be the correct format.
-			</description>
-		</method>
-		<method name="get_soundfont" qualifiers="const">
-			<return type="String" />
-			<description>
-				Returns the MidiFile soundfont resource currently loaded.
-			</description>
-		</method>
 		<method name="load_midi">
 			<return type="void" />
-			<argument index="0" name="midi_file" type="String" />
+			<argument index="0" name="midi_resource_path" type="String" />
 			<description>
 				Loads a MidiFile resource by specifying an internal resource path. It must FORMAT_MIDI format.
 				[b]Note:[/b] A SoundFont and a playback stream must exist in order for the file to actually play.
@@ -232,7 +206,7 @@
 		</method>
 		<method name="load_soundfont">
 			<return type="void" />
-			<argument index="0" name="soundfont_file" type="String" />
+			<argument index="0" name="soundfont_resource_path" type="String" />
 			<description>
 				Loads a MidiFile SoundFont by specifying an internal resource path. It must be FORMAT_SF2 format.
 			</description>
