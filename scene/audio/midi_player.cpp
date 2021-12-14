@@ -29,7 +29,41 @@ SOFTWARE.
 #define TML_IMPLEMENTATION
 #include "thirdparty/tsf/tml.h"
 
+Error MidiFile::load(const String fileName) {
+	if(!(fileName.ends_with("sf2") || fileName.ends_with("mid") || fileName.ends_with("midi"))) {
+		ERR_FAIL_COND_V("Incorrect file type", FAILED);
+	}
+
+	FileAccess *f = FileAccess::open(fileName, FileAccess::READ);
+	ERR_FAIL_COND_V_MSG(!f, FAILED, "Couldn't open file " + fileName + ".");
+
+	int size = f->get_len();
+
+	PoolVector<uint8_t> theData;
+	theData.resize(size);
+
+	PoolVector<uint8_t>::Write w = theData.write();
+	int theReadSize = f->get_buffer(&w[0], size);
+
+	if (theReadSize < size) { 
+		theData.resize(size);
+	}
+	ERR_FAIL_COND_V_MSG(theReadSize == 0, FAILED, "Could't read file.");
+
+	set_data(theData);
+
+	if (fileName.ends_with("sf2")) {
+		set_format(FORMAT_SF2);
+	} else {
+		set_format(FORMAT_MIDI);
+	}
+
+	return OK;
+}
+
 void MidiFile::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("load", "file_path"), &MidiFile::load);
+
 	ClassDB::bind_method(D_METHOD("set_data", "data"), &MidiFile::set_data);
 	ClassDB::bind_method(D_METHOD("get_data"), &MidiFile::get_data);
 
@@ -477,8 +511,8 @@ void MidiPlayer::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "soundfont", PROPERTY_HINT_RESOURCE_TYPE, "MidiFile"), "set_soundfont", "get_soundfont");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "midi", PROPERTY_HINT_RESOURCE_TYPE, "MidiFile"), "set_midi", "get_midi");
 
-	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "looping", PROPERTY_HINT_NONE, "", true), "set_looping", "get_looping");
-	ADD_PROPERTY(PropertyInfo(Variant::REAL, "midi_speed", PROPERTY_HINT_RANGE, "0,8,0.1", 1.0), "set_midi_speed", "get_midi_speed");
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "looping", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_EDITOR), "set_looping", "get_looping");
+	ADD_PROPERTY(PropertyInfo(Variant::REAL, "midi_speed", PROPERTY_HINT_RANGE, "0,8,0.1", PROPERTY_USAGE_EDITOR), "set_midi_speed", "get_midi_speed");
 
 	ADD_SIGNAL(MethodInfo("loop_finished"));
 }

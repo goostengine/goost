@@ -50,8 +50,11 @@ public:
 		FORMAT_MIDI,
 		FORMAT_SF2,
 	};
+	
 	int format = FORMAT_MIDI; // Default.
 
+	Error load(const String fileName);
+	
 	void set_format(Format p_format) { format = p_format; }
 	int get_format() const { return format; }
 
