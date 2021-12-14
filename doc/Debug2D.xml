@@ -223,7 +223,7 @@
 			Debug2D.canvas_item = Debug2D.get_base()
 			[/codeblock]
 		</member>
-		<member name="enabled" type="bool" setter="set_enabled" getter="is_enabled" default="true">
+		<member name="enabled" type="bool" setter="set_enabled" getter="is_enabled">
 			If [code]false[/code], then all debug drawing is disabled.
 		</member>
 	</members>
