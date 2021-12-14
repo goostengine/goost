@@ -9,8 +9,8 @@
 		In order to use this class, the node should be added to the scene tree. Create a new [AudioStreamGenerator] via inspector in [member AudioStreamPlayer.stream] and then load a [MidiFile] containing a SoundFont should be set to  [member soundfont] and a [MidiFile] midi song set to [member midi]. For instance:
 		[codeblock]
 		func _ready():
-		    $MidiPlayer.midi = load("res://moonlight.mid")
-		    $MidiPlayer.soundfont = load("res://piano.sf2")
+		    $MidiPlayer.midi = preload("res://moonlight.mid")
+		    $MidiPlayer.soundfont = preload("res://piano.sf2")
 		    $MidiPlayer.play()
 		[/codeblock]
 		You can find Midi songs and General Midi SoundFonts online. Here are just a few completely free ones that you might want to look for: [code]ChoriumRevA.sf2[/code], [code]WeedsGM3.sf2[/code], [code]SGM-V2.01FluidR3_GM.sf2[/code], [code]TimGM6mb.sf2[/code] (close in sound with the original Sound Blaster soundfont), [code]Timbres Of Heaven GM_GS_XG_SFX V 3.0 Final.sf2[/code] (very high quality). 
@@ -226,15 +226,15 @@
 			<return type="void" />
 			<argument index="0" name="midi_file" type="String" />
 			<description>
-				Loads a MIDI file. It must be a .mid or .midi file and the correct format.
-				[b]Note:[/b] A SoundFont file and a playback stream must exist in order for the file to actually play.
+				Loads a MidiFile resource by specifying an internal resource path. It must FORMAT_MIDI format.
+				[b]Note:[/b] A SoundFont and a playback stream must exist in order for the file to actually play.
 			</description>
 		</method>
 		<method name="load_soundfont">
 			<return type="void" />
 			<argument index="0" name="soundfont_file" type="String" />
 			<description>
-				Loads a SoundFont 2 file. It must be an .sf2 file.
+				Loads a MidiFile SoundFont by specifying an internal resource path. It must be FORMAT_SF2 format.
 			</description>
 		</method>
 		<method name="note_off">
