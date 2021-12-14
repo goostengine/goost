@@ -70,18 +70,17 @@ jobs:
           xvfb-run ./bin/godot.x11.opt.tools.64.goost.mono --generate-mono-glue modules/mono/glue || true
           popd
 
-      - uses: actions/upload-artifact@v2
-        with:
-          name: mono-glue
-          path: |
-            godot/modules/mono/glue/**.gen.*
-            godot/modules/mono/glue/GodotSharp/GodotSharp/Generated/
-            godot/modules/mono/glue/GodotSharp/GodotSharpEditor/Generated/
+      # - uses: actions/upload-artifact@v2
+      #   with:
+      #     name: mono-glue
+      #     path: |
+      #       godot/modules/mono/glue/**.gen.*
+      #       godot/modules/mono/glue/GodotSharp/GodotSharp/Generated/
+      #       godot/modules/mono/glue/GodotSharp/GodotSharpEditor/Generated/
 
-  linux-editor-mono:
+  linux-editor:
     runs-on: "ubuntu-20.04"
-    name: Linux Editor w/ Mono (target=release_debug, tools=yes)
-    needs: mono-glue
+    name: Linux Editor (target=release_debug, tools=yes)
 
     steps:
       - uses: actions/checkout@v2
@@ -101,7 +100,7 @@ jobs:
             libxinerama-dev libgl1-mesa-dev libglu-dev libasound2-dev libpulse-dev libudev-dev libxi-dev libxrandr-dev yasm
 
       - name: Load .scons_cache directory
-        id: linux-editor-mono-cache
+        id: linux-editor-cache
         uses: actions/cache@v2
         with:
           path: ${{github.workspace}}/.scons_cache/
@@ -124,25 +123,15 @@ jobs:
           python --version
           scons --version
 
-      - name: Clone Godot repository
-        run: |
-          scons skip_build=yes
-
-      - name: Download Glue
-        uses: actions/download-artifact@v2
-        with:
-          name: mono-glue
-          path: godot/modules/mono/glue
-
       - name: Compilation
         env:
           SCONS_CACHE: ${{github.workspace}}/.scons_cache/
         run: |
-          scons platform=linuxbsd tools=yes target=release_debug module_mono_enabled=yes mono_glue=yes mono_static=yes copy_mono_root=yes
+          scons platform=linuxbsd tools=yes target=release_debug
 
       - uses: actions/upload-artifact@v2
         with:
-          name: godot.x11.opt.tools.64.goost.mono
+          name: godot.x11.opt.tools.64.goost
           path: godot/bin/*
 
   linux-template:
@@ -192,7 +181,7 @@ jobs:
         env:
           SCONS_CACHE: ${{github.workspace}}/.scons_cache/
         run: |
-          scons platform=linuxbsd target=release tools=no module_mono_enabled=yes mono_glue=no
+          scons platform=linuxbsd target=release tools=no
 
   linux-server:
     runs-on: "ubuntu-20.04"
