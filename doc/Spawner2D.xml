@@ -49,6 +49,9 @@
 		<member name="resource" type="Resource" setter="set_resource" getter="get_resource">
 			The resource from which a new node is instantiated. Accepts [PackedScene] and [Script] only. If the resource is a [Script], make sure that the constructor does not have any [b]required[/b] parameters, otherwise the instantiation may fail.
 		</member>
+		<member name="spawn_path" type="NodePath" setter="set_spawn_path" getter="get_spawn_path" default="NodePath(&quot;.&quot;)">
+			The nodes are spawned directly as a child of [Spawner2D] by default. Setting this property allows to customize the destination by specifying a different parent node.
+		</member>
 		<member name="step" type="float" setter="set_step" getter="get_step" default="1.0">
 			The [member rate] number of nodes will be spawned each time step. Measured in seconds.
 		</member>

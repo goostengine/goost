@@ -48,6 +48,16 @@ Node *Spawner2D::spawn() {
 	const Ref<PackedScene> &scene = resource;
 	const Ref<Script> &script = resource;
 
+	NodePath path = spawn_path;
+	if (path.is_empty()) {
+		path = NodePath(".");
+	}
+	Node *parent = get_node_or_null(path);
+	if (!parent) {
+		set_enabled(false);
+		ERR_FAIL_V_MSG(nullptr, vformat("Cannot spawn a node: the node path '%s' doesn't exist.", String(path)));
+	}
+
 	Node *node = nullptr;
 
 	if (scene.is_valid()) {
@@ -69,7 +79,7 @@ Node *Spawner2D::spawn() {
 	}
 
 	// Add child now, because we may need to set transform of the spawned node.
-	add_child(node);
+	parent->add_child(node);
 	amount += 1;
 
 	CanvasItem *c = Object::cast_to<CanvasItem>(node);
@@ -246,6 +256,9 @@ void Spawner2D::_set_process(bool p_process) {
 void Spawner2D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_resource", "object"), &Spawner2D::set_resource);
 	ClassDB::bind_method(D_METHOD("get_resource"), &Spawner2D::get_resource);
+	
+	ClassDB::bind_method(D_METHOD("set_spawn_path", "path"), &Spawner2D::set_spawn_path);
+	ClassDB::bind_method(D_METHOD("get_spawn_path"), &Spawner2D::get_spawn_path);
 
 	ClassDB::bind_method(D_METHOD("set_enabled", "enabled"), &Spawner2D::set_enabled);
 	ClassDB::bind_method(D_METHOD("is_enabled"), &Spawner2D::is_enabled);
@@ -283,6 +296,7 @@ void Spawner2D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_process_mode"), &Spawner2D::get_process_mode);
 
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "resource", PROPERTY_HINT_RESOURCE_TYPE, "PackedScene,Script"), "set_resource", "get_resource");
+	ADD_PROPERTY(PropertyInfo(Variant::NODE_PATH, "spawn_path"), "set_spawn_path", "get_spawn_path");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "enabled"), "set_enabled", "is_enabled");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "local"), "set_local", "is_local");
 

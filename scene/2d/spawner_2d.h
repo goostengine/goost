@@ -13,7 +13,8 @@ public:
 	static StringName node_spawned;
 
 private:
-	Ref<Resource> resource; // From which a new node is instantiated.
+	Ref<Resource> resource; // From which a new node is instantiated: scene or script.
+	NodePath spawn_path = ".";
 
 	bool enabled = true;
 	bool local = false;
@@ -46,6 +47,9 @@ protected:
 public:
 	void set_resource(const Ref<Resource> &p_resource);
 	Ref<Resource> get_resource() const { return resource; }
+
+	void set_spawn_path(const NodePath& p_path) { spawn_path = p_path; }
+	NodePath get_spawn_path() const { return spawn_path; }
 
 	Node *spawn();
 
