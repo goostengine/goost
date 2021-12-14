@@ -30,9 +30,10 @@ SOFTWARE.
 #include "thirdparty/tsf/tml.h"
 
 Error MidiFile::load(const String fileName) {
-	if(!(fileName.ends_with("sf2") || fileName.ends_with("mid") || fileName.ends_with("midi"))) {
-		ERR_FAIL_COND_V("Incorrect file type", FAILED);
-	}
+	String ext = fileName.get_extension().to_lower();
+    if(!(ext == "sf2" || ext == "mid" || ext == "midi") ) {
+        ERR_FAIL_COND_V("Incorrect file type", FAILED);
+    }
 
 	FileAccess *f = FileAccess::open(fileName, FileAccess::READ);
 	ERR_FAIL_COND_V_MSG(!f, FAILED, "Couldn't open file " + fileName + ".");
@@ -52,7 +53,7 @@ Error MidiFile::load(const String fileName) {
 
 	set_data(theData);
 
-	if (fileName.ends_with("sf2")) {
+	if (ext == "sf2") {
 		set_format(FORMAT_SF2);
 	} else {
 		set_format(FORMAT_MIDI);
