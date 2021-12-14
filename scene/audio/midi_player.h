@@ -53,7 +53,7 @@ public:
 	
 	int format = FORMAT_MIDI; // Default.
 
-	Error MidiFile::load(const String fileName);
+	Error load(const String fileName);
 	
 	void set_format(Format p_format) { format = p_format; }
 	int get_format() const { return format; }
