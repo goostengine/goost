@@ -14,7 +14,7 @@ public:
 
 private:
 	Ref<Resource> resource; // From which a new node is instantiated: scene or script.
-	NodePath spawn_path = ".";
+	NodePath spawn_path = NodePath(".");
 
 	bool enabled = true;
 	bool local = false;
