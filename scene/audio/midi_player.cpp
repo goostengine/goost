@@ -120,14 +120,6 @@ Error ResourceImporterMidiFile::import(const String &p_source_file, const String
 	return ResourceSaver::save(p_save_path + ".mdf", mdf);
 }
 
-// Convenience load + set.
-void MidiPlayer::load_soundfont(String inSoundFontName) {
-	Ref<MidiFile> sf = ResourceLoader::load(inSoundFontName);
-	ERR_FAIL_COND_MSG(sf.is_null(), "Couldn't open soundfont " + inSoundFontName + ".");
-
-	set_soundfont(sf);
-}
-
 void MidiPlayer::set_soundfont(Ref<MidiFile> sf) {
 	soundfont = sf;
 	if (sf.is_null()) {
@@ -155,14 +147,6 @@ void MidiPlayer::set_soundfont(Ref<MidiFile> sf) {
 
 Ref<MidiFile> MidiPlayer::get_soundfont() const {
 	return soundfont;
-}
-
-// Convenience load + set.
-void MidiPlayer::load_midi(String inMidiFileName) {
-	Ref<MidiFile> mid = ResourceLoader::load(inMidiFileName);
-	ERR_FAIL_COND_MSG(mid.is_null(), "Couldn't open " + inMidiFileName + ".");
-
-	set_midi(mid);
 }
 
 void MidiPlayer::set_midi(Ref<MidiFile> mid) {
@@ -448,11 +432,9 @@ float MidiPlayer::get_midi_speed() {
 }
 
 void MidiPlayer::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("load_soundfont", "soundfont_resource_path"), &MidiPlayer::load_soundfont);
 	ClassDB::bind_method(D_METHOD("set_soundfont", "soundfont_resource"), &MidiPlayer::set_soundfont);
 	ClassDB::bind_method(D_METHOD("get_soundfont"), &MidiPlayer::get_soundfont);
 
-	ClassDB::bind_method(D_METHOD("load_midi", "midi_resource_path"), &MidiPlayer::load_midi);
 	ClassDB::bind_method(D_METHOD("set_midi", "midi_resource"), &MidiPlayer::set_midi);
 	ClassDB::bind_method(D_METHOD("get_midi"), &MidiPlayer::get_midi);
 

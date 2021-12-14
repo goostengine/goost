@@ -196,21 +196,6 @@
 				Returns a list of preset names stored in the SoundFont.
 			</description>
 		</method>
-		<method name="load_midi">
-			<return type="void" />
-			<argument index="0" name="midi_resource_path" type="String" />
-			<description>
-				Loads a MidiFile resource by specifying an internal resource path. It must FORMAT_MIDI format.
-				[b]Note:[/b] A SoundFont and a playback stream must exist in order for the file to actually play.
-			</description>
-		</method>
-		<method name="load_soundfont">
-			<return type="void" />
-			<argument index="0" name="soundfont_resource_path" type="String" />
-			<description>
-				Loads a MidiFile SoundFont by specifying an internal resource path. It must be FORMAT_SF2 format.
-			</description>
-		</method>
 		<method name="note_off">
 			<return type="void" />
 			<argument index="0" name="preset" type="int" />

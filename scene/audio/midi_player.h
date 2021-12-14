@@ -102,19 +102,19 @@ private:
 protected:
 	static void _bind_methods();
 	void _notification(int p_what);
+
 	PoolVector2Array get_buffer(int inSize);
 
 public:
-	void load_soundfont(String inSoundFontName);
 	void set_soundfont(Ref<MidiFile> sf);
 	Ref<MidiFile> get_soundfont() const;
 
-	void load_midi(String inMidiFileName);
 	void set_midi(Ref<MidiFile> mid);
 	Ref<MidiFile> get_midi() const;
 
 	void set_looping(bool p_looping);
 	bool get_looping();
+
 	void set_midi_speed(float p_speed);
 	float get_midi_speed();
 
