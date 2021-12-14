@@ -114,27 +114,9 @@ void ResourceImporterMidiFile::get_recognized_extensions(List<String> *p_extensi
 }
 
 Error ResourceImporterMidiFile::import(const String &p_source_file, const String &p_save_path, const Map<StringName, Variant> &p_options, List<String> *r_platform_variants, List<String> *r_gen_files, Variant *r_metadata) {
-	FileAccess *f = FileAccess::open(p_source_file, FileAccess::READ);
-	ERR_FAIL_COND_V(!f, ERR_FILE_CANT_OPEN);
-
-	uint64_t len = f->get_len();
-
-	PoolVector<uint8_t> data;
-	data.resize(len);
-	PoolVector<uint8_t>::Write w = data.write();
-
-	f->get_buffer(w.ptr(), len);
-
-	memdelete(f);
-
 	Ref<MidiFile> mdf;
 	mdf.instance();
-	mdf->set_data(data);
-	ERR_FAIL_COND_V(!mdf->get_data().size(), ERR_FILE_CORRUPT);
-
-	if (p_source_file.ends_with("sf2")) {
-		mdf->set_format(MidiFile::FORMAT_SF2);
-	}
+	mdf->load(p_source_file);
 	return ResourceSaver::save(p_save_path + ".mdf", mdf);
 }
 
