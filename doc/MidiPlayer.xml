@@ -5,7 +5,7 @@
 	</brief_description>
 	<description>
 		The MidiPlayer class can play MIDI files. It does this using a collection of sounds called SoundFont which was originally invented in the early 1990s by Creative Labs for their SoundBlaser AWE32 sound card. The MIDI specification is even older from 1983.
-		Although these technologies are old, they are still being used today in music industry because they are incredibly handy. While SoundFont has become less relevant with the development of sampling, MIDI specifically has seen continuos use very with minimal changes to the standard since inception. 
+		Although these technologies are old, they are still being used today in music industry because they are incredibly handy. While SoundFont has become less relevant with the development of sampling, MIDI specifically has seen continuous use very with minimal changes to the standard since inception. 
 		In order to use this class, the node should be added to the scene tree. Create a new [AudioStreamGenerator] via inspector in [member AudioStreamPlayer.stream] and then load a [MidiFile] containing a SoundFont should be set to  [member soundfont] and a [MidiFile] midi song set to [member midi]. For instance:
 		[codeblock]
 		func _ready():
