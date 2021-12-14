@@ -1,6 +1,6 @@
 #include "image_frames_loader.h"
-#include "scene/resources/texture.h"
 #include "scene/2d/animated_sprite.h"
+#include "scene/resources/texture.h"
 
 Vector<ImageFramesFormatLoader *> ImageFramesLoader::loader;
 
@@ -128,7 +128,7 @@ RES ResourceFormatLoaderImageFrames::load(const String &p_path, const String &p_
 
 	Error err = ImageFramesLoader::loader[idx]->load_image_frames(image_frames, f);
 	memdelete(f);
-	
+
 	if (err != OK) {
 		if (r_error) {
 			*r_error = err;

@@ -30,12 +30,13 @@ extern "C" int diff_line_callback_function(const git_diff_delta *delta, const gi
 	String prefix = "";
 	switch (line->origin) {
 		case GIT_DIFF_LINE_DEL_EOFNL:
-		case GIT_DIFF_LINE_DELETION:
-			prefix = "-"; break;
-
+		case GIT_DIFF_LINE_DELETION: {
+			prefix = "-";
+		} break;
 		case GIT_DIFF_LINE_ADD_EOFNL:
-		case GIT_DIFF_LINE_ADDITION:
-			prefix = "+"; break;
+		case GIT_DIFF_LINE_ADDITION: {
+			prefix = "+";
+		} break;
 	}
 
 	String content_str = content;

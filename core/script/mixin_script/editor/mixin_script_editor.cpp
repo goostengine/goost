@@ -145,7 +145,6 @@ void MixinScriptEditor::_notification(int p_what) {
 }
 
 void MixinScriptEditor::_on_editor_script_changed(Ref<Script> p_script) {
-
 	// Edit `MixinScript` itself if requested explicitly via editor inspector.
 	if (ScriptEditor::get_singleton()->has_meta("_edit_mixin")) {
 		bool edit = (bool)ScriptEditor::get_singleton()->get_meta("_edit_mixin");
@@ -294,7 +293,7 @@ void MixinScriptEditor::_update_list() {
 	update_queued = false;
 }
 
-void MixinScriptEditor::_on_mixin_activated(){
+void MixinScriptEditor::_on_mixin_activated() {
 	Ref<Script> mixin = tree_mixins->get_selected()->get_meta("script");
 	if (mixin.is_valid()) {
 		ScriptEditor::get_singleton()->edit(mixin);

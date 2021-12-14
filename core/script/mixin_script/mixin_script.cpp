@@ -201,7 +201,7 @@ bool MixinScript::is_valid() const {
 
 bool MixinScript::inherits_script(const Ref<Script> &p_script) const {
 	// There is no inheritance in mixin scripts, so this is enough.
-	return this == p_script.ptr(); 
+	return this == p_script.ptr();
 }
 
 void MixinScript::clear_mixins() {
@@ -335,7 +335,7 @@ void MixinScript::insert_mixin(int p_pos, const Ref<Script> &p_script) {
 	mixin_instances.insert(p_pos, script_owner);
 	mixins.insert(p_pos, p_script);
 	Ref<Script> s = p_script;
-	
+
 	for (Map<Object *, MixinScriptInstance *>::Element *E = instances.front(); E; E = E->next()) {
 		MixinScriptInstance *msi = E->get();
 
@@ -529,7 +529,7 @@ Variant Mixin::call(const StringName &p_method, const Variant **p_args, int p_ar
 #ifdef DEBUG_ENABLED
 	// The following allows to call `Mixin.free()`.
 	// This is not strictly needed because Mixin objects should not be instantiated directly,
-	// and doing so is discouraged, but this can make debug builds more robust for fuzz testing. 
+	// and doing so is discouraged, but this can make debug builds more robust for fuzz testing.
 	return Object::call(p_method, p_args, p_argcount, r_error);
 #endif
 	return Variant();

@@ -21,7 +21,7 @@ Error FuncBuffer::push_call(ObjectID p_id, const StringName &p_method, VARIANT_A
 	for (int i = 0; i < VARIANT_ARG_MAX; i++) {
 		if (argptr[i]->get_type() == Variant::NIL) {
 			break;
-        }
+		}
 		argc++;
 	}
 	return push_call(p_id, p_method, argptr, argc);
@@ -60,7 +60,7 @@ Error FuncBuffer::push_call_unique(ObjectID p_id, const StringName &p_method, VA
 	for (int i = 0; i < VARIANT_ARG_MAX; i++) {
 		if (argptr[i]->get_type() == Variant::NIL) {
 			break;
-        }
+		}
 		argc++;
 	}
 	return push_call_unique(p_id, p_method, argptr, argc);

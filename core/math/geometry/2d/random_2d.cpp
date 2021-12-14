@@ -1,7 +1,7 @@
 #include "random_2d.h"
 
-#include "goost/core/math/geometry/2d/poly/decomp/poly_decomp.h"
 #include "goost/core/math/geometry/2d/goost_geometry_2d.h"
+#include "goost/core/math/geometry/2d/poly/decomp/poly_decomp.h"
 
 #include "core/method_bind_ext.gen.inc"
 
@@ -18,7 +18,7 @@ real_t Random2D::get_rotation() {
 
 Vector2 Random2D::point_in_region(const Rect2 &p_region) {
 	Point2 point;
-	const Vector2& end = p_region.position + p_region.size;
+	const Vector2 &end = p_region.position + p_region.size;
 	point.x = randf_range(p_region.position.x, end.x);
 	point.y = randf_range(p_region.position.y, end.y);
 	return point;
@@ -130,7 +130,7 @@ void Random2D::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "direction"), "", "get_direction");
 	ADD_PROPERTY(PropertyInfo(Variant::REAL, "rotation"), "", "get_rotation");
 
-	// Default values are non-deterministic, override those for documentation purposes.	
+	// Default values are non-deterministic, override those for documentation purposes.
 	ADD_PROPERTY_DEFAULT("direction", Vector2(1, 0));
 	ADD_PROPERTY_DEFAULT("rotation", Math_TAU);
 

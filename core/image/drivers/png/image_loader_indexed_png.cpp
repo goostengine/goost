@@ -38,7 +38,7 @@ Error ImageLoaderIndexedPNG::_load_image(void *rf_up, png_rw_ptr p_func, Ref<Ima
 	png_structp png;
 	png_infop info;
 
-	png = png_create_read_struct_2(PNG_LIBPNG_VER_STRING, (png_voidp)nullptr, _png_error_function, _png_warn_function, (png_voidp)nullptr,
+	png = png_create_read_struct_2(PNG_LIBPNG_VER_STRING, (png_voidp) nullptr, _png_error_function, _png_warn_function, (png_voidp) nullptr,
 			_png_malloc_fn, _png_free_fn);
 
 	ERR_FAIL_COND_V(!png, ERR_OUT_OF_MEMORY);

@@ -14,13 +14,12 @@ void register_audio_types() {
 		Ref<ResourceImporterMidiFile> midifile;
 		midifile.instance();
 		ResourceFormatImporter::get_singleton()->add_importer(midifile);
-
 	}
 #endif
 }
 
 void unregister_audio_types() {
-
+	// Nothing to do here.
 }
 
 } // namespace goost

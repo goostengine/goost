@@ -31,9 +31,9 @@ SOFTWARE.
 
 Error MidiFile::load(const String fileName) {
 	String ext = fileName.get_extension().to_lower();
-    if(!(ext == "sf2" || ext == "mid" || ext == "midi") ) {
-        ERR_FAIL_COND_V("Incorrect file type", FAILED);
-    }
+	if (!(ext == "sf2" || ext == "mid" || ext == "midi")) {
+		ERR_FAIL_COND_V("Incorrect file type", FAILED);
+	}
 
 	FileAccess *f = FileAccess::open(fileName, FileAccess::READ);
 	ERR_FAIL_COND_V_MSG(!f, FAILED, "Couldn't open file " + fileName + ".");
@@ -46,7 +46,7 @@ Error MidiFile::load(const String fileName) {
 	PoolVector<uint8_t>::Write w = theData.write();
 	int theReadSize = f->get_buffer(&w[0], size);
 
-	if (theReadSize < size) { 
+	if (theReadSize < size) {
 		theData.resize(size);
 	}
 	ERR_FAIL_COND_V_MSG(theReadSize == 0, FAILED, "Could't read file.");
