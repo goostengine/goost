@@ -138,8 +138,7 @@ jobs:
         env:
           SCONS_CACHE: ${{github.workspace}}/.scons_cache/
         run: |
-          scons platform=linuxbsd tools=yes target=release_debug
-        # scons platform=linuxbsd tools=yes target=release_debug module_mono_enabled=yes mono_glue=yes mono_static=yes copy_mono_root=yes  TODO
+          scons platform=linuxbsd tools=yes target=release_debug module_mono_enabled=yes mono_glue=yes mono_static=yes copy_mono_root=yes
 
       - uses: actions/upload-artifact@v2
         with:
