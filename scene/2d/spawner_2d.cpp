@@ -42,7 +42,6 @@ Node *Spawner2D::spawn() {
 	}
 #endif
 	if (!is_inside_tree()) {
-		set_enabled(false);
 		ERR_FAIL_V_MSG(nullptr, "Spawner2D must be added to the SceneTree in order to spawn nodes");
 	}
 	const Ref<PackedScene> &scene = resource;
@@ -54,7 +53,6 @@ Node *Spawner2D::spawn() {
 	}
 	Node *parent = get_node_or_null(path);
 	if (!parent) {
-		set_enabled(false);
 		ERR_FAIL_V_MSG(nullptr, vformat("Cannot spawn a node: the node path '%s' doesn't exist.", String(path)));
 	}
 
@@ -66,7 +64,6 @@ Node *Spawner2D::spawn() {
 	} else if (script.is_valid()) {
 		StringName base_type = script->get_instance_base_type();
 		if (!ClassDB::is_parent_class(base_type, "Node")) {
-			set_enabled(false);
 			ERR_FAIL_V_MSG(nullptr, "Script does not inherit a Node: " + script->get_path());
 		}
 		Object *obj = ClassDB::instance(base_type);
@@ -74,7 +71,6 @@ Node *Spawner2D::spawn() {
 		Variant s = script;
 		node->set_script(s);
 	} else {
-		set_enabled(false);
 		ERR_FAIL_V_MSG(nullptr, "Could not spawn an object: the resource is not a scene nor a script.");
 	}
 
@@ -210,7 +206,10 @@ void Spawner2D::_process_spawn() {
 		}
 	}
 	if (time > (step / rate)) {
-		spawn();
+		const Node *node = spawn();
+		if (!node) {
+			set_enabled(false);
+		}
 		time = 0.0;
 
 		if (limit > 0 && amount >= limit) {
