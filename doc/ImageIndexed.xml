@@ -124,7 +124,7 @@
 		</method>
 	</methods>
 	<members>
-		<member name="data" type="Dictionary" setter="_set_data" getter="_get_data" override="true" default="{&quot;data&quot;: PoolByteArray(  ),&quot;format&quot;: &quot;Lum8&quot;,&quot;height&quot;: 0,&quot;mipmaps&quot;: false,&quot;width&quot;: 0}" />
+		<member name="data" type="Dictionary" setter="_set_data" getter="_get_data" overrides="Image" default="{&quot;data&quot;: PoolByteArray(  ),&quot;format&quot;: &quot;Lum8&quot;,&quot;height&quot;: 0,&quot;mipmaps&quot;: false,&quot;width&quot;: 0}" />
 		<member name="index_data" type="PoolByteArray" setter="" getter="get_index_data">
 			The internal data representing the indices pointing to palette entries of this image. Cannot be set directly, use [method create_indexed_from_data].
 		</member>

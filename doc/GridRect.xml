@@ -106,7 +106,7 @@
 		<member name="origin_scale" type="Vector2" setter="set_origin_scale" getter="get_origin_scale" default="Vector2( 1, 1 )">
 			The scale that zoom in or out the grid coordinates.
 		</member>
-		<member name="rect_clip_content" type="bool" setter="set_clip_contents" getter="is_clipping_contents" override="true" default="true" />
+		<member name="rect_clip_content" type="bool" setter="set_clip_contents" getter="is_clipping_contents" overrides="Control" default="true" />
 	</members>
 	<signals>
 		<signal name="point_clicked">

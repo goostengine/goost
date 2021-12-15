@@ -11,10 +11,10 @@
 	<methods>
 	</methods>
 	<members>
-		<member name="fill" type="int" setter="set_fill" getter="get_fill" override="true" enum="GradientTexture2D.Fill" default="1" />
-		<member name="fill_from" type="Vector2" setter="set_fill_from" getter="get_fill_from" override="true" default="Vector2( 0.5, 0.5 )" />
-		<member name="fill_to" type="Vector2" setter="set_fill_to" getter="get_fill_to" override="true" default="Vector2( 0.5, 0 )" />
-		<member name="gradient" type="Gradient" setter="set_gradient" getter="get_gradient" override="true" />
+		<member name="fill" type="int" setter="set_fill" getter="get_fill" overrides="GradientTexture2D" enum="GradientTexture2D.Fill" default="1" />
+		<member name="fill_from" type="Vector2" setter="set_fill_from" getter="get_fill_from" overrides="GradientTexture2D" default="Vector2( 0.5, 0.5 )" />
+		<member name="fill_to" type="Vector2" setter="set_fill_to" getter="get_fill_to" overrides="GradientTexture2D" default="Vector2( 0.5, 0 )" />
+		<member name="gradient" type="Gradient" setter="set_gradient" getter="get_gradient" overrides="GradientTexture2D" />
 	</members>
 	<constants>
 	</constants>
