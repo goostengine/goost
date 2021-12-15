@@ -122,7 +122,7 @@
 		<method name="draw_rectangle">
 			<return type="void" />
 			<argument index="0" name="extents" type="Vector2" />
-			<argument index="1" name="position" type="Vector2" />
+			<argument index="1" name="position" type="Vector2" default="Vector2( 0, 0 )" />
 			<argument index="2" name="color" type="Color" default="Color( 0, 0.6, 0.7, 1 )" />
 			<argument index="3" name="filled" type="bool" default="true" />
 			<argument index="4" name="width" type="float" default="1.0" />

@@ -490,7 +490,7 @@ void Debug2D::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("draw_region", "region", "color", "filled", "width"), &Debug2D::draw_region, color, filled, line_width);
 
-	ClassDB::bind_method(D_METHOD("draw_rectangle", "extents", "position", "color", "filled", "width"), &Debug2D::draw_rectangle, color, filled, line_width);
+	ClassDB::bind_method(D_METHOD("draw_rectangle", "extents", "position", "color", "filled", "width"), &Debug2D::draw_rectangle, DEFVAL(Vector2()), color, filled, line_width);
 	ClassDB::bind_method(D_METHOD("draw_circle", "radius", "position", "color", "filled", "width"), &Debug2D::draw_circle, DEFVAL(Vector2()), color, filled, line_width);
 
 	ClassDB::bind_method(D_METHOD("draw_text", "text", "position", "color"), &Debug2D::draw_text, DEFVAL(Vector2()), Color(1, 1, 1)); // White by default!
