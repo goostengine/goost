@@ -77,7 +77,7 @@ For testing and debugging purposes, build artifacts are uploaded for Linux,
 macOS, and Windows builds which can be downloaded manually for each recently
 built commit:
 
-- [🐧 `Linux`: Editor + Mono](https://nightly.link/goostengine/goost/workflows/linux_builds/gd3/godot.x11.opt.tools.64.goost.mono.zip)
+- [🐧 `Linux`: Editor](https://nightly.link/goostengine/goost/workflows/linux_builds/gd3/godot.x11.opt.tools.64.goost.zip)
 - [🐧 `Linux`: Server Headless + Sanitizers](https://nightly.link/goostengine/goost/workflows/linux_builds/gd3/godot_server.x11.tools.64.goosts.zip)
 - [🍎 `macOS`: Editor](https://nightly.link/goostengine/goost/workflows/macos_builds/gd3/godot.osx.opt.tools.64.goost.zip)
 - [🎨 `Windows`: Editor](https://nightly.link/goostengine/goost/workflows/windows_builds/gd3/godot.windows.opt.tools.64.goost.zip)
