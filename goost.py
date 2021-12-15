@@ -191,6 +191,7 @@ classes = {
     "Random": "math",
     "Random2D": "geometry",
     "ShapeCast2D": "physics",
+    "Spawner2D": "scene",
     "Stopwatch": "scene",
     "VariantMap": "core",
     "VariantResource": "core",

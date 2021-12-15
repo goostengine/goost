@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="Spawner2D" inherits="Node2D" version="3.5">
+	<brief_description>
+		Automatically instantiate nodes from scenes in 2D.
+	</brief_description>
+	<description>
+		Spawner allows to conveniently instantiate nodes from scenes and scripts automatically into the [SceneTree]. In order to use it, you need to set [member resource] first. Once [Spawner2D] is added to the [SceneTree], it will start to create new instances immediately.
+		The speed and number of nodes instantiated can be controlled by modifying [member rate], time [member step], and [member limit]. For example, if [code]rate = 10[/code], then [Spawner2D] will instantiate [b]10[/b] nodes per second, or you could modify time [member step] and instantiate [b]10[/b] nodes per minute if [code]step = 60[/code]. If you only need to instantiate [b]10[/b] nodes and stop, then you'd need to set [code]limit = 10[/code]. The [member delay] can be configured to create spawn waves and sequences.
+		The [b]modify_*[/b] properties allow to set transform of spawned nodes according to [Spawner2D]'s own transform. Depending on the value of [member local], either local or global transform is modified of the nodes that are spawned by [Spawner2D].
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="spawn">
+			<return type="Node" />
+			<description>
+				Forces an instantiation of a new [Node] from a [member resource], even when [member enabled] is set to [code]false[/code]. By default, the new node is added as a child to this one, unless [member spawn_path] is customized.
+				[b]Note[/b]: the [signal node_spawned] won't be emitted by calling this function, so if you need to spawn multiple instances from the same [member resource], you can do so safely during signal emission. If you do need to notify other objects about this event, you can emit the [signal node_spawned] signal manually.
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="delay" type="float" setter="set_delay" getter="get_delay" default="0.0">
+			If [code]delay &gt; 0[/code], then spawning is postponed, otherwise instantiates nodes immediately when setting [member enabled] to [code]true[/code]. Measured in seconds.
+		</member>
+		<member name="enabled" type="bool" setter="set_enabled" getter="is_enabled" default="true">
+			Starts or stops the spawn process. The state (number of currently spawned objects, spawn time etc.) is reset at all times.
+		</member>
+		<member name="limit" type="int" setter="set_limit" getter="get_limit" default="0">
+			Limits the number of nodes instantiated. If [code]limit == 0[/code], the number of nodes instantiated is unlimited.
+		</member>
+		<member name="local" type="bool" setter="set_local" getter="is_local" default="false">
+			If [code]true[/code], spawned nodes will inherit transform from parent node, otherwise transform will not be pushed from parent by setting the spawned node as a top-level using [method CanvasItem.set_as_toplevel]. Disabled by default, as it may cause physics simulation errors if spawned nodes inherit from [RigidBody2D].
+		</member>
+		<member name="modify_position" type="bool" setter="set_modify_position" getter="is_modifying_position" default="true">
+			If [code]true[/code], modifies the spawned node's [b]position[/b] upon spawning from [Spawner2D].
+		</member>
+		<member name="modify_rotation" type="bool" setter="set_modify_rotation" getter="is_modifying_rotation" default="true">
+			If [code]true[/code], modifies the spawned node's [b]rotation[/b] upon spawning from [Spawner2D].
+		</member>
+		<member name="modify_scale" type="bool" setter="set_modify_scale" getter="is_modifying_scale" default="true">
+			If [code]true[/code], modifies the spawned node's [b]scale[/b] upon spawning from [Spawner2D].
+		</member>
+		<member name="process_mode" type="int" setter="set_process_mode" getter="get_process_mode" enum="Spawner2D.ProcessMode" default="1">
+			Processing mode allows to configure whether the [method spawn] method is called during idle or physics frame, only applies when [member enabled] is set to [code]true[/code]. See [enum ProcessMode].
+		</member>
+		<member name="rate" type="int" setter="set_rate" getter="get_rate" default="1">
+			The number of nodes instantiated per time [member step].
+		</member>
+		<member name="resource" type="Resource" setter="set_resource" getter="get_resource">
+			The resource from which a new node is instantiated. Accepts [PackedScene] and [Script] only. If the resource is a [Script], make sure that the constructor does not have any [b]required[/b] parameters, otherwise the instantiation may fail.
+		</member>
+		<member name="spawn_path" type="NodePath" setter="set_spawn_path" getter="get_spawn_path" default="NodePath(&quot;.&quot;)">
+			The nodes are spawned directly as a child of [Spawner2D] by default. Setting this property allows to customize the destination by specifying a different parent node.
+		</member>
+		<member name="step" type="float" setter="set_step" getter="get_step" default="1.0">
+			The [member rate] number of nodes will be spawned each time step. Measured in seconds.
+		</member>
+	</members>
+	<signals>
+		<signal name="finished">
+			<description>
+				Emitted when the current number of spawned nodes equals to [member limit].
+			</description>
+		</signal>
+		<signal name="node_spawned">
+			<argument index="0" name="node" type="Node" />
+			<description>
+				Emitted when a new node is spawned automatically when [member enabled] is set to [code]true[/code]. The signal is [b]not[/b] emitted when [method spawn] is called manually via code.
+			</description>
+		</signal>
+	</signals>
+	<constants>
+		<constant name="PROCESS_PHYSICS" value="0" enum="ProcessMode">
+			Update the spawner during the physics step at each frame (fixed framerate processing).
+		</constant>
+		<constant name="PROCESS_IDLE" value="1" enum="ProcessMode">
+			Update the spawner during the idle time at each frame.
+		</constant>
+	</constants>
+</class>

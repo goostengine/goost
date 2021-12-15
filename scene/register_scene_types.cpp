@@ -1,13 +1,15 @@
 #include "register_scene_types.h"
 
-#include "2d/debug_2d.h"
-#include "audio/register_audio_types.h"
-#include "physics/register_physics_types.h"
-
 #include "scene/main/scene_tree.h"
 #include "scene/main/viewport.h"
 
 #include "editor/editor_node.h"
+
+#include "audio/register_audio_types.h"
+#include "physics/register_physics_types.h"
+
+#include "2d/debug_2d.h"
+#include "2d/spawner_2d.h"
 
 #include "goost/classes_enabled.gen.h"
 
@@ -51,6 +53,9 @@ void register_scene_types() {
 	ClassDB::register_class<PolyPath2D>();
 	ClassDB::register_class<PolyShape2D>();
 #endif
+	Spawner2D::node_spawned = "node_spawned";
+	ClassDB::register_class<Spawner2D>();
+
 	ClassDB::register_class<Stopwatch>();
 	ClassDB::register_class<VisualShape2D>();
 	ClassDB::register_class<GradientTexture2D>();
@@ -96,6 +101,8 @@ void register_scene_types() {
 }
 
 void unregister_scene_types() {
+	Spawner2D::node_spawned.~StringName();
+
 #if defined(GOOST_GEOMETRY_ENABLED) && defined(GOOST_Debug2D)
 	// There's no need to free `Debug2D` instance manually because it's added to
 	// the `SceneTree`, but lets play safe and prevent memory leak in any case.
