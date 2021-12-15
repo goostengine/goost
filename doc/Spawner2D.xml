@@ -6,7 +6,7 @@
 	<description>
 		Spawner allows to conveniently instantiate nodes from scenes and scripts automatically into the [SceneTree]. In order to use it, you need to set [member resource] first. Once [Spawner2D] is added to the [SceneTree], it will start to create new instances immediately.
 		The speed and number of nodes instantiated can be controlled by modifying [member rate], time [member step], and [member limit]. For example, if [code]rate = 10[/code], then [Spawner2D] will instantiate [b]10[/b] nodes per second, or you could modify time [member step] and instantiate [b]10[/b] nodes per minute if [code]step = 60[/code]. If you only need to instantiate [b]10[/b] nodes and stop, then you'd need to set [code]limit = 10[/code]. The [member delay] can be configured to create spawn waves and sequences.
-		The [b]modify_*[/b] properties allow to set transform of spawned nodes from [Spawner2D]. Depending on the value of [member local], either local or global transform is modified of the nodes that are spawned by [Spawner2D].
+		The [b]modify_*[/b] properties allow to set transform of spawned nodes according to [Spawner2D]'s own transform. Depending on the value of [member local], either local or global transform is modified of the nodes that are spawned by [Spawner2D].
 	</description>
 	<tutorials>
 	</tutorials>
@@ -14,7 +14,8 @@
 		<method name="spawn">
 			<return type="Node" />
 			<description>
-				Instantiates a new [Node] from a [member resource], even when [member enabled] is set to [code]false[/code]. The new node is added as a child to this one. Once the node is spawned (automatically or manually), the [signal node_spawned] is emitted.
+				Forces an instantiation of a new [Node] from a [member resource], even when [member enabled] is set to [code]false[/code]. By default, the new node is added as a child to this one, unless [member spawn_path] is customized.
+				[b]Note[/b]: the [signal node_spawned] won't be emitted by calling this function, so if you need to spawn multiple instances from the same [member resource], you can do so safely during signal emission. If you do need to notify other objects about this event, you can emit the [signal node_spawned] signal manually.
 			</description>
 		</method>
 	</methods>
@@ -65,7 +66,7 @@
 		<signal name="node_spawned">
 			<argument index="0" name="node" type="Node" />
 			<description>
-				Emitted when a new node is spawned automatically when [member enabled] is set to [code]true[/code]. The signal is also emitted when [method spawn] is called manually via code.
+				Emitted when a new node is spawned automatically when [member enabled] is set to [code]true[/code]. The signal is [b]not[/b] emitted when [method spawn] is called manually via code.
 			</description>
 		</signal>
 	</signals>

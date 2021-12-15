@@ -135,9 +135,6 @@ Node *Spawner2D::spawn() {
 			}
 		}
 	}
-	// Emit after setting transform, the user may want to customize it.
-	emit_signal(node_spawned, node);
-
 	return node;
 }
 
@@ -203,7 +200,10 @@ void Spawner2D::_process_spawn() {
 			delayed = false;
 		}
 	} else if (time < 0.0) {
-		spawn();
+		const Node *node = spawn();
+		if (node) {
+			emit_signal(node_spawned, node);
+		}
 		time = step / rate;
 
 		if (limit > 0 && amount >= limit) {
