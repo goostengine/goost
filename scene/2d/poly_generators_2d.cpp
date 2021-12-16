@@ -38,6 +38,50 @@ void PolyCircle2D::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::REAL, "max_error", PROPERTY_HINT_RANGE, "0.01,5.0,0.01,or_greater"), "set_max_error", "get_max_error");
 }
 
+// PolyEllipse2D
+
+void PolyEllipse2D::set_width(real_t p_width) {
+	ERR_FAIL_COND(p_width <= 0);
+	width = p_width;
+	_queue_update();
+	_change_notify("width");
+}
+
+void PolyEllipse2D::set_height(real_t p_height) {
+	ERR_FAIL_COND(p_height <= 0);
+	height = p_height;
+	_queue_update();
+	_change_notify("height");
+}
+
+void PolyEllipse2D::set_max_error(real_t p_max_error) {
+	ERR_FAIL_COND(p_max_error <= 0);
+	max_error = p_max_error;
+	_queue_update();
+	_change_notify("max_error");
+}
+
+Vector<Vector<Point2>> PolyEllipse2D::_build_outlines() {
+	Vector<Vector<Point2>> outlines;
+	outlines.push_back(GoostGeometry2D::ellipse(width, height, max_error));
+	return outlines;
+}
+
+void PolyEllipse2D::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("set_width", "width"), &PolyEllipse2D::set_width);
+	ClassDB::bind_method(D_METHOD("get_width"), &PolyEllipse2D::get_width);
+
+	ClassDB::bind_method(D_METHOD("set_height", "height"), &PolyEllipse2D::set_height);
+	ClassDB::bind_method(D_METHOD("get_height"), &PolyEllipse2D::get_height);
+
+	ClassDB::bind_method(D_METHOD("set_max_error", "max_error"), &PolyEllipse2D::set_max_error);
+	ClassDB::bind_method(D_METHOD("get_max_error"), &PolyEllipse2D::get_max_error);
+
+	ADD_PROPERTY(PropertyInfo(Variant::REAL, "width", PROPERTY_HINT_RANGE, "0.01,1024.0,0.01,or_greater"), "set_width", "get_width");
+	ADD_PROPERTY(PropertyInfo(Variant::REAL, "height", PROPERTY_HINT_RANGE, "0.01,1024.0,0.01,or_greater"), "set_height", "get_height");
+	ADD_PROPERTY(PropertyInfo(Variant::REAL, "max_error", PROPERTY_HINT_RANGE, "0.01,5.0,0.01,or_greater"), "set_max_error", "get_max_error");
+}
+
 // PolyCapsule2D
 
 void PolyCapsule2D::set_radius(real_t p_radius) {

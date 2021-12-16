@@ -27,6 +27,32 @@ public:
 	}
 };
 
+class PolyEllipse2D : public PolyNode2D {
+	GDCLASS(PolyEllipse2D, PolyNode2D);
+
+	real_t width = 64.0;
+	real_t height = 32.0;
+	real_t max_error = 0.25;
+
+protected:
+	static void _bind_methods();
+	virtual Vector<Vector<Point2>> _build_outlines();
+
+public:
+	void set_width(real_t p_width);
+	real_t get_width() const { return width; }
+
+	void set_height(real_t p_height);
+	real_t get_height() const { return height; }
+
+	void set_max_error(real_t p_max_error);
+	real_t get_max_error() const { return max_error; }
+
+	PolyEllipse2D() {
+		build_outlines();
+	}
+};
+
 class PolyCapsule2D : public PolyNode2D {
 	GDCLASS(PolyCapsule2D, PolyNode2D);
 

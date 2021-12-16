@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="PolyEllipse2D" inherits="PolyNode2D" version="3.5">
+	<brief_description>
+		An ellipse [PolyNode2D] shape.
+	</brief_description>
+	<description>
+		Builds a polygon outline closely approximating an ellipse in 2D.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+	</methods>
+	<members>
+		<member name="height" type="float" setter="set_height" getter="get_height" default="32.0">
+			Ellipse's total height.
+		</member>
+		<member name="max_error" type="float" setter="set_max_error" getter="get_max_error" default="0.25">
+			Lower values increase the accuracy of generated shape.
+		</member>
+		<member name="width" type="float" setter="set_width" getter="get_width" default="64.0">
+			Ellipse's total width.
+		</member>
+	</members>
+	<constants>
+	</constants>
+</class>
