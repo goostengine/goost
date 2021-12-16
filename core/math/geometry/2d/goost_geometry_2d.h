@@ -41,6 +41,7 @@ public:
 	/* Polygon/primitive generation methods */
 	static Vector<Point2> rectangle(const Point2 &p_extents);
 	static Vector<Point2> circle(real_t p_radius, real_t p_max_error = 0.25);
+	static Vector<Point2> ellipse(real_t p_width, real_t p_height, real_t p_max_error = 0.25);
 	static Vector<Point2> capsule(real_t p_radius, real_t p_height, real_t p_max_error = 0.25);
 	static Vector<Point2> regular_polygon(int p_edge_count, real_t p_size);
 

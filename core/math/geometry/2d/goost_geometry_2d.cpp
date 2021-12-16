@@ -481,6 +481,24 @@ Vector<Point2> GoostGeometry2D::circle(real_t p_radius, real_t p_max_error) {
 	return regular_polygon(edge_count, p_radius);
 }
 
+Vector<Point2> GoostGeometry2D::ellipse(real_t p_width, real_t p_height, real_t p_max_error) {
+	ERR_FAIL_COND_V(p_width < 0.0, Vector<Point2>());
+	ERR_FAIL_COND_V(p_height < 0.0, Vector<Point2>());
+	ERR_FAIL_COND_V(p_max_error < 0.0, Vector<Point2>());
+
+	real_t f = MAX(p_width, p_height);
+	int vertex_count = static_cast<int>(Math::ceil(Math_PI / Math::acos(1.0 - p_max_error / f)));
+	vertex_count = MAX(vertex_count, 3);
+
+	Vector<Point2> vertices;
+	for (int i = 0; i < vertex_count; ++i) {
+		real_t t = (Math_TAU / vertex_count) * i;
+		Vector2 v = Vector2(p_width * Math::cos(t), p_height * Math::sin(t));
+		vertices.push_back(v);
+	}
+	return vertices;
+}
+
 Vector<Point2> GoostGeometry2D::capsule(real_t p_radius, real_t p_height, real_t p_max_error) {
 	ERR_FAIL_COND_V(p_radius < 0.0, Vector<Point2>());
 	ERR_FAIL_COND_V(p_height < 0.0, Vector<Point2>());

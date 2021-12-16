@@ -48,6 +48,7 @@ static void _debug_2d_add_to_scene_tree() {
 void register_scene_types() {
 #if defined(GOOST_GEOMETRY_ENABLED) && defined(GOOST_PolyNode2D)
 	ClassDB::register_class<PolyCircle2D>();
+	ClassDB::register_class<PolyEllipse2D>();
 	ClassDB::register_class<PolyCapsule2D>();
 	ClassDB::register_class<PolyRectangle2D>();
 	ClassDB::register_class<PolyPath2D>();

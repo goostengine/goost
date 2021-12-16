@@ -158,6 +158,10 @@ Vector<Point2> _GoostGeometry2D::circle(real_t p_radius, real_t p_max_error) con
 	return GoostGeometry2D::circle(p_radius, p_max_error);
 }
 
+Vector<Point2> _GoostGeometry2D::ellipse(real_t p_width, real_t p_height, real_t p_max_error) const {
+	return GoostGeometry2D::ellipse(p_width, p_height, p_max_error);
+}
+
 Vector<Point2> _GoostGeometry2D::capsule(real_t p_radius, real_t p_height, real_t p_max_error) const {
 	return GoostGeometry2D::capsule(p_radius, p_height, p_max_error);
 }
@@ -230,6 +234,7 @@ void _GoostGeometry2D::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("rectangle", "extents"), &_GoostGeometry2D::rectangle);
 	ClassDB::bind_method(D_METHOD("circle", "radius", "max_error"), &_GoostGeometry2D::circle, DEFVAL(0.25));
+	ClassDB::bind_method(D_METHOD("ellipse", "width", "height", "max_error"), &_GoostGeometry2D::ellipse, DEFVAL(0.25));
 	ClassDB::bind_method(D_METHOD("capsule", "radius", "height", "max_error"), &_GoostGeometry2D::capsule, DEFVAL(0.25));
 	ClassDB::bind_method(D_METHOD("regular_polygon", "sides", "size"), &_GoostGeometry2D::regular_polygon);
 
