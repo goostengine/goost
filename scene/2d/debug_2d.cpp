@@ -482,6 +482,7 @@ Debug2D::Debug2D() {
 	add_child(grid_layer);
 
 	grid_rect = memnew(GridRect);
+	grid_rect->set_name("Grid");
 	grid_layer->add_child(grid_rect);
 	grid_rect->set_anchors_and_margins_preset(Control::PRESET_WIDE);
 

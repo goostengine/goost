@@ -58,10 +58,10 @@ static void _debug_2d_add_to_scene_tree() {
 			}
 			grid->set(p.name, GLOBAL_GET("debug/draw/2d/grid/" + p.name));
 		}
-		grid->set("custom_colors/line_axis_x", GLOBAL_GET("debug/draw/2d/grid/axis_x_color"));
-		grid->set("custom_colors/line_axis_y", GLOBAL_GET("debug/draw/2d/grid/axis_y_color"));
-		grid->set("custom_colors/line_cell", GLOBAL_GET("debug/draw/2d/grid/line_cell_color"));
-		grid->set("custom_colors/line_division", GLOBAL_GET("debug/draw/2d/grid/line_division_color"));
+		grid->set("custom_colors/line_axis_x", GLOBAL_GET("debug/draw/2d/grid/origin_axis_x_color"));
+		grid->set("custom_colors/line_axis_y", GLOBAL_GET("debug/draw/2d/grid/origin_axis_y_color"));
+		grid->set("custom_colors/line_cell", GLOBAL_GET("debug/draw/2d/grid/cell_line_color"));
+		grid->set("custom_colors/line_division", GLOBAL_GET("debug/draw/2d/grid/divisions_line_color"));
 		grid->set("custom_colors/background", GLOBAL_GET("debug/draw/2d/grid/background_color"));
 	}
 	_debug_2d_added = true;
@@ -116,19 +116,29 @@ void register_scene_types() {
 			continue;
 		}
 		const String &setting = "debug/draw/2d/grid/" + p.name;
-		if (p.name == "origin_axes_visible") {
+	
+		if (p.name == "cell_line_width") {
+			GLOBAL_DEF(setting, g->get(p.name));
+			ProjectSettings::get_singleton()->set_custom_property_info(setting, p);
+			GLOBAL_DEF("debug/draw/2d/grid/cell_line_color", Color(1.0, 1.0, 1.0, 0.07)); // From GraphEdit in godot/editor/editor_themes.cpp
+
+		} else if (p.name == "divisions_line_width") {
+			GLOBAL_DEF(setting, g->get(p.name));
+			ProjectSettings::get_singleton()->set_custom_property_info(setting, p);
+			GLOBAL_DEF("debug/draw/2d/grid/divisions_line_color", Color(1.0, 1.0, 1.0, 0.15)); // From GraphEdit in godot/editor/editor_themes.cpp
+
+		} else if (p.name == "origin_axes_visible") {
 			GLOBAL_DEF(setting, true);
+			GLOBAL_DEF("debug/draw/2d/grid/origin_axis_x_color", Color(0.96, 0.20, 0.32)); // From godot/editor/editor_themes.cpp
+			GLOBAL_DEF("debug/draw/2d/grid/origin_axis_y_color", Color(0.53, 0.84, 0.01)); // From godot/editor/editor_themes.cpp
+		} else {
+			GLOBAL_DEF(setting, g->get(p.name));
+			ProjectSettings::get_singleton()->set_custom_property_info(setting, p);
 		}
-		GLOBAL_DEF(setting, g->get(p.name));
-		ProjectSettings::get_singleton()->set_custom_property_info(setting, p);
 	}
+	GLOBAL_DEF("debug/draw/2d/grid/background_color", Color(0, 0, 0, 0));
 	memdelete(g);
 
-	GLOBAL_DEF("debug/draw/2d/grid/axis_x_color", Color(0.96, 0.20, 0.32)); // From godot/editor/editor_themes.cpp
-	GLOBAL_DEF("debug/draw/2d/grid/axis_y_color", Color(0.53, 0.84, 0.01)); // From godot/editor/editor_themes.cpp
-	GLOBAL_DEF("debug/draw/2d/grid/line_cell_color", Color(1.0, 1.0, 1.0, 0.07)); // From GraphEdit in godot/editor/editor_themes.cpp
-	GLOBAL_DEF("debug/draw/2d/grid/line_division_color", Color(1.0, 1.0, 1.0, 0.15)); // From GraphEdit in godot/editor/editor_themes.cpp
-	GLOBAL_DEF("debug/draw/2d/grid/background_color", Color(0, 0, 0, 0));
 	// End grid setup.
 
 	ClassDB::register_virtual_class<Debug2D>();
