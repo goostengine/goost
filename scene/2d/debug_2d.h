@@ -3,6 +3,9 @@
 #include "core/engine.h"
 #include "core/resource.h"
 #include "scene/2d/node_2d.h"
+#include "scene/main/canvas_layer.h"
+
+#include "scene/gui/grid_rect.h"
 
 class DebugCapture;
 
@@ -15,6 +18,10 @@ private:
 	bool enabled = true;
 
 	Node2D *base = nullptr;
+
+	CanvasLayer *grid_layer = nullptr;
+	GridRect *grid_rect = nullptr;
+
 	ObjectID canvas_item; // Currently used item passed to draw commands.
 
 	Dictionary draw_override;
@@ -48,6 +55,7 @@ private:
 
 protected:
 	static void _bind_methods();
+	void _notification(int p_what);
 
 	void _on_canvas_item_draw(Object *p_item);
 	void _push_command(DrawCommand &p_command);
@@ -66,6 +74,7 @@ public:
 	void set_canvas_item(Object *p_canvas_item);
 	Object *get_canvas_item() const;
 	Object *get_base() const { return base; } // The default canvas item.
+	GridRect *get_grid() const { return grid_rect; }
 
 	// Custom drawing using one of the `CanvasItem.draw_*` methods.
 	void draw(const StringName &p_method, const Array &p_args = Array());
