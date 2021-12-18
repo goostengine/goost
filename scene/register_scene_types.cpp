@@ -105,6 +105,7 @@ void register_scene_types() {
 	ClassDB::get_property_list("GridRect", &grid_props, true);
 
 	GLOBAL_DEF("debug/draw/2d/grid/visible", false);
+	GLOBAL_DEF("debug/draw/2d/grid/layer", 1); // Show on top by default.
 
 	auto g = memnew(GridRect);
 	for (List<PropertyInfo>::Element *E = grid_props.front(); E; E = E->next()) {

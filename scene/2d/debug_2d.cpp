@@ -478,7 +478,7 @@ Debug2D::Debug2D() {
 	// Grid layer.
 	grid_layer = memnew(CanvasLayer);
 	grid_layer->set_name("GridLayer");
-	grid_layer->set_layer(-1); // Do not show grid on top, since we have transparent grid by default.
+	grid_layer->set_layer(GLOBAL_GET("debug/draw/2d/grid/layer"));
 	add_child(grid_layer);
 
 	grid_rect = memnew(GridRect);
