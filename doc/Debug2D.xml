@@ -209,6 +209,19 @@
 				Returns [DebugCapture] object to manage history of draw commands.
 			</description>
 		</method>
+		<method name="get_grid" qualifiers="const">
+			<return type="GridRect" />
+			<description>
+				Returns the default [GridRect] used to draw an infinite grid at run-time.
+				The grid drawing is disabled by default, so if you want to use it, you have to go into project settings and enable it manually. You can change the grid properties both by configuring project settings at [code]debug/draw/2d/grid[/code] and via code:
+				[codeblock]
+				func _ready():
+				    var grid: GridRect = Debug2D.get_grid()
+				    grid.show()
+				[/codeblock]
+				If you use [Camera2D] or change [member Viewport.canvas_transform], the grid's position and scale are going to be updated automatically to simulate an infinite grid. Note that [GridRect] doesn't currently support rotated grid lines.
+			</description>
+		</method>
 		<method name="update">
 			<return type="void" />
 			<description>

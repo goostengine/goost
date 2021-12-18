@@ -2,6 +2,7 @@
 
 #include "goost/core/math/geometry/2d/goost_geometry_2d.h"
 
+#include "scene/main/viewport.h"
 #include "scene/resources/theme.h"
 #include "scene/scene_string_names.h"
 
@@ -181,6 +182,23 @@ Variant Debug2D::_option_get_value(const String &p_option, const Variant &p_valu
 		ret = p_value;
 	}
 	return ret;
+}
+
+void Debug2D::_notification(int p_what) {
+	switch (p_what) {
+		case NOTIFICATION_PROCESS: {
+			if (grid_rect->is_visible()) {
+				const Transform2D &ct = get_viewport()->get_canvas_transform();
+
+				if (grid_rect->get_origin_offset() != ct.get_origin()) {
+					grid_rect->set_origin_offset(ct.get_origin());
+				}
+				if (grid_rect->get_origin_scale() != ct.get_scale()) {
+					grid_rect->set_origin_scale(ct.get_scale());
+				}
+			}
+		} break;
+	}
 }
 
 void Debug2D::_push_command(DrawCommand &p_command) {
@@ -449,12 +467,24 @@ Debug2D::Debug2D() {
 	ERR_FAIL_COND_MSG(singleton != nullptr, "Singleton already exists");
 	singleton = this;
 	state.instance();
+	set_process(true);
 
+	// Base for drawing.
 	base = memnew(Node2D);
 	set_canvas_item(base);
-
 	base->set_name("Canvas");
 	add_child(base);
+
+	// Grid layer.
+	grid_layer = memnew(CanvasLayer);
+	grid_layer->set_name("GridLayer");
+	grid_layer->set_layer(GLOBAL_GET("debug/draw/2d/grid/layer"));
+	add_child(grid_layer);
+
+	grid_rect = memnew(GridRect);
+	grid_rect->set_name("Grid");
+	grid_layer->add_child(grid_rect);
+	grid_rect->set_anchors_and_margins_preset(Control::PRESET_WIDE);
 
 	draw_reset();
 
@@ -479,6 +509,7 @@ void Debug2D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_canvas_item", "canvas_item"), &Debug2D::set_canvas_item);
 	ClassDB::bind_method(D_METHOD("get_canvas_item"), &Debug2D::get_canvas_item);
 	ClassDB::bind_method(D_METHOD("get_base"), &Debug2D::get_base);
+	ClassDB::bind_method(D_METHOD("get_grid"), &Debug2D::get_grid);
 
 	ClassDB::bind_method(D_METHOD("draw", "method", "args"), &Debug2D::draw, DEFVAL(Variant()));
 

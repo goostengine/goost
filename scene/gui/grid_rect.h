@@ -29,9 +29,9 @@ protected:
 	int divisions_horizontal = 8;
 	int divisions_vertical = 8;
 	float divisions_line_width = 1.0;
+
 	Vector2 origin_offset;
 	Vector2 origin_scale = Vector2(1, 1);
-
 	bool origin_centered = false;
 	bool origin_axes_visible = false;
 	float origin_axes_line_width = 1.0;
