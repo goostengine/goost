@@ -7,7 +7,7 @@ version = {
     "major": 1,
     "minor": 2,
     "patch": 0,
-    "branch": "gd3",
+    "branch": "1.2-gd3",
     "status": "stable",
     "year": 2021,
 }
@@ -505,7 +505,7 @@ if __name__ == "__main__":
             print("Once done, run `scons` to start building Godot with Goost.")
             print()
             print("If you'd like to know more, refer to official Goost documentation:")
-            print("  - https://goost.readthedocs.io/en/gd3/")
+            print("  - https://goost.readthedocs.io/en/1.2-gd3/")
             print()
 
     elif args.tool == "doc" and args.generate_api:
