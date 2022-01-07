@@ -1,12 +1,15 @@
 #include "light_texture.h"
 
 LightTexture::LightTexture() {
-	fill = GradientTexture2D::FILL_RADIAL;
-	fill_from = Vector2(0.5, 0.5); // Center!
-	fill_to = Vector2(0.5, 0.0);
-	gradient = Ref<Gradient>(memnew(Gradient));
+	set_fill(GradientTexture2D::FILL_RADIAL);
+	set_fill_from(Vector2(0.5, 0.5)); // Center!
+	set_fill_to(Vector2(0.5, 0.0));
+
+	Ref<Gradient> g;
+	g.instance();	
 	// Invert default black and white colors.
-	gradient->set_color(0, Color(1, 1, 1, 1));
-	gradient->set_color(1, Color(0, 0, 0, 0));
-	set_gradient(gradient); // Make sure it's updated upon gradient changes.
+	g->set_color(0, Color(1, 1, 1, 1));
+	g->set_color(1, Color(0, 0, 0, 0));
+	// Make sure it's updated upon gradient changes.
+	set_gradient(g); 
 }
