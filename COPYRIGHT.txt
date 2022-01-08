@@ -10,8 +10,8 @@ Source: https://github.com/goostengine/goost
 
 Files: *
 Comment: Goost
-Copyright: 2019-2021, Andrii Doroshenko.
- 2020-2021, Goost contributors.
+Copyright: 2019-2022, Andrii Doroshenko.
+ 2020-2022, Goost contributors.
 License: Expat
 
 Files: ./icon.png

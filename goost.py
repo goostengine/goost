@@ -9,7 +9,7 @@ version = {
     "patch": 0,
     "branch": "gd3",
     "status": "stable",
-    "year": 2021,
+    "year": 2022,
 }
 url = "https://github.com/goostengine/goost"
 doc_url = "https://goost.readthedocs.io/en/%s/" % version["branch"]
