@@ -82,7 +82,6 @@ void register_scene_types() {
 
 	ClassDB::register_class<Stopwatch>();
 	ClassDB::register_class<VisualShape2D>();
-	ClassDB::register_class<GradientTexture2D>();
 	ClassDB::register_class<LightTexture>();
 
 #ifdef GOOST_GUI_ENABLED

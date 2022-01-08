@@ -162,7 +162,6 @@ classes = {
     "GoostMath": "math",
     "GoostGeometry2D": "geometry",
     "GoostImage": "image",
-    "GradientTexture2D": "scene",
     "GridRect": "gui",
     "ImageBlender": "image",
     "ImageFrames": "image",  # modules/gif
@@ -224,7 +223,6 @@ class_dependencies = {
     "Debug2D": ["DebugCapture", "GoostGeometry2D", "GridRect"],
     "GoostEngine" : "InvokeState",
     "GoostGeometry2D" : ["PolyBoolean2D", "PolyDecomp2D", "PolyOffset2D"],
-    "LightTexture" : "GradientTexture2D",
     "LinkedList" : "ListNode",
     "MixinScript" : "Mixin",
     "PolyBoolean2D" : ["PolyBooleanParameters2D", "PolyNode2D"],
