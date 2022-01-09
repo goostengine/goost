@@ -50,15 +50,15 @@
 			Once the type is set, an implicit [Variant] [code]value[/code] property is constructed. The [code]value[/code] property can be changed dynamically anytime, and this emits the [signal Resource.changed] signal, which can be connected to other script or engine methods:
 			[codeblock]
 			extends Node2D
-			
+
 			export(VariantResource) var res = VariantResource.new()
-			
+
 			func _ready():
 			    # Whenever the color is changed, redraw the canvas.
 			    res.connect("changed", self, "update")
 			    # This emits the "changed" signal above.
 			    res.value = Color.blue
-			
+
 			func _draw():
 			    if res.type == TYPE_COLOR:
 			        draw_circle(Vector2(), 100, res.value)
