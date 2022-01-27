@@ -39,6 +39,10 @@ void register_core_types() {
 	ClassDB::register_class<ListNode>();
 	ClassDB::register_class<LinkedList>();
 
+	ClassDB::register_class<Graph>();
+	ClassDB::register_class<GraphVertex>();
+	ClassDB::register_class<GraphEdge>();
+
 	ClassDB::register_class<VariantMap>();
 	ClassDB::register_class<VariantResource>();
 

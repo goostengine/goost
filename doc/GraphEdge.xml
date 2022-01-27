@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="GraphEdge" inherits="Object" version="3.5">
+	<brief_description>
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+	</methods>
+	<members>
+		<member name="vertex_a" type="GraphVertex" setter="" getter="get_vertex_a">
+		</member>
+		<member name="vertex_b" type="GraphVertex" setter="" getter="get_vertex_b">
+		</member>
+		<member name="weight" type="float" setter="set_weight" getter="get_weight" default="1.0">
+		</member>
+	</members>
+	<constants>
+	</constants>
+</class>

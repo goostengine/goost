@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="Graph" inherits="Reference" version="3.5">
+	<brief_description>
+		A general-purpose mixed graph, characterized by having both undirected (associative) and directed edges.
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="add_directed_edge">
+			<return type="GraphEdge" />
+			<argument index="0" name="a" type="Variant" />
+			<argument index="1" name="b" type="Variant" />
+			<argument index="2" name="weight" type="float" default="1.0" />
+			<description>
+			</description>
+		</method>
+		<method name="add_edge">
+			<return type="GraphEdge" />
+			<argument index="0" name="a" type="Variant" />
+			<argument index="1" name="b" type="Variant" />
+			<argument index="2" name="weight" type="float" default="1.0" />
+			<description>
+			</description>
+		</method>
+		<method name="add_vertex">
+			<return type="GraphVertex" />
+			<argument index="0" name="value" type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="find_edge" qualifiers="const">
+			<return type="GraphEdge" />
+			<argument index="0" name="a" type="GraphVertex" />
+			<argument index="1" name="b" type="GraphVertex" />
+			<description>
+			</description>
+		</method>
+	</methods>
+	<constants>
+	</constants>
+</class>

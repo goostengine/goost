@@ -163,6 +163,9 @@ classes = {
     "GoostGeometry2D": "geometry",
     "GoostImage": "image",
     "GridRect": "gui",
+    "Graph": "core",
+    "GraphVertex": "core",
+    "GraphEdge": "core",
     "ImageBlender": "image",
     "ImageFrames": "image",  # modules/gif
     "ImageIndexed": "image",
@@ -224,6 +227,8 @@ class_dependencies = {
     "GoostEngine" : "InvokeState",
     "GoostGeometry2D" : ["PolyBoolean2D", "PolyDecomp2D", "PolyOffset2D"],
     "LinkedList" : "ListNode",
+    "Graph" : ["GraphVertex", "GraphEdge"],
+    "GraphEdge" : "GraphVertex",
     "MixinScript" : "Mixin",
     "PolyBoolean2D" : ["PolyBooleanParameters2D", "PolyNode2D"],
     "PolyDecomp2D" : "PolyDecompParameters2D",

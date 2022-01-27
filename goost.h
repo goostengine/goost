@@ -17,6 +17,7 @@
 #include "core/math/random.h"
 #include "core/script/mixin_script/mixin_script.h"
 #include "core/types/linked_list.h"
+#include "core/types/graph.h"
 #include "core/types/variant_map.h"
 #include "core/types/variant_resource.h"
 
