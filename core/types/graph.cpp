@@ -214,6 +214,10 @@ GraphEdge *Graph::find_edge(GraphVertex *a, GraphVertex *b) const {
 	return nullptr;
 }
 
+bool Graph::has_edge(GraphVertex *a, GraphVertex *b) const {
+	return find_edge(a, b) != nullptr;
+}
+
 Array Graph::get_edge_list(GraphVertex *a, GraphVertex *b) const {
 	Array edge_list;
 
@@ -269,6 +273,21 @@ void Graph::clear() {
 	}
 }
 
+void Graph::clear_edges() {
+	Set<GraphEdge *> edge_set;
+
+	for (Map<GraphVertex *, List<GraphEdge *>>::Element *E = graph->data.front(); E; E = E->next()) {
+		List<GraphEdge *> &list = E->get();
+		for (List<GraphEdge *>::Element *I = list.front(); I; I = I->next()) {
+			edge_set.insert(I->get());
+			list.erase(I);
+		}
+	}
+	for (const Set<GraphEdge *>::Element *I = edge_set.front(); I; I = I->next()) {
+		memdelete(I->get());
+	}
+}
+
 void Graph::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("add_vertex", "value"), &Graph::add_vertex);
 	ClassDB::bind_method(D_METHOD("remove_vertex", "vertex"), &Graph::remove_vertex);
@@ -282,8 +301,12 @@ void Graph::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("add_edge", "a", "b", "weight"), &Graph::add_edge, DEFVAL(1.0));
 	ClassDB::bind_method(D_METHOD("add_directed_edge", "from", "to", "weight"), &Graph::add_directed_edge, DEFVAL(1.0));
 	ClassDB::bind_method(D_METHOD("find_edge", "a", "b"), &Graph::find_edge);
+	ClassDB::bind_method(D_METHOD("has_edge", "a", "b"), &Graph::has_edge);
 	ClassDB::bind_method(D_METHOD("get_edge_list", "a", "b"), &Graph::get_edge_list, DEFVAL(Variant()), DEFVAL(Variant()));
 	ClassDB::bind_method(D_METHOD("get_edge_count"), &Graph::get_edge_count);
+
+	ClassDB::bind_method(D_METHOD("clear"), &Graph::clear);
+	ClassDB::bind_method(D_METHOD("clear_edges"), &Graph::clear_edges);
 }
 
 Graph::Graph() {

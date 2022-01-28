@@ -8,8 +8,8 @@ class GraphEdge;
 
 struct GraphData {
 	Map<GraphVertex *, List<GraphEdge *>> data;
-	void remove_vertex(GraphVertex *v);
-	void remove_edge(GraphEdge *v);
+	void remove_vertex(GraphVertex *p_vertex);
+	void remove_edge(GraphEdge *p_vertex);
 };
 
 class Graph : public Reference {
@@ -23,25 +23,29 @@ protected:
 	GraphEdge *_add_edge(const Variant &a, const Variant &b, real_t weight, bool directed);
 
 public:
-	Array get_neighbors(GraphVertex *v);
-	Array get_successors(GraphVertex *v);
-	Array get_predecessors(GraphVertex *v);
-
-	GraphVertex *add_vertex(const Variant &v);
-	void remove_vertex(GraphVertex *v);
-	bool has_vertex(GraphVertex *v) const { return graph->data.has(v); }
+	// Vertex API
+	GraphVertex *add_vertex(const Variant &p_value);
+	void remove_vertex(GraphVertex *p_vertex);
+	bool has_vertex(GraphVertex *p_vertex) const { return graph->data.has(v); }
 	Array get_vertex_list() const;
 	int get_vertex_count() const { return graph->data.size(); }
 
+	Array get_neighbors(GraphVertex *p_vertex);
+	Array get_successors(GraphVertex *p_vertex);
+	Array get_predecessors(GraphVertex *p_vertex);
+
+	// Edge API
 	GraphEdge *add_edge(const Variant &a, const Variant &b, real_t weight = 1.0);
 	GraphEdge *add_directed_edge(const Variant &a, const Variant &b, real_t weight = 1.0);
 	void remove_edge(GraphEdge *e);
 	GraphEdge *find_edge(GraphVertex *a, GraphVertex *b) const;
+	bool has_edge(GraphVertex *a, GraphVertex *b) const;
 	Array get_edge_list(GraphVertex *a = nullptr, GraphVertex *b = nullptr) const;
 	int get_edge_count() const;
 
+	// Cleanup
 	void clear();
-	void clear_edges(); // TODO
+	void clear_edges();
 
 	Graph();
 	~Graph();

@@ -177,3 +177,42 @@ func test_remove_vertex_many_to_many():
 
     assert_eq(graph.get_edge_count(), 0)
     assert_eq(graph.get_neighbors(d).size(), 0)
+
+
+func test_clear_edges():
+    var a = graph.add_vertex("a")
+    var b = graph.add_vertex("b")
+    var c = graph.add_vertex("c")
+
+    var _ab = graph.add_edge(a, b)
+    var _ac = graph.add_edge(a, c)
+    var _bc = graph.add_edge(b, c)
+
+    assert_eq(graph.get_vertex_count(), 3)
+    assert_eq(graph.get_edge_count(), 3)
+    assert_eq(graph.get_neighbors(a).size(), 2)
+    assert_eq(graph.get_neighbors(b).size(), 2)
+    assert_eq(graph.get_neighbors(c).size(), 2)
+
+    graph.clear_edges()
+
+    assert_eq(graph.get_vertex_count(), 3)
+    assert_eq(graph.get_edge_count(), 0)
+    assert_eq(graph.get_neighbors(a).size(), 0)
+    assert_eq(graph.get_neighbors(b).size(), 0)
+    assert_eq(graph.get_neighbors(c).size(), 0)
+
+    
+func test_has_edge():
+    var a = graph.add_vertex("a")
+    var b = graph.add_vertex("b")
+    var c = graph.add_vertex("c")
+
+    var _ab = graph.add_edge(a, b)
+    var _ac = graph.add_edge(a, c)
+
+    assert_true(graph.has_edge(a, b))
+    assert_true(graph.has_edge(a, c))
+    assert_true(graph.has_edge(b, a))
+    assert_false(graph.has_edge(b, c))
+    assert_false(graph.has_edge(c, b))
