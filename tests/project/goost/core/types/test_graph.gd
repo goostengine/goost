@@ -42,3 +42,138 @@ func test_add_edge():
 
     assert_eq(graph.find_edge(e2.vertex_a, e2.vertex_b), e2)
     assert_eq(graph.find_edge(e2.vertex_b, e2.vertex_a), e2)
+
+
+func test_neighborhood():
+    var a = graph.add_vertex("a")
+    var b = graph.add_vertex("b")
+    var c = graph.add_vertex("c")
+
+    var _e1 = graph.add_edge(a, b)
+    var _e2 = graph.add_edge(a, c)
+    var _e3 = graph.add_edge(b, c)
+
+    var na = graph.get_neighbors(a)
+    var nb = graph.get_neighbors(b)
+    var nc = graph.get_neighbors(c)
+
+    assert_eq(na.size(), 2)
+    assert_true(b in na)
+    assert_true(c in na)
+
+    assert_eq(nb.size(), 2)
+    assert_true(a in nb)
+    assert_true(c in nb)
+
+    assert_eq(nc.size(), 2)
+    assert_true(a in nc)
+    assert_true(b in nc)
+
+
+func test_neighborhood_directed():
+    var a = graph.add_vertex("a")
+    var b = graph.add_vertex("b")
+    var c = graph.add_vertex("c")
+
+    var _e1 = graph.add_edge(a, b)
+    var _e2 = graph.add_directed_edge(a, c)
+
+    var na = graph.get_neighbors(a)
+    var sa = graph.get_successors(a)
+    var pc = graph.get_predecessors(c)
+
+    assert_eq(na.size(), 1)
+    assert_true(b in na)
+
+    assert_eq(sa.size(), 1)
+    assert_true(c in sa)
+
+    assert_eq(pc.size(), 1)
+    assert_true(a in pc)
+
+    var _e3 = graph.add_directed_edge(c, a)
+    var _e4 = graph.add_directed_edge(c, b)
+    var sc = graph.get_successors(c)
+
+    assert_eq(sc.size(), 2)
+    assert_true(a in sc)
+    assert_true(b in sc)
+
+
+func test_edge_list():
+    var a = graph.add_vertex("a")
+    var b = graph.add_vertex("b")
+    var c = graph.add_vertex("c")
+
+    var ab1 = graph.add_edge(a, b)
+    var ab2 = graph.add_edge(a, b)
+    var ac = graph.add_edge(a, c)
+    var bc = graph.add_edge(b, c)
+
+    var edges = graph.get_edge_list(a, b)
+    assert_eq(edges.size(), 2)
+    assert_true(ab1 in edges)
+    assert_true(ab2 in edges)
+
+    edges = graph.get_edge_list()
+    assert_eq(edges.size(), 4)
+    assert_true(ab1 in edges)
+    assert_true(ab2 in edges)
+    assert_true(ac in edges)
+    assert_true(bc in edges)
+
+
+func test_remove_vertex_one_to_many():
+    var a = graph.add_vertex("a")
+    var b = graph.add_vertex("b")
+    var c = graph.add_vertex("c")
+    var d = graph.add_vertex("d")
+
+    var _ab = graph.add_edge(a, b)
+    var _ac = graph.add_edge(a, c)
+    var _ad = graph.add_edge(a, d)
+    
+    assert_eq(graph.get_edge_count(), 3)
+    
+    graph.remove_vertex(a)
+    
+    assert_eq(graph.get_edge_count(), 0)
+    assert_eq(graph.get_neighbors(b).size(), 0)
+    assert_eq(graph.get_neighbors(c).size(), 0)
+    assert_eq(graph.get_neighbors(d).size(), 0)
+
+
+func test_remove_vertex_many_to_many():
+    var a = graph.add_vertex("a")
+    var b = graph.add_vertex("b")
+    var c = graph.add_vertex("c")
+    var d = graph.add_vertex("d")
+
+    var _ab = graph.add_edge(a, b)
+    var _ac = graph.add_edge(a, c)
+    var _ad = graph.add_edge(a, d)
+    var _cb = graph.add_edge(c, b)
+    var _cd = graph.add_edge(c, d)
+    var _bd = graph.add_edge(b, d)
+
+    assert_eq(graph.get_edge_count(), 6)
+
+    graph.remove_vertex(a)
+
+    assert_eq(graph.get_vertex_count(), 3)
+
+    assert_eq(graph.get_edge_count(), 3)
+    assert_eq(graph.get_neighbors(c).size(), 2)
+    assert_eq(graph.get_neighbors(b).size(), 2)
+    assert_eq(graph.get_neighbors(d).size(), 2)
+
+    graph.remove_vertex(b)
+
+    assert_eq(graph.get_edge_count(), 1)
+    assert_eq(graph.get_neighbors(c).size(), 1)
+    assert_eq(graph.get_neighbors(d).size(), 1)
+
+    graph.remove_vertex(c)
+
+    assert_eq(graph.get_edge_count(), 0)
+    assert_eq(graph.get_neighbors(d).size(), 0)
