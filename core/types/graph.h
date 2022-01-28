@@ -20,7 +20,7 @@ class Graph : public Reference {
 protected:
 	static void _bind_methods();
 
-	GraphEdge *_add_edge(const Variant &a, const Variant &b, real_t weight, bool bidirectional);
+	GraphEdge *_add_edge(const Variant &a, const Variant &b, real_t weight, bool directed);
 
 public:
 	Array get_neighbors(GraphVertex *v);
@@ -74,7 +74,7 @@ class GraphEdge : public Object {
 
 	GraphVertex *a = nullptr;
 	GraphVertex *b = nullptr;
-	bool bidirectional = true;
+	bool directed = false;
 
 	real_t weight = 1.0;
 

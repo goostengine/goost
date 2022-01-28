@@ -98,6 +98,10 @@ void GraphData::remove_vertex(GraphVertex *v) {
 	ERR_FAIL_COND(!erased);
 }
 
+void GraphData::remove_edge(GraphEdge *e) {
+	e->graph = nullptr;
+}
+
 Array Graph::get_neighbors(GraphVertex *v) {
 	ERR_INVALID_VERTEX_V(v, Array());
 
@@ -106,12 +110,13 @@ Array Graph::get_neighbors(GraphVertex *v) {
 
 	for (const List<GraphEdge *>::Element *E = list.front(); E; E = E->next()) {
 		GraphEdge *edge = E->get();
-		if (edge->bidirectional) {
-			if (v == edge->a) {
-				neighborhood.push_back(edge->b);
-			} else {
-				neighborhood.push_back(edge->a);
-			}
+		if (edge->directed) {
+			continue;
+		}
+		if (v == edge->a) {
+			neighborhood.push_back(edge->b);
+		} else {
+			neighborhood.push_back(edge->a);
 		}
 	}
 	return neighborhood;
@@ -125,7 +130,7 @@ Array Graph::get_successors(GraphVertex *v) {
 
 	for (const List<GraphEdge *>::Element *E = list.front(); E; E = E->next()) {
 		GraphEdge *edge = E->get();
-		if (edge->bidirectional) {
+		if (!edge->directed) {
 			continue;
 		}
 		if (v == edge->a) {
@@ -143,7 +148,7 @@ Array Graph::get_predecessors(GraphVertex *v) {
 
 	for (const List<GraphEdge *>::Element *E = list.front(); E; E = E->next()) {
 		GraphEdge *edge = E->get();
-		if (edge->bidirectional) {
+		if (!edge->directed) {
 			continue;
 		}
 		if (v == edge->b) {
@@ -153,7 +158,7 @@ Array Graph::get_predecessors(GraphVertex *v) {
 	return predecessors;
 }
 
-GraphEdge *Graph::_add_edge(const Variant &p_a, const Variant &p_b, real_t p_weight, bool p_bidirectional) {
+GraphEdge *Graph::_add_edge(const Variant &p_a, const Variant &p_b, real_t p_weight, bool p_directed) {
 	ERR_FAIL_COND_V(p_a.get_type() == Variant::NIL, nullptr);
 	ERR_FAIL_COND_V(p_b.get_type() == Variant::NIL, nullptr);
 
@@ -176,7 +181,7 @@ GraphEdge *Graph::_add_edge(const Variant &p_a, const Variant &p_b, real_t p_wei
 	edge->a = a;
 	edge->b = b;
 	edge->weight = p_weight;
-	edge->bidirectional = p_bidirectional;
+	edge->directed = p_directed;
 
 	graph->data[a].push_back(edge);
 	graph->data[b].push_back(edge);
@@ -186,15 +191,11 @@ GraphEdge *Graph::_add_edge(const Variant &p_a, const Variant &p_b, real_t p_wei
 }
 
 GraphEdge *Graph::add_edge(const Variant &p_a, const Variant &p_b, real_t p_weight) {
-	return _add_edge(p_a, p_b, p_weight, true);
-}
-
-void GraphData::remove_edge(GraphEdge *e) {
-	e->graph = nullptr;
+	return _add_edge(p_a, p_b, p_weight, false);
 }
 
 GraphEdge *Graph::add_directed_edge(const Variant &p_a, const Variant &p_b, real_t p_weight) {
-	return _add_edge(p_a, p_b, p_weight, false);
+	return _add_edge(p_a, p_b, p_weight, true);
 }
 
 GraphEdge *Graph::find_edge(GraphVertex *a, GraphVertex *b) const {
@@ -206,7 +207,7 @@ GraphEdge *Graph::find_edge(GraphVertex *a, GraphVertex *b) const {
 		if (a == edge->a && b == edge->b) {
 			return edge;
 		}
-		if (edge->bidirectional && a == edge->b && b == edge->a) {
+		if (!edge->directed && a == edge->b && b == edge->a) {
 			return edge;
 		}
 	}
@@ -234,8 +235,7 @@ Array Graph::get_edge_list(GraphVertex *a, GraphVertex *b) const {
 				GraphEdge *edge = I->get();
 				if (a == edge->a && b == edge->b) {
 					edge_set.insert(edge);
-				}
-				if (edge->bidirectional && a == edge->b && b == edge->a) {
+				} else if (!edge->directed && a == edge->b && b == edge->a) {
 					edge_set.insert(edge);
 				}
 			}
