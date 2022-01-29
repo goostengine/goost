@@ -5,24 +5,24 @@
 #ifdef DEBUG_ENABLED
 
 #define ERR_INVALID_VERTEX(m_v) \
-	ERR_FAIL_NULL(v);           \
-	ERR_FAIL_COND(!graph->data.has(v));
+	ERR_FAIL_NULL(m_v);           \
+	ERR_FAIL_COND(!graph->data.has(m_v));
 
 #define ERR_INVALID_VERTEX_V(m_v, m_ret) \
-	ERR_FAIL_NULL_V(v, m_ret);           \
-	ERR_FAIL_COND_V(!graph->data.has(v), m_ret);
+	ERR_FAIL_NULL_V(m_v, m_ret);           \
+	ERR_FAIL_COND_V(!graph->data.has(m_v), m_ret);
 
 #define ERR_INVALID_VERTICES(m_a, m_b)  \
-	ERR_FAIL_NULL(a);                   \
-	ERR_FAIL_NULL(b);                   \
-	ERR_FAIL_COND(!graph->data.has(a)); \
-	ERR_FAIL_COND(!graph->data.has(b));
+	ERR_FAIL_NULL(m_a);                   \
+	ERR_FAIL_NULL(m_b);                   \
+	ERR_FAIL_COND(!graph->data.has(m_a)); \
+	ERR_FAIL_COND(!graph->data.has(m_b));
 
 #define ERR_INVALID_VERTICES_V(m_a, m_b, m_ret)  \
-	ERR_FAIL_NULL_V(a, m_ret);                   \
-	ERR_FAIL_NULL_V(b, m_ret);                   \
-	ERR_FAIL_COND_V(!graph->data.has(a), m_ret); \
-	ERR_FAIL_COND_V(!graph->data.has(b), m_ret);
+	ERR_FAIL_NULL_V(m_a, m_ret);                   \
+	ERR_FAIL_NULL_V(m_b, m_ret);                   \
+	ERR_FAIL_COND_V(!graph->data.has(m_a), m_ret); \
+	ERR_FAIL_COND_V(!graph->data.has(m_b), m_ret);
 #else
 
 #define ERR_INVALID_VERTEX(m_v)
@@ -187,6 +187,26 @@ GraphEdge *Graph::add_directed_edge(const Variant &p_a, const Variant &p_b, real
 	return _add_edge(p_a, p_b, p_weight, true);
 }
 
+void Graph::remove_edge(GraphEdge *e) {
+	ERR_FAIL_NULL(e);
+	ERR_INVALID_VERTEX(e->a);
+	ERR_INVALID_VERTEX(e->b);
+
+	GraphVertex *v[2] = {e->a, e->b};
+
+	for (int i = 0; i < 2; ++i) {
+		List<GraphEdge *> &list = graph->data[v[i]];
+
+		for (List<GraphEdge *>::Element *E = list.front(); E; E = E->next()) {
+			GraphEdge *edge = E->get();
+			if (e == edge) {
+				list.erase(E);
+			}
+		}
+	}
+	memdelete(e);
+}
+
 GraphEdge *Graph::find_edge(GraphVertex *a, GraphVertex *b) const {
 	ERR_INVALID_VERTICES_V(a, b, nullptr);
 
@@ -289,6 +309,7 @@ void Graph::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("add_edge", "a", "b", "weight"), &Graph::add_edge, DEFVAL(1.0));
 	ClassDB::bind_method(D_METHOD("add_directed_edge", "from", "to", "weight"), &Graph::add_directed_edge, DEFVAL(1.0));
+	ClassDB::bind_method(D_METHOD("remove_edge", "edge"), &Graph::remove_edge);
 	ClassDB::bind_method(D_METHOD("find_edge", "a", "b"), &Graph::find_edge);
 	ClassDB::bind_method(D_METHOD("has_edge", "a", "b"), &Graph::has_edge);
 	ClassDB::bind_method(D_METHOD("get_edge_list", "a", "b"), &Graph::get_edge_list, DEFVAL(Variant()), DEFVAL(Variant()));

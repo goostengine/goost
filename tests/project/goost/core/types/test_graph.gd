@@ -216,3 +216,26 @@ func test_has_edge():
     assert_true(graph.has_edge(b, a))
     assert_false(graph.has_edge(b, c))
     assert_false(graph.has_edge(c, b))
+
+    
+func test_remove_edge():
+    var a = graph.add_vertex("a")
+    var b = graph.add_vertex("b")
+    var c = graph.add_vertex("c")
+
+    var ab = graph.add_edge(a, b)
+    var ac = graph.add_edge(a, c)
+    var bc = graph.add_edge(b, c)
+
+    assert_eq(graph.get_edge_count(), 3)
+
+    graph.remove_edge(ab)
+    assert_eq(graph.get_edge_count(), 2)
+
+    graph.remove_edge(ac)
+    assert_eq(graph.get_edge_count(), 1)
+
+    graph.remove_edge(bc)
+    assert_eq(graph.get_edge_count(), 0)
+
+    assert_eq(graph.get_vertex_count(), 3)
