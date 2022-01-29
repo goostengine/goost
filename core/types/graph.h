@@ -26,7 +26,7 @@ public:
 	// Vertex API
 	GraphVertex *add_vertex(const Variant &p_value);
 	void remove_vertex(GraphVertex *p_vertex);
-	bool has_vertex(GraphVertex *p_vertex) const { return graph->data.has(v); }
+	bool has_vertex(GraphVertex *p_vertex) const { return graph->data.has(p_vertex); }
 	Array get_vertex_list() const;
 	int get_vertex_count() const { return graph->data.size(); }
 

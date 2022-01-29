@@ -49,17 +49,12 @@ void Graph::remove_vertex(GraphVertex *v) {
 }
 
 void GraphData::remove_vertex(GraphVertex *v) {
-	using EdgeItem = List<GraphEdge *>::Element *;
-	using EdgeList = List<GraphEdge *> *;
-
-	Map<EdgeItem, EdgeList> edges_to_remove;
-
 	// Find all vertices connected to this one, including the vertex to be removed.
 	Vector<GraphVertex *> closed_neighborhood;
 	closed_neighborhood.push_back(v);
 
 	List<GraphEdge *> &list_v = data[v];
-	for (EdgeItem E = list_v.front(); E; E = E->next()) {
+	for (List<GraphEdge *>::Element *E = list_v.front(); E; E = E->next()) {
 		GraphEdge *edge = E->get();
 		if (v == edge->a) {
 			closed_neighborhood.push_back(edge->b);
@@ -68,31 +63,25 @@ void GraphData::remove_vertex(GraphVertex *v) {
 		}
 	}
 	// Find edges that are associated with the vertices above.
+	Set<GraphEdge *> edges_to_delete;
+
 	for (int i = 0; i < closed_neighborhood.size(); ++i) {
 		GraphVertex *n = closed_neighborhood[i];
 		List<GraphEdge *> &list_n = data[n];
 
-		for (EdgeItem E = list_n.front(); E; E = E->next()) {
+		for (List<GraphEdge *>::Element *E = list_n.front(); E; E = E->next()) {
 			GraphEdge *edge = E->get();
 			if (v == edge->a || v == edge->b) {
-				edges_to_remove[E] = &list_n;
+				edges_to_delete.insert(edge);
+				list_n.erase(E);
 			}
 		}
 	}
 	// Delete all edges associated with the vertex.
-	Set<GraphEdge *> edges_to_delete;
-
-	for (Map<EdgeItem, EdgeList>::Element *E = edges_to_remove.front(); E; E = E->next()) {
-		EdgeItem item = E->key();
-		GraphEdge *edge = item->get();
-		edges_to_delete.insert(edge);
-
-		EdgeList list = E->get();
-		list->erase(item);
-	}
 	for (Set<GraphEdge *>::Element *E = edges_to_delete.front(); E; E = E->next()) {
 		memdelete(E->get());
 	}
+	// Remove the vertex itself from the graph.
 	v->graph = nullptr;
 	bool erased = data.erase(v);
 	ERR_FAIL_COND(!erased);
