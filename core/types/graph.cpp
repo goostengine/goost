@@ -5,20 +5,20 @@
 #ifdef DEBUG_ENABLED
 
 #define ERR_INVALID_VERTEX(m_v) \
-	ERR_FAIL_NULL(m_v);           \
+	ERR_FAIL_NULL(m_v);         \
 	ERR_FAIL_COND(!graph->data.has(m_v));
 
 #define ERR_INVALID_VERTEX_V(m_v, m_ret) \
-	ERR_FAIL_NULL_V(m_v, m_ret);           \
+	ERR_FAIL_NULL_V(m_v, m_ret);         \
 	ERR_FAIL_COND_V(!graph->data.has(m_v), m_ret);
 
-#define ERR_INVALID_VERTICES(m_a, m_b)  \
+#define ERR_INVALID_VERTICES(m_a, m_b)    \
 	ERR_FAIL_NULL(m_a);                   \
 	ERR_FAIL_NULL(m_b);                   \
 	ERR_FAIL_COND(!graph->data.has(m_a)); \
 	ERR_FAIL_COND(!graph->data.has(m_b));
 
-#define ERR_INVALID_VERTICES_V(m_a, m_b, m_ret)  \
+#define ERR_INVALID_VERTICES_V(m_a, m_b, m_ret)    \
 	ERR_FAIL_NULL_V(m_a, m_ret);                   \
 	ERR_FAIL_NULL_V(m_b, m_ret);                   \
 	ERR_FAIL_COND_V(!graph->data.has(m_a), m_ret); \
@@ -69,12 +69,15 @@ void GraphData::remove_vertex(GraphVertex *v) {
 		GraphVertex *n = closed_neighborhood[i];
 		List<GraphEdge *> &list_n = data[n];
 
-		for (List<GraphEdge *>::Element *E = list_n.front(); E; E = E->next()) {
+		for (List<GraphEdge *>::Element *E = list_n.front(); E;) {
+			auto N = E->next();
 			GraphEdge *edge = E->get();
+	
 			if (v == edge->a || v == edge->b) {
 				edges_to_delete.insert(edge);
 				list_n.erase(E);
 			}
+			E = N;
 		}
 	}
 	// Delete all edges associated with the vertex.
@@ -192,16 +195,18 @@ void Graph::remove_edge(GraphEdge *e) {
 	ERR_INVALID_VERTEX(e->a);
 	ERR_INVALID_VERTEX(e->b);
 
-	GraphVertex *v[2] = {e->a, e->b};
+	GraphVertex *v[2] = { e->a, e->b };
 
 	for (int i = 0; i < 2; ++i) {
 		List<GraphEdge *> &list = graph->data[v[i]];
 
-		for (List<GraphEdge *>::Element *E = list.front(); E; E = E->next()) {
+		for (List<GraphEdge *>::Element *E = list.front(); E;) {
+			auto N = E->next();
 			GraphEdge *edge = E->get();
 			if (e == edge) {
 				list.erase(E);
 			}
+			E = N;
 		}
 	}
 	memdelete(e);
@@ -287,13 +292,15 @@ void Graph::clear_edges() {
 
 	for (Map<GraphVertex *, List<GraphEdge *>>::Element *E = graph->data.front(); E; E = E->next()) {
 		List<GraphEdge *> &list = E->get();
-		for (List<GraphEdge *>::Element *I = list.front(); I; I = I->next()) {
+		for (List<GraphEdge *>::Element *I = list.front(); I;) {
+			auto N = I->next();
 			edge_set.insert(I->get());
 			list.erase(I);
+			I = N;
 		}
 	}
-	for (const Set<GraphEdge *>::Element *I = edge_set.front(); I; I = I->next()) {
-		memdelete(I->get());
+	for (const Set<GraphEdge *>::Element *E = edge_set.front(); E; E = E->next()) {
+		memdelete(E->get());
 	}
 }
 
@@ -360,6 +367,8 @@ void GraphEdge::_notification(int p_what) {
 void GraphEdge::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_vertex_a"), &GraphEdge::get_vertex_a);
 	ClassDB::bind_method(D_METHOD("get_vertex_b"), &GraphEdge::get_vertex_b);
+
+	ClassDB::bind_method(D_METHOD("is_loop"), &GraphEdge::is_loop);
 
 	ClassDB::bind_method(D_METHOD("set_weight", "weight"), &GraphEdge::set_weight);
 	ClassDB::bind_method(D_METHOD("get_weight"), &GraphEdge::get_weight);

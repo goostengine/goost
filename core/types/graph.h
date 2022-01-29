@@ -90,6 +90,8 @@ public:
 	GraphVertex *get_vertex_a() const { return a; }
 	GraphVertex *get_vertex_b() const { return b; }
 
+	bool is_loop() { return a == b; }
+
 	void set_weight(real_t p_weight) { weight = p_weight; }
 	real_t get_weight() const { return weight; }
 };
