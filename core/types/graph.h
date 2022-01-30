@@ -1,14 +1,25 @@
 #pragma once
 
 #include "core/list.h"
-#include "core/map.h"
+#include "core/hash_map.h"
 #include "core/reference.h"
 
 class GraphVertex;
 class GraphEdge;
 
 struct GraphData {
-	Map<GraphVertex *, List<GraphEdge *>> data;
+	struct ObjectPtrHash {
+		static _FORCE_INLINE_ uint32_t hash(const Object *p_obj) {
+			union {
+				const Object *p;
+				unsigned long i;
+			} u;
+			u.p = p_obj;
+			return HashMapHasherDefault::hash((uint64_t)u.i);
+		}
+	};
+	HashMap<GraphVertex *, List<GraphEdge *>, ObjectPtrHash> data;
+
 	void remove_vertex(GraphVertex *p_vertex);
 	void remove_edge(GraphEdge *p_vertex);
 };

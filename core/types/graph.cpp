@@ -45,8 +45,9 @@ GraphVertex *Graph::add_vertex(const Variant &p_value) {
 Array Graph::get_vertex_list() const {
 	Array vertex_list;
 
-	for (Map<GraphVertex *, List<GraphEdge *>>::Element *E = graph->data.front(); E; E = E->next()) {
-		vertex_list.push_back(E->key());
+	GraphVertex *const *k = nullptr;
+	while ((k = graph->data.next(k))) {
+		vertex_list.push_back(*k);
 	}
 	return vertex_list;
 }
@@ -81,7 +82,7 @@ void GraphData::remove_vertex(GraphVertex *v) {
 		for (List<GraphEdge *>::Element *E = list_n.front(); E;) {
 			auto N = E->next();
 			GraphEdge *edge = E->get();
-	
+
 			if (v == edge->a || v == edge->b) {
 				edges_to_delete.insert(edge);
 				list_n.erase(E);
@@ -248,16 +249,18 @@ Array Graph::get_edge_list(GraphVertex *a, GraphVertex *b) const {
 
 	if (!a && !b) {
 		// Get all edges in the graph.
-		for (Map<GraphVertex *, List<GraphEdge *>>::Element *E = graph->data.front(); E; E = E->next()) {
-			const List<GraphEdge *> &list = E->get();
+		GraphVertex *const *k = nullptr;
+		while ((k = graph->data.next(k))) {
+			const List<GraphEdge *> &list = graph->data[*k];
 			for (const List<GraphEdge *>::Element *I = list.front(); I; I = I->next()) {
 				edge_set.insert(I->get());
 			}
 		}
 	} else {
 		// Get all edges between vertices.
-		for (Map<GraphVertex *, List<GraphEdge *>>::Element *E = graph->data.front(); E; E = E->next()) {
-			const List<GraphEdge *> &list = E->get();
+		GraphVertex *const *k = nullptr;
+		while ((k = graph->data.next(k))) {
+			const List<GraphEdge *> &list = graph->data[*k];
 			for (const List<GraphEdge *>::Element *I = list.front(); I; I = I->next()) {
 				GraphEdge *edge = I->get();
 				if (a == edge->a && b == edge->b) {
@@ -277,8 +280,9 @@ Array Graph::get_edge_list(GraphVertex *a, GraphVertex *b) const {
 int Graph::get_edge_count() const {
 	Set<GraphEdge *> edge_set;
 
-	for (const Map<GraphVertex *, List<GraphEdge *>>::Element *E = graph->data.front(); E; E = E->next()) {
-		const List<GraphEdge *> &list = E->get();
+	GraphVertex *const *k = nullptr;
+	while ((k = graph->data.next(k))) {
+		const List<GraphEdge *> &list = graph->data[*k];
 		for (const List<GraphEdge *>::Element *I = list.front(); I; I = I->next()) {
 			edge_set.insert(I->get());
 		}
@@ -288,8 +292,9 @@ int Graph::get_edge_count() const {
 
 void Graph::clear() {
 	Vector<GraphVertex *> to_remove;
-	for (Map<GraphVertex *, List<GraphEdge *>>::Element *E = graph->data.front(); E; E = E->next()) {
-		to_remove.push_back(E->key());
+	GraphVertex *const *k = nullptr;
+	while ((k = graph->data.next(k))) {
+		to_remove.push_back(*k);
 	}
 	for (int i = 0; i < to_remove.size(); ++i) {
 		memdelete(to_remove[i]); // This will also delete associated edges.
@@ -299,8 +304,9 @@ void Graph::clear() {
 void Graph::clear_edges() {
 	Set<GraphEdge *> edge_set;
 
-	for (Map<GraphVertex *, List<GraphEdge *>>::Element *E = graph->data.front(); E; E = E->next()) {
-		List<GraphEdge *> &list = E->get();
+	GraphVertex *const *k = nullptr;
+	while ((k = graph->data.next(k))) {
+		List<GraphEdge *> &list = graph->data[*k];
 		for (List<GraphEdge *>::Element *I = list.front(); I;) {
 			auto N = I->next();
 			edge_set.insert(I->get());

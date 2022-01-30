@@ -239,3 +239,28 @@ func test_remove_edge():
     assert_eq(graph.get_edge_count(), 0)
 
     assert_eq(graph.get_vertex_count(), 3)
+
+
+# func test_perf():
+#     var count = 100000
+
+#     var t1 = OS.get_ticks_msec()
+#     for i in count:
+#         graph.add_vertex(i)
+
+#     var vertices = graph.get_vertex_list()
+
+#     for i in count:
+#         var ui = randi() % count
+#         var vi = randi() % count
+#         graph.add_edge(vertices[ui], vertices[vi])
+
+#     var edges = graph.get_edge_list()
+
+#     for i in count:
+#         var vi = randi() % vertices.size()
+#         graph.remove_vertex(vertices[vi])
+#         vertices.remove(vi)
+
+#     var t2 = OS.get_ticks_msec()
+#     gut.p(t2 - t1)
