@@ -268,6 +268,23 @@
 			<argument index="0" name="polygon" type="PoolVector2Array" />
 			<description>
 				Decomposes the polygon into individual triangles using [constant PolyDecomp2D.DECOMP_TRIANGLES_MONO].
+				Note that this method is different from Godot's [method Geometry.triangulate_polygon], because it doesn't return indices. If you need to render the resulting triangles, you'll need to generate a continuous array of vertices and indices yourself. For example:
+				[codeblock]
+				extends Node2D
+
+				func _draw():
+				    var polygon = GoostGeometry2D.circle(100)
+				    var triangles = GoostGeometry2D.triangulate_polygon(polygon)
+
+				    var vertices = PoolVector2Array()
+				    for tri in triangles:
+				        for p in tri:
+				            vertices.push_back(p)
+
+				    var indices = range(vertices.size())
+
+				    VisualServer.canvas_item_add_triangle_array(get_canvas_item(), indices, vertices, PoolColorArray([Color.white]))
+				[/codeblock]
 			</description>
 		</method>
 	</methods>
