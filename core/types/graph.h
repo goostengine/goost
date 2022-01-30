@@ -1,6 +1,7 @@
 #pragma once
 
 #include "core/list.h"
+#include "core/map.h"
 #include "core/reference.h"
 
 class GraphVertex;

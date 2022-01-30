@@ -42,6 +42,15 @@ GraphVertex *Graph::add_vertex(const Variant &p_value) {
 	return v;
 }
 
+Array Graph::get_vertex_list() const {
+	Array vertex_list;
+
+	for (Map<GraphVertex *, List<GraphEdge *>>::Element *E = graph->data.front(); E; E = E->next()) {
+		vertex_list.push_back(E->key());
+	}
+	return vertex_list;
+}
+
 void Graph::remove_vertex(GraphVertex *v) {
 	ERR_INVALID_VERTEX(v);
 	// Calls into GraphData::remove_vertex() during NOTIFICATION_PREDELETE
@@ -308,6 +317,7 @@ void Graph::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("add_vertex", "value"), &Graph::add_vertex);
 	ClassDB::bind_method(D_METHOD("remove_vertex", "vertex"), &Graph::remove_vertex);
 	ClassDB::bind_method(D_METHOD("has_vertex", "vertex"), &Graph::has_vertex);
+	ClassDB::bind_method(D_METHOD("get_vertex_list"), &Graph::get_vertex_list);
 	ClassDB::bind_method(D_METHOD("get_vertex_count"), &Graph::get_vertex_count);
 
 	ClassDB::bind_method(D_METHOD("get_neighbors", "vertex"), &Graph::get_neighbors);
