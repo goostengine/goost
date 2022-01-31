@@ -7,13 +7,23 @@
 	<tutorials>
 	</tutorials>
 	<methods>
+		<method name="is_directed">
+			<return type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="is_loop">
+			<return type="bool" />
+			<description>
+			</description>
+		</method>
 	</methods>
 	<members>
-		<member name="vertex_a" type="GraphVertex" setter="" getter="get_vertex_a">
+		<member name="a" type="GraphVertex" setter="" getter="get_a">
 		</member>
-		<member name="vertex_b" type="GraphVertex" setter="" getter="get_vertex_b">
+		<member name="b" type="GraphVertex" setter="" getter="get_b">
 		</member>
-		<member name="weight" type="float" setter="set_weight" getter="get_weight" default="1.0">
+		<member name="value" type="Variant" setter="set_value" getter="get_value">
 		</member>
 	</members>
 	<constants>

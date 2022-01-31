@@ -7,6 +7,21 @@
 	<tutorials>
 	</tutorials>
 	<methods>
+		<method name="get_neighbors" qualifiers="const">
+			<return type="Array" />
+			<description>
+			</description>
+		</method>
+		<method name="get_predecessors" qualifiers="const">
+			<return type="Array" />
+			<description>
+			</description>
+		</method>
+		<method name="get_successors" qualifiers="const">
+			<return type="Array" />
+			<description>
+			</description>
+		</method>
 	</methods>
 	<members>
 		<member name="value" type="Variant" setter="set_value" getter="get_value">

@@ -53,9 +53,9 @@ func test_neighborhood():
     var _e2 = graph.add_edge(a, c)
     var _e3 = graph.add_edge(b, c)
 
-    var na = graph.get_neighbors(a)
-    var nb = graph.get_neighbors(b)
-    var nc = graph.get_neighbors(c)
+    var na = a.get_neighbors()
+    var nb = b.get_neighbors()
+    var nc = c.get_neighbors()
 
     assert_eq(na.size(), 2)
     assert_true(b in na)
@@ -78,9 +78,9 @@ func test_neighborhood_directed():
     var _e1 = graph.add_edge(a, b)
     var _e2 = graph.add_directed_edge(a, c)
 
-    var na = graph.get_neighbors(a)
-    var sa = graph.get_successors(a)
-    var pc = graph.get_predecessors(c)
+    var na = a.get_neighbors()
+    var sa = a.get_successors()
+    var pc = c.get_predecessors()
 
     assert_eq(na.size(), 2)
     assert_true(b in na)
@@ -94,7 +94,7 @@ func test_neighborhood_directed():
 
     var _e3 = graph.add_directed_edge(c, a)
     var _e4 = graph.add_directed_edge(c, b)
-    var sc = graph.get_successors(c)
+    var sc = c.get_successors()
 
     assert_eq(sc.size(), 2)
     assert_true(a in sc)
@@ -139,9 +139,9 @@ func test_remove_vertex_one_to_many():
     graph.remove_vertex(a)
     
     assert_eq(graph.get_edge_count(), 0)
-    assert_eq(graph.get_neighbors(b).size(), 0)
-    assert_eq(graph.get_neighbors(c).size(), 0)
-    assert_eq(graph.get_neighbors(d).size(), 0)
+    assert_eq(b.get_neighbors().size(), 0)
+    assert_eq(c.get_neighbors().size(), 0)
+    assert_eq(d.get_neighbors().size(), 0)
 
 
 func test_remove_vertex_many_to_many():
@@ -164,20 +164,20 @@ func test_remove_vertex_many_to_many():
     assert_eq(graph.get_vertex_count(), 3)
 
     assert_eq(graph.get_edge_count(), 3)
-    assert_eq(graph.get_neighbors(c).size(), 2)
-    assert_eq(graph.get_neighbors(b).size(), 2)
-    assert_eq(graph.get_neighbors(d).size(), 2)
+    assert_eq(c.get_neighbors().size(), 2)
+    assert_eq(b.get_neighbors().size(), 2)
+    assert_eq(d.get_neighbors().size(), 2)
 
     graph.remove_vertex(b)
 
     assert_eq(graph.get_edge_count(), 1)
-    assert_eq(graph.get_neighbors(c).size(), 1)
-    assert_eq(graph.get_neighbors(d).size(), 1)
+    assert_eq(c.get_neighbors().size(), 1)
+    assert_eq(d.get_neighbors().size(), 1)
 
     graph.remove_vertex(c)
 
     assert_eq(graph.get_edge_count(), 0)
-    assert_eq(graph.get_neighbors(d).size(), 0)
+    assert_eq(d.get_neighbors().size(), 0)
 
 
 func test_clear_edges():
@@ -191,17 +191,17 @@ func test_clear_edges():
 
     assert_eq(graph.get_vertex_count(), 3)
     assert_eq(graph.get_edge_count(), 3)
-    assert_eq(graph.get_neighbors(a).size(), 2)
-    assert_eq(graph.get_neighbors(b).size(), 2)
-    assert_eq(graph.get_neighbors(c).size(), 2)
+    assert_eq(a.get_neighbors().size(), 2)
+    assert_eq(b.get_neighbors().size(), 2)
+    assert_eq(c.get_neighbors().size(), 2)
 
     graph.clear_edges()
 
     assert_eq(graph.get_vertex_count(), 3)
     assert_eq(graph.get_edge_count(), 0)
-    assert_eq(graph.get_neighbors(a).size(), 0)
-    assert_eq(graph.get_neighbors(b).size(), 0)
-    assert_eq(graph.get_neighbors(c).size(), 0)
+    assert_eq(a.get_neighbors().size(), 0)
+    assert_eq(b.get_neighbors().size(), 0)
+    assert_eq(c.get_neighbors().size(), 0)
 
     
 func test_has_edge():
@@ -249,7 +249,7 @@ func test_self_loop():
     var _e1 = graph.add_edge(a, a)
     var _e2 = graph.add_edge(b, a)
 
-    assert_eq(graph.get_neighbors(a)[0], a)
+    assert_eq(a.get_neighbors()[0], a)
 
     graph.remove_vertex(a)
     graph.remove_vertex(b)

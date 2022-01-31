@@ -87,64 +87,64 @@ Array Graph::get_vertex_list() const {
 	return vertex_list;
 }
 
-Array Graph::get_neighbors(GraphVertex *p_vertex) {
-	Array neighbors;
+Array GraphVertex::get_neighbors() const {
+	Array ret;
 
 	const uint32_t *n = nullptr;
-	while ((n = p_vertex->neighbors.next(n))) {
-		neighbors.push_back(p_vertex->neighbors[*n]);
+	while ((n = neighbors.next(n))) {
+		ret.push_back(neighbors[*n]);
 	}
-	return neighbors;
+	return ret;
 }
 
-Array Graph::get_successors(GraphVertex *p_vertex) {
-	Array successors;
+Array GraphVertex::get_successors() const {
+	Array ret;
 
 	const uint32_t *n = nullptr;
-	while ((n = p_vertex->neighbors.next(n))) {
-		GraphVertex *a = p_vertex;
-		GraphVertex *b = p_vertex->neighbors[*n];
+	while ((n = neighbors.next(n))) {
+		const GraphVertex *a = this;
+		const GraphVertex *b = neighbors[*n];
 
 		const List<GraphEdge *> &list = graph->get_edges(a->id, b->id);
 
 		for (const List<GraphEdge *>::Element *E = list.front(); E; E = E->next()) {
 			GraphEdge *edge = E->get();
-			if (!edge->directed) {
+			if (!edge->is_directed()) {
 				continue;
 			}
-			if (p_vertex == edge->a) {
-				successors.push_back(edge->b);
+			if (edge->get_a() == this) {
+				ret.push_back(edge->get_b());
 				// There may be multiple edges connected from the same vertex.
 				break;
 			}
 		}
 	}
-	return successors;
+	return ret;
 }
 
-Array Graph::get_predecessors(GraphVertex *p_vertex) {
-	Array predecessors;
+Array GraphVertex::get_predecessors() const {
+	Array ret;
 
 	const uint32_t *n = nullptr;
-	while ((n = p_vertex->neighbors.next(n))) {
-		GraphVertex *a = p_vertex;
-		GraphVertex *b = p_vertex->neighbors[*n];
+	while ((n = neighbors.next(n))) {
+		const GraphVertex *a = this;
+		const GraphVertex *b = neighbors[*n];
 
 		const List<GraphEdge *> &list = graph->get_edges(a->id, b->id);
 
 		for (const List<GraphEdge *>::Element *E = list.front(); E; E = E->next()) {
 			GraphEdge *edge = E->get();
-			if (!edge->directed) {
+			if (!edge->is_directed()) {
 				continue;
 			}
-			if (p_vertex == edge->b) {
-				predecessors.push_back(edge->a);
+			if (edge->get_b() == this) {
+				ret.push_back(edge->get_a());
 				// There may be multiple edges connected from the same vertex.
 				break;
 			}
 		}
 	}
-	return predecessors;
+	return ret;
 }
 
 GraphEdge *Graph::_add_edge(const Variant &p_a, const Variant &p_b, const Variant &p_value, bool p_directed) {
@@ -284,10 +284,6 @@ void Graph::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_vertex_list"), &Graph::get_vertex_list);
 	ClassDB::bind_method(D_METHOD("get_vertex_count"), &Graph::get_vertex_count);
 
-	ClassDB::bind_method(D_METHOD("get_neighbors", "vertex"), &Graph::get_neighbors);
-	ClassDB::bind_method(D_METHOD("get_successors", "vertex"), &Graph::get_successors);
-	ClassDB::bind_method(D_METHOD("get_predecessors", "vertex"), &Graph::get_predecessors);
-
 	ClassDB::bind_method(D_METHOD("add_edge", "a", "b", "value"), &Graph::add_edge, DEFVAL(1.0));
 	ClassDB::bind_method(D_METHOD("add_directed_edge", "from", "to", "value"), &Graph::add_directed_edge, DEFVAL(1.0));
 	ClassDB::bind_method(D_METHOD("remove_edge", "edge"), &Graph::remove_edge);
@@ -322,6 +318,10 @@ void GraphVertex::_notification(int p_what) {
 }
 
 void GraphVertex::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("get_neighbors"), &GraphVertex::get_neighbors);
+	ClassDB::bind_method(D_METHOD("get_successors"), &GraphVertex::get_successors);
+	ClassDB::bind_method(D_METHOD("get_predecessors"), &GraphVertex::get_predecessors);
+
 	ClassDB::bind_method(D_METHOD("set_value", "value"), &GraphVertex::set_value);
 	ClassDB::bind_method(D_METHOD("get_value"), &GraphVertex::get_value);
 

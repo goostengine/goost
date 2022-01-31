@@ -52,10 +52,6 @@ public:
 	Array get_vertex_list() const;
 	int get_vertex_count() const { return graph->vertices.size(); }
 
-	Array get_neighbors(GraphVertex *p_vertex);
-	Array get_successors(GraphVertex *p_vertex);
-	Array get_predecessors(GraphVertex *p_vertex);
-
 	// Edge API
 	GraphEdge *add_edge(const Variant &p_vertex_a, const Variant &p_vertex_b, const Variant &p_value);
 	GraphEdge *add_directed_edge(const Variant &p_vertex_from, const Variant &p_vertex_to, const Variant &p_value);
@@ -91,6 +87,10 @@ protected:
 	static void _bind_methods();
 
 public:
+	Array get_neighbors() const;
+	Array get_successors() const;
+	Array get_predecessors() const;
+
 	void set_value(const Variant &p_value) { value = p_value; }
 	Variant get_value() const { return value; }
 };

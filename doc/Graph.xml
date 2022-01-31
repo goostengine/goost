@@ -10,9 +10,9 @@
 	<methods>
 		<method name="add_directed_edge">
 			<return type="GraphEdge" />
-			<argument index="0" name="a" type="Variant" />
-			<argument index="1" name="b" type="Variant" />
-			<argument index="2" name="weight" type="float" default="1.0" />
+			<argument index="0" name="from" type="Variant" />
+			<argument index="1" name="to" type="Variant" />
+			<argument index="2" name="value" type="Variant" default="1.0" />
 			<description>
 			</description>
 		</method>
@@ -20,7 +20,7 @@
 			<return type="GraphEdge" />
 			<argument index="0" name="a" type="Variant" />
 			<argument index="1" name="b" type="Variant" />
-			<argument index="2" name="weight" type="float" default="1.0" />
+			<argument index="2" name="value" type="Variant" default="1.0" />
 			<description>
 			</description>
 		</method>
@@ -30,10 +30,67 @@
 			<description>
 			</description>
 		</method>
+		<method name="clear">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="clear_edges">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
 		<method name="find_edge" qualifiers="const">
 			<return type="GraphEdge" />
 			<argument index="0" name="a" type="GraphVertex" />
 			<argument index="1" name="b" type="GraphVertex" />
+			<description>
+			</description>
+		</method>
+		<method name="get_edge_count" qualifiers="const">
+			<return type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="get_edge_list" qualifiers="const">
+			<return type="Array" />
+			<argument index="0" name="a" type="GraphVertex" default="null" />
+			<argument index="1" name="b" type="GraphVertex" default="null" />
+			<description>
+			</description>
+		</method>
+		<method name="get_vertex_count" qualifiers="const">
+			<return type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="get_vertex_list" qualifiers="const">
+			<return type="Array" />
+			<description>
+			</description>
+		</method>
+		<method name="has_edge" qualifiers="const">
+			<return type="bool" />
+			<argument index="0" name="a" type="GraphVertex" />
+			<argument index="1" name="b" type="GraphVertex" />
+			<description>
+			</description>
+		</method>
+		<method name="has_vertex" qualifiers="const">
+			<return type="bool" />
+			<argument index="0" name="vertex" type="GraphVertex" />
+			<description>
+			</description>
+		</method>
+		<method name="remove_edge">
+			<return type="void" />
+			<argument index="0" name="edge" type="GraphEdge" />
+			<description>
+			</description>
+		</method>
+		<method name="remove_vertex">
+			<return type="void" />
+			<argument index="0" name="vertex" type="GraphVertex" />
 			<description>
 			</description>
 		</method>
