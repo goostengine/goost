@@ -246,8 +246,8 @@ func test_self_loop():
     var a = graph.add_vertex("a")
     var b = graph.add_vertex("b")
 
-    graph.add_edge(a, a)
-    graph.add_edge(b, a)
+    var _e1 = graph.add_edge(a, a)
+    var _e2 = graph.add_edge(b, a)
 
     assert_eq(graph.get_neighbors(a)[0], a)
 
