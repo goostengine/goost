@@ -1,5 +1,8 @@
 #include "graph.h"
 
+#include "core/script_language.h"
+#include "core/string_names.h"
+
 using EdgeKey = Pair<uint32_t, uint32_t>;
 
 void GraphData::remove_vertex(GraphVertex *p_vertex) {
@@ -56,8 +59,32 @@ void Graph::remove_edge(GraphEdge *p_edge) {
 	memdelete(p_edge);
 }
 
+GraphVertex *Graph::_create_vertex() {
+	GraphVertex *vertex = nullptr;
+	if (get_script_instance() && get_script_instance()->has_method(StringNames::get_singleton()->_create_vertex)) {
+		Object* obj = get_script_instance()->call(StringNames::get_singleton()->_create_vertex);
+		vertex = Object::cast_to<GraphVertex>(obj);
+		ERR_FAIL_NULL_V_MSG(vertex, nullptr, "The returned object is not a valid GraphVertex");
+	} else {
+		vertex = memnew(GraphVertex);
+	}
+	return vertex;
+}
+
+GraphEdge *Graph::_create_edge() {
+	GraphEdge *edge = nullptr;
+	if (get_script_instance() && get_script_instance()->has_method(StringNames::get_singleton()->_create_edge)) {
+		Object* obj = get_script_instance()->call(StringNames::get_singleton()->_create_edge);
+		edge = Object::cast_to<GraphEdge>(obj);
+		ERR_FAIL_NULL_V_MSG(edge, nullptr, "The returned object is not a valid GraphEdge");
+	} else {
+		edge = memnew(GraphEdge);
+	}
+	return edge;
+}
+
 GraphVertex *Graph::add_vertex(const Variant &p_value) {
-	GraphVertex *v = memnew(GraphVertex);
+	GraphVertex *v = _create_vertex();
 
 	v->id = next_vertex_id++;
 	v->value = p_value;
@@ -177,7 +204,7 @@ GraphEdge *Graph::_add_edge(const Variant &p_a, const Variant &p_b, const Varian
 	a->neighbors[b->id] = b;
 	b->neighbors[a->id] = a;
 
-	GraphEdge *edge = memnew(GraphEdge);
+	GraphEdge *edge = _create_edge();
 	edge->a = a;
 	edge->b = b;
 	edge->value = p_value;
@@ -286,6 +313,9 @@ void Graph::clear_edges() {
 }
 
 void Graph::_bind_methods() {
+	BIND_VMETHOD(MethodInfo(Variant::OBJECT, "_create_vertex"));
+	BIND_VMETHOD(MethodInfo(Variant::OBJECT, "_create_edge"));
+
 	ClassDB::bind_method(D_METHOD("add_vertex", "value"), &Graph::add_vertex);
 	ClassDB::bind_method(D_METHOD("remove_vertex", "vertex"), &Graph::remove_vertex);
 	ClassDB::bind_method(D_METHOD("has_vertex", "vertex"), &Graph::has_vertex);

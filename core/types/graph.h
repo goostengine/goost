@@ -41,10 +41,12 @@ class Graph : public Reference {
 
 protected:
 	static void _bind_methods();
-
 	GraphEdge *_add_edge(const Variant &p_a, const Variant &p_b, const Variant &p_value, bool p_directed);
 
 public:
+	virtual GraphVertex *_create_vertex();
+	virtual GraphEdge *_create_edge();
+
 	// Vertex API
 	GraphVertex *add_vertex(const Variant &p_value);
 	void remove_vertex(GraphVertex *p_vertex);

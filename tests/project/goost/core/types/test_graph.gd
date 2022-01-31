@@ -5,261 +5,261 @@ var graph: Graph
 func before_each():
 	graph = Graph.new()
 
-    
-func test_add_vertex():
-    var a = graph.add_vertex("a")
-    var b = graph.add_vertex("b")
 
-    assert_eq(a.value, "a")
-    assert_eq(b.value, "b")
+func test_add_vertex():
+	var a = graph.add_vertex("a")
+	var b = graph.add_vertex("b")
+
+	assert_eq(a.value, "a")
+	assert_eq(b.value, "b")
 
 
 func test_add_directed_edge():
-    var a = graph.add_vertex("a")
-    var b = graph.add_vertex("b")
+	var a = graph.add_vertex("a")
+	var b = graph.add_vertex("b")
 
-    var e1 = graph.add_directed_edge(a, b)
+	var e1 = graph.add_directed_edge(a, b)
 
-    assert_eq(graph.find_edge(a, b), e1)
-    assert_null(graph.find_edge(b, a), e1)
+	assert_eq(graph.find_edge(a, b), e1)
+	assert_null(graph.find_edge(b, a), e1)
 
-    var e2 = graph.add_directed_edge("c", "d")
+	var e2 = graph.add_directed_edge("c", "d")
 
-    assert_eq(graph.find_edge(e2.a, e2.b), e2)
-    assert_null(graph.find_edge(e2.b, e2.a), e2)
+	assert_eq(graph.find_edge(e2.a, e2.b), e2)
+	assert_null(graph.find_edge(e2.b, e2.a), e2)
 
 
 func test_add_edge():
-    var a = graph.add_vertex("a")
-    var b = graph.add_vertex("b")
+	var a = graph.add_vertex("a")
+	var b = graph.add_vertex("b")
 
-    var e1 = graph.add_edge(a, b)
+	var e1 = graph.add_edge(a, b)
 
-    assert_eq(graph.find_edge(a, b), e1)
-    assert_eq(graph.find_edge(b, a), e1)
+	assert_eq(graph.find_edge(a, b), e1)
+	assert_eq(graph.find_edge(b, a), e1)
 
-    var e2 = graph.add_edge("c", "d")
+	var e2 = graph.add_edge("c", "d")
 
-    assert_eq(graph.find_edge(e2.a, e2.b), e2)
-    assert_eq(graph.find_edge(e2.b, e2.a), e2)
+	assert_eq(graph.find_edge(e2.a, e2.b), e2)
+	assert_eq(graph.find_edge(e2.b, e2.a), e2)
 
 
 func test_neighborhood():
-    var a = graph.add_vertex("a")
-    var b = graph.add_vertex("b")
-    var c = graph.add_vertex("c")
+	var a = graph.add_vertex("a")
+	var b = graph.add_vertex("b")
+	var c = graph.add_vertex("c")
 
-    var _e1 = graph.add_edge(a, b)
-    var _e2 = graph.add_edge(a, c)
-    var _e3 = graph.add_edge(b, c)
+	var _e1 = graph.add_edge(a, b)
+	var _e2 = graph.add_edge(a, c)
+	var _e3 = graph.add_edge(b, c)
 
-    var na = a.get_neighbors()
-    var nb = b.get_neighbors()
-    var nc = c.get_neighbors()
+	var na = a.get_neighbors()
+	var nb = b.get_neighbors()
+	var nc = c.get_neighbors()
 
-    assert_eq(a.get_neighbor_count(), 2)
-    assert_true(b in na)
-    assert_true(c in na)
+	assert_eq(a.get_neighbor_count(), 2)
+	assert_true(b in na)
+	assert_true(c in na)
 
-    assert_eq(b.get_neighbor_count(), 2)
-    assert_true(a in nb)
-    assert_true(c in nb)
+	assert_eq(b.get_neighbor_count(), 2)
+	assert_true(a in nb)
+	assert_true(c in nb)
 
-    assert_eq(c.get_neighbor_count(), 2)
-    assert_true(a in nc)
-    assert_true(b in nc)
+	assert_eq(c.get_neighbor_count(), 2)
+	assert_true(a in nc)
+	assert_true(b in nc)
 
 
 func test_neighborhood_directed():
-    var a = graph.add_vertex("a")
-    var b = graph.add_vertex("b")
-    var c = graph.add_vertex("c")
+	var a = graph.add_vertex("a")
+	var b = graph.add_vertex("b")
+	var c = graph.add_vertex("c")
 
-    var _e1 = graph.add_edge(a, b)
-    var _e2 = graph.add_directed_edge(a, c)
+	var _e1 = graph.add_edge(a, b)
+	var _e2 = graph.add_directed_edge(a, c)
 
-    var na = a.get_neighbors()
-    var sa = a.get_successors()
-    var pc = c.get_predecessors()
+	var na = a.get_neighbors()
+	var sa = a.get_successors()
+	var pc = c.get_predecessors()
 
-    assert_eq(a.get_neighbor_count(), 2)
-    assert_true(b in na)
-    assert_true(c in na)
+	assert_eq(a.get_neighbor_count(), 2)
+	assert_true(b in na)
+	assert_true(c in na)
 
-    assert_eq(a.get_successor_count(), 1)
-    assert_true(c in sa)
+	assert_eq(a.get_successor_count(), 1)
+	assert_true(c in sa)
 
-    assert_eq(c.get_predecessor_count(), 1)
-    assert_true(a in pc)
+	assert_eq(c.get_predecessor_count(), 1)
+	assert_true(a in pc)
 
-    var _e3 = graph.add_directed_edge(c, a)
-    var _e4 = graph.add_directed_edge(c, b)
-    var sc = c.get_successors()
+	var _e3 = graph.add_directed_edge(c, a)
+	var _e4 = graph.add_directed_edge(c, b)
+	var sc = c.get_successors()
 
-    assert_eq(sc.size(), 2)
-    assert_true(a in sc)
-    assert_true(b in sc)
+	assert_eq(sc.size(), 2)
+	assert_true(a in sc)
+	assert_true(b in sc)
 
 
 func test_edge_list():
-    var a = graph.add_vertex("a")
-    var b = graph.add_vertex("b")
-    var c = graph.add_vertex("c")
+	var a = graph.add_vertex("a")
+	var b = graph.add_vertex("b")
+	var c = graph.add_vertex("c")
 
-    var ab1 = graph.add_edge(a, b)
-    var ab2 = graph.add_edge(a, b)
-    var ac = graph.add_edge(a, c)
-    var bc = graph.add_edge(b, c)
+	var ab1 = graph.add_edge(a, b)
+	var ab2 = graph.add_edge(a, b)
+	var ac = graph.add_edge(a, c)
+	var bc = graph.add_edge(b, c)
 
-    var edges = graph.get_edge_list(a, b)
-    assert_eq(edges.size(), 2)
-    assert_true(ab1 in edges)
-    assert_true(ab2 in edges)
+	var edges = graph.get_edge_list(a, b)
+	assert_eq(edges.size(), 2)
+	assert_true(ab1 in edges)
+	assert_true(ab2 in edges)
 
-    edges = graph.get_edge_list()
-    assert_eq(edges.size(), 4)
-    assert_true(ab1 in edges)
-    assert_true(ab2 in edges)
-    assert_true(ac in edges)
-    assert_true(bc in edges)
+	edges = graph.get_edge_list()
+	assert_eq(edges.size(), 4)
+	assert_true(ab1 in edges)
+	assert_true(ab2 in edges)
+	assert_true(ac in edges)
+	assert_true(bc in edges)
 
 
 func test_remove_vertex_one_to_many():
-    var a = graph.add_vertex("a")
-    var b = graph.add_vertex("b")
-    var c = graph.add_vertex("c")
-    var d = graph.add_vertex("d")
+	var a = graph.add_vertex("a")
+	var b = graph.add_vertex("b")
+	var c = graph.add_vertex("c")
+	var d = graph.add_vertex("d")
 
-    var _ab = graph.add_edge(a, b)
-    var _ac = graph.add_edge(a, c)
-    var _ad = graph.add_edge(a, d)
-    
-    assert_eq(graph.get_edge_count(), 3)
-    
-    graph.remove_vertex(a)
-    
-    assert_eq(graph.get_edge_count(), 0)
-    assert_eq(b.get_neighbors().size(), 0)
-    assert_eq(c.get_neighbors().size(), 0)
-    assert_eq(d.get_neighbors().size(), 0)
+	var _ab = graph.add_edge(a, b)
+	var _ac = graph.add_edge(a, c)
+	var _ad = graph.add_edge(a, d)
+
+	assert_eq(graph.get_edge_count(), 3)
+
+	graph.remove_vertex(a)
+
+	assert_eq(graph.get_edge_count(), 0)
+	assert_eq(b.get_neighbors().size(), 0)
+	assert_eq(c.get_neighbors().size(), 0)
+	assert_eq(d.get_neighbors().size(), 0)
 
 
 func test_remove_vertex_many_to_many():
-    var a = graph.add_vertex("a")
-    var b = graph.add_vertex("b")
-    var c = graph.add_vertex("c")
-    var d = graph.add_vertex("d")
+	var a = graph.add_vertex("a")
+	var b = graph.add_vertex("b")
+	var c = graph.add_vertex("c")
+	var d = graph.add_vertex("d")
 
-    var _ab = graph.add_edge(a, b)
-    var _ac = graph.add_edge(a, c)
-    var _ad = graph.add_edge(a, d)
-    var _cb = graph.add_edge(c, b)
-    var _cd = graph.add_edge(c, d)
-    var _bd = graph.add_edge(b, d)
+	var _ab = graph.add_edge(a, b)
+	var _ac = graph.add_edge(a, c)
+	var _ad = graph.add_edge(a, d)
+	var _cb = graph.add_edge(c, b)
+	var _cd = graph.add_edge(c, d)
+	var _bd = graph.add_edge(b, d)
 
-    assert_eq(graph.get_edge_count(), 6)
+	assert_eq(graph.get_edge_count(), 6)
 
-    graph.remove_vertex(a)
+	graph.remove_vertex(a)
 
-    assert_eq(graph.get_vertex_count(), 3)
+	assert_eq(graph.get_vertex_count(), 3)
 
-    assert_eq(graph.get_edge_count(), 3)
-    assert_eq(c.get_neighbors().size(), 2)
-    assert_eq(b.get_neighbors().size(), 2)
-    assert_eq(d.get_neighbors().size(), 2)
+	assert_eq(graph.get_edge_count(), 3)
+	assert_eq(c.get_neighbors().size(), 2)
+	assert_eq(b.get_neighbors().size(), 2)
+	assert_eq(d.get_neighbors().size(), 2)
 
-    graph.remove_vertex(b)
+	graph.remove_vertex(b)
 
-    assert_eq(graph.get_edge_count(), 1)
-    assert_eq(c.get_neighbors().size(), 1)
-    assert_eq(d.get_neighbors().size(), 1)
+	assert_eq(graph.get_edge_count(), 1)
+	assert_eq(c.get_neighbors().size(), 1)
+	assert_eq(d.get_neighbors().size(), 1)
 
-    graph.remove_vertex(c)
+	graph.remove_vertex(c)
 
-    assert_eq(graph.get_edge_count(), 0)
-    assert_eq(d.get_neighbors().size(), 0)
+	assert_eq(graph.get_edge_count(), 0)
+	assert_eq(d.get_neighbors().size(), 0)
 
 
 func test_clear_edges():
-    var a = graph.add_vertex("a")
-    var b = graph.add_vertex("b")
-    var c = graph.add_vertex("c")
+	var a = graph.add_vertex("a")
+	var b = graph.add_vertex("b")
+	var c = graph.add_vertex("c")
 
-    var _ab = graph.add_edge(a, b)
-    var _ac = graph.add_edge(a, c)
-    var _bc = graph.add_edge(b, c)
+	var _ab = graph.add_edge(a, b)
+	var _ac = graph.add_edge(a, c)
+	var _bc = graph.add_edge(b, c)
 
-    assert_eq(graph.get_vertex_count(), 3)
-    assert_eq(graph.get_edge_count(), 3)
-    assert_eq(a.get_neighbors().size(), 2)
-    assert_eq(b.get_neighbors().size(), 2)
-    assert_eq(c.get_neighbors().size(), 2)
+	assert_eq(graph.get_vertex_count(), 3)
+	assert_eq(graph.get_edge_count(), 3)
+	assert_eq(a.get_neighbors().size(), 2)
+	assert_eq(b.get_neighbors().size(), 2)
+	assert_eq(c.get_neighbors().size(), 2)
 
-    graph.clear_edges()
+	graph.clear_edges()
 
-    assert_eq(graph.get_vertex_count(), 3)
-    assert_eq(graph.get_edge_count(), 0)
-    assert_eq(a.get_neighbors().size(), 0)
-    assert_eq(b.get_neighbors().size(), 0)
-    assert_eq(c.get_neighbors().size(), 0)
+	assert_eq(graph.get_vertex_count(), 3)
+	assert_eq(graph.get_edge_count(), 0)
+	assert_eq(a.get_neighbors().size(), 0)
+	assert_eq(b.get_neighbors().size(), 0)
+	assert_eq(c.get_neighbors().size(), 0)
 
-    
+
 func test_has_edge():
-    var a = graph.add_vertex("a")
-    var b = graph.add_vertex("b")
-    var c = graph.add_vertex("c")
+	var a = graph.add_vertex("a")
+	var b = graph.add_vertex("b")
+	var c = graph.add_vertex("c")
 
-    var _ab = graph.add_edge(a, b)
-    var _ac = graph.add_edge(a, c)
+	var _ab = graph.add_edge(a, b)
+	var _ac = graph.add_edge(a, c)
 
-    assert_true(graph.has_edge(a, b))
-    assert_true(graph.has_edge(a, c))
-    assert_true(graph.has_edge(b, a))
-    assert_false(graph.has_edge(b, c))
-    assert_false(graph.has_edge(c, b))
+	assert_true(graph.has_edge(a, b))
+	assert_true(graph.has_edge(a, c))
+	assert_true(graph.has_edge(b, a))
+	assert_false(graph.has_edge(b, c))
+	assert_false(graph.has_edge(c, b))
 
-    
+
 func test_remove_edge():
-    var a = graph.add_vertex("a")
-    var b = graph.add_vertex("b")
-    var c = graph.add_vertex("c")
+	var a = graph.add_vertex("a")
+	var b = graph.add_vertex("b")
+	var c = graph.add_vertex("c")
 
-    var ab = graph.add_edge(a, b)
-    var ac = graph.add_edge(a, c)
-    var bc = graph.add_edge(b, c)
+	var ab = graph.add_edge(a, b)
+	var ac = graph.add_edge(a, c)
+	var bc = graph.add_edge(b, c)
 
-    assert_eq(graph.get_edge_count(), 3)
+	assert_eq(graph.get_edge_count(), 3)
 
-    graph.remove_edge(ab)
-    assert_eq(graph.get_edge_count(), 2)
+	graph.remove_edge(ab)
+	assert_eq(graph.get_edge_count(), 2)
 
-    graph.remove_edge(ac)
-    assert_eq(graph.get_edge_count(), 1)
+	graph.remove_edge(ac)
+	assert_eq(graph.get_edge_count(), 1)
 
-    graph.remove_edge(bc)
-    assert_eq(graph.get_edge_count(), 0)
+	graph.remove_edge(bc)
+	assert_eq(graph.get_edge_count(), 0)
 
-    assert_eq(graph.get_vertex_count(), 3)
+	assert_eq(graph.get_vertex_count(), 3)
 
 
 func test_self_loop():
-    var a = graph.add_vertex("a")
-    var b = graph.add_vertex("b")
+	var a = graph.add_vertex("a")
+	var b = graph.add_vertex("b")
 
-    var _e1 = graph.add_edge(a, a)
-    var _e2 = graph.add_edge(b, a)
+	var _e1 = graph.add_edge(a, a)
+	var _e2 = graph.add_edge(b, a)
 
-    assert_eq(a.get_neighbors()[0], a)
+	assert_eq(a.get_neighbors()[0], a)
 
-    graph.remove_vertex(a)
-    graph.remove_vertex(b)
-    # Should not crash...
+	graph.remove_vertex(a)
+	graph.remove_vertex(b)
+	# Should not crash...
 
 
 # func test_perf():
 #     var rng = RandomNumberGenerator.new()
 #     rng.seed = 480789
-    
+
 #     var count = 100000
 
 #     var t1 = OS.get_ticks_msec()
