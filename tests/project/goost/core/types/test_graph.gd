@@ -82,8 +82,9 @@ func test_neighborhood_directed():
     var sa = graph.get_successors(a)
     var pc = graph.get_predecessors(c)
 
-    assert_eq(na.size(), 1)
+    assert_eq(na.size(), 2)
     assert_true(b in na)
+    assert_true(c in na)
 
     assert_eq(sa.size(), 1)
     assert_true(c in sa)
@@ -241,7 +242,24 @@ func test_remove_edge():
     assert_eq(graph.get_vertex_count(), 3)
 
 
+func test_self_loop():
+    var a = graph.add_vertex("a")
+    var b = graph.add_vertex("b")
+
+    graph.add_edge(a, a)
+    graph.add_edge(b, a)
+
+    assert_eq(graph.get_neighbors(a)[0], a)
+
+    graph.remove_vertex(a)
+    graph.remove_vertex(b)
+    # Should not crash...
+
+
 # func test_perf():
+#     var rng = RandomNumberGenerator.new()
+#     rng.seed = 480789
+    
 #     var count = 100000
 
 #     var t1 = OS.get_ticks_msec()
@@ -251,16 +269,13 @@ func test_remove_edge():
 #     var vertices = graph.get_vertex_list()
 
 #     for i in count:
-#         var ui = randi() % count
-#         var vi = randi() % count
+#         var ui = rng.randi() % count
+#         var vi = rng.randi() % count
 #         graph.add_edge(vertices[ui], vertices[vi])
 
-#     var edges = graph.get_edge_list()
-
 #     for i in count:
-#         var vi = randi() % vertices.size()
-#         graph.remove_vertex(vertices[vi])
-#         vertices.remove(vi)
+#         var v = vertices[i]
+#         graph.remove_vertex(v)
 
 #     var t2 = OS.get_ticks_msec()
 #     gut.p(t2 - t1)

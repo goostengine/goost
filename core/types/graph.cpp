@@ -1,166 +1,154 @@
 #include "graph.h"
 
-#include "core/set.h"
+void GraphData::remove_vertex(GraphVertex *p_vertex) {
+	Vector<GraphEdge *> edges_to_delete;
 
-#ifdef DEBUG_ENABLED
+	const uint32_t *n = nullptr;
+	while ((n = p_vertex->neighbors.next(n))) {
+		GraphVertex *n_vertex = p_vertex->neighbors[*n];
 
-#define ERR_INVALID_VERTEX(m_v) \
-	ERR_FAIL_NULL(m_v);         \
-	ERR_FAIL_COND(!graph->data.has(m_v));
+		auto key = Pair<uint32_t, uint32_t>(p_vertex->id, n_vertex->id);
+		List<GraphEdge *> &list = edges[key];
+		for (List<GraphEdge *>::Element *E = list.front(); E; E = E->next()) {
+			// Removing edges updates neighbors as well, but doing so here
+			// will lead to unexpected result, so defer deletion.
+			edges_to_delete.push_back(E->get());
+		}
+		if (p_vertex != n_vertex) {
+			// Handle self-loops, there's no point to remove neighbors to self,
+			// since the vertex is going to be deleted anyway.
+			n_vertex->neighbors.erase(p_vertex->id);
+		}
+	}
+	for (int i = 0; i < edges_to_delete.size(); ++i) {
+		memdelete(edges_to_delete[i]);
+	}
+	// Remove the vertex itself from the graph.
+	vertices.erase(p_vertex->id);
+	p_vertex->graph = nullptr;
+}
 
-#define ERR_INVALID_VERTEX_V(m_v, m_ret) \
-	ERR_FAIL_NULL_V(m_v, m_ret);         \
-	ERR_FAIL_COND_V(!graph->data.has(m_v), m_ret);
+void GraphData::remove_edge(GraphEdge *p_edge) {
+	GraphVertex *a = p_edge->a;
+	GraphVertex *b = p_edge->b;
 
-#define ERR_INVALID_VERTICES(m_a, m_b)    \
-	ERR_FAIL_NULL(m_a);                   \
-	ERR_FAIL_NULL(m_b);                   \
-	ERR_FAIL_COND(!graph->data.has(m_a)); \
-	ERR_FAIL_COND(!graph->data.has(m_b));
+	auto key = Pair<uint32_t, uint32_t>(a->id, b->id);
+	List<GraphEdge *> &list = edges[key];
 
-#define ERR_INVALID_VERTICES_V(m_a, m_b, m_ret)    \
-	ERR_FAIL_NULL_V(m_a, m_ret);                   \
-	ERR_FAIL_NULL_V(m_b, m_ret);                   \
-	ERR_FAIL_COND_V(!graph->data.has(m_a), m_ret); \
-	ERR_FAIL_COND_V(!graph->data.has(m_b), m_ret);
-#else
+	for (List<GraphEdge *>::Element *E = list.front(); E;) {
+		auto N = E->next();
+		if (p_edge == E->get()) {
+			list.erase(E);
+		}
+		E = N;
+	}
+	a->neighbors.erase(b->id);
+	b->neighbors.erase(a->id);
 
-#define ERR_INVALID_VERTEX(m_v)
-#define ERR_INVALID_VERTEX_V(m_v, m_ret)
-#define ERR_INVALID_VERTICES(m_a, m_b)
-#define ERR_INVALID_VERTICES_V(m_a, m_b, m_ret)
+	if (list.empty()) {
+		edges.erase(key);
+	}
+}
 
-#endif // DEBUG_ENABLED
+void Graph::remove_edge(GraphEdge *p_edge) {
+	// Calls into GraphData::remove_edge() during NOTIFICATION_PREDELETE
+	memdelete(p_edge);
+}
 
 GraphVertex *Graph::add_vertex(const Variant &p_value) {
 	GraphVertex *v = memnew(GraphVertex);
 
+	v->id = next_vertex_id++;
 	v->value = p_value;
-	graph->data[v] = List<GraphEdge *>();
+
+	graph->vertices[v->id] = v;
 	v->graph = graph;
 
 	return v;
 }
 
-Array Graph::get_vertex_list() const {
-	Array vertex_list;
-
-	GraphVertex *const *k = nullptr;
-	while ((k = graph->data.next(k))) {
-		vertex_list.push_back(*k);
-	}
-	return vertex_list;
-}
-
 void Graph::remove_vertex(GraphVertex *v) {
-	ERR_INVALID_VERTEX(v);
 	// Calls into GraphData::remove_vertex() during NOTIFICATION_PREDELETE
 	memdelete(v);
 }
 
-void GraphData::remove_vertex(GraphVertex *v) {
-	// Find all vertices connected to this one, including the vertex to be removed.
-	Vector<GraphVertex *> closed_neighborhood;
-	closed_neighborhood.push_back(v);
-
-	List<GraphEdge *> &list_v = data[v];
-	for (List<GraphEdge *>::Element *E = list_v.front(); E; E = E->next()) {
-		GraphEdge *edge = E->get();
-		if (v == edge->a) {
-			closed_neighborhood.push_back(edge->b);
-		} else {
-			closed_neighborhood.push_back(edge->a);
-		}
-	}
-	// Find edges that are associated with the vertices above.
-	Set<GraphEdge *> edges_to_delete;
-
-	for (int i = 0; i < closed_neighborhood.size(); ++i) {
-		GraphVertex *n = closed_neighborhood[i];
-		List<GraphEdge *> &list_n = data[n];
-
-		for (List<GraphEdge *>::Element *E = list_n.front(); E;) {
-			auto N = E->next();
-			GraphEdge *edge = E->get();
-
-			if (v == edge->a || v == edge->b) {
-				edges_to_delete.insert(edge);
-				list_n.erase(E);
-			}
-			E = N;
-		}
-	}
-	// Delete all edges associated with the vertex.
-	for (Set<GraphEdge *>::Element *E = edges_to_delete.front(); E; E = E->next()) {
-		memdelete(E->get());
-	}
-	// Remove the vertex itself from the graph.
-	v->graph = nullptr;
-	bool erased = data.erase(v);
-	ERR_FAIL_COND(!erased);
+bool Graph::has_vertex(GraphVertex *p_vertex) const {
+	return graph->vertices.has(p_vertex->id);
 }
 
-void GraphData::remove_edge(GraphEdge *e) {
-	e->graph = nullptr;
-}
+Array Graph::get_vertex_list() const {
+	Array vertex_list;
 
-Array Graph::get_neighbors(GraphVertex *v) {
-	ERR_INVALID_VERTEX_V(v, Array());
-
-	Array neighborhood;
-	const List<GraphEdge *> &list = graph->data[v];
-
-	for (const List<GraphEdge *>::Element *E = list.front(); E; E = E->next()) {
-		GraphEdge *edge = E->get();
-		if (edge->directed) {
-			continue;
-		}
-		if (v == edge->a) {
-			neighborhood.push_back(edge->b);
-		} else {
-			neighborhood.push_back(edge->a);
-		}
+	const uint32_t *k = nullptr;
+	while ((k = graph->vertices.next(k))) {
+		vertex_list.push_back(graph->vertices[*k]);
 	}
-	return neighborhood;
+	return vertex_list;
 }
 
-Array Graph::get_successors(GraphVertex *v) {
-	ERR_INVALID_VERTEX_V(v, Array());
+Array Graph::get_neighbors(GraphVertex *p_vertex) {
+	Array neighbors;
 
+	const uint32_t *n = nullptr;
+	while ((n = p_vertex->neighbors.next(n))) {
+		neighbors.push_back(p_vertex->neighbors[*n]);
+	}
+	return neighbors;
+}
+
+Array Graph::get_successors(GraphVertex *p_vertex) {
 	Array successors;
-	const List<GraphEdge *> &list = graph->data[v];
 
-	for (const List<GraphEdge *>::Element *E = list.front(); E; E = E->next()) {
-		GraphEdge *edge = E->get();
-		if (!edge->directed) {
-			continue;
-		}
-		if (v == edge->a) {
-			successors.push_back(edge->b);
+	const uint32_t *n = nullptr;
+	while ((n = p_vertex->neighbors.next(n))) {
+		GraphVertex *a = p_vertex;
+		GraphVertex *b = p_vertex->neighbors[*n];
+
+		auto key = Pair<uint32_t, uint32_t>(a->id, b->id);
+		const List<GraphEdge *> &list = graph->edges[key];
+
+		for (const List<GraphEdge *>::Element *E = list.front(); E; E = E->next()) {
+			GraphEdge *edge = E->get();
+			if (!edge->directed) {
+				continue;
+			}
+			if (p_vertex == edge->a) {
+				successors.push_back(edge->b);
+				// There may be multiple edges connected from the same vertex.
+				break;
+			}
 		}
 	}
 	return successors;
 }
 
-Array Graph::get_predecessors(GraphVertex *v) {
-	ERR_INVALID_VERTEX_V(v, Array());
-
+Array Graph::get_predecessors(GraphVertex *p_vertex) {
 	Array predecessors;
-	const List<GraphEdge *> &list = graph->data[v];
 
-	for (const List<GraphEdge *>::Element *E = list.front(); E; E = E->next()) {
-		GraphEdge *edge = E->get();
-		if (!edge->directed) {
-			continue;
-		}
-		if (v == edge->b) {
-			predecessors.push_back(edge->a);
+	const uint32_t *n = nullptr;
+	while ((n = p_vertex->neighbors.next(n))) {
+		GraphVertex *a = p_vertex;
+		GraphVertex *b = p_vertex->neighbors[*n];
+
+		auto key = Pair<uint32_t, uint32_t>(a->id, b->id);
+		const List<GraphEdge *> &list = graph->edges[key];
+
+		for (const List<GraphEdge *>::Element *E = list.front(); E; E = E->next()) {
+			GraphEdge *edge = E->get();
+			if (!edge->directed) {
+				continue;
+			}
+			if (p_vertex == edge->b) {
+				predecessors.push_back(edge->a);
+				// There may be multiple edges connected from the same vertex.
+				break;
+			}
 		}
 	}
 	return predecessors;
 }
 
-GraphEdge *Graph::_add_edge(const Variant &p_a, const Variant &p_b, real_t p_weight, bool p_directed) {
+GraphEdge *Graph::_add_edge(const Variant &p_a, const Variant &p_b, const Variant &p_value, bool p_directed) {
 	ERR_FAIL_COND_V(p_a.get_type() == Variant::NIL, nullptr);
 	ERR_FAIL_COND_V(p_b.get_type() == Variant::NIL, nullptr);
 
@@ -179,53 +167,41 @@ GraphEdge *Graph::_add_edge(const Variant &p_a, const Variant &p_b, real_t p_wei
 	} else {
 		b = add_vertex(p_b);
 	}
+	a->neighbors[b->id] = b;
+	b->neighbors[a->id] = a;
+
 	GraphEdge *edge = memnew(GraphEdge);
 	edge->a = a;
 	edge->b = b;
-	edge->weight = p_weight;
+	edge->value = p_value;
 	edge->directed = p_directed;
-
-	graph->data[a].push_back(edge);
-	graph->data[b].push_back(edge);
+	edge->id = next_edge_id++;
 	edge->graph = graph;
 
+	auto key = Pair<uint32_t, uint32_t>(a->id, b->id);
+	if (!graph->edges.has(key)) {
+		List<GraphEdge *> list;
+		list.push_back(edge);
+		graph->edges[key] = list;
+	} else {
+		List<GraphEdge *> &list = graph->edges[key];
+		list.push_back(edge);
+	}
 	return edge;
 }
 
-GraphEdge *Graph::add_edge(const Variant &p_a, const Variant &p_b, real_t p_weight) {
-	return _add_edge(p_a, p_b, p_weight, false);
+GraphEdge *Graph::add_edge(const Variant &p_a, const Variant &p_b, const Variant &p_value) {
+	return _add_edge(p_a, p_b, p_value, false);
 }
 
-GraphEdge *Graph::add_directed_edge(const Variant &p_a, const Variant &p_b, real_t p_weight) {
-	return _add_edge(p_a, p_b, p_weight, true);
-}
-
-void Graph::remove_edge(GraphEdge *e) {
-	ERR_FAIL_NULL(e);
-	ERR_INVALID_VERTEX(e->a);
-	ERR_INVALID_VERTEX(e->b);
-
-	GraphVertex *v[2] = { e->a, e->b };
-
-	for (int i = 0; i < 2; ++i) {
-		List<GraphEdge *> &list = graph->data[v[i]];
-
-		for (List<GraphEdge *>::Element *E = list.front(); E;) {
-			auto N = E->next();
-			GraphEdge *edge = E->get();
-			if (e == edge) {
-				list.erase(E);
-			}
-			E = N;
-		}
-	}
-	memdelete(e);
+GraphEdge *Graph::add_directed_edge(const Variant &p_a, const Variant &p_b, const Variant &p_value) {
+	return _add_edge(p_a, p_b, p_value, true);
 }
 
 GraphEdge *Graph::find_edge(GraphVertex *a, GraphVertex *b) const {
-	ERR_INVALID_VERTICES_V(a, b, nullptr);
+	auto key = Pair<uint32_t, uint32_t>(a->id, b->id);
+	const List<GraphEdge *> &list = graph->edges[key];
 
-	const List<GraphEdge *> &list = graph->data[a];
 	for (const List<GraphEdge *>::Element *E = list.front(); E; E = E->next()) {
 		GraphEdge *edge = E->get();
 		if (a == edge->a && b == edge->b) {
@@ -242,81 +218,61 @@ bool Graph::has_edge(GraphVertex *a, GraphVertex *b) const {
 	return find_edge(a, b) != nullptr;
 }
 
-Array Graph::get_edge_list(GraphVertex *a, GraphVertex *b) const {
+Array Graph::get_edge_list(GraphVertex *p_a, GraphVertex *p_b) const {
 	Array edge_list;
 
-	Set<GraphEdge *> edge_set;
+	const bool all = !p_a && !p_b;
 
-	if (!a && !b) {
-		// Get all edges in the graph.
-		GraphVertex *const *k = nullptr;
-		while ((k = graph->data.next(k))) {
-			const List<GraphEdge *> &list = graph->data[*k];
-			for (const List<GraphEdge *>::Element *I = list.front(); I; I = I->next()) {
-				edge_set.insert(I->get());
-			}
-		}
-	} else {
-		// Get all edges between vertices.
-		GraphVertex *const *k = nullptr;
-		while ((k = graph->data.next(k))) {
-			const List<GraphEdge *> &list = graph->data[*k];
-			for (const List<GraphEdge *>::Element *I = list.front(); I; I = I->next()) {
-				GraphEdge *edge = I->get();
-				if (a == edge->a && b == edge->b) {
-					edge_set.insert(edge);
-				} else if (!edge->directed && a == edge->b && b == edge->a) {
-					edge_set.insert(edge);
+	const Pair<uint32_t, uint32_t> *k = nullptr;
+	while ((k = graph->edges.next(k))) {
+		List<GraphEdge *> &list = graph->edges[*k];
+
+		for (List<GraphEdge *>::Element *E = list.front(); E; E = E->next()) {
+			GraphEdge *edge = E->get();
+			if (all) { // Get all edges in the graph.
+				edge_list.push_back(edge);
+			} else { // Get all edges between vertices.
+				if (p_a == edge->a && p_b == edge->b) {
+					edge_list.push_back(edge);
+				} else if (!edge->directed && p_a == edge->b && p_b == edge->a) {
+					edge_list.push_back(edge);
 				}
 			}
 		}
 	}
-	for (const Set<GraphEdge *>::Element *I = edge_set.front(); I; I = I->next()) {
-		edge_list.push_back(I->get());
-	}
 	return edge_list;
 }
 
-int Graph::get_edge_count() const {
-	Set<GraphEdge *> edge_set;
-
-	GraphVertex *const *k = nullptr;
-	while ((k = graph->data.next(k))) {
-		const List<GraphEdge *> &list = graph->data[*k];
-		for (const List<GraphEdge *>::Element *I = list.front(); I; I = I->next()) {
-			edge_set.insert(I->get());
-		}
-	}
-	return edge_set.size();
-}
-
 void Graph::clear() {
-	Vector<GraphVertex *> to_remove;
-	GraphVertex *const *k = nullptr;
-	while ((k = graph->data.next(k))) {
-		to_remove.push_back(*k);
+	Vector<GraphVertex *> to_delete;
+
+	const uint32_t *k = nullptr;
+	while ((k = graph->vertices.next(k))) {
+		to_delete.push_back(graph->vertices[*k]);
 	}
-	for (int i = 0; i < to_remove.size(); ++i) {
-		memdelete(to_remove[i]); // This will also delete associated edges.
+	for (int i = 0; i < to_delete.size(); ++i) {
+		// This will also delete edges, see GraphData::remove_vertex()
+		memdelete(to_delete[i]);
 	}
+	graph->vertices.clear();
+	graph->edges.clear();
 }
 
 void Graph::clear_edges() {
-	Set<GraphEdge *> edge_set;
+	Vector<GraphEdge *> to_delete;
+	
+	const Pair<uint32_t, uint32_t> *k = nullptr;
+	while ((k = graph->edges.next(k))) {
+		List<GraphEdge *> &list = graph->edges[*k];
 
-	GraphVertex *const *k = nullptr;
-	while ((k = graph->data.next(k))) {
-		List<GraphEdge *> &list = graph->data[*k];
-		for (List<GraphEdge *>::Element *I = list.front(); I;) {
-			auto N = I->next();
-			edge_set.insert(I->get());
-			list.erase(I);
-			I = N;
+		for (List<GraphEdge *>::Element *E = list.front(); E; E = E->next()) {
+			to_delete.push_back(E->get());
 		}
 	}
-	for (const Set<GraphEdge *>::Element *E = edge_set.front(); E; E = E->next()) {
-		memdelete(E->get());
+	for (int i = 0; i < to_delete.size(); ++i) {
+		memdelete(to_delete[i]);
 	}
+	graph->edges.clear();
 }
 
 void Graph::_bind_methods() {
@@ -330,8 +286,8 @@ void Graph::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_successors", "vertex"), &Graph::get_successors);
 	ClassDB::bind_method(D_METHOD("get_predecessors", "vertex"), &Graph::get_predecessors);
 
-	ClassDB::bind_method(D_METHOD("add_edge", "a", "b", "weight"), &Graph::add_edge, DEFVAL(1.0));
-	ClassDB::bind_method(D_METHOD("add_directed_edge", "from", "to", "weight"), &Graph::add_directed_edge, DEFVAL(1.0));
+	ClassDB::bind_method(D_METHOD("add_edge", "a", "b", "value"), &Graph::add_edge, DEFVAL(1.0));
+	ClassDB::bind_method(D_METHOD("add_directed_edge", "from", "to", "value"), &Graph::add_directed_edge, DEFVAL(1.0));
 	ClassDB::bind_method(D_METHOD("remove_edge", "edge"), &Graph::remove_edge);
 	ClassDB::bind_method(D_METHOD("find_edge", "a", "b"), &Graph::find_edge);
 	ClassDB::bind_method(D_METHOD("has_edge", "a", "b"), &Graph::has_edge);
@@ -385,11 +341,12 @@ void GraphEdge::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_vertex_b"), &GraphEdge::get_vertex_b);
 
 	ClassDB::bind_method(D_METHOD("is_loop"), &GraphEdge::is_loop);
+	ClassDB::bind_method(D_METHOD("is_directed"), &GraphEdge::is_directed);
 
-	ClassDB::bind_method(D_METHOD("set_weight", "weight"), &GraphEdge::set_weight);
-	ClassDB::bind_method(D_METHOD("get_weight"), &GraphEdge::get_weight);
+	ClassDB::bind_method(D_METHOD("set_value", "value"), &GraphEdge::set_value);
+	ClassDB::bind_method(D_METHOD("get_value"), &GraphEdge::get_value);
 
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "vertex_a"), "", "get_vertex_a");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "vertex_b"), "", "get_vertex_b");
-	ADD_PROPERTY(PropertyInfo(Variant::REAL, "weight"), "set_weight", "get_weight");
+	ADD_PROPERTY(PropertyInfo(Variant::NIL, "value", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NIL_IS_VARIANT), "set_value", "get_value");
 }
