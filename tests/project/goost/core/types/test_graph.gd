@@ -264,14 +264,14 @@ func test_self_loop():
 
 #     var t1 = OS.get_ticks_msec()
 #     for i in count:
-#         graph.add_vertex(i)
+#         var _v = graph.add_vertex(i)
 
 #     var vertices = graph.get_vertex_list()
 
 #     for i in count:
 #         var ui = rng.randi() % count
 #         var vi = rng.randi() % count
-#         graph.add_edge(vertices[ui], vertices[vi])
+#         var _e = graph.add_edge(vertices[ui], vertices[vi])
 
 #     for i in count:
 #         var v = vertices[i]

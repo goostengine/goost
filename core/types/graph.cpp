@@ -1,5 +1,7 @@
 #include "graph.h"
 
+using EdgeKey = Pair<uint32_t, uint32_t>;
+
 void GraphData::remove_vertex(GraphVertex *p_vertex) {
 	Vector<GraphEdge *> edges_to_delete;
 
@@ -7,8 +9,8 @@ void GraphData::remove_vertex(GraphVertex *p_vertex) {
 	while ((n = p_vertex->neighbors.next(n))) {
 		GraphVertex *n_vertex = p_vertex->neighbors[*n];
 
-		auto key = Pair<uint32_t, uint32_t>(p_vertex->id, n_vertex->id);
-		List<GraphEdge *> &list = edges[key];
+		List<GraphEdge *> &list = get_edges(p_vertex->id, n_vertex->id);
+
 		for (List<GraphEdge *>::Element *E = list.front(); E; E = E->next()) {
 			// Removing edges updates neighbors as well, but doing so here
 			// will lead to unexpected result, so defer deletion.
@@ -32,8 +34,7 @@ void GraphData::remove_edge(GraphEdge *p_edge) {
 	GraphVertex *a = p_edge->a;
 	GraphVertex *b = p_edge->b;
 
-	auto key = Pair<uint32_t, uint32_t>(a->id, b->id);
-	List<GraphEdge *> &list = edges[key];
+	List<GraphEdge *> &list = get_edges(a->id, b->id);
 
 	for (List<GraphEdge *>::Element *E = list.front(); E;) {
 		auto N = E->next();
@@ -46,7 +47,7 @@ void GraphData::remove_edge(GraphEdge *p_edge) {
 	b->neighbors.erase(a->id);
 
 	if (list.empty()) {
-		edges.erase(key);
+		edges.erase(EdgeKey(a->id, b->id));
 	}
 }
 
@@ -67,9 +68,9 @@ GraphVertex *Graph::add_vertex(const Variant &p_value) {
 	return v;
 }
 
-void Graph::remove_vertex(GraphVertex *v) {
+void Graph::remove_vertex(GraphVertex *p_vertex) {
 	// Calls into GraphData::remove_vertex() during NOTIFICATION_PREDELETE
-	memdelete(v);
+	memdelete(p_vertex);
 }
 
 bool Graph::has_vertex(GraphVertex *p_vertex) const {
@@ -104,8 +105,7 @@ Array Graph::get_successors(GraphVertex *p_vertex) {
 		GraphVertex *a = p_vertex;
 		GraphVertex *b = p_vertex->neighbors[*n];
 
-		auto key = Pair<uint32_t, uint32_t>(a->id, b->id);
-		const List<GraphEdge *> &list = graph->edges[key];
+		const List<GraphEdge *> &list = graph->get_edges(a->id, b->id);
 
 		for (const List<GraphEdge *>::Element *E = list.front(); E; E = E->next()) {
 			GraphEdge *edge = E->get();
@@ -130,8 +130,7 @@ Array Graph::get_predecessors(GraphVertex *p_vertex) {
 		GraphVertex *a = p_vertex;
 		GraphVertex *b = p_vertex->neighbors[*n];
 
-		auto key = Pair<uint32_t, uint32_t>(a->id, b->id);
-		const List<GraphEdge *> &list = graph->edges[key];
+		const List<GraphEdge *> &list = graph->get_edges(a->id, b->id);
 
 		for (const List<GraphEdge *>::Element *E = list.front(); E; E = E->next()) {
 			GraphEdge *edge = E->get();
@@ -178,7 +177,7 @@ GraphEdge *Graph::_add_edge(const Variant &p_a, const Variant &p_b, const Varian
 	edge->id = next_edge_id++;
 	edge->graph = graph;
 
-	auto key = Pair<uint32_t, uint32_t>(a->id, b->id);
+	auto &key = EdgeKey(a->id, b->id);
 	if (!graph->edges.has(key)) {
 		List<GraphEdge *> list;
 		list.push_back(edge);
@@ -198,24 +197,27 @@ GraphEdge *Graph::add_directed_edge(const Variant &p_a, const Variant &p_b, cons
 	return _add_edge(p_a, p_b, p_value, true);
 }
 
-GraphEdge *Graph::find_edge(GraphVertex *a, GraphVertex *b) const {
-	auto key = Pair<uint32_t, uint32_t>(a->id, b->id);
-	const List<GraphEdge *> &list = graph->edges[key];
+List<GraphEdge *> &GraphData::get_edges(uint32_t a_id, uint32_t b_id) {
+	return edges[EdgeKey(a_id, b_id)];
+}
+
+GraphEdge *Graph::find_edge(GraphVertex *p_a, GraphVertex *p_b) const {
+	const List<GraphEdge *> &list = graph->get_edges(p_a->id, p_b->id);
 
 	for (const List<GraphEdge *>::Element *E = list.front(); E; E = E->next()) {
 		GraphEdge *edge = E->get();
-		if (a == edge->a && b == edge->b) {
+		if (p_a == edge->a && p_b == edge->b) {
 			return edge;
 		}
-		if (!edge->directed && a == edge->b && b == edge->a) {
+		if (!edge->directed && p_a == edge->b && p_b == edge->a) {
 			return edge;
 		}
 	}
 	return nullptr;
 }
 
-bool Graph::has_edge(GraphVertex *a, GraphVertex *b) const {
-	return find_edge(a, b) != nullptr;
+bool Graph::has_edge(GraphVertex *p_a, GraphVertex *p_b) const {
+	return find_edge(p_a, p_b) != nullptr;
 }
 
 Array Graph::get_edge_list(GraphVertex *p_a, GraphVertex *p_b) const {
@@ -223,7 +225,7 @@ Array Graph::get_edge_list(GraphVertex *p_a, GraphVertex *p_b) const {
 
 	const bool all = !p_a && !p_b;
 
-	const Pair<uint32_t, uint32_t> *k = nullptr;
+	const EdgeKey *k = nullptr;
 	while ((k = graph->edges.next(k))) {
 		List<GraphEdge *> &list = graph->edges[*k];
 
@@ -261,7 +263,7 @@ void Graph::clear() {
 void Graph::clear_edges() {
 	Vector<GraphEdge *> to_delete;
 
-	const Pair<uint32_t, uint32_t> *k = nullptr;
+	const EdgeKey *k = nullptr;
 	while ((k = graph->edges.next(k))) {
 		List<GraphEdge *> &list = graph->edges[*k];
 

@@ -27,6 +27,8 @@ struct GraphData {
 
 	void remove_vertex(GraphVertex *p_vertex);
 	void remove_edge(GraphEdge *p_vertex);
+
+	_FORCE_INLINE_ List<GraphEdge *> &get_edges(uint32_t a_id, uint32_t b_id);
 };
 
 class Graph : public Reference {
@@ -55,12 +57,12 @@ public:
 	Array get_predecessors(GraphVertex *p_vertex);
 
 	// Edge API
-	GraphEdge *add_edge(const Variant &a, const Variant &b, const Variant &p_value);
-	GraphEdge *add_directed_edge(const Variant &p_a, const Variant &p_b, const Variant &p_value);
-	void remove_edge(GraphEdge *e);
-	GraphEdge *find_edge(GraphVertex *a, GraphVertex *b) const;
-	bool has_edge(GraphVertex *a, GraphVertex *b) const;
-	Array get_edge_list(GraphVertex *a = nullptr, GraphVertex *b = nullptr) const;
+	GraphEdge *add_edge(const Variant &p_vertex_a, const Variant &p_vertex_b, const Variant &p_value);
+	GraphEdge *add_directed_edge(const Variant &p_vertex_from, const Variant &p_vertex_to, const Variant &p_value);
+	void remove_edge(GraphEdge *p_edge);
+	GraphEdge *find_edge(GraphVertex *p_vertex_a, GraphVertex *p_vertex_b) const;
+	bool has_edge(GraphVertex *p_vertex_a, GraphVertex *p_vertex_b) const;
+	Array get_edge_list(GraphVertex *p_vertex_a = nullptr, GraphVertex *p_vertex_b = nullptr) const;
 	int get_edge_count() const { return graph->edges.size(); }
 
 	// Cleanup
@@ -78,6 +80,7 @@ class GraphVertex : public Object {
 	friend struct GraphData;
 
 	GraphData *graph = nullptr;
+
 	HashMap<uint32_t, GraphVertex *> neighbors;
 
 	Variant value;
@@ -97,14 +100,15 @@ class GraphEdge : public Object {
 
 	friend class Graph;
 	friend struct GraphData;
-	GraphData *graph = nullptr;
 
-	Variant value;
-	uint32_t id;
+	GraphData *graph = nullptr;
 
 	GraphVertex *a = nullptr;
 	GraphVertex *b = nullptr;
 	bool directed = false;
+
+	Variant value;
+	uint32_t id;
 
 protected:
 	void _notification(int p_what);
