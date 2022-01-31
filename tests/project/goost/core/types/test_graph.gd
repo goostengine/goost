@@ -57,15 +57,15 @@ func test_neighborhood():
     var nb = b.get_neighbors()
     var nc = c.get_neighbors()
 
-    assert_eq(na.size(), 2)
+    assert_eq(a.get_neighbor_count(), 2)
     assert_true(b in na)
     assert_true(c in na)
 
-    assert_eq(nb.size(), 2)
+    assert_eq(b.get_neighbor_count(), 2)
     assert_true(a in nb)
     assert_true(c in nb)
 
-    assert_eq(nc.size(), 2)
+    assert_eq(c.get_neighbor_count(), 2)
     assert_true(a in nc)
     assert_true(b in nc)
 
@@ -82,14 +82,14 @@ func test_neighborhood_directed():
     var sa = a.get_successors()
     var pc = c.get_predecessors()
 
-    assert_eq(na.size(), 2)
+    assert_eq(a.get_neighbor_count(), 2)
     assert_true(b in na)
     assert_true(c in na)
 
-    assert_eq(sa.size(), 1)
+    assert_eq(a.get_successor_count(), 1)
     assert_true(c in sa)
 
-    assert_eq(pc.size(), 1)
+    assert_eq(c.get_predecessor_count(), 1)
     assert_true(a in pc)
 
     var _e3 = graph.add_directed_edge(c, a)

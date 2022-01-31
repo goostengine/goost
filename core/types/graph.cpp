@@ -122,6 +122,10 @@ Array GraphVertex::get_successors() const {
 	return ret;
 }
 
+int GraphVertex::get_successor_count() const {
+	return get_successors().size(); // TODO: can be optimized.
+}
+
 Array GraphVertex::get_predecessors() const {
 	Array ret;
 
@@ -145,6 +149,10 @@ Array GraphVertex::get_predecessors() const {
 		}
 	}
 	return ret;
+}
+
+int GraphVertex::get_predecessor_count() const {
+	return get_predecessors().size(); // TODO: can be optimized.
 }
 
 GraphEdge *Graph::_add_edge(const Variant &p_a, const Variant &p_b, const Variant &p_value, bool p_directed) {
@@ -177,7 +185,7 @@ GraphEdge *Graph::_add_edge(const Variant &p_a, const Variant &p_b, const Varian
 	edge->id = next_edge_id++;
 	edge->graph = graph;
 
-	auto &key = EdgeKey(a->id, b->id);
+	const auto &key = EdgeKey(a->id, b->id);
 	if (!graph->edges.has(key)) {
 		List<GraphEdge *> list;
 		list.push_back(edge);
@@ -319,8 +327,13 @@ void GraphVertex::_notification(int p_what) {
 
 void GraphVertex::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_neighbors"), &GraphVertex::get_neighbors);
+	ClassDB::bind_method(D_METHOD("get_neighbor_count"), &GraphVertex::get_neighbor_count);
+
 	ClassDB::bind_method(D_METHOD("get_successors"), &GraphVertex::get_successors);
+	ClassDB::bind_method(D_METHOD("get_successor_count"), &GraphVertex::get_successor_count);
+
 	ClassDB::bind_method(D_METHOD("get_predecessors"), &GraphVertex::get_predecessors);
+	ClassDB::bind_method(D_METHOD("get_predecessor_count"), &GraphVertex::get_predecessor_count);
 
 	ClassDB::bind_method(D_METHOD("set_value", "value"), &GraphVertex::set_value);
 	ClassDB::bind_method(D_METHOD("get_value"), &GraphVertex::get_value);

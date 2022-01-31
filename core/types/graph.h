@@ -88,8 +88,13 @@ protected:
 
 public:
 	Array get_neighbors() const;
+	int get_neighbor_count() const { return neighbors.size(); }
+
 	Array get_successors() const;
+	int get_successor_count() const;
+
 	Array get_predecessors() const;
+	int get_predecessor_count() const;
 
 	void set_value(const Variant &p_value) { value = p_value; }
 	Variant get_value() const { return value; }
