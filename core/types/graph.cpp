@@ -260,7 +260,7 @@ void Graph::clear() {
 
 void Graph::clear_edges() {
 	Vector<GraphEdge *> to_delete;
-	
+
 	const Pair<uint32_t, uint32_t> *k = nullptr;
 	while ((k = graph->edges.next(k))) {
 		List<GraphEdge *> &list = graph->edges[*k];
@@ -337,8 +337,8 @@ void GraphEdge::_notification(int p_what) {
 }
 
 void GraphEdge::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("get_vertex_a"), &GraphEdge::get_vertex_a);
-	ClassDB::bind_method(D_METHOD("get_vertex_b"), &GraphEdge::get_vertex_b);
+	ClassDB::bind_method(D_METHOD("get_a"), &GraphEdge::get_a);
+	ClassDB::bind_method(D_METHOD("get_b"), &GraphEdge::get_b);
 
 	ClassDB::bind_method(D_METHOD("is_loop"), &GraphEdge::is_loop);
 	ClassDB::bind_method(D_METHOD("is_directed"), &GraphEdge::is_directed);
@@ -346,7 +346,7 @@ void GraphEdge::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_value", "value"), &GraphEdge::set_value);
 	ClassDB::bind_method(D_METHOD("get_value"), &GraphEdge::get_value);
 
-	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "vertex_a"), "", "get_vertex_a");
-	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "vertex_b"), "", "get_vertex_b");
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "a"), "", "get_a");
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "b"), "", "get_b");
 	ADD_PROPERTY(PropertyInfo(Variant::NIL, "value", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NIL_IS_VARIANT), "set_value", "get_value");
 }

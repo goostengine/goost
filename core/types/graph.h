@@ -111,8 +111,8 @@ protected:
 	static void _bind_methods();
 
 public:
-	GraphVertex *get_vertex_a() const { return a; }
-	GraphVertex *get_vertex_b() const { return b; }
+	GraphVertex *get_a() const { return a; }
+	GraphVertex *get_b() const { return b; }
 
 	bool is_loop() { return a == b; }
 	bool is_directed() { return directed; }

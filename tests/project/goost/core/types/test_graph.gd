@@ -25,8 +25,8 @@ func test_add_directed_edge():
 
     var e2 = graph.add_directed_edge("c", "d")
 
-    assert_eq(graph.find_edge(e2.vertex_a, e2.vertex_b), e2)
-    assert_null(graph.find_edge(e2.vertex_b, e2.vertex_a), e2)
+    assert_eq(graph.find_edge(e2.a, e2.b), e2)
+    assert_null(graph.find_edge(e2.b, e2.a), e2)
 
 
 func test_add_edge():
@@ -40,8 +40,8 @@ func test_add_edge():
 
     var e2 = graph.add_edge("c", "d")
 
-    assert_eq(graph.find_edge(e2.vertex_a, e2.vertex_b), e2)
-    assert_eq(graph.find_edge(e2.vertex_b, e2.vertex_a), e2)
+    assert_eq(graph.find_edge(e2.a, e2.b), e2)
+    assert_eq(graph.find_edge(e2.b, e2.a), e2)
 
 
 func test_neighborhood():
