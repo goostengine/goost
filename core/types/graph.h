@@ -50,6 +50,7 @@ public:
 	// Vertex API
 	GraphVertex *add_vertex(const Variant &p_value);
 	void remove_vertex(GraphVertex *p_vertex);
+	GraphVertex *find_vertex(const Variant &p_value);
 	bool has_vertex(GraphVertex *p_vertex) const;
 	Array get_vertex_list() const;
 	int get_vertex_count() const { return graph->vertices.size(); }

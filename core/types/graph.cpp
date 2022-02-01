@@ -100,6 +100,17 @@ void Graph::remove_vertex(GraphVertex *p_vertex) {
 	memdelete(p_vertex);
 }
 
+GraphVertex *Graph::find_vertex(const Variant &p_value) {
+	const uint32_t *k = nullptr;
+	while ((k = graph->vertices.next(k))) {
+		GraphVertex *v = graph->vertices[*k];
+		if (v->value == p_value) {
+			return v;
+		}
+	}
+	return nullptr;
+}
+
 bool Graph::has_vertex(GraphVertex *p_vertex) const {
 	return graph->vertices.has(p_vertex->id);
 }
@@ -318,6 +329,7 @@ void Graph::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("add_vertex", "value"), &Graph::add_vertex);
 	ClassDB::bind_method(D_METHOD("remove_vertex", "vertex"), &Graph::remove_vertex);
+	ClassDB::bind_method(D_METHOD("find_vertex", "value"), &Graph::find_vertex);
 	ClassDB::bind_method(D_METHOD("has_vertex", "vertex"), &Graph::has_vertex);
 	ClassDB::bind_method(D_METHOD("get_vertex_list"), &Graph::get_vertex_list);
 	ClassDB::bind_method(D_METHOD("get_vertex_count"), &Graph::get_vertex_count);
