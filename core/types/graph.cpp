@@ -4,15 +4,16 @@
 #include "core/string_names.h"
 
 using EdgeKey = Pair<uint32_t, uint32_t>;
+using EdgeList = LocalVector<GraphEdge *, int>;
 
 void GraphData::remove_vertex(GraphVertex *p_vertex) {
-	LocalVector<GraphEdge *> edges_to_delete;
+	EdgeList edges_to_delete;
 
 	const uint32_t *n = nullptr;
 	while ((n = p_vertex->neighbors.next(n))) {
 		GraphVertex *n_vertex = p_vertex->neighbors[*n];
 
-		LocalVector<GraphEdge *> &list = get_edges(p_vertex->id, n_vertex->id);
+		EdgeList &list = get_edges(p_vertex->id, n_vertex->id);
 
 		for (int i = 0; i < list.size(); ++i) {
 			// Removing edges updates neighbors as well, but doing so here
@@ -37,7 +38,7 @@ void GraphData::remove_edge(GraphEdge *p_edge) {
 	GraphVertex *&a = p_edge->a;
 	GraphVertex *&b = p_edge->b;
 
-	LocalVector<GraphEdge *> &list = get_edges(a->id, b->id);
+	EdgeList &list = get_edges(a->id, b->id);
 
 	for (int i = 0; i < list.size(); ++i) {
 		if (p_edge == list[i]) {
@@ -141,7 +142,7 @@ Array GraphVertex::get_successors() const {
 		const GraphVertex *a = this;
 		const GraphVertex *b = neighbors[*n];
 
-		const LocalVector<GraphEdge *> &list = graph->get_edges(a->id, b->id);
+		const EdgeList &list = graph->get_edges(a->id, b->id);
 
 		for (int i = 0; i < list.size(); ++i) {
 			GraphEdge *edge = list[i];
@@ -170,7 +171,7 @@ Array GraphVertex::get_predecessors() const {
 		const GraphVertex *a = this;
 		const GraphVertex *b = neighbors[*n];
 
-		const LocalVector<GraphEdge *> &list = graph->get_edges(a->id, b->id);
+		const EdgeList &list = graph->get_edges(a->id, b->id);
 
 		for (int i = 0; i < list.size(); ++i) {
 			GraphEdge *edge = list[i];
@@ -223,12 +224,12 @@ GraphEdge *Graph::_add_edge(const Variant &p_a, const Variant &p_b, const Varian
 
 	const auto &key = EdgeKey(a->id, b->id);
 	if (!graph->edges.has(key)) {
-		LocalVector<GraphEdge *> list;
+		EdgeList list;
 		list.reserve(4); // Slight optimization for directed or multi-edges.
 		list.push_back(edge);
 		graph->edges[key] = list;
 	} else {
-		LocalVector<GraphEdge *> &list = graph->edges[key];
+		EdgeList &list = graph->edges[key];
 		list.push_back(edge);
 	}
 	return edge;
@@ -242,12 +243,12 @@ GraphEdge *Graph::add_directed_edge(const Variant &p_a, const Variant &p_b, cons
 	return _add_edge(p_a, p_b, p_value, true);
 }
 
-LocalVector<GraphEdge *> &GraphData::get_edges(uint32_t a_id, uint32_t b_id) {
+EdgeList &GraphData::get_edges(uint32_t a_id, uint32_t b_id) {
 	return edges[EdgeKey(a_id, b_id)];
 }
 
 GraphEdge *Graph::find_edge(GraphVertex *p_a, GraphVertex *p_b) const {
-	const LocalVector<GraphEdge *> &list = graph->get_edges(p_a->id, p_b->id);
+	const EdgeList &list = graph->get_edges(p_a->id, p_b->id);
 
 	for (int i = 0; i < list.size(); ++i) {
 		GraphEdge *edge = list[i];
@@ -272,7 +273,7 @@ Array Graph::get_edge_list(GraphVertex *p_a, GraphVertex *p_b) const {
 
 	const EdgeKey *k = nullptr;
 	while ((k = graph->edges.next(k))) {
-		LocalVector<GraphEdge *> &list = graph->edges[*k];
+		EdgeList &list = graph->edges[*k];
 
 		for (int i = 0; i < list.size(); ++i) {
 			GraphEdge *edge = list[i];
@@ -306,11 +307,11 @@ void Graph::clear() {
 }
 
 void Graph::clear_edges() {
-	LocalVector<GraphEdge *> to_delete;
+	EdgeList to_delete;
 
 	const EdgeKey *k = nullptr;
 	while ((k = graph->edges.next(k))) {
-		LocalVector<GraphEdge *> &list = graph->edges[*k];
+		EdgeList &list = graph->edges[*k];
 
 		for (int i = 0; i < list.size(); ++i) {
 			to_delete.push_back(list[i]);

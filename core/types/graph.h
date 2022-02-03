@@ -10,6 +10,7 @@ class GraphEdge;
 
 struct GraphData {
 	using EdgeKey = Pair<uint32_t, uint32_t>;
+	using EdgeList = LocalVector<GraphEdge *, int>;
 
 	struct EdgeKeyHasher {
 		static _FORCE_INLINE_ uint32_t hash(const EdgeKey &key) {
@@ -23,12 +24,12 @@ struct GraphData {
 		}
 	};
 	HashMap<uint32_t, GraphVertex *> vertices;
-	HashMap<EdgeKey, LocalVector<GraphEdge *>, EdgeKeyHasher, EdgeKeyComparator> edges;
+	HashMap<EdgeKey, EdgeList, EdgeKeyHasher, EdgeKeyComparator> edges;
 
 	void remove_vertex(GraphVertex *p_vertex);
 	void remove_edge(GraphEdge *p_vertex);
 
-	_FORCE_INLINE_ LocalVector<GraphEdge *> &get_edges(uint32_t a_id, uint32_t b_id);
+	_FORCE_INLINE_ EdgeList &get_edges(uint32_t a_id, uint32_t b_id);
 };
 
 class Graph : public Reference {
