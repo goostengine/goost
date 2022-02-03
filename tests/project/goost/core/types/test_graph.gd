@@ -264,26 +264,29 @@ func test_self_loop():
 	# Should not crash...
 
 
-# func test_perf():
-#     var rng = RandomNumberGenerator.new()
-#     rng.seed = 480789
+class TestPerformance extends "res://addons/gut/test.gd":
 
-#     var count = 100000
+	func test_add_remove():
+		var graph = Graph.new()
+		var rng = RandomNumberGenerator.new()
+		rng.seed = 480789
 
-#     var t1 = OS.get_ticks_msec()
-#     for i in count:
-#         var _v = graph.add_vertex(i)
+		var count = 1000000
 
-#     var vertices = graph.get_vertex_list()
+		var t1 = OS.get_ticks_msec()
+		for i in count:
+			var _v = graph.add_vertex(i)
 
-#     for i in count:
-#         var ui = rng.randi() % count
-#         var vi = rng.randi() % count
-#         var _e = graph.add_edge(vertices[ui], vertices[vi])
+		var vertices = graph.get_vertex_list()
 
-#     for i in count:
-#         var v = vertices[i]
-#         graph.remove_vertex(v)
+		for i in count:
+			var ui = rng.randi() % count
+			var vi = rng.randi() % count
+			var _e = graph.add_edge(vertices[ui], vertices[vi])
 
-#     var t2 = OS.get_ticks_msec()
-#     gut.p(t2 - t1)
+		for i in count:
+			var v = vertices[i]
+			graph.remove_vertex(v)
+
+		var t2 = OS.get_ticks_msec()
+		gut.p(t2 - t1)
