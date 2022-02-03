@@ -264,14 +264,14 @@ func test_self_loop():
 	# Should not crash...
 
 
-class TestPerformance extends "res://addons/gut/test.gd":
+class _TestPerformance extends "res://addons/gut/test.gd":
 
-	func test_add_remove():
+	func test_add_remove_dense():
 		var graph = Graph.new()
 		var rng = RandomNumberGenerator.new()
 		rng.seed = 480789
 
-		var count = 1000000
+		var count = 10
 
 		var t1 = OS.get_ticks_msec()
 		for i in count:
@@ -279,7 +279,7 @@ class TestPerformance extends "res://addons/gut/test.gd":
 
 		var vertices = graph.get_vertex_list()
 
-		for i in count:
+		for i in 1000000:
 			var ui = rng.randi() % count
 			var vi = rng.randi() % count
 			var _e = graph.add_edge(vertices[ui], vertices[vi])

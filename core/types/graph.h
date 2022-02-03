@@ -1,7 +1,7 @@
 #pragma once
 
 #include "core/hash_map.h"
-#include "core/list.h"
+#include "core/local_vector.h"
 #include "core/pair.h"
 #include "core/reference.h"
 
@@ -23,12 +23,12 @@ struct GraphData {
 		}
 	};
 	HashMap<uint32_t, GraphVertex *> vertices;
-	HashMap<EdgeKey, List<GraphEdge *>, EdgeKeyHasher, EdgeKeyComparator> edges;
+	HashMap<EdgeKey, LocalVector<GraphEdge *>, EdgeKeyHasher, EdgeKeyComparator> edges;
 
 	void remove_vertex(GraphVertex *p_vertex);
 	void remove_edge(GraphEdge *p_vertex);
 
-	_FORCE_INLINE_ List<GraphEdge *> &get_edges(uint32_t a_id, uint32_t b_id);
+	_FORCE_INLINE_ LocalVector<GraphEdge *> &get_edges(uint32_t a_id, uint32_t b_id);
 };
 
 class Graph : public Reference {

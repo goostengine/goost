@@ -6,18 +6,18 @@
 using EdgeKey = Pair<uint32_t, uint32_t>;
 
 void GraphData::remove_vertex(GraphVertex *p_vertex) {
-	Vector<GraphEdge *> edges_to_delete;
+	LocalVector<GraphEdge *> edges_to_delete;
 
 	const uint32_t *n = nullptr;
 	while ((n = p_vertex->neighbors.next(n))) {
 		GraphVertex *n_vertex = p_vertex->neighbors[*n];
 
-		List<GraphEdge *> &list = get_edges(p_vertex->id, n_vertex->id);
+		LocalVector<GraphEdge *> &list = get_edges(p_vertex->id, n_vertex->id);
 
-		for (List<GraphEdge *>::Element *E = list.front(); E; E = E->next()) {
+		for (int i = 0; i < list.size(); ++i) {
 			// Removing edges updates neighbors as well, but doing so here
 			// will lead to unexpected result, so defer deletion.
-			edges_to_delete.push_back(E->get());
+			edges_to_delete.push_back(list[i]);
 		}
 		if (p_vertex != n_vertex) {
 			// Handle self-loops, there's no point to remove neighbors to self,
@@ -34,21 +34,19 @@ void GraphData::remove_vertex(GraphVertex *p_vertex) {
 }
 
 void GraphData::remove_edge(GraphEdge *p_edge) {
-	GraphVertex *a = p_edge->a;
-	GraphVertex *b = p_edge->b;
+	GraphVertex *&a = p_edge->a;
+	GraphVertex *&b = p_edge->b;
 
-	List<GraphEdge *> &list = get_edges(a->id, b->id);
+	LocalVector<GraphEdge *> &list = get_edges(a->id, b->id);
 
-	for (List<GraphEdge *>::Element *E = list.front(); E;) {
-		auto N = E->next();
-		if (p_edge == E->get()) {
-			list.erase(E);
+	for (int i = 0; i < list.size(); ++i) {
+		if (p_edge == list[i]) {
+			a->neighbors.erase(b->id);
+			b->neighbors.erase(a->id);
+			list.remove_unordered(i);
+			break;
 		}
-		E = N;
 	}
-	a->neighbors.erase(b->id);
-	b->neighbors.erase(a->id);
-
 	if (list.empty()) {
 		edges.erase(EdgeKey(a->id, b->id));
 	}
@@ -62,7 +60,7 @@ void Graph::remove_edge(GraphEdge *p_edge) {
 GraphVertex *Graph::_create_vertex() {
 	GraphVertex *vertex = nullptr;
 	if (get_script_instance() && get_script_instance()->has_method(StringNames::get_singleton()->_create_vertex)) {
-		Object* obj = get_script_instance()->call(StringNames::get_singleton()->_create_vertex);
+		Object *obj = get_script_instance()->call(StringNames::get_singleton()->_create_vertex);
 		vertex = Object::cast_to<GraphVertex>(obj);
 		ERR_FAIL_NULL_V_MSG(vertex, nullptr, "The returned object is not a valid GraphVertex");
 	} else {
@@ -74,7 +72,7 @@ GraphVertex *Graph::_create_vertex() {
 GraphEdge *Graph::_create_edge() {
 	GraphEdge *edge = nullptr;
 	if (get_script_instance() && get_script_instance()->has_method(StringNames::get_singleton()->_create_edge)) {
-		Object* obj = get_script_instance()->call(StringNames::get_singleton()->_create_edge);
+		Object *obj = get_script_instance()->call(StringNames::get_singleton()->_create_edge);
 		edge = Object::cast_to<GraphEdge>(obj);
 		ERR_FAIL_NULL_V_MSG(edge, nullptr, "The returned object is not a valid GraphEdge");
 	} else {
@@ -143,10 +141,10 @@ Array GraphVertex::get_successors() const {
 		const GraphVertex *a = this;
 		const GraphVertex *b = neighbors[*n];
 
-		const List<GraphEdge *> &list = graph->get_edges(a->id, b->id);
+		const LocalVector<GraphEdge *> &list = graph->get_edges(a->id, b->id);
 
-		for (const List<GraphEdge *>::Element *E = list.front(); E; E = E->next()) {
-			GraphEdge *edge = E->get();
+		for (int i = 0; i < list.size(); ++i) {
+			GraphEdge *edge = list[i];
 			if (!edge->is_directed()) {
 				continue;
 			}
@@ -172,10 +170,10 @@ Array GraphVertex::get_predecessors() const {
 		const GraphVertex *a = this;
 		const GraphVertex *b = neighbors[*n];
 
-		const List<GraphEdge *> &list = graph->get_edges(a->id, b->id);
+		const LocalVector<GraphEdge *> &list = graph->get_edges(a->id, b->id);
 
-		for (const List<GraphEdge *>::Element *E = list.front(); E; E = E->next()) {
-			GraphEdge *edge = E->get();
+		for (int i = 0; i < list.size(); ++i) {
+			GraphEdge *edge = list[i];
 			if (!edge->is_directed()) {
 				continue;
 			}
@@ -225,11 +223,12 @@ GraphEdge *Graph::_add_edge(const Variant &p_a, const Variant &p_b, const Varian
 
 	const auto &key = EdgeKey(a->id, b->id);
 	if (!graph->edges.has(key)) {
-		List<GraphEdge *> list;
+		LocalVector<GraphEdge *> list;
+		list.reserve(4); // Slight optimization for directed or multi-edges.
 		list.push_back(edge);
 		graph->edges[key] = list;
 	} else {
-		List<GraphEdge *> &list = graph->edges[key];
+		LocalVector<GraphEdge *> &list = graph->edges[key];
 		list.push_back(edge);
 	}
 	return edge;
@@ -243,15 +242,15 @@ GraphEdge *Graph::add_directed_edge(const Variant &p_a, const Variant &p_b, cons
 	return _add_edge(p_a, p_b, p_value, true);
 }
 
-List<GraphEdge *> &GraphData::get_edges(uint32_t a_id, uint32_t b_id) {
+LocalVector<GraphEdge *> &GraphData::get_edges(uint32_t a_id, uint32_t b_id) {
 	return edges[EdgeKey(a_id, b_id)];
 }
 
 GraphEdge *Graph::find_edge(GraphVertex *p_a, GraphVertex *p_b) const {
-	const List<GraphEdge *> &list = graph->get_edges(p_a->id, p_b->id);
+	const LocalVector<GraphEdge *> &list = graph->get_edges(p_a->id, p_b->id);
 
-	for (const List<GraphEdge *>::Element *E = list.front(); E; E = E->next()) {
-		GraphEdge *edge = E->get();
+	for (int i = 0; i < list.size(); ++i) {
+		GraphEdge *edge = list[i];
 		if (p_a == edge->a && p_b == edge->b) {
 			return edge;
 		}
@@ -273,10 +272,10 @@ Array Graph::get_edge_list(GraphVertex *p_a, GraphVertex *p_b) const {
 
 	const EdgeKey *k = nullptr;
 	while ((k = graph->edges.next(k))) {
-		List<GraphEdge *> &list = graph->edges[*k];
+		LocalVector<GraphEdge *> &list = graph->edges[*k];
 
-		for (List<GraphEdge *>::Element *E = list.front(); E; E = E->next()) {
-			GraphEdge *edge = E->get();
+		for (int i = 0; i < list.size(); ++i) {
+			GraphEdge *edge = list[i];
 			if (all) { // Get all edges in the graph.
 				edge_list.push_back(edge);
 			} else { // Get all edges between vertices.
@@ -307,14 +306,14 @@ void Graph::clear() {
 }
 
 void Graph::clear_edges() {
-	Vector<GraphEdge *> to_delete;
+	LocalVector<GraphEdge *> to_delete;
 
 	const EdgeKey *k = nullptr;
 	while ((k = graph->edges.next(k))) {
-		List<GraphEdge *> &list = graph->edges[*k];
+		LocalVector<GraphEdge *> &list = graph->edges[*k];
 
-		for (List<GraphEdge *>::Element *E = list.front(); E; E = E->next()) {
-			to_delete.push_back(E->get());
+		for (int i = 0; i < list.size(); ++i) {
+			to_delete.push_back(list[i]);
 		}
 	}
 	for (int i = 0; i < to_delete.size(); ++i) {
