@@ -8,6 +8,16 @@
 	<tutorials>
 	</tutorials>
 	<methods>
+		<method name="_create_edge" qualifiers="virtual">
+			<return type="Object" />
+			<description>
+			</description>
+		</method>
+		<method name="_create_vertex" qualifiers="virtual">
+			<return type="Object" />
+			<description>
+			</description>
+		</method>
 		<method name="add_directed_edge">
 			<return type="GraphEdge" />
 			<argument index="0" name="from" type="Variant" />
@@ -33,17 +43,32 @@
 		<method name="clear">
 			<return type="void" />
 			<description>
+				Removes all vertices and edges from the graph.
 			</description>
 		</method>
 		<method name="clear_edges">
 			<return type="void" />
 			<description>
+				Removes all edges from the graph while retaining all original vertices.
+			</description>
+		</method>
+		<method name="find_connected_component" qualifiers="const">
+			<return type="Array" />
+			<argument index="0" name="vertex" type="GraphVertex" />
+			<description>
+				Returns an array of vertices representing a connected component in an [b]undirected[/b] graph starting from arbitrary [code]vertex[/code] root.
 			</description>
 		</method>
 		<method name="find_edge" qualifiers="const">
 			<return type="GraphEdge" />
 			<argument index="0" name="a" type="GraphVertex" />
 			<argument index="1" name="b" type="GraphVertex" />
+			<description>
+			</description>
+		</method>
+		<method name="find_vertex">
+			<return type="GraphVertex" />
+			<argument index="0" name="value" type="Variant" />
 			<description>
 			</description>
 		</method>
@@ -80,6 +105,12 @@
 			<return type="bool" />
 			<argument index="0" name="vertex" type="GraphVertex" />
 			<description>
+			</description>
+		</method>
+		<method name="is_strongly_connected" qualifiers="const">
+			<return type="bool" />
+			<description>
+				Returns [code]true[/code] if there exist at least one path connecting any two vertices. Applies both to undirected and directed graphs.
 			</description>
 		</method>
 		<method name="remove_edge">

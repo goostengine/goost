@@ -264,6 +264,33 @@ func test_self_loop():
 	# Should not crash...
 
 
+func test_connected_component():
+	var a = graph.add_vertex("a")
+	var b = graph.add_vertex("b")
+	var c = graph.add_vertex("c")
+	var d = graph.add_vertex("d")
+	var e = graph.add_vertex("e")
+
+	var _ab = graph.add_edge(a, b)
+	var _bc = graph.add_edge(b, c)
+	var _bd = graph.add_edge(b, d)
+	var ae = graph.add_edge(a, e)
+
+	var abcde = graph.find_connected_component(a)
+	assert_eq(abcde.size(), 5)
+	assert_true(a in abcde)
+	assert_true(b in abcde)
+	assert_true(c in abcde)
+	assert_true(d in abcde)
+	assert_true(e in abcde)
+
+	assert_true(graph.is_strongly_connected())
+
+	graph.remove_edge(ae)
+
+	assert_false(graph.is_strongly_connected())
+
+
 class _TestPerformance extends "res://addons/gut/test.gd":
 
 	func test_add_remove_dense():
@@ -287,6 +314,33 @@ class _TestPerformance extends "res://addons/gut/test.gd":
 		for i in count:
 			var v = vertices[i]
 			graph.remove_vertex(v)
+
+		var t2 = OS.get_ticks_msec()
+		gut.p(t2 - t1)
+
+
+	func test_dfs():
+		var graph = Graph.new()
+		var rng = RandomNumberGenerator.new()
+		rng.seed = 480789
+
+		var count = 100000
+
+		for i in count:
+			var _v = graph.add_vertex(i)
+
+		var vertices = graph.get_vertex_list()
+
+		# Complete graph.
+		for i in count:
+			var ui = rng.randi() % count
+			var vi = rng.randi() % count
+			var _e = graph.add_edge(vertices[ui], vertices[vi])
+
+		var t1 = OS.get_ticks_msec()
+
+		var component = graph.find_connected_component(vertices[0])
+		assert_eq(component.size(), 79500)
 
 		var t2 = OS.get_ticks_msec()
 		gut.p(t2 - t1)

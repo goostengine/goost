@@ -7,13 +7,28 @@
 	<tutorials>
 	</tutorials>
 	<methods>
+		<method name="get_neighbor_count" qualifiers="const">
+			<return type="int" />
+			<description>
+			</description>
+		</method>
 		<method name="get_neighbors" qualifiers="const">
 			<return type="Array" />
 			<description>
 			</description>
 		</method>
+		<method name="get_predecessor_count" qualifiers="const">
+			<return type="int" />
+			<description>
+			</description>
+		</method>
 		<method name="get_predecessors" qualifiers="const">
 			<return type="Array" />
+			<description>
+			</description>
+		</method>
+		<method name="get_successor_count" qualifiers="const">
+			<return type="int" />
 			<description>
 			</description>
 		</method>

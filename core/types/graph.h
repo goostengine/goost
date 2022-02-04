@@ -1,12 +1,17 @@
 #pragma once
 
+#include "core/reference.h"
+
 #include "core/hash_map.h"
+#include "core/oa_hash_map.h"
 #include "core/local_vector.h"
 #include "core/pair.h"
-#include "core/reference.h"
+
+#include "core/types/templates/stack.h"
 
 class GraphVertex;
 class GraphEdge;
+class GraphDFS;
 
 struct GraphData {
 	using EdgeKey = Pair<uint32_t, uint32_t>;
@@ -48,7 +53,7 @@ public:
 	virtual GraphVertex *_create_vertex();
 	virtual GraphEdge *_create_edge();
 
-	// Vertex API
+	// Vertex
 	GraphVertex *add_vertex(const Variant &p_value);
 	void remove_vertex(GraphVertex *p_vertex);
 	GraphVertex *find_vertex(const Variant &p_value);
@@ -56,7 +61,7 @@ public:
 	Array get_vertex_list() const;
 	int get_vertex_count() const { return graph->vertices.size(); }
 
-	// Edge API
+	// Edge
 	GraphEdge *add_edge(const Variant &p_vertex_a, const Variant &p_vertex_b, const Variant &p_value);
 	GraphEdge *add_directed_edge(const Variant &p_vertex_from, const Variant &p_vertex_to, const Variant &p_value);
 	void remove_edge(GraphEdge *p_edge);
@@ -64,6 +69,10 @@ public:
 	bool has_edge(GraphVertex *p_vertex_a, GraphVertex *p_vertex_b) const;
 	Array get_edge_list(GraphVertex *p_vertex_a = nullptr, GraphVertex *p_vertex_b = nullptr) const;
 	int get_edge_count() const { return graph->edges.size(); }
+
+	// Connectivity
+	Array find_connected_component(GraphVertex *p_vertex) const;
+	bool is_strongly_connected() const;
 
 	// Cleanup
 	void clear();
@@ -78,6 +87,7 @@ class GraphVertex : public Object {
 
 	friend class Graph;
 	friend struct GraphData;
+	friend class GraphDFS;
 
 	GraphData *graph = nullptr;
 
@@ -132,6 +142,20 @@ public:
 
 	void set_value(const Variant &p_value) { value = p_value; }
 	Variant get_value() const { return value; }
+};
+
+class GraphDFS {
+	GraphData *graph = nullptr;
+	Stack<GraphVertex *> stack;
+	OAHashMap<uint32_t, bool> visited;
+	bool discovered = false;
+
+public:
+	bool has_next();
+	GraphVertex *next();
+	bool has_discovered() { return discovered; }
+
+	GraphDFS(GraphVertex *p_root);
 };
 
 // Cast for bindings.

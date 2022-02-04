@@ -291,6 +291,44 @@ Array Graph::get_edge_list(GraphVertex *p_a, GraphVertex *p_b) const {
 	return edge_list;
 }
 
+Array Graph::find_connected_component(GraphVertex *p_vertex) const {
+	Array component;
+
+	GraphDFS state(p_vertex);
+
+	while (state.has_next()) {
+		GraphVertex *v = state.next();
+		if (v) {
+			component.push_back(v);
+		}
+	}
+	return component;
+}
+
+bool Graph::is_strongly_connected() const {
+	if (graph->vertices.size() <= 1) {
+		return true;
+	}
+	if (graph->edges.size() < graph->vertices.size() - 1) {
+		return false;
+	}
+	// Any vertex will do.
+	const uint32_t *k = nullptr;
+	k = graph->vertices.next(k);
+	GraphVertex *root = graph->vertices[*k];
+
+	uint32_t count = 0;
+
+	GraphDFS state(root);
+	while (state.has_next()) {
+		GraphVertex *v = state.next();
+		if (v) {
+			count++;
+		}
+	}
+	return count == graph->vertices.size();
+}
+
 void Graph::clear() {
 	Vector<GraphVertex *> to_delete;
 
@@ -341,6 +379,9 @@ void Graph::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("has_edge", "a", "b"), &Graph::has_edge);
 	ClassDB::bind_method(D_METHOD("get_edge_list", "a", "b"), &Graph::get_edge_list, DEFVAL(Variant()), DEFVAL(Variant()));
 	ClassDB::bind_method(D_METHOD("get_edge_count"), &Graph::get_edge_count);
+
+	ClassDB::bind_method(D_METHOD("find_connected_component", "vertex"), &Graph::find_connected_component);
+	ClassDB::bind_method(D_METHOD("is_strongly_connected"), &Graph::is_strongly_connected);
 
 	ClassDB::bind_method(D_METHOD("clear"), &Graph::clear);
 	ClassDB::bind_method(D_METHOD("clear_edges"), &Graph::clear_edges);
@@ -406,4 +447,38 @@ void GraphEdge::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "a"), "", "get_a");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "b"), "", "get_b");
 	ADD_PROPERTY(PropertyInfo(Variant::NIL, "value", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NIL_IS_VARIANT), "set_value", "get_value");
+}
+
+bool GraphDFS::has_next() {
+	return !stack.is_empty();
+}
+
+GraphVertex *GraphDFS::next() {
+	discovered = false;
+
+	if (stack.is_empty()) {
+		return nullptr;
+	}
+	GraphVertex *v = stack.pop_back();
+	if (visited.lookup(v->id, discovered)) {
+		return nullptr;
+	}
+	visited.insert(v->id, true);
+	discovered = true;
+
+	const uint32_t *k = nullptr;
+	while ((k = v->neighbors.next(k))) {
+		GraphVertex *vn = graph->vertices[*k];
+		bool has;
+		if (!visited.lookup(vn->id, has)) {
+			stack.push_back(vn);
+		}
+	}
+	return v;
+}
+
+GraphDFS::GraphDFS(GraphVertex *p_root) {
+	ERR_FAIL_NULL(p_root);
+	stack.push_back(p_root);
+	graph = p_root->graph;
 }
