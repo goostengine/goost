@@ -340,7 +340,7 @@ class _TestPerformance extends "res://addons/gut/test.gd":
 		var t1 = OS.get_ticks_msec()
 
 		var component = graph.find_connected_component(vertices[0])
-		assert_eq(component.size(), 79500)
+		assert_eq(component.size(), 95884)
 
 		var t2 = OS.get_ticks_msec()
 		gut.p(t2 - t1)

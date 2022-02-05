@@ -294,12 +294,8 @@ Array Graph::get_edge_list(GraphVertex *p_a, GraphVertex *p_b) const {
 Array Graph::find_connected_component(GraphVertex *p_vertex) const {
 	Array component;
 
-	GraphDFS dfs(p_vertex);
-	while (dfs.has_next()) {
-		GraphVertex *v = dfs.next();
-		if (v) {
-			component.push_back(v);
-		}
+	for (GraphDFS dfs(p_vertex); dfs.has_next();) {
+		component.push_back(dfs.next());
 	}
 	return component;
 }
@@ -317,13 +313,8 @@ bool Graph::is_strongly_connected() const {
 	GraphVertex *root = graph->vertices[*k];
 
 	uint32_t count = 0;
-
-	GraphDFS dfs(root);
-	while (dfs.has_next()) {
-		GraphVertex *v = dfs.next();
-		if (v) {
-			count++;
-		}
+	for (GraphDFS dfs(root); dfs.has_next(); dfs.next()) {
+		count++;
 	}
 	return count == graph->vertices.size();
 }
@@ -456,19 +447,24 @@ GraphVertex *GraphDFS::next() {
 	if (stack.is_empty()) {
 		return nullptr;
 	}
-	GraphVertex *v = stack.pop();
-	if (visited.has(v->id)) {
-		return nullptr;
-	}
-	visited.insert(v->id);
-
-	const uint32_t *k = nullptr;
-	while ((k = v->neighbors.next(k))) {
-		GraphVertex *vn = graph->vertices[*k];
-		if (!visited.has(vn->id)) {
-			stack.push(vn);
+	GraphVertex *v = nullptr;
+	do {
+		v = stack.pop();
+		if (visited.has(v->id)) {
+			continue;
 		}
-	}
+		visited.insert(v->id);
+
+		const uint32_t *k = nullptr;
+		while ((k = v->neighbors.next(k))) {
+			GraphVertex *vn = graph->vertices[*k];
+			if (!visited.has(vn->id)) {
+				stack.push(vn);
+			}
+		}
+	} while (!v);
+
+	ERR_FAIL_NULL_V(v, nullptr);
 	return v;
 }
 
