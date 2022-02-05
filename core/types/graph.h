@@ -147,13 +147,11 @@ public:
 class GraphDFS {
 	GraphData *graph = nullptr;
 	Stack<GraphVertex *> stack;
-	OAHashMap<uint32_t, bool> visited;
-	bool discovered = false;
+	Set<uint32_t> visited;
 
 public:
 	bool has_next();
 	GraphVertex *next();
-	bool has_discovered() { return discovered; }
 
 	GraphDFS(GraphVertex *p_root);
 };

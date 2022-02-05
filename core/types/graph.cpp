@@ -454,23 +454,19 @@ bool GraphDFS::has_next() {
 }
 
 GraphVertex *GraphDFS::next() {
-	discovered = false;
-
 	if (stack.is_empty()) {
 		return nullptr;
 	}
 	GraphVertex *v = stack.pop_back();
-	if (visited.lookup(v->id, discovered)) {
+	if (visited.has(v->id)) {
 		return nullptr;
 	}
-	visited.insert(v->id, true);
-	discovered = true;
+	visited.insert(v->id);
 
 	const uint32_t *k = nullptr;
 	while ((k = v->neighbors.next(k))) {
 		GraphVertex *vn = graph->vertices[*k];
-		bool has;
-		if (!visited.lookup(vn->id, has)) {
+		if (!visited.has(vn->id)) {
 			stack.push_back(vn);
 		}
 	}
