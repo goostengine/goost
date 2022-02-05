@@ -146,7 +146,7 @@ public:
 
 class GraphDFS {
 	GraphData *graph = nullptr;
-	Stack<GraphVertex *> stack;
+	Stack<GraphVertex *, uint32_t> stack;
 	Set<uint32_t> visited;
 
 public:

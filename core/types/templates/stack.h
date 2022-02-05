@@ -3,29 +3,35 @@
 #include "core/local_vector.h"
 
 // Currently just a simple implementation/wrapper over vector, for depth-first search.
-template <class T>
+template <class T, class U = uint32_t>
 class Stack {
-	LocalVector<T> container;
-	uint32_t back = 0;
+	LocalVector<T, U> container;
+	uint32_t index = 0;
 
 public:
-	_FORCE_INLINE_ void push_back(const T &p_element) {
-		if (back == container.size()) {
+	_FORCE_INLINE_ T &top() {
+		return container[index - 1];
+	}
+	_FORCE_INLINE_ void push(const T &p_element) {
+		if (index == container.size()) {
 			container.push_back(p_element);
 		} else {
-			container[back] = p_element;
+			container[index] = p_element;
 		}
-		back++;
+		index++;
 	}
-	_FORCE_INLINE_ T &pop_back() {
-		T &element = container[back - 1];
-		back--;
+	_FORCE_INLINE_ T &pop() {
+		T &element = container[index - 1];
+		index--;
 		return element;
 	}
-	void reserve(uint32_t p_capacity) {
+	void reserve(U p_capacity) {
 		container.reserve(p_capacity);
 	}
 	_FORCE_INLINE_ bool is_empty() const {
-		return back == 0;
+		return index == 0;
+	}
+	_FORCE_INLINE_ U size() const {
+		return index;
 	}
 };
