@@ -291,16 +291,16 @@ Array Graph::get_edge_list(GraphVertex *p_a, GraphVertex *p_b) const {
 	return edge_list;
 }
 
-Array Graph::find_connected_component(GraphVertex *p_vertex) const {
+Array Graph::find_connected_component(GraphVertex *p_vertex) {
 	Array component;
 
-	for (GraphDFS dfs(p_vertex); dfs.has_next();) {
-		component.push_back(dfs.next());
+	for (V->initialize(p_vertex); V->has_next();) {
+		component.push_back(V->next());
 	}
 	return component;
 }
 
-bool Graph::is_strongly_connected() const {
+bool Graph::is_strongly_connected() {
 	if (graph->vertices.size() <= 1) {
 		return true;
 	}
@@ -313,7 +313,7 @@ bool Graph::is_strongly_connected() const {
 	GraphVertex *root = graph->vertices[*k];
 
 	uint32_t count = 0;
-	for (GraphDFS dfs(root); dfs.has_next(); dfs.next()) {
+	for (V->initialize(root); V->has_next(); V->next()) {
 		count++;
 	}
 	return count == graph->vertices.size();
@@ -351,6 +351,14 @@ void Graph::clear_edges() {
 	graph->edges.clear();
 }
 
+void Graph::set_iterator(const Ref<GraphIterator> &p_iterator) {
+	if (p_iterator.is_valid()) {
+		V = p_iterator;
+	} else {
+		V = default_iterator;
+	}
+}
+
 void Graph::_bind_methods() {
 	BIND_VMETHOD(MethodInfo(Variant::OBJECT, "_create_vertex"));
 	BIND_VMETHOD(MethodInfo(Variant::OBJECT, "_create_edge"));
@@ -375,10 +383,20 @@ void Graph::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("clear"), &Graph::clear);
 	ClassDB::bind_method(D_METHOD("clear_edges"), &Graph::clear_edges);
+
+	ClassDB::bind_method(D_METHOD("set_iterator", "iterator"), &Graph::set_iterator);
+	ClassDB::bind_method(D_METHOD("get_iterator"), &Graph::get_iterator);
+
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "iterator"), "set_iterator", "get_iterator");
 }
 
 Graph::Graph() {
 	graph = memnew(GraphData);
+	// Setup default depth-first search iterator.
+	Ref<GraphIteratorDFS> dfs;
+	dfs.instance();
+	default_iterator = dfs;
+	V = default_iterator;
 }
 
 Graph::~Graph() {
@@ -439,11 +457,55 @@ void GraphEdge::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::NIL, "value", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NIL_IS_VARIANT), "set_value", "get_value");
 }
 
-bool GraphDFS::has_next() {
+void GraphIterator::_bind_methods() {
+	BIND_VMETHOD(MethodInfo(Variant::NIL, "initialize", PropertyInfo(Variant::OBJECT, "root")));
+	BIND_VMETHOD(MethodInfo(Variant::BOOL, "has_next"));
+	BIND_VMETHOD(MethodInfo(Variant::OBJECT, "next"));
+}
+
+void GraphIterator::initialize(GraphVertex *p_root) {
+	ERR_FAIL_NULL(p_root);
+
+	auto s = get_script_instance();
+	if (s && s->has_method(StringNames::get_singleton()->initialize)) {
+		Variant root = p_root;
+		s->call(StringNames::get_singleton()->initialize, root);
+	} else {
+		root = p_root;
+	}
+}
+
+bool GraphIterator::has_next() const {
+	auto s = get_script_instance();
+	if (s && s->has_method(StringNames::get_singleton()->has_next)) {
+		return s->call(StringNames::get_singleton()->has_next);
+	}
+	return false;
+}
+
+GraphVertex *GraphIterator::next() {
+	auto s = get_script_instance();
+	if (s && s->has_method(StringNames::get_singleton()->next)) {
+		Object *obj = s->call(StringNames::get_singleton()->next);
+		GraphVertex *v = Object::cast_to<GraphVertex>(obj);
+		return v;
+	}
+	return nullptr;
+}
+
+void GraphIteratorDFS::initialize(GraphVertex *p_root) {
+	ERR_FAIL_NULL(p_root);
+	stack.clear();
+	visited.clear();
+	stack.push(p_root);
+	graph = p_root->graph;
+}
+
+bool GraphIteratorDFS::has_next() const {
 	return !stack.is_empty();
 }
 
-GraphVertex *GraphDFS::next() {
+GraphVertex *GraphIteratorDFS::next() {
 	if (stack.is_empty()) {
 		return nullptr;
 	}
@@ -466,10 +528,4 @@ GraphVertex *GraphDFS::next() {
 
 	ERR_FAIL_NULL_V(v, nullptr);
 	return v;
-}
-
-GraphDFS::GraphDFS(GraphVertex *p_root) {
-	ERR_FAIL_NULL(p_root);
-	stack.push(p_root);
-	graph = p_root->graph;
 }

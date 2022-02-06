@@ -291,6 +291,45 @@ func test_connected_component():
 	assert_false(graph.is_strongly_connected())
 
 
+class GraphIteratorCustom extends GraphIterator:
+	var v: GraphVertex
+	var count = 0
+
+	func initialize(root):
+		v = root
+
+	func has_next():
+		count += 1
+		return count < 5
+
+	func next():
+		var n = v
+		v = v.get_successors()[0]
+		return n
+
+
+func test_iterator():
+	var it = graph.iterator
+	assert(it is GraphIterator)
+
+	graph.iterator = GraphIteratorCustom.new()
+
+	var a = graph.add_vertex("a")
+	var b = graph.add_vertex("b")
+	var c = graph.add_vertex("c")
+
+	var _ab = graph.add_directed_edge(a, b)
+	var _bc = graph.add_directed_edge(b, c)
+	var _ca = graph.add_directed_edge(c, a)
+
+	var component = graph.find_connected_component(a)
+	assert_eq(component.size(), 4)
+	assert_eq(component[0], a)
+	assert_eq(component[1], b)
+	assert_eq(component[2], c)
+	assert_eq(component[3], a)
+
+
 class _TestPerformance extends "res://addons/gut/test.gd":
 
 	func test_add_remove_dense():

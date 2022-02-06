@@ -46,6 +46,7 @@ void register_core_types() {
 	ClassDB::register_class<Graph>();
 	ClassDB::register_class<GraphVertex>();
 	ClassDB::register_class<GraphEdge>();
+	ClassDB::register_class<GraphIterator>();
 
 	ClassDB::register_class<VariantMap>();
 	ClassDB::register_class<VariantResource>();

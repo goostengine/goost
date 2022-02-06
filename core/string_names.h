@@ -24,4 +24,7 @@ public:
 
     StringName _create_vertex;
     StringName _create_edge;
+    StringName initialize;
+    StringName has_next;
+    StringName next;
 };

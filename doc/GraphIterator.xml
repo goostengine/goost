@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="GraphIterator" inherits="Reference" version="3.5">
+	<brief_description>
+		A class used as a base for implementing custom iterators to traverse a [Graph].
+	</brief_description>
+	<description>
+		The class allows for fine-grained control over graph traversal. The instance of the class can be used individually, or set as a custom iterator for [Graph] via [member Graph.iterator].
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="has_next" qualifiers="virtual">
+			<return type="bool" />
+			<description>
+				Must return [code]true[/code] if there exist an element available for next iteration. For example: [code]return not stack.is_empty()[/code].
+			</description>
+		</method>
+		<method name="initialize" qualifiers="virtual">
+			<return type="void" />
+			<argument index="0" name="root" type="Object" />
+			<description>
+				Must initialize a root node from which an iterator starts to traverse the graph.
+			</description>
+		</method>
+		<method name="next" qualifiers="virtual">
+			<return type="Object" />
+			<description>
+				Must return the next vertex. For the first iteration, all built-in iterators in [Graph] return the root node by convention.
+			</description>
+		</method>
+	</methods>
+	<constants>
+	</constants>
+</class>

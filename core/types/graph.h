@@ -11,7 +11,7 @@
 
 class GraphVertex;
 class GraphEdge;
-class GraphDFS;
+class GraphIterator;
 
 struct GraphData {
 	using EdgeKey = Pair<uint32_t, uint32_t>;
@@ -45,6 +45,9 @@ class Graph : public Reference {
 	uint32_t next_vertex_id = 1;
 	uint32_t next_edge_id = 1;
 
+	Ref<GraphIterator> default_iterator;
+	Ref<GraphIterator> V;
+
 protected:
 	static void _bind_methods();
 	GraphEdge *_add_edge(const Variant &p_a, const Variant &p_b, const Variant &p_value, bool p_directed);
@@ -71,12 +74,16 @@ public:
 	int get_edge_count() const { return graph->edges.size(); }
 
 	// Connectivity
-	Array find_connected_component(GraphVertex *p_vertex) const;
-	bool is_strongly_connected() const;
+	Array find_connected_component(GraphVertex *p_vertex);
+	bool is_strongly_connected();
 
 	// Cleanup
 	void clear();
 	void clear_edges();
+
+	// Custom iterator
+	void set_iterator(const Ref<GraphIterator> &p_iterator);
+	Ref<GraphIterator> get_iterator() const { return V; }
 
 	Graph();
 	~Graph();
@@ -87,7 +94,8 @@ class GraphVertex : public Object {
 
 	friend class Graph;
 	friend struct GraphData;
-	friend class GraphDFS;
+	friend class GraphIterator;
+	friend class GraphIteratorDFS;
 
 	GraphData *graph = nullptr;
 
@@ -144,16 +152,31 @@ public:
 	Variant get_value() const { return value; }
 };
 
-class GraphDFS {
+class GraphIterator : public Reference {
+	GDCLASS(GraphIterator, Reference);
+
+protected:
 	GraphData *graph = nullptr;
+	GraphVertex *root = nullptr;
+
+	static void _bind_methods();
+
+public:
+	virtual void initialize(GraphVertex *p_root);
+	virtual bool has_next() const;
+	virtual GraphVertex *next();
+};
+
+class GraphIteratorDFS : public GraphIterator {
+	GDCLASS(GraphIteratorDFS, GraphIterator);
+
 	Stack<GraphVertex *, uint32_t> stack;
 	Set<uint32_t> visited;
 
 public:
-	bool has_next();
-	GraphVertex *next();
-
-	GraphDFS(GraphVertex *p_root);
+	virtual void initialize(GraphVertex *p_root);
+	virtual bool has_next() const;
+	virtual GraphVertex *next();
 };
 
 // Cast for bindings.

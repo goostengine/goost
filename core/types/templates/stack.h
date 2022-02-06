@@ -28,6 +28,10 @@ public:
 	void reserve(U p_capacity) {
 		container.reserve(p_capacity);
 	}
+	void clear() {
+		container.clear();
+		index = 0;
+	}
 	_FORCE_INLINE_ bool is_empty() const {
 		return index == 0;
 	}

@@ -52,7 +52,7 @@
 				Removes all edges from the graph while retaining all original vertices.
 			</description>
 		</method>
-		<method name="find_connected_component" qualifiers="const">
+		<method name="find_connected_component">
 			<return type="Array" />
 			<argument index="0" name="vertex" type="GraphVertex" />
 			<description>
@@ -107,7 +107,7 @@
 			<description>
 			</description>
 		</method>
-		<method name="is_strongly_connected" qualifiers="const">
+		<method name="is_strongly_connected">
 			<return type="bool" />
 			<description>
 				Returns [code]true[/code] if there exist at least one path connecting any two vertices. Applies both to undirected and directed graphs.
@@ -126,6 +126,12 @@
 			</description>
 		</method>
 	</methods>
+	<members>
+		<member name="iterator" type="GraphIterator" setter="set_iterator" getter="get_iterator">
+			An iterator used for traversing the graph's vertices, for methods like [method find_connected_component]. The default iterator is based on depth-first search algorithm. You can extend [GraphIterator] class via script to customize the algorithm.
+			If set to [code]null[/code], the default iterator is used.
+		</member>
+	</members>
 	<constants>
 	</constants>
 </class>
