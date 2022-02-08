@@ -3,8 +3,8 @@
 #include "core/reference.h"
 
 #include "core/hash_map.h"
-#include "core/oa_hash_map.h"
 #include "core/local_vector.h"
+#include "core/oa_hash_map.h"
 #include "core/pair.h"
 
 #include "core/types/templates/stack.h"
@@ -76,6 +76,7 @@ public:
 	// Connectivity
 	Array find_connected_component(GraphVertex *p_vertex);
 	bool is_strongly_connected();
+	Dictionary get_connected_components();
 
 	// Cleanup
 	void clear();
@@ -100,7 +101,6 @@ class GraphVertex : public Object {
 	GraphData *graph = nullptr;
 
 	HashMap<uint32_t, GraphVertex *> neighbors;
-
 	Variant value;
 	uint32_t id;
 
@@ -170,8 +170,24 @@ public:
 class GraphIteratorDFS : public GraphIterator {
 	GDCLASS(GraphIteratorDFS, GraphIterator);
 
-	Stack<GraphVertex *, uint32_t> stack;
-	Set<uint32_t> visited;
+public:
+	struct Element {
+		GraphVertex *parent;
+		const uint32_t *neighbor = nullptr;
+
+		Element(){};
+		Element(GraphVertex *p_parent) {
+			parent = p_parent;
+			neighbor = p_parent->neighbors.next(nullptr);
+		}
+	};
+
+protected:
+	Stack<Element> stack;
+	Set<GraphVertex *> visited;
+	GraphVertex *next_vertex = nullptr;
+
+	void advance();
 
 public:
 	virtual void initialize(GraphVertex *p_root);

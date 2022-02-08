@@ -72,6 +72,12 @@
 			<description>
 			</description>
 		</method>
+		<method name="get_connected_components">
+			<return type="Dictionary" />
+			<description>
+				Returns a [Dictionary] of all [i]connected components[/i] in the graph. The keys consist of a set of vertices called [i]representatives[/i], while values contain all [i]members[/i] vertices of that representative. All members represent a connected component. A representative is considered as a member of the connected component. A connected component may consist of a single vertex.
+			</description>
+		</method>
 		<method name="get_edge_count" qualifiers="const">
 			<return type="int" />
 			<description>

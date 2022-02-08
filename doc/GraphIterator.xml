@@ -12,7 +12,7 @@
 		<method name="has_next" qualifiers="virtual">
 			<return type="bool" />
 			<description>
-				Must return [code]true[/code] if there exist an element available for next iteration. For example: [code]return not stack.is_empty()[/code].
+				Must return [code]true[/code] if there exist an element available for next iteration. For example: [code]return next_vertex != null[/code].
 			</description>
 		</method>
 		<method name="initialize" qualifiers="virtual">

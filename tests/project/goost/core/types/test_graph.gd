@@ -264,7 +264,7 @@ func test_self_loop():
 	# Should not crash...
 
 
-func test_connected_component():
+func test_connected_component_tree():
 	var a = graph.add_vertex("a")
 	var b = graph.add_vertex("b")
 	var c = graph.add_vertex("c")
@@ -291,12 +291,76 @@ func test_connected_component():
 	assert_false(graph.is_strongly_connected())
 
 
+func test_connected_component_cycle():
+	var V = []
+	for i in 4:
+		V.push_back(graph.add_vertex(i))
+
+	var _e = null
+	_e = graph.add_edge(V[0], V[1])
+	_e = graph.add_edge(V[0], V[2])
+	_e = graph.add_edge(V[0], V[3])
+	_e = graph.add_edge(V[1], V[2])
+	_e = graph.add_edge(V[1], V[3])
+	_e = graph.add_edge(V[2], V[3])
+
+	var component = graph.find_connected_component(V[0])
+	assert_eq(component.size(), 4)
+	assert_true(V[0] in component)
+	assert_true(V[1] in component)
+	assert_true(V[2] in component)
+	assert_true(V[3] in component)
+
+
+func test_get_connected_components():
+	var V = []
+	for i in 10:
+		V.push_back(graph.add_vertex(i))
+
+	var _e = null
+	_e = graph.add_edge(V[0], V[1])
+	_e = graph.add_edge(V[0], V[2])
+	_e = graph.add_edge(V[3], V[4])
+	_e = graph.add_edge(V[6], V[7])
+	_e = graph.add_edge(V[6], V[8])
+	_e = graph.add_edge(V[7], V[8])
+	_e = graph.add_edge(V[8], V[9])
+	_e = graph.add_edge(V[7], V[9])
+
+	var roots = graph.get_connected_components()
+	assert_eq(roots.size(), 4)
+	
+	for r in roots:
+		var members = roots[r]
+		assert_true(r in members, "Representative vertex should be a member")
+
+	for r in roots:
+		var members = graph.find_connected_component(r)
+		assert_lt(members.size(), 5)
+		match members.size():
+			1:
+				assert_eq(members[0], V[5])
+			2:
+				assert_true(V[3] in members)
+				assert_true(V[4] in members)
+			3:
+				assert_true(V[0] in members)
+				assert_true(V[1] in members)
+				assert_true(V[2] in members)
+			4:
+				assert_true(V[6] in members)
+				assert_true(V[7] in members)
+				assert_true(V[8] in members)
+				assert_true(V[9] in members)
+
+
 class GraphIteratorCustom extends GraphIterator:
 	var v: GraphVertex
-	var count = 0
+	var count
 
 	func initialize(root):
 		v = root
+		count = 0
 
 	func has_next():
 		count += 1
@@ -328,6 +392,15 @@ func test_iterator():
 	assert_eq(component[1], b)
 	assert_eq(component[2], c)
 	assert_eq(component[3], a)
+
+	var V = graph.iterator
+	V.initialize(a)
+
+	var steps = 0
+	while V.has_next():
+		var _n = V.next()
+		steps += 1
+	assert_eq(steps, 4)
 
 
 class _TestPerformance extends "res://addons/gut/test.gd":
@@ -370,7 +443,6 @@ class _TestPerformance extends "res://addons/gut/test.gd":
 
 		var vertices = graph.get_vertex_list()
 
-		# Complete graph.
 		for i in count:
 			var ui = rng.randi() % count
 			var vi = rng.randi() % count
@@ -379,7 +451,7 @@ class _TestPerformance extends "res://addons/gut/test.gd":
 		var t1 = OS.get_ticks_msec()
 
 		var component = graph.find_connected_component(vertices[0])
-		assert_eq(component.size(), 95884)
+		assert_eq(component.size(), 79500)
 
 		var t2 = OS.get_ticks_msec()
 		gut.p(t2 - t1)

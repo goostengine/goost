@@ -3,6 +3,8 @@
 #include "core/script_language.h"
 #include "core/string_names.h"
 
+#include "core/math/disjoint_set.h"
+
 using EdgeKey = Pair<uint32_t, uint32_t>;
 using EdgeList = LocalVector<GraphEdge *, int>;
 
@@ -319,6 +321,42 @@ bool Graph::is_strongly_connected() {
 	return count == graph->vertices.size();
 }
 
+Dictionary Graph::get_connected_components() {
+	Dictionary components;
+
+	DisjointSet<GraphVertex *> set;
+	{
+		const uint32_t *k = nullptr;
+		while ((k = graph->vertices.next(k))) {
+			set.insert(graph->vertices[*k]);
+		}
+	}
+	{
+		const EdgeKey *k = nullptr;
+		while ((k = graph->edges.next(k))) {
+			EdgeList &list = graph->edges[*k];
+			for (int i = 0; i < list.size(); ++i) {
+				set.create_union(list[i]->a, list[i]->b);
+			}
+		}
+	}
+	Vector<GraphVertex *> roots;
+	set.get_representatives(roots);
+
+	for (int i = 0; i < roots.size(); ++i) {
+		GraphVertex *r = roots[i];
+		Vector<GraphVertex *> members;
+		set.get_members(members, r);
+
+		Array member_array;
+		for (int j = 0; j < members.size(); ++j) {
+			member_array.push_back(members[j]);
+		}
+		components[r] = member_array;
+	}
+	return components;
+}
+
 void Graph::clear() {
 	Vector<GraphVertex *> to_delete;
 
@@ -379,6 +417,7 @@ void Graph::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_edge_count"), &Graph::get_edge_count);
 
 	ClassDB::bind_method(D_METHOD("find_connected_component", "vertex"), &Graph::find_connected_component);
+	ClassDB::bind_method(D_METHOD("get_connected_components"), &Graph::get_connected_components);
 	ClassDB::bind_method(D_METHOD("is_strongly_connected"), &Graph::is_strongly_connected);
 
 	ClassDB::bind_method(D_METHOD("clear"), &Graph::clear);
@@ -495,37 +534,45 @@ GraphVertex *GraphIterator::next() {
 
 void GraphIteratorDFS::initialize(GraphVertex *p_root) {
 	ERR_FAIL_NULL(p_root);
+
+	graph = p_root->graph;
+
 	stack.clear();
 	visited.clear();
-	stack.push(p_root);
-	graph = p_root->graph;
+
+	stack.push(Element(p_root));
+	visited.insert(p_root);
+
+	next_vertex = p_root;
 }
 
 bool GraphIteratorDFS::has_next() const {
-	return !stack.is_empty();
+	return next_vertex != nullptr;
 }
 
 GraphVertex *GraphIteratorDFS::next() {
-	if (stack.is_empty()) {
-		return nullptr;
-	}
-	GraphVertex *v = nullptr;
-	do {
-		v = stack.pop();
-		if (visited.has(v->id)) {
-			continue;
-		}
-		visited.insert(v->id);
+	GraphVertex *n = next_vertex;
+	advance();
+	return n;
+}
 
-		const uint32_t *k = nullptr;
-		while ((k = v->neighbors.next(k))) {
-			GraphVertex *vn = graph->vertices[*k];
-			if (!visited.has(vn->id)) {
-				stack.push(vn);
+void GraphIteratorDFS::advance() {
+	next_vertex = nullptr;
+
+	while (!stack.is_empty()) {
+		Element &v = stack.pop();
+
+		if (v.neighbor) {
+			GraphVertex *child = v.parent->neighbors[*v.neighbor];
+			v.neighbor = v.parent->neighbors.next(v.neighbor);
+			stack.push(v);
+
+			if (!visited.has(child)) {
+				visited.insert(child);
+				stack.push(Element(child));
+				next_vertex = child;
+				break;
 			}
 		}
-	} while (!v);
-
-	ERR_FAIL_NULL_V(v, nullptr);
-	return v;
+	}
 }
