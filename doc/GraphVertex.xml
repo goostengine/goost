@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="GraphVertex" inherits="Object" version="3.5">
 	<brief_description>
+		A data structure used to represent a vertex in a [Graph].
 	</brief_description>
 	<description>
+		A vertex holds a data and information about all neighbor vertices that are connected to it. To traverse all neighbors:
+		[codeblock]
+		for n in v.get_neighbors():
+		    print(n)
+		[/codeblock]
+		If you need to traverse the graph without producing duplicates, you may also consider using graph's default [member Graph.iterator].
 	</description>
 	<tutorials>
 	</tutorials>
@@ -10,36 +17,43 @@
 		<method name="get_neighbor_count" qualifiers="const">
 			<return type="int" />
 			<description>
+				Returns the total number of neighbor vertices.
 			</description>
 		</method>
 		<method name="get_neighbors" qualifiers="const">
 			<return type="Array" />
 			<description>
+				Returns a list of all [GraphVertex] neighbors.
 			</description>
 		</method>
 		<method name="get_predecessor_count" qualifiers="const">
 			<return type="int" />
 			<description>
+				Returns the total number of predecessor vertices.
 			</description>
 		</method>
 		<method name="get_predecessors" qualifiers="const">
 			<return type="Array" />
 			<description>
+				Returns a list of all [GraphVertex] predecessors (vertices that point to this one).
 			</description>
 		</method>
 		<method name="get_successor_count" qualifiers="const">
 			<return type="int" />
 			<description>
+				Returns the total number of successor vertices.
 			</description>
 		</method>
 		<method name="get_successors" qualifiers="const">
 			<return type="Array" />
 			<description>
+				Returns a list of all [GraphVertex] successors (vertices that point away from this one).
 			</description>
 		</method>
 	</methods>
 	<members>
 		<member name="value" type="Variant" setter="set_value" getter="get_value">
+			Vertex data (could a label, a list of attributes etc).
 		</member>
 	</members>
 	<constants>

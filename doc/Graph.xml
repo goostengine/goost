@@ -1,9 +1,41 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="Graph" inherits="Reference" version="3.5">
 	<brief_description>
-		A general-purpose mixed graph, characterized by having both undirected (associative) and directed edges.
+		A general-purpose mixed graph.
 	</brief_description>
 	<description>
+		A graph which allows to add both undirected (associative) and directed edges, with possibility of having multiple edges between the same pair of vertices.
+		[codeblock]
+		func _ready():
+		    var graph = Graph.new()
+
+		    var a = graph.add_vertex("a")
+		    var b = graph.add_vertex("b")
+		    var c = graph.add_vertex("c")
+
+		    var ab = graph.add_edge(a, b)
+
+		    print(graph.has_edge(a, b)) # Prints True
+		    print(graph.has_edge(a, c)) # Prints False
+		[/codeblock]
+		All graph's vertices and edges can be traversed the following way:
+		[codeblock]
+		for v in graph.get_vertex_list():
+		    print(v)
+
+		for e in graph.get_edge_list():
+		    print(e)
+		[/codeblock]
+		It is possible to extend [GraphVertex] and [GraphEdge] via script, but you should also override [method _create_vertex] and [method _create_edge] virtual methods to make the [Graph] instantiate the correct instances internally.
+		The graph can be searched by using an [member iterator]:
+		[codeblock]
+		var G = graph.iterator
+		G.initialize(root)
+
+		while G.has_next():
+		    var v = G.next()
+		    print(v)
+		[/codeblock]
 	</description>
 	<tutorials>
 	</tutorials>
@@ -11,11 +43,13 @@
 		<method name="_create_edge" qualifiers="virtual">
 			<return type="Object" />
 			<description>
+				Must return an instance of [GraphEdge].
 			</description>
 		</method>
 		<method name="_create_vertex" qualifiers="virtual">
 			<return type="Object" />
 			<description>
+				Must return an instance of [GraphVertex].
 			</description>
 		</method>
 		<method name="add_directed_edge">
@@ -24,6 +58,11 @@
 			<argument index="1" name="to" type="Variant" />
 			<argument index="2" name="value" type="Variant" default="1.0" />
 			<description>
+				Adds a directed edge between [code]a[/code] and [code]b[/code] vertices. The [code]value[/code] could represent a weight of the edge, or other attributes. The following expressions are [i]not[/i] equivalent:
+				[codeblock]
+				graph.has_edge(a, b)  # Prints True
+				graph.has_edge(b, a)  # Prints False
+				[/codeblock]
 			</description>
 		</method>
 		<method name="add_edge">
@@ -32,12 +71,18 @@
 			<argument index="1" name="b" type="Variant" />
 			<argument index="2" name="value" type="Variant" default="1.0" />
 			<description>
+				Adds an undirected (associative) edge between [code]a[/code] and [code]b[/code] vertices. The [code]value[/code] could represent a weight of the edge, or other attributes. The following instructions are equivalent:
+				[codeblock]
+				graph.has_edge(a, b)  # Prints True
+				graph.has_edge(b, a)  # Prints True
+				[/codeblock]
 			</description>
 		</method>
 		<method name="add_vertex">
 			<return type="GraphVertex" />
 			<argument index="0" name="value" type="Variant" />
 			<description>
+				Adds a new vertex to the graph. The [code]value[/code] represents the data or attribute of that vertex.
 			</description>
 		</method>
 		<method name="clear">
@@ -64,23 +109,35 @@
 			<argument index="0" name="a" type="GraphVertex" />
 			<argument index="1" name="b" type="GraphVertex" />
 			<description>
+				Returns the first found edge between [code]a[/code] and [code]b[/code] vertices. There may be multiple edges between vertices. If you need to find a specific edge, use [method get_edge_list] instead.
 			</description>
 		</method>
 		<method name="find_vertex">
 			<return type="GraphVertex" />
 			<argument index="0" name="value" type="Variant" />
 			<description>
+				Returns the first found vertex that contains a specified value.
 			</description>
 		</method>
 		<method name="get_connected_components">
 			<return type="Dictionary" />
 			<description>
-				Returns a [Dictionary] of all [i]connected components[/i] in the graph. The keys consist of a set of vertices called [i]representatives[/i], while values contain all [i]members[/i] vertices of that representative. All members represent a connected component. A representative is considered as a member of the connected component. A connected component may consist of a single vertex.
+				Returns a [Dictionary] of all [i]connected components[/i] in the graph. The keys consist of a set of vertices called [i]representatives[/i], while values contain all [i]members[/i] [Array] of vertices of that representative:
+				[codeblock]
+				var representatives = graph.get_connected_components()
+				for r in representatives:
+				    print("Representative: ", r)
+				    var members = representatives[r]
+				    for m in members:
+				        print("Member: ", m)
+				[/codeblock]
+				All members represent a connected component. A representative is considered as a member of the connected component. A connected component may consist of a single vertex.
 			</description>
 		</method>
 		<method name="get_edge_count" qualifiers="const">
 			<return type="int" />
 			<description>
+				Returns the total number of edges in this graph.
 			</description>
 		</method>
 		<method name="get_edge_list" qualifiers="const">
@@ -88,16 +145,19 @@
 			<argument index="0" name="a" type="GraphVertex" default="null" />
 			<argument index="1" name="b" type="GraphVertex" default="null" />
 			<description>
+				Returns a list of [GraphEdge]s between [code]a[/code] and [code]b[/code] vertices. If both endpoints are [code]null[/code], then the method returns all edges in the graph instead.
 			</description>
 		</method>
 		<method name="get_vertex_count" qualifiers="const">
 			<return type="int" />
 			<description>
+				Returns the total number of vertices in this graph.
 			</description>
 		</method>
 		<method name="get_vertex_list" qualifiers="const">
 			<return type="Array" />
 			<description>
+				Returns a list of [GraphVertex] elements in this graph.
 			</description>
 		</method>
 		<method name="has_edge" qualifiers="const">
@@ -105,12 +165,14 @@
 			<argument index="0" name="a" type="GraphVertex" />
 			<argument index="1" name="b" type="GraphVertex" />
 			<description>
+				Returns whether any edge exists between [code]a[/code] and [code]b[/code] vertices.
 			</description>
 		</method>
 		<method name="has_vertex" qualifiers="const">
 			<return type="bool" />
 			<argument index="0" name="vertex" type="GraphVertex" />
 			<description>
+				Returns whether the graph contains the specified vertex.
 			</description>
 		</method>
 		<method name="is_strongly_connected">
@@ -123,18 +185,20 @@
 			<return type="void" />
 			<argument index="0" name="edge" type="GraphEdge" />
 			<description>
+				Removes an edge from the graph. If the graph is simple, you could find an edge with [method find_edge] first, and then remove it.
 			</description>
 		</method>
 		<method name="remove_vertex">
 			<return type="void" />
 			<argument index="0" name="vertex" type="GraphVertex" />
 			<description>
+				Removes the specified vertex from the graph. All edges that are connected to the vertex will be automatically deleted.
 			</description>
 		</method>
 	</methods>
 	<members>
 		<member name="iterator" type="GraphIterator" setter="set_iterator" getter="get_iterator">
-			An iterator used for traversing the graph's vertices, for methods like [method find_connected_component]. The default iterator is based on depth-first search algorithm. You can extend [GraphIterator] class via script to customize the algorithm.
+			An iterator used for traversing the graph's vertices. The default iterator is based on depth-first search algorithm. You can extend [GraphIterator] class via script to customize the algorithm.
 			If set to [code]null[/code], the default iterator is used.
 		</member>
 	</members>

@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="GraphEdge" inherits="Object" version="3.5">
 	<brief_description>
+		A data structure used to represent an edge in a [Graph].
 	</brief_description>
 	<description>
+		An edge connects two [GraphVertex] vertices together. The edge's direction is determined by whether it was added via [method Graph.add_edge] or [method Graph.add_directed_edge]. If the edge is directed, then [member a] and [member b] must be interpreted as endpoints of an arrow pointing [i]from[/i] a vertex [i]to[/i] another.
 	</description>
 	<tutorials>
 	</tutorials>
@@ -10,20 +12,25 @@
 		<method name="is_directed">
 			<return type="bool" />
 			<description>
+				Returns [code]true[/code] if the edge has a notion of direction, otherwise returns [code]false[/code] (associative edge).
 			</description>
 		</method>
 		<method name="is_loop">
 			<return type="bool" />
 			<description>
+				Returns [code]true[/code] if the edge is a self-loop, meaning that [member a] is equal to [member b].
 			</description>
 		</method>
 	</methods>
 	<members>
 		<member name="a" type="GraphVertex" setter="" getter="get_a">
+			The first endpoint, or the starting vertex of the edge.
 		</member>
 		<member name="b" type="GraphVertex" setter="" getter="get_b">
+			The second endpoint, or the final vertex of the edge.
 		</member>
 		<member name="value" type="Variant" setter="set_value" getter="get_value">
+			Edge's data (could be a weight, a label, a list of attributes etc).
 		</member>
 	</members>
 	<constants>
