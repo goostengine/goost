@@ -30,6 +30,7 @@ void GoostImage::replace_color(Ref<Image> p_image, const Color &p_color, const C
 	p_image->unlock();
 }
 
+// TODO: replace by `core/types/templates/queue.h`
 struct BucketFillQueue {
 	LocalVector<Vector2> array;
 	uint32_t front = 0;

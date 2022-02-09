@@ -6,7 +6,7 @@
 template <class T, class U = uint32_t>
 class Stack {
 	LocalVector<T, U> container;
-	uint32_t index = 0;
+	U index = 0;
 
 public:
 	_FORCE_INLINE_ T &top() {

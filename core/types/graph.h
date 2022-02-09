@@ -8,10 +8,14 @@
 #include "core/pair.h"
 
 #include "core/types/templates/stack.h"
+#include "core/types/templates/queue.h"
 
 class GraphVertex;
 class GraphEdge;
+
 class GraphIterator;
+class GraphIteratorDFS;
+class GraphIteratorBFS;
 
 struct GraphData {
 	using EdgeKey = Pair<uint32_t, uint32_t>;
@@ -45,8 +49,9 @@ class Graph : public Reference {
 	uint32_t next_vertex_id = 1;
 	uint32_t next_edge_id = 1;
 
-	Ref<GraphIterator> default_iterator;
-	Ref<GraphIterator> V;
+	Ref<GraphIterator> G;
+	Ref<GraphIteratorDFS> G_dfs; // Default one.
+	Ref<GraphIteratorBFS> G_bfs;
 
 protected:
 	static void _bind_methods();
@@ -75,8 +80,8 @@ public:
 
 	// Connectivity
 	Array find_connected_component(GraphVertex *p_vertex);
-	bool is_strongly_connected();
 	Dictionary get_connected_components();
+	bool is_strongly_connected();
 
 	// Cleanup
 	void clear();
@@ -84,7 +89,10 @@ public:
 
 	// Custom iterator
 	void set_iterator(const Ref<GraphIterator> &p_iterator);
-	Ref<GraphIterator> get_iterator() const { return V; }
+	Ref<GraphIterator> get_iterator() const { return G; }
+
+	void set_iterator_dfs() { G = G_dfs; }
+	void set_iterator_bfs() { G = G_bfs; }
 
 	Graph();
 	~Graph();
@@ -95,8 +103,10 @@ class GraphVertex : public Object {
 
 	friend class Graph;
 	friend struct GraphData;
+
 	friend class GraphIterator;
 	friend class GraphIteratorDFS;
+	friend class GraphIteratorBFS;
 
 	GraphData *graph = nullptr;
 
@@ -187,7 +197,23 @@ protected:
 	Set<GraphVertex *> visited;
 	GraphVertex *next_vertex = nullptr;
 
+	static void _bind_methods();
 	void advance();
+
+public:
+	virtual void initialize(GraphVertex *p_root);
+	virtual bool has_next() const;
+	virtual GraphVertex *next();
+};
+
+class GraphIteratorBFS : public GraphIterator {
+	GDCLASS(GraphIteratorBFS, GraphIterator);
+
+protected:
+	Queue<GraphVertex *> queue;
+	Set<GraphVertex *> visited;
+
+	static void _bind_methods();
 
 public:
 	virtual void initialize(GraphVertex *p_root);

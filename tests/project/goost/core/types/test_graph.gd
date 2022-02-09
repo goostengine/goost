@@ -304,12 +304,93 @@ func test_connected_component_cycle():
 	_e = graph.add_edge(V[1], V[3])
 	_e = graph.add_edge(V[2], V[3])
 
+	graph.set_iterator_dfs()
+
 	var component = graph.find_connected_component(V[0])
 	assert_eq(component.size(), 4)
 	assert_true(V[0] in component)
 	assert_true(V[1] in component)
 	assert_true(V[2] in component)
 	assert_true(V[3] in component)
+
+	graph.set_iterator_bfs()
+
+	component = graph.find_connected_component(V[0])
+	assert_eq(component.size(), 4)
+	assert_true(V[0] in component)
+	assert_true(V[1] in component)
+	assert_true(V[2] in component)
+	assert_true(V[3] in component)
+
+	
+func create_grid(p_graph, p_width, p_height):
+	graph.clear()
+
+	var id = 0
+
+	var grid = []
+	for j in p_height:
+		var row = []
+		for i in p_width:
+			var v = p_graph.add_vertex(id)
+			row.push_back(v)
+			id += 1
+		grid.push_back(row)
+
+	for row in grid:
+		for i in p_width - 1:
+			var a = row[i]
+			var b = row[i + 1]
+			p_graph.add_edge(a, b)
+			
+	for j in p_height - 1:
+		var row_a = grid[j]
+		var row_b = grid[j + 1]
+		
+		for i in p_width:
+			var a = row_a[i]
+			var b = row_b[i]
+			p_graph.add_edge(a, b)
+
+	return grid
+
+
+func test_breadth_iterator():
+	var grid = create_grid(graph, 5, 10)
+
+	graph.set_iterator_bfs()
+	var G = graph.iterator
+	G.initialize(grid[0][0])
+
+	var count = 0
+	while G.has_next():
+		var v = G.next()
+		count += 1
+		if count == 1:
+			assert_eq(v, grid[0][0])
+
+		elif count <= 3:
+			assert_true(v in [grid[1][0], grid[0][1]])
+		
+		elif count >= 4 and count <= 6:
+			assert_true(v in [grid[2][0], grid[1][1], grid[0][2]])
+
+	assert_eq(count, 50)
+
+
+func test_depth_iterator():
+	var grid = create_grid(graph, 10, 10)
+
+	graph.set_iterator_dfs()
+	var G = graph.iterator
+	G.initialize(grid[0][0])
+
+	var count = 0
+	while G.has_next():
+		var _v = G.next()
+		count += 1
+
+	assert_eq(count, 100)
 
 
 func test_get_connected_components():

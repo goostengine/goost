@@ -195,6 +195,18 @@
 				Removes the specified vertex from the graph. All edges that are connected to the vertex will be automatically deleted.
 			</description>
 		</method>
+		<method name="set_iterator_bfs">
+			<return type="void" />
+			<description>
+				Use breadth-first search iterator.
+			</description>
+		</method>
+		<method name="set_iterator_dfs">
+			<return type="void" />
+			<description>
+				Use depth-first search iterator (default).
+			</description>
+		</method>
 	</methods>
 	<members>
 		<member name="iterator" type="GraphIterator" setter="set_iterator" getter="get_iterator">

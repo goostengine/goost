@@ -296,8 +296,8 @@ Array Graph::get_edge_list(GraphVertex *p_a, GraphVertex *p_b) const {
 Array Graph::find_connected_component(GraphVertex *p_vertex) {
 	Array component;
 
-	for (V->initialize(p_vertex); V->has_next();) {
-		component.push_back(V->next());
+	for (G->initialize(p_vertex); G->has_next();) {
+		component.push_back(G->next());
 	}
 	return component;
 }
@@ -315,7 +315,7 @@ bool Graph::is_strongly_connected() {
 	GraphVertex *root = graph->vertices[*k];
 
 	uint32_t count = 0;
-	for (V->initialize(root); V->has_next(); V->next()) {
+	for (G->initialize(root); G->has_next(); G->next()) {
 		count++;
 	}
 	return count == graph->vertices.size();
@@ -390,11 +390,8 @@ void Graph::clear_edges() {
 }
 
 void Graph::set_iterator(const Ref<GraphIterator> &p_iterator) {
-	if (p_iterator.is_valid()) {
-		V = p_iterator;
-	} else {
-		V = default_iterator;
-	}
+	ERR_FAIL_COND_MSG(p_iterator.is_null(), "Invalid iterator");
+	G = p_iterator;
 }
 
 void Graph::_bind_methods() {
@@ -426,16 +423,17 @@ void Graph::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_iterator", "iterator"), &Graph::set_iterator);
 	ClassDB::bind_method(D_METHOD("get_iterator"), &Graph::get_iterator);
 
+	ClassDB::bind_method(D_METHOD("set_iterator_dfs"), &Graph::set_iterator_dfs);
+	ClassDB::bind_method(D_METHOD("set_iterator_bfs"), &Graph::set_iterator_bfs);
+
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "iterator"), "set_iterator", "get_iterator");
 }
 
 Graph::Graph() {
 	graph = memnew(GraphData);
-	// Setup default depth-first search iterator.
-	Ref<GraphIteratorDFS> dfs;
-	dfs.instance();
-	default_iterator = dfs;
-	V = default_iterator;
+	G_dfs.instance();
+	G_bfs.instance();
+	G = G_dfs; // Set depth-first search iterator by default.
 }
 
 Graph::~Graph() {
@@ -500,6 +498,18 @@ void GraphIterator::_bind_methods() {
 	BIND_VMETHOD(MethodInfo(Variant::NIL, "initialize", PropertyInfo(Variant::OBJECT, "root")));
 	BIND_VMETHOD(MethodInfo(Variant::BOOL, "has_next"));
 	BIND_VMETHOD(MethodInfo(Variant::OBJECT, "next"));
+}
+
+void GraphIteratorDFS::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("initialize", "root"), &GraphIteratorDFS::initialize);
+	ClassDB::bind_method(D_METHOD("has_next"), &GraphIteratorDFS::has_next);
+	ClassDB::bind_method(D_METHOD("next"), &GraphIteratorDFS::next);
+}
+
+void GraphIteratorBFS::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("initialize", "root"), &GraphIteratorBFS::initialize);
+	ClassDB::bind_method(D_METHOD("has_next"), &GraphIteratorBFS::has_next);
+	ClassDB::bind_method(D_METHOD("next"), &GraphIteratorBFS::next);
 }
 
 void GraphIterator::initialize(GraphVertex *p_root) {
@@ -575,4 +585,36 @@ void GraphIteratorDFS::advance() {
 			}
 		}
 	}
+}
+
+void GraphIteratorBFS::initialize(GraphVertex *p_root) {
+	ERR_FAIL_NULL(p_root);
+
+	graph = p_root->graph;
+
+	queue.clear();
+	visited.clear();
+
+	queue.push_back(p_root);
+	visited.insert(p_root);
+}
+
+bool GraphIteratorBFS::has_next() const {
+	return !queue.is_empty();
+}
+
+GraphVertex *GraphIteratorBFS::next() {
+	ERR_FAIL_COND_V(!has_next(), nullptr);
+
+	GraphVertex *next_vertex = queue.pop_front();
+
+	const uint32_t *k = nullptr;
+	while ((k = next_vertex->neighbors.next(k))) {
+		GraphVertex *child = graph->vertices[*k];
+		if (!visited.has(child)) {
+			visited.insert(child);
+			queue.push_back(child);
+		}
+	}
+	return next_vertex;
 }
