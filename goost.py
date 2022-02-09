@@ -174,6 +174,7 @@ classes = {
     "LightTexture": "scene",
     "LinkedList": "core",
     "ListNode": "core",
+    "Map2D": "core",
     "MidiFile": "audio",
     "MidiPlayer": "audio",
     "MixinScript": "script",
@@ -197,7 +198,6 @@ classes = {
     "ShapeCast2D": "physics",
     "Spawner2D": "scene",
     "Stopwatch": "scene",
-    "VariantMap": "core",
     "VariantResource": "core",
     "VisualShape2D": "scene",
 }

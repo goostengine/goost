@@ -48,9 +48,12 @@ void register_core_types() {
 	ClassDB::register_class<GraphEdge>();
 	ClassDB::register_class<GraphIterator>();
 
-	ClassDB::register_class<VariantMap>();
+	ClassDB::register_class<Map2D>();
 	ClassDB::register_class<VariantResource>();
 
+#ifndef DISABLE_DEPRECATED
+	ClassDB::add_compatibility_class("VariantMap", "Map2D");
+#endif
 #if defined(TOOLS_ENABLED) && defined(GOOST_VariantResource)
 	EditorNode::add_init_callback(_variant_resource_preview_init);
 #endif

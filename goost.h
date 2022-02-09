@@ -16,9 +16,9 @@
 #include "core/math/geometry/2d/random_2d.h"
 #include "core/math/random.h"
 #include "core/script/mixin_script/mixin_script.h"
-#include "core/types/linked_list.h"
 #include "core/types/graph.h"
-#include "core/types/variant_map.h"
+#include "core/types/linked_list.h"
+#include "core/types/map_2d.h"
 #include "core/types/variant_resource.h"
 
 #include "scene/2d/editor/poly_node_2d_editor_plugin.h"
