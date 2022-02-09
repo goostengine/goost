@@ -483,6 +483,75 @@ func test_iterator():
 		steps += 1
 	assert_eq(steps, 4)
 
+	
+func test_save_load():
+	var path = "res://goost/core/types/graph.tres"
+
+	# Save
+	var a = graph.add_vertex("a")
+	var b = graph.add_vertex("b")
+	var c = graph.add_vertex("c")
+
+	var ab = graph.add_edge(a, b, "ab")
+	var ac = graph.add_directed_edge(a, c, "ac")
+	var bc = graph.add_edge(b, c, "bc")
+
+	assert_eq(a.value, "a")
+	assert_eq(b.value, "b")
+	assert_eq(c.value, "c")
+
+	assert_eq(ab.a, a)
+	assert_eq(ab.b, b)
+	assert_eq(ab.value, "ab")
+	assert_false(ab.is_directed())
+
+	assert_eq(ac.a, a)
+	assert_eq(ac.b, c)
+	assert_eq(ac.value, "ac")
+	assert_true(ac.is_directed())
+
+	assert_eq(bc.a, b)
+	assert_eq(bc.b, c)
+	assert_eq(bc.value, "bc")
+	assert_false(bc.is_directed())
+	
+	var _err = ResourceSaver.save(path, graph)
+	assert_file_exists(path)
+
+	# Load
+	graph = load(path)
+
+	a = graph.find_vertex("a")
+	b = graph.find_vertex("b")
+	c = graph.find_vertex("c")
+
+	ab = graph.find_edge(a, b)
+	ac = graph.find_edge(a, c)
+	bc = graph.find_edge(b, c)
+
+	assert_eq(a.value, "a")
+	assert_eq(b.value, "b")
+	assert_eq(c.value, "c")
+
+	assert_eq(ab.a, a)
+	assert_eq(ab.b, b)
+	assert_eq(ab.value, "ab")
+	assert_false(ab.is_directed())
+
+	assert_eq(ac.a, a)
+	assert_eq(ac.b, c)
+	assert_eq(ac.value, "ac")
+	assert_true(ac.is_directed())
+
+	assert_eq(bc.a, b)
+	assert_eq(bc.b, c)
+	assert_eq(bc.value, "bc")
+	assert_false(bc.is_directed())
+
+	# Cleanup
+	var dir = Directory.new()
+	dir.remove(path)
+
 
 class _TestPerformance extends "res://addons/gut/test.gd":
 

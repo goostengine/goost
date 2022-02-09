@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="Graph" inherits="Reference" version="3.5">
+<class name="Graph" inherits="Resource" version="3.5">
 	<brief_description>
 		A general-purpose mixed graph.
 	</brief_description>
@@ -209,6 +209,15 @@
 		</method>
 	</methods>
 	<members>
+		<member name="data" type="Dictionary" setter="_set_data" getter="_get_data" default="{&quot;edges&quot;: [  ],&quot;vertices&quot;: [  ]}">
+			Graph data, which contains all vertices and edges.
+			The vertices are stored in a single [Array] where values and IDs (unsigned int) are stored consecutively.
+			The edges represent an [Array] of edge data. The edge data is represented by an [Array] which stores the following fields:
+			[code]unsigned int:[/code] ID of vertex [code]a[/code]
+			[code]unsigned int:[/code] ID of vertex [code]b[/code]
+			[code]Variant:[/code] Value (can be anything).
+			[code]bool:[/code] Whether the edge is directed or not.
+		</member>
 		<member name="iterator" type="GraphIterator" setter="set_iterator" getter="get_iterator">
 			An iterator used for traversing the graph's vertices. The default iterator is based on depth-first search algorithm. You can extend [GraphIterator] class via script to customize the algorithm.
 			If set to [code]null[/code], the default iterator is used.

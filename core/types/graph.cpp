@@ -84,16 +84,89 @@ GraphEdge *Graph::_create_edge() {
 	return edge;
 }
 
-GraphVertex *Graph::add_vertex(const Variant &p_value) {
+void Graph::_set_data(const Dictionary &p_data) {
+	ERR_FAIL_COND(p_data.empty());
+	ERR_FAIL_COND(!p_data.has("vertices"));
+	ERR_FAIL_COND(!p_data.has("edges"));
+
+	clear();
+
+	Array vertices = p_data["vertices"];
+	for (int i = 0; i < vertices.size(); i += 2) {
+		uint32_t id = vertices[i + 0];
+		Variant value = vertices[i + 1];
+		_add_vertex(value, id);
+	}
+
+	Array edges = p_data["edges"];
+	for (int i = 0; i < edges.size(); ++i) {
+		Array edge_data = edges[i];
+		ERR_FAIL_COND(edge_data.size() < 4);
+
+		uint32_t a_id = edge_data[0];
+		uint32_t b_id = edge_data[1];
+		Variant value = edge_data[2];
+		bool directed = edge_data[3];
+
+		GraphVertex *a = graph->vertices[a_id];
+		GraphVertex *b = graph->vertices[b_id];
+
+		_add_edge(a, b, value, directed);
+	}
+}
+
+Dictionary Graph::_get_data() const {
+	Dictionary data;
+
+	Array vertices;
+	{
+		const uint32_t *k = nullptr;
+		while ((k = graph->vertices.next(k))) {
+			const GraphVertex *v = graph->vertices[*k];
+			vertices.push_back(v->id);
+			vertices.push_back(v->value);
+		}
+	}
+	Array edges;
+	{
+		const EdgeKey *k = nullptr;
+		while ((k = graph->edges.next(k))) {
+			EdgeList &list = graph->edges[*k];
+			for (int i = 0; i < list.size(); ++i) {
+				const GraphEdge *e = list[i];
+				Array edge_data;
+				edge_data.push_back(e->a->id);
+				edge_data.push_back(e->b->id);
+				edge_data.push_back(e->value);
+				edge_data.push_back(e->directed);
+				edges.push_back(edge_data);
+			}
+		}
+	}
+	data["vertices"] = vertices;
+	data["edges"] = edges;
+
+	return data;
+}
+
+GraphVertex *Graph::_add_vertex(const Variant &p_value, uint32_t p_id) {
 	GraphVertex *v = _create_vertex();
 
-	v->id = next_vertex_id++;
+	uint32_t id = p_id;
+	if (id == 0) {
+		id = next_vertex_id++;
+	}
+	v->id = id;
 	v->value = p_value;
 
 	graph->vertices[v->id] = v;
 	v->graph = graph;
 
 	return v;
+}
+
+GraphVertex *Graph::add_vertex(const Variant &p_value) {
+	return _add_vertex(p_value, 0);
 }
 
 void Graph::remove_vertex(GraphVertex *p_vertex) {
@@ -221,7 +294,6 @@ GraphEdge *Graph::_add_edge(const Variant &p_a, const Variant &p_b, const Varian
 	edge->b = b;
 	edge->value = p_value;
 	edge->directed = p_directed;
-	edge->id = next_edge_id++;
 	edge->graph = graph;
 
 	const auto &key = EdgeKey(a->id, b->id);
@@ -370,6 +442,8 @@ void Graph::clear() {
 	}
 	graph->vertices.clear();
 	graph->edges.clear();
+
+	next_vertex_id = 1;
 }
 
 void Graph::clear_edges() {
@@ -426,7 +500,11 @@ void Graph::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_iterator_dfs"), &Graph::set_iterator_dfs);
 	ClassDB::bind_method(D_METHOD("set_iterator_bfs"), &Graph::set_iterator_bfs);
 
-	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "iterator"), "set_iterator", "get_iterator");
+	ClassDB::bind_method(D_METHOD("_set_data", "data"), &Graph::_set_data);
+	ClassDB::bind_method(D_METHOD("_get_data"), &Graph::_get_data);
+
+	ADD_PROPERTY(PropertyInfo(Variant::DICTIONARY, "data", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_STORAGE), "_set_data", "_get_data");
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "iterator", PROPERTY_HINT_NONE, "", 0), "set_iterator", "get_iterator");
 }
 
 Graph::Graph() {

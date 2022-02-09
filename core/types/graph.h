@@ -1,6 +1,6 @@
 #pragma once
 
-#include "core/reference.h"
+#include "core/resource.h"
 
 #include "core/hash_map.h"
 #include "core/local_vector.h"
@@ -41,13 +41,12 @@ struct GraphData {
 	_FORCE_INLINE_ EdgeList &get_edges(uint32_t a_id, uint32_t b_id);
 };
 
-class Graph : public Reference {
-	GDCLASS(Graph, Reference);
+class Graph : public Resource {
+	GDCLASS(Graph, Resource);
 
 	GraphData *graph = nullptr;
 
 	uint32_t next_vertex_id = 1;
-	uint32_t next_edge_id = 1;
 
 	Ref<GraphIterator> G;
 	Ref<GraphIteratorDFS> G_dfs; // Default one.
@@ -55,9 +54,17 @@ class Graph : public Reference {
 
 protected:
 	static void _bind_methods();
+
+	// Storage
+	void _set_data(const Dictionary &p_data);
+	Dictionary _get_data() const;
+
+	// Utilities
+	GraphVertex *_add_vertex(const Variant &p_value, uint32_t p_id = 0);
 	GraphEdge *_add_edge(const Variant &p_a, const Variant &p_b, const Variant &p_value, bool p_directed);
 
 public:
+	// Instantiation
 	virtual GraphVertex *_create_vertex();
 	virtual GraphEdge *_create_edge();
 
@@ -87,7 +94,7 @@ public:
 	void clear();
 	void clear_edges();
 
-	// Custom iterator
+	// Iterator
 	void set_iterator(const Ref<GraphIterator> &p_iterator);
 	Ref<GraphIterator> get_iterator() const { return G; }
 
