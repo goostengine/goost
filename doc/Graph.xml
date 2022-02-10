@@ -181,6 +181,21 @@
 				Returns [code]true[/code] if there exist at least one path connecting any two vertices. Applies both to undirected and directed graphs.
 			</description>
 		</method>
+		<method name="minimum_spanning_tree" qualifiers="const">
+			<return type="Array" />
+			<description>
+				Returns a minimum spanning tree (MST) of this graph. The MST is represented as an [Array] of [GraphEdge]s in this graph, from which you can create a new [Graph], if you need to.
+				The [member GraphEdge.value] is interpreted as a [float] weight, which is up to you to define.
+				In order to obtain a [i]maximum spanning tree[/i], you can inverse the weights, for example:
+				[codeblock]
+				var a = graph.add_vertex(Vector2(0, 0))
+				var b = graph.add_vertex(Vector2(100, 100))
+				var w = a.value.distance_to(b.value) # Euclidean distance.
+				w = 1.0 / w
+				graph.add_edge(a, b, w)
+				[/codeblock]
+			</description>
+		</method>
 		<method name="remove_edge">
 			<return type="void" />
 			<argument index="0" name="edge" type="GraphEdge" />

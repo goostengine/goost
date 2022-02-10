@@ -90,6 +90,8 @@ public:
 	Dictionary get_connected_components();
 	bool is_strongly_connected();
 
+	Array minimum_spanning_tree() const;
+
 	// Cleanup
 	void clear();
 	void clear_edges();

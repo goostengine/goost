@@ -324,7 +324,7 @@ func test_connected_component_cycle():
 
 	
 func create_grid(p_graph, p_width, p_height):
-	graph.clear()
+	p_graph.clear()
 
 	var id = 0
 
@@ -482,8 +482,42 @@ func test_iterator():
 		var _n = V.next()
 		steps += 1
 	assert_eq(steps, 4)
-
 	
+	
+func test_mst():
+	var V = []
+	V.push_back(graph.add_vertex(Vector2(0, 0)))
+	V.push_back(graph.add_vertex(Vector2(200, 0)))
+	V.push_back(graph.add_vertex(Vector2(50, 60)))
+	V.push_back(graph.add_vertex(Vector2(100, 100)))
+	V.push_back(graph.add_vertex(Vector2(0, 100)))
+
+	# Generate complete graph.
+	for i in range(0, V.size()):
+		var a = V[i]
+		for j in range(i + 1, V.size()):
+			var b = V[j]
+			# Euclidean minimum spanning tree.
+			var w = a.value.distance_to(b.value)
+			var _e = graph.add_edge(a, b, w)
+
+	assert_eq(graph.get_edge_count(), 10, "Should generate complete graph")
+
+	var mst = graph.minimum_spanning_tree()
+
+	assert_false(graph.find_edge(V[0], V[1]) in mst)
+	assert_false(graph.find_edge(V[0], V[3]) in mst)
+	assert_false(graph.find_edge(V[0], V[4]) in mst)
+	assert_false(graph.find_edge(V[1], V[2]) in mst)
+	assert_false(graph.find_edge(V[1], V[4]) in mst)
+	assert_false(graph.find_edge(V[3], V[4]) in mst)
+
+	assert_true(graph.find_edge(V[0], V[2]) in mst)
+	assert_true(graph.find_edge(V[1], V[3]) in mst)
+	assert_true(graph.find_edge(V[2], V[3]) in mst)
+	assert_true(graph.find_edge(V[2], V[4]) in mst)
+
+
 func test_save_load():
 	var path = "res://goost/core/types/graph.tres"
 

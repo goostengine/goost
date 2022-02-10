@@ -3,7 +3,7 @@
 #include "core/script_language.h"
 #include "core/string_names.h"
 
-#include "core/math/disjoint_set.h"
+#include "core/types/templates/union_find.h"
 
 using EdgeKey = Pair<uint32_t, uint32_t>;
 using EdgeList = LocalVector<GraphEdge *, int>;
@@ -393,10 +393,62 @@ bool Graph::is_strongly_connected() {
 	return count == graph->vertices.size();
 }
 
+struct SortEdgesMST {
+	_FORCE_INLINE_ bool operator()(const GraphEdge *a, const GraphEdge *b) const {
+		real_t weight_a = a->get_value();
+		real_t weight_b = b->get_value();
+
+		if (weight_a < weight_b) {
+			return true;
+		} else if (weight_a > weight_b) {
+			return false;
+		}
+		return false;
+	}
+};
+
+Array Graph::minimum_spanning_tree() const {
+	// Kruskal's algorithm.
+
+	// Sort all edges in increasing weight.
+	Vector<GraphEdge *> edges;
+	{
+		const EdgeKey *k = nullptr;
+		while ((k = graph->edges.next(k))) {
+			EdgeList &list = graph->edges[*k];
+			for (int i = 0; i < list.size(); ++i) {
+				edges.push_back(list[i]);
+			}
+		}
+		SortArray<GraphEdge *, SortEdgesMST> sorter;
+		sorter.sort(edges.ptrw(), edges.size());
+	}
+	// Make set.
+	UnionFind<GraphVertex *> set;
+	{
+		const uint32_t *k = nullptr;
+		while ((k = graph->vertices.next(k))) {
+			set.insert(graph->vertices[*k]);
+		}
+	}
+	// Find tree.
+	Array edges_tree;
+
+	for (int i = 0; i < edges.size(); ++i) {
+		const GraphEdge *edge = edges[i];
+		if (set.find(edge->a) != set.find(edge->b)) {
+			// No cycle is created, merge.
+			edges_tree.push_back(edge);
+			set.merge(edge->a, edge->b);
+		}
+	}
+	return edges_tree;
+}
+
 Dictionary Graph::get_connected_components() {
 	Dictionary components;
 
-	DisjointSet<GraphVertex *> set;
+	UnionFind<GraphVertex *> set;
 	{
 		const uint32_t *k = nullptr;
 		while ((k = graph->vertices.next(k))) {
@@ -408,7 +460,7 @@ Dictionary Graph::get_connected_components() {
 		while ((k = graph->edges.next(k))) {
 			EdgeList &list = graph->edges[*k];
 			for (int i = 0; i < list.size(); ++i) {
-				set.create_union(list[i]->a, list[i]->b);
+				set.merge(list[i]->a, list[i]->b);
 			}
 		}
 	}
@@ -490,6 +542,8 @@ void Graph::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("find_connected_component", "vertex"), &Graph::find_connected_component);
 	ClassDB::bind_method(D_METHOD("get_connected_components"), &Graph::get_connected_components);
 	ClassDB::bind_method(D_METHOD("is_strongly_connected"), &Graph::is_strongly_connected);
+
+	ClassDB::bind_method(D_METHOD("minimum_spanning_tree"), &Graph::minimum_spanning_tree);
 
 	ClassDB::bind_method(D_METHOD("clear"), &Graph::clear);
 	ClassDB::bind_method(D_METHOD("clear_edges"), &Graph::clear_edges);
