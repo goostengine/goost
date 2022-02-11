@@ -5,7 +5,7 @@
 
 #include "core/types/templates/union_find.h"
 
-using EdgeKey = Pair<uint32_t, uint32_t>;
+using EdgeKey = GraphData::EdgeKey;
 using EdgeList = LocalVector<GraphEdge *, int>;
 
 void GraphData::remove_vertex(GraphVertex *p_vertex) {
@@ -304,7 +304,7 @@ GraphEdge *Graph::_add_edge(const Variant &p_a, const Variant &p_b, const Varian
 	const auto &key = EdgeKey(a->id, b->id);
 	if (!graph->edges.has(key)) {
 		EdgeList list;
-		list.reserve(4); // Slight optimization for directed or multi-edges.
+		list.reserve(2); // Slight optimization for directed or multi-edges.
 		list.push_back(edge);
 		graph->edges[key] = list;
 	} else {

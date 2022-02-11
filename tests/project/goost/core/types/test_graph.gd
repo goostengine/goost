@@ -114,13 +114,16 @@ func test_edge_list():
 	var b = graph.add_vertex("b")
 	var c = graph.add_vertex("c")
 
-	var ab1 = graph.add_edge(a, b)
-	var ab2 = graph.add_edge(a, b)
+	# Different weights.
+	var ab1 = graph.add_edge(a, b, 1)
+	var ab2 = graph.add_edge(b, a, 2) 
+
 	var ac = graph.add_edge(a, c)
 	var bc = graph.add_edge(b, c)
 
 	var edges = graph.get_edge_list(a, b)
 	assert_eq(edges.size(), 2)
+	assert_ne(ab1, ab2, "Multiple undirected edges should be allowed") 
 	assert_true(ab1 in edges)
 	assert_true(ab2 in edges)
 

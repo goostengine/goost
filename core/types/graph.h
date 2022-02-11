@@ -5,10 +5,9 @@
 #include "core/hash_map.h"
 #include "core/local_vector.h"
 #include "core/oa_hash_map.h"
-#include "core/pair.h"
 
-#include "core/types/templates/stack.h"
 #include "core/types/templates/queue.h"
+#include "core/types/templates/stack.h"
 
 class GraphVertex;
 class GraphEdge;
@@ -18,26 +17,35 @@ class GraphIteratorDFS;
 class GraphIteratorBFS;
 
 struct GraphData {
-	using EdgeKey = Pair<uint32_t, uint32_t>;
+	struct EdgeKey {
+		uint32_t a;
+		uint32_t b;
+
+		EdgeKey(const uint32_t &p_a, const uint32_t &p_b) {
+			if (p_a < p_b) {
+				a = p_a;
+				b = p_b;
+			} else {
+				a = p_b;
+				b = p_a;
+			}
+		}
+		bool operator==(const EdgeKey &other) const {
+			return (a == other.a) && (b == other.b);
+		}
+	};
 	using EdgeList = LocalVector<GraphEdge *, int>;
 
 	struct EdgeKeyHasher {
 		static _FORCE_INLINE_ uint32_t hash(const EdgeKey &key) {
-			return key.first ^ key.second;
-		}
-	};
-	struct EdgeKeyComparator {
-		static bool compare(const EdgeKey &a, const EdgeKey &b) {
-			return ((a.first == b.first) && (a.second == b.second)) ||
-				   ((a.first == b.second) && (a.second == b.first));
+			return (key.a << 16) + key.b;
 		}
 	};
 	HashMap<uint32_t, GraphVertex *> vertices;
-	HashMap<EdgeKey, EdgeList, EdgeKeyHasher, EdgeKeyComparator> edges;
+	HashMap<EdgeKey, EdgeList, EdgeKeyHasher> edges;
 
 	void remove_vertex(GraphVertex *p_vertex);
 	void remove_edge(GraphEdge *p_vertex);
-
 	_FORCE_INLINE_ EdgeList &get_edges(uint32_t a_id, uint32_t b_id);
 };
 
