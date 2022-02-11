@@ -2,12 +2,11 @@
 
 #include "core/map.h"
 #include "core/vector.h"
-
 /*
-    Based on Godot's DisjointSet structure:
+	Based on Godot's DisjointSet structure:
 	https://github.com/godotengine/godot/blob/11e09e59d/core/math/disjoint_set.h
-    - Assumes duplicate elements are not added to the set for performance reasons.
-    - Supports FIND operation.
+	- Assumes duplicate elements are not added to the set for performance reasons.
+	- Supports FIND operation.
 */
 template <typename T, class C = Comparator<T>, class AL = DefaultAllocator>
 class UnionFind {
@@ -34,7 +33,7 @@ public:
 	~UnionFind();
 
 private:
-    Container elements;
+	Container elements;
 };
 
 template <typename T, class C, class AL>
@@ -53,7 +52,7 @@ typename UnionFind<T, C, AL>::Element *UnionFind<T, C, AL>::find(T object) {
 template <typename T, class C, class AL>
 typename UnionFind<T, C, AL>::Element *UnionFind<T, C, AL>::get_element(T object) {
 	typename Container::Element *E = elements.find(object);
-    ERR_FAIL_NULL_V(E, nullptr);
+	ERR_FAIL_NULL_V(E, nullptr);
 	return E->value();
 }
 
@@ -118,7 +117,7 @@ void UnionFind<T, C, AL>::get_members(Vector<T> &out_members, T representative) 
 
 template <typename T, class C, class AL>
 UnionFind<T, C, AL>::~UnionFind() {
-    for (typename Container::Element *E = elements.front(); E; E = E->next()) {
+	for (typename Container::Element *E = elements.front(); E; E = E->next()) {
 		memdelete_allocator<Element, AL>(E->value());
 	}
 }

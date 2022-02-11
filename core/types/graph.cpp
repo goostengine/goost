@@ -56,6 +56,7 @@ void GraphData::remove_edge(GraphEdge *p_edge) {
 }
 
 void Graph::remove_edge(GraphEdge *p_edge) {
+	ERR_FAIL_NULL(p_edge);
 	// Calls into GraphData::remove_edge() during NOTIFICATION_PREDELETE
 	memdelete(p_edge);
 }
@@ -92,6 +93,8 @@ void Graph::_set_data(const Dictionary &p_data) {
 	clear();
 
 	Array vertices = p_data["vertices"];
+	ERR_FAIL_COND(vertices.size() % 2 != 0);
+
 	for (int i = 0; i < vertices.size(); i += 2) {
 		uint32_t id = vertices[i + 0];
 		Variant value = vertices[i + 1];
@@ -170,6 +173,7 @@ GraphVertex *Graph::add_vertex(const Variant &p_value) {
 }
 
 void Graph::remove_vertex(GraphVertex *p_vertex) {
+	ERR_FAIL_NULL(p_vertex);
 	// Calls into GraphData::remove_vertex() during NOTIFICATION_PREDELETE
 	memdelete(p_vertex);
 }
@@ -186,6 +190,7 @@ GraphVertex *Graph::find_vertex(const Variant &p_value) {
 }
 
 bool Graph::has_vertex(GraphVertex *p_vertex) const {
+	ERR_FAIL_NULL_V(p_vertex, false);
 	return graph->vertices.has(p_vertex->id);
 }
 
@@ -276,13 +281,13 @@ GraphEdge *Graph::_add_edge(const Variant &p_a, const Variant &p_b, const Varian
 
 	if (p_a.get_type() == Variant::OBJECT) {
 		a = Object::cast_to<GraphVertex>(p_a);
-		ERR_FAIL_NULL_V(a, nullptr);
+		ERR_FAIL_NULL_V_MSG(a, nullptr, "The object is not a valid GraphVertex");
 	} else {
 		a = add_vertex(p_a);
 	}
 	if (p_b.get_type() == Variant::OBJECT) {
 		b = Object::cast_to<GraphVertex>(p_b);
-		ERR_FAIL_NULL_V(b, nullptr);
+		ERR_FAIL_NULL_V_MSG(b, nullptr, "The object is not a valid GraphVertex");
 	} else {
 		b = add_vertex(p_b);
 	}
@@ -322,6 +327,9 @@ EdgeList &GraphData::get_edges(uint32_t a_id, uint32_t b_id) {
 }
 
 GraphEdge *Graph::find_edge(GraphVertex *p_a, GraphVertex *p_b) const {
+	ERR_FAIL_NULL_V(p_a, nullptr);
+	ERR_FAIL_NULL_V(p_b, nullptr);
+
 	const EdgeList &list = graph->get_edges(p_a->id, p_b->id);
 
 	for (int i = 0; i < list.size(); ++i) {
@@ -337,13 +345,18 @@ GraphEdge *Graph::find_edge(GraphVertex *p_a, GraphVertex *p_b) const {
 }
 
 bool Graph::has_edge(GraphVertex *p_a, GraphVertex *p_b) const {
+	ERR_FAIL_NULL_V(p_a, false);
+	ERR_FAIL_NULL_V(p_b, false);
 	return find_edge(p_a, p_b) != nullptr;
 }
 
 Array Graph::get_edge_list(GraphVertex *p_a, GraphVertex *p_b) const {
+	ERR_FAIL_COND_V_MSG(!p_a && p_b, Array(), "Parameter 'a' is not a valid GraphVertex");
+	ERR_FAIL_COND_V_MSG(p_a && !p_b, Array(), "Parameter 'b' is not a valid GraphVertex");
+
 	Array edge_list;
 
-	const bool all = !p_a && !p_b;
+	const bool fetch_all = !p_a || !p_b;
 
 	const EdgeKey *k = nullptr;
 	while ((k = graph->edges.next(k))) {
@@ -351,7 +364,7 @@ Array Graph::get_edge_list(GraphVertex *p_a, GraphVertex *p_b) const {
 
 		for (int i = 0; i < list.size(); ++i) {
 			GraphEdge *edge = list[i];
-			if (all) { // Get all edges in the graph.
+			if (fetch_all) { // Get all edges in the graph.
 				edge_list.push_back(edge);
 			} else { // Get all edges between vertices.
 				if (p_a == edge->a && p_b == edge->b) {
@@ -366,6 +379,8 @@ Array Graph::get_edge_list(GraphVertex *p_a, GraphVertex *p_b) const {
 }
 
 Array Graph::find_connected_component(GraphVertex *p_vertex) {
+	ERR_FAIL_NULL_V(p_vertex, Array());
+
 	Array component;
 
 	for (G->initialize(p_vertex); G->has_next();) {
