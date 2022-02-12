@@ -9,6 +9,9 @@ using EdgeKey = GraphData::EdgeKey;
 using EdgeList = LocalVector<GraphEdge *, int>;
 
 void GraphData::remove_vertex(GraphVertex *p_vertex) {
+	if (clearing_all) {
+		return;	
+	}
 	EdgeList edges_to_delete;
 
 	const uint32_t *n = nullptr;
@@ -37,6 +40,9 @@ void GraphData::remove_vertex(GraphVertex *p_vertex) {
 }
 
 void GraphData::remove_edge(GraphEdge *p_edge) {
+	if (clearing_all) {
+		return;	
+	}
 	GraphVertex *&a = p_edge->a;
 	GraphVertex *&b = p_edge->b;
 
@@ -497,20 +503,22 @@ Dictionary Graph::get_connected_components() {
 }
 
 void Graph::clear() {
-	Vector<GraphVertex *> to_delete;
+	graph->clearing_all = true;
+	clear_edges();
+
+	LocalVector<GraphVertex *, int> vertices_to_delete;
 
 	const uint32_t *k = nullptr;
 	while ((k = graph->vertices.next(k))) {
-		to_delete.push_back(graph->vertices[*k]);
+		vertices_to_delete.push_back(graph->vertices[*k]);
 	}
-	for (int i = 0; i < to_delete.size(); ++i) {
-		// This will also delete edges, see GraphData::remove_vertex()
-		memdelete(to_delete[i]);
+	for (int i = 0; i < vertices_to_delete.size(); ++i) {
+		memdelete(vertices_to_delete[i]);
 	}
 	graph->vertices.clear();
-	graph->edges.clear();
-
 	next_vertex_id = 1;
+
+	graph->clearing_all = false;
 }
 
 void Graph::clear_edges() {

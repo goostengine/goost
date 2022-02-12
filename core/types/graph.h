@@ -46,6 +46,10 @@ struct GraphData {
 
 	void remove_vertex(GraphVertex *p_vertex);
 	void remove_edge(GraphEdge *p_vertex);
+	// Allows to speed up the clean() method by skipping neighbor
+	// updates and removing edges from the adjacency list.
+	bool clearing_all = false; 
+
 	_FORCE_INLINE_ EdgeList &get_edges(uint32_t a_id, uint32_t b_id);
 };
 
