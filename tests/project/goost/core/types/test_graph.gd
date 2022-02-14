@@ -521,6 +521,43 @@ func test_mst():
 	assert_true(graph.find_edge(V[2], V[4]) in mst)
 
 
+func test_shortest_path_tree():
+	var V = []
+	for i in 4:
+		V.push_back(graph.add_vertex(i))
+
+	var _e
+	_e = graph.add_edge(V[0], V[1], 2)
+	_e = graph.add_edge(V[0], V[3], 5)
+	_e = graph.add_edge(V[1], V[2], 1)
+	_e = graph.add_edge(V[3], V[2], 3)
+
+	var tree = graph.shortest_path_tree(V[0])
+	assert_eq(tree.edges.size(), 3)
+
+	for current in tree.backtrace:
+		var previous = tree.backtrace[current]
+		var distance = tree.distance[current]
+		match current.value:
+			0:
+				assert_null(previous)
+				assert_eq(distance, 0.0)
+			1:
+				assert_eq(previous.value, 0)
+				assert_eq(distance, 2.0)
+			2:
+				assert_eq(previous.value, 1)
+				assert_eq(distance, 3.0)
+			3:
+				assert_eq(previous.value, 0)
+				assert_eq(distance, 5.0)
+
+		if OS.is_stdout_verbose():
+			print("Current: ", current.value,
+				", Previous: ", previous.value if previous else "None",
+				", Distance: ", distance)
+
+
 func test_save_load():
 	var path = "res://goost/core/types/graph.tres"
 

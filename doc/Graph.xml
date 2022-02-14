@@ -184,7 +184,7 @@
 		<method name="minimum_spanning_tree" qualifiers="const">
 			<return type="Array" />
 			<description>
-				Returns a minimum spanning tree (MST) of this graph. An MST is represented as an [Array] of [GraphEdge]s in this graph, from which you can create a new [Graph], if you need to.
+				Returns a minimum spanning tree (MST) of this graph using Kruskal's algorithm. An MST is represented as an [Array] of [GraphEdge]s in this graph, from which you can create a new [Graph], if you need to.
 				The [member GraphEdge.value] is interpreted as a [float] weight, which is up to you to define.
 				In order to obtain a [i]maximum spanning tree[/i], you can inverse the weights, for example:
 				[codeblock]
@@ -193,7 +193,7 @@
 				var w = a.value.distance_to(b.value) # Euclidean distance.
 				graph.add_edge(a, b, -w) # Notice negative weight.
 				[/codeblock]
-				[b]Note:[b] there may exist several MSTs if some edges have equal weight. If weights are not configured, the method will eliminate all edges that cause cycles (a tree is an acyclic graph).
+				[b]Note:[/b] there may exist several MSTs if some edges have equal weight. If weights are not configured, the method will eliminate all edges that cause cycles (a tree is an acyclic graph).
 			</description>
 		</method>
 		<method name="remove_edge">
@@ -220,6 +220,37 @@
 			<return type="void" />
 			<description>
 				Use depth-first search iterator (default).
+			</description>
+		</method>
+		<method name="shortest_path_tree" qualifiers="const">
+			<return type="Dictionary" />
+			<argument index="0" name="root" type="GraphVertex" />
+			<description>
+				Returns a shortest path tree starting at the [code]root[/code] vertex using Dijkstra's algorithm. This solves the Single-Source Shortest Path (SSSP) problem, which allows to find the shortest paths between a given vertex to all other vertices in the graph. The algorithm is structurally equivalent to the breadth-first search, except that this uses a priority queue to choose the next vertex based on [member GraphEdge.value] weights interpreted as [float] values.
+				The tree is represented as a [Dictionary] containing the following keys:
+				[code]backtrace:[/code] A [Dictionary] which contains exhaustive information that allows to reconstruct the shortest path. The keys hold current [GraphVertex], and values contain previous [GraphVertex]. Therefore, the shortest path between the source to any other connected vertex can be obtained in the following way:
+				[codeblock]
+				# Find the shortest path tree starting from the root vertex of interest.
+				var root = Random.choice(graph.get_vertex_list())
+				var tree = graph.shortest_path_tree(root)
+
+				# Pick any target vertex.
+				var current = Random.choice(graph.get_vertex_list())
+
+				# Extract shortest path.
+				var shortest_path = []
+				while true:
+				    shortest_path.append(current)
+				    var previous = tree.backtrace[current]
+				    if not previous:
+				        break # Reached source vertex (root).
+				    current = previous
+
+				# Invert the path for source-to-target order.
+				shortest_path.invert()
+				[/codeblock]
+				[code]distance:[/code] A [Dictionary] which contains the total distance (sum of edge weights) between source and target. The key is the [GraphVertex], the value is [float].
+				[code]edges:[/code] An [Array] of all [GraphEdge]s reachable from the [code]root[/code] vertex. Since there may be multiple edges between vertices, the edges with the minimum weight are collected only.
 			</description>
 		</method>
 	</methods>

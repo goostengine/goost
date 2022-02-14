@@ -74,6 +74,7 @@ protected:
 	// Utilities
 	GraphVertex *_add_vertex(const Variant &p_value, uint32_t p_id = 0);
 	GraphEdge *_add_edge(const Variant &p_a, const Variant &p_b, const Variant &p_value, bool p_directed);
+	GraphEdge *_find_minimum_edge(GraphVertex *p_vertex_a, GraphVertex *p_vertex_b) const;
 
 public:
 	// Instantiation
@@ -103,6 +104,7 @@ public:
 	bool is_strongly_connected();
 
 	Array minimum_spanning_tree() const;
+	Dictionary shortest_path_tree(GraphVertex *p_root) const;
 
 	// Cleanup
 	void clear();
@@ -133,7 +135,7 @@ class GraphVertex : public Object {
 
 	HashMap<uint32_t, GraphVertex *> neighbors;
 	Variant value;
-	uint32_t id;
+	uint32_t id = 0;
 
 protected:
 	void _notification(int p_what);
@@ -151,6 +153,8 @@ public:
 
 	void set_value(const Variant &p_value) { value = p_value; }
 	Variant get_value() const { return value; }
+
+	uint32_t get_id() const { return id; }
 };
 
 class GraphEdge : public Object {
@@ -166,7 +170,7 @@ class GraphEdge : public Object {
 	bool directed = false;
 
 	Variant value;
-	uint32_t id;
+	uint32_t id = 0;
 
 protected:
 	void _notification(int p_what);

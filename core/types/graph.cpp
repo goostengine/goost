@@ -3,14 +3,17 @@
 #include "core/script_language.h"
 #include "core/string_names.h"
 
+#include "core/types/templates/priority_queue.h"
 #include "core/types/templates/union_find.h"
+
+#include <limits>
 
 using EdgeKey = GraphData::EdgeKey;
 using EdgeList = LocalVector<GraphEdge *, int>;
 
 void GraphData::remove_vertex(GraphVertex *p_vertex) {
 	if (clearing_all) {
-		return;	
+		return;
 	}
 	EdgeList edges_to_delete;
 
@@ -41,7 +44,7 @@ void GraphData::remove_vertex(GraphVertex *p_vertex) {
 
 void GraphData::remove_edge(GraphEdge *p_edge) {
 	if (clearing_all) {
-		return;	
+		return;
 	}
 	GraphVertex *&a = p_edge->a;
 	GraphVertex *&b = p_edge->b;
@@ -350,6 +353,28 @@ GraphEdge *Graph::find_edge(GraphVertex *p_a, GraphVertex *p_b) const {
 	return nullptr;
 }
 
+GraphEdge *Graph::_find_minimum_edge(GraphVertex *p_a, GraphVertex *p_b) const {
+	ERR_FAIL_NULL_V(p_a, nullptr);
+	ERR_FAIL_NULL_V(p_b, nullptr);
+
+	const EdgeList &list = graph->get_edges(p_a->id, p_b->id);
+	if (list.empty()) {
+		return nullptr;
+	}
+	GraphEdge *min_edge = list[0];
+	real_t min_weight = min_edge->value;
+
+	for (int i = 1; i < list.size(); ++i) {
+		GraphEdge *edge = list[i];
+		real_t weight = edge->value;
+		if (weight < min_weight) {
+			min_weight = weight;
+			min_edge = edge;
+		}
+	}
+	return min_edge;
+}
+
 bool Graph::has_edge(GraphVertex *p_a, GraphVertex *p_b) const {
 	ERR_FAIL_NULL_V(p_a, false);
 	ERR_FAIL_NULL_V(p_b, false);
@@ -428,9 +453,8 @@ struct SortEdgesMST {
 	}
 };
 
+// Kruskal's algorithm.
 Array Graph::minimum_spanning_tree() const {
-	// Kruskal's algorithm.
-
 	// Sort all edges in increasing weight.
 	Vector<GraphEdge *> edges;
 	{
@@ -464,6 +488,95 @@ Array Graph::minimum_spanning_tree() const {
 		}
 	}
 	return edges_tree;
+}
+
+struct DistanceComparator {
+	HashMap<uint32_t, real_t> distance;
+
+	_FORCE_INLINE_ bool operator()(const GraphVertex *a, const GraphVertex *b) const {
+		return distance[a->get_id()] < distance[b->get_id()];
+	}
+};
+
+// Dijkstra's algorithm.
+Dictionary Graph::shortest_path_tree(GraphVertex *p_root) const {
+	ERR_FAIL_NULL_V(p_root, Dictionary());
+
+	Dictionary tree;
+
+	PriorityQueue<GraphVertex *, DistanceComparator> queue;
+	LocalVector<GraphVertex *> vertices;
+
+	HashMap<uint32_t, real_t> &distance = queue.compare.distance;
+	HashMap<uint32_t, uint32_t> backtrace;
+	{
+		const uint32_t *k = nullptr;
+		while ((k = graph->vertices.next(k))) {
+			GraphVertex *v = graph->vertices[*k];
+			distance[v->id] = v == p_root ? 0.0 : std::numeric_limits<real_t>::infinity();
+			backtrace[v->id] = 0;
+			vertices.push_back(v);
+		}
+	}
+	queue.initialize(vertices);
+
+	// Find shortest path tree.
+	while (!queue.is_empty()) {
+		GraphVertex *u = queue.pop();
+
+		const uint32_t *k = nullptr;
+		while ((k = u->neighbors.next(k))) {
+			GraphVertex *v = graph->vertices[*k];
+			GraphEdge *edge = _find_minimum_edge(u, v);
+			real_t weight = edge->value;
+
+			if (distance[v->id] > distance[u->id] + weight) {
+				distance[v->id] = distance[u->id] + weight;
+				backtrace[v->id] = u->id; // Previous.
+				queue.update(v);
+			}
+		}
+	}
+	// Convert output.
+	Dictionary out_backtrace;
+	{
+		const uint32_t *k = nullptr;
+		while ((k = backtrace.next(k))) {
+			GraphVertex *vc = graph->vertices[*k];
+			GraphVertex *vp = nullptr;
+			if (backtrace[*k] != 0) {
+				vp = graph->vertices[backtrace[*k]];
+			}
+			out_backtrace[vc] = vp;
+		}
+	}
+	Dictionary out_distance;
+	{
+		const uint32_t *k = nullptr;
+		while ((k = distance.next(k))) {
+			GraphVertex *v = graph->vertices[*k];
+			real_t d = distance[*k];
+			out_distance[v] = d;
+		}
+	}
+	Array out_edges;
+	{
+		const uint32_t *k = nullptr;
+		while ((k = backtrace.next(k))) {
+			if (backtrace[*k] == 0) {
+				continue; // Stumbled upon root.
+			}
+			GraphVertex *current = graph->vertices[*k];
+			GraphVertex *previous = graph->vertices[backtrace[*k]];
+			GraphEdge *edge = _find_minimum_edge(previous, current);
+			out_edges.push_back(edge);
+		}
+	}
+	tree["backtrace"] = out_backtrace;
+	tree["distance"] = out_distance;
+	tree["edges"] = out_edges;
+
+	return tree;
 }
 
 Dictionary Graph::get_connected_components() {
@@ -567,6 +680,7 @@ void Graph::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("is_strongly_connected"), &Graph::is_strongly_connected);
 
 	ClassDB::bind_method(D_METHOD("minimum_spanning_tree"), &Graph::minimum_spanning_tree);
+	ClassDB::bind_method(D_METHOD("shortest_path_tree", "root"), &Graph::shortest_path_tree);
 
 	ClassDB::bind_method(D_METHOD("clear"), &Graph::clear);
 	ClassDB::bind_method(D_METHOD("clear_edges"), &Graph::clear_edges);
