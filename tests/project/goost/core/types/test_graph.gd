@@ -206,7 +206,7 @@ func test_remove_vertex_many_to_many():
 
 	assert_eq(graph.get_edge_count(), 6)
 
-	graph.remove_vertex(a)
+	a.free() # By destructor.
 
 	assert_eq(graph.get_vertex_count(), 3)
 
@@ -273,7 +273,7 @@ func test_remove_edge():
 
 	assert_eq(graph.get_edge_count(), 3)
 
-	graph.remove_edge(ab)
+	ab.free() # By destructor
 	assert_eq(graph.get_edge_count(), 2)
 
 	graph.remove_edge(ac)
