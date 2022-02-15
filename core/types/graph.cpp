@@ -213,6 +213,15 @@ Array Graph::get_vertex_list() const {
 	return vertex_list;
 }
 
+Ref<Graph> GraphVertex::get_graph() const {
+	ERR_FAIL_NULL_V(graph, Ref<Graph>());
+
+	Object *obj = ObjectDB::get_instance(graph->id);
+	Ref<Graph> graph_ref(Object::cast_to<Graph>(obj));
+
+	return graph_ref;
+}
+
 Array GraphVertex::get_neighbors() const {
 	Array ret;
 
@@ -700,6 +709,9 @@ void Graph::_bind_methods() {
 
 Graph::Graph() {
 	graph = memnew(GraphData);
+	graph->id = get_instance_id();
+	ERR_FAIL_COND(graph->id == 0);
+
 	G_dfs.instance();
 	G_bfs.instance();
 	G = G_dfs; // Set depth-first search iterator by default.
@@ -723,6 +735,8 @@ void GraphVertex::_notification(int p_what) {
 }
 
 void GraphVertex::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("get_graph"), &GraphVertex::get_graph);
+
 	ClassDB::bind_method(D_METHOD("get_neighbors"), &GraphVertex::get_neighbors);
 	ClassDB::bind_method(D_METHOD("get_neighbor_count"), &GraphVertex::get_neighbor_count);
 

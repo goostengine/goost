@@ -14,6 +14,11 @@ func test_add_vertex():
 	assert_eq(b.value, "b")
 
 
+func test_get_graph():
+	var v = graph.add_vertex("a")
+	assert_eq(v.get_graph(), graph)
+
+
 func test_find_vertex():
 	for i in 100:
 		var _v = graph.add_vertex(str(i))

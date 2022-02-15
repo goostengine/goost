@@ -14,6 +14,12 @@
 	<tutorials>
 	</tutorials>
 	<methods>
+		<method name="get_graph" qualifiers="const">
+			<return type="Graph" />
+			<description>
+				Returns the master [Graph] that instantiated and manages this vertex.
+			</description>
+		</method>
 		<method name="get_neighbor_count" qualifiers="const">
 			<return type="int" />
 			<description>

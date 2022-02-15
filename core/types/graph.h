@@ -41,6 +41,7 @@ struct GraphData {
 			return (key.a << 16) + key.b;
 		}
 	};
+	ObjectID id;
 	HashMap<uint32_t, GraphVertex *> vertices;
 	HashMap<EdgeKey, EdgeList, EdgeKeyHasher> edges;
 
@@ -142,6 +143,8 @@ protected:
 	static void _bind_methods();
 
 public:
+	Ref<Graph> get_graph() const;
+
 	Array get_neighbors() const;
 	int get_neighbor_count() const { return neighbors.size(); }
 
@@ -154,7 +157,7 @@ public:
 	void set_value(const Variant &p_value) { value = p_value; }
 	Variant get_value() const { return value; }
 
-	uint32_t get_id() const { return id; }
+	uint32_t get_id() const { return id; } // Used by distance comparator.
 };
 
 class GraphEdge : public Object {
