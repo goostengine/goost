@@ -315,9 +315,12 @@ GraphEdge *Graph::_add_edge(const Variant &p_a, const Variant &p_b, const Varian
 			b = add_vertex(p_b);
 		}
 	}
+#ifdef DEBUG_ENABLED
 	ERR_FAIL_NULL_V(a, nullptr);
 	ERR_FAIL_NULL_V(b, nullptr);
-
+	ERR_FAIL_COND_V_MSG(a->graph != graph, nullptr, "A vertex is not owned by this graph");
+	ERR_FAIL_COND_V_MSG(b->graph != graph, nullptr, "B vertex is not owned by this graph");
+#endif
 	a->neighbors[b->id] = b;
 	b->neighbors[a->id] = a;
 

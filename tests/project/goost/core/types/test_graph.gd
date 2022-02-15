@@ -659,6 +659,26 @@ func test_save_load():
 	dir.remove(path)
 
 
+class TestInvalidData extends "res://addons/gut/test.gd":
+	var graph: Graph
+
+	func before_all():
+		Engine.print_error_messages = false
+
+	func before_each():
+		graph = Graph.new()
+
+	func after_all():
+		Engine.print_error_messages = true
+		
+	func test_add_edge():
+		var v = ClassDB.instance("GraphVertex")
+		var e = graph.add_edge(v, Array([]), Array([]))
+		assert_null(e)
+		v.free()
+		e.free()
+
+
 class _TestPerformance extends "res://addons/gut/test.gd":
 
 	func test_add_remove_dense():
