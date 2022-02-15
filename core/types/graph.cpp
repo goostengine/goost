@@ -744,8 +744,6 @@ void GraphVertex::_notification(int p_what) {
 }
 
 void GraphVertex::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("get_graph"), &GraphVertex::get_graph);
-
 	ClassDB::bind_method(D_METHOD("get_neighbors"), &GraphVertex::get_neighbors);
 	ClassDB::bind_method(D_METHOD("get_neighbor_count"), &GraphVertex::get_neighbor_count);
 
@@ -758,7 +756,18 @@ void GraphVertex::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_value", "value"), &GraphVertex::set_value);
 	ClassDB::bind_method(D_METHOD("get_value"), &GraphVertex::get_value);
 
+	ClassDB::bind_method(D_METHOD("get_graph"), &GraphVertex::get_graph);
+
 	ADD_PROPERTY(PropertyInfo(Variant::NIL, "value", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NIL_IS_VARIANT), "set_value", "get_value");
+}
+
+Ref<Graph> GraphEdge::get_graph() const {
+	ERR_FAIL_NULL_V(graph, Ref<Graph>());
+
+	Object *obj = ObjectDB::get_instance(graph->id);
+	Ref<Graph> graph_ref(Object::cast_to<Graph>(obj));
+
+	return graph_ref;
 }
 
 void GraphEdge::_notification(int p_what) {
@@ -780,6 +789,8 @@ void GraphEdge::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("set_value", "value"), &GraphEdge::set_value);
 	ClassDB::bind_method(D_METHOD("get_value"), &GraphEdge::get_value);
+
+	ClassDB::bind_method(D_METHOD("get_graph"), &GraphEdge::get_graph);
 
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "a"), "", "get_a");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "b"), "", "get_b");

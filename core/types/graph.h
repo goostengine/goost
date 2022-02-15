@@ -143,8 +143,6 @@ protected:
 	static void _bind_methods();
 
 public:
-	Ref<Graph> get_graph() const;
-
 	Array get_neighbors() const;
 	int get_neighbor_count() const { return neighbors.size(); }
 
@@ -156,6 +154,8 @@ public:
 
 	void set_value(const Variant &p_value) { value = p_value; }
 	Variant get_value() const { return value; }
+
+	Ref<Graph> get_graph() const;
 
 	uint32_t get_id() const { return id; } // Used by distance comparator.
 };
@@ -188,6 +188,8 @@ public:
 
 	void set_value(const Variant &p_value) { value = p_value; }
 	Variant get_value() const { return value; }
+
+	Ref<Graph> get_graph() const;
 };
 
 class GraphIterator : public Reference {

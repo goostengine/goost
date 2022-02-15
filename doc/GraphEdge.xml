@@ -9,6 +9,12 @@
 	<tutorials>
 	</tutorials>
 	<methods>
+		<method name="get_graph" qualifiers="const">
+			<return type="Graph" />
+			<description>
+				Returns the master [Graph] that instantiated and manages this edge.
+			</description>
+		</method>
 		<method name="is_directed">
 			<return type="bool" />
 			<description>

@@ -15,8 +15,13 @@ func test_add_vertex():
 
 
 func test_get_graph():
-	var v = graph.add_vertex("a")
-	assert_eq(v.get_graph(), graph)
+	var a = graph.add_vertex("a")
+	var b = graph.add_vertex("b")
+	var e = graph.add_edge(a, b)
+
+	assert_eq(a.get_graph(), graph)
+	assert_eq(b.get_graph(), graph)
+	assert_eq(e.get_graph(), graph)
 
 
 func test_find_vertex():
