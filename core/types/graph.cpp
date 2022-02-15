@@ -294,21 +294,30 @@ GraphEdge *Graph::_add_edge(const Variant &p_a, const Variant &p_b, const Varian
 	ERR_FAIL_COND_V(p_a.get_type() == Variant::NIL, nullptr);
 	ERR_FAIL_COND_V(p_b.get_type() == Variant::NIL, nullptr);
 
-	GraphVertex *a;
-	GraphVertex *b;
+	GraphVertex *a = nullptr;
+	GraphVertex *b = nullptr;
 
 	if (p_a.get_type() == Variant::OBJECT) {
 		a = Object::cast_to<GraphVertex>(p_a);
-		ERR_FAIL_NULL_V_MSG(a, nullptr, "The object is not a valid GraphVertex");
-	} else {
-		a = add_vertex(p_a);
+	}
+	if (!a) {
+		a = find_vertex(p_a);
+		if (!a) {
+			a = add_vertex(p_a);
+		}
 	}
 	if (p_b.get_type() == Variant::OBJECT) {
 		b = Object::cast_to<GraphVertex>(p_b);
-		ERR_FAIL_NULL_V_MSG(b, nullptr, "The object is not a valid GraphVertex");
-	} else {
-		b = add_vertex(p_b);
 	}
+	if (!b) {
+		b = find_vertex(p_b);
+		if (!b) {
+			b = add_vertex(p_b);
+		}
+	}
+	ERR_FAIL_NULL_V(a, nullptr);
+	ERR_FAIL_NULL_V(b, nullptr);
+
 	a->neighbors[b->id] = b;
 	b->neighbors[a->id] = a;
 

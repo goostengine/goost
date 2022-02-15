@@ -57,6 +57,32 @@ func test_add_edge():
 	assert_eq(graph.find_edge(e2.b, e2.a), e2)
 
 
+func test_add_edge_by_value_connected():
+	var ab = graph.add_edge("a", "b")
+	var ac = graph.add_edge("a", "c") # A exists, C does not (yet).
+	var bc = graph.add_edge("b", "c") # B exists, C exists as well.
+
+	assert_eq(graph.get_vertex_count(), 3,
+			"Vertices should be connected by value (no duplicates)")
+	
+	var a = graph.find_vertex("a")
+	var b = graph.find_vertex("b")
+	var c = graph.find_vertex("c")
+
+	assert_true(a in graph.get_vertex_list())
+	assert_true(b in graph.get_vertex_list())
+	assert_true(c in graph.get_vertex_list())
+
+	assert_eq(graph.find_edge(a, b), ab)
+	assert_eq(graph.find_edge(b, a), ab)
+
+	assert_eq(graph.find_edge(a, c), ac)
+	assert_eq(graph.find_edge(c, a), ac)
+
+	assert_eq(graph.find_edge(b, c), bc)
+	assert_eq(graph.find_edge(c, b), bc)
+
+
 func test_neighborhood():
 	var a = graph.add_vertex("a")
 	var b = graph.add_vertex("b")
@@ -155,9 +181,9 @@ func test_remove_vertex_one_to_many():
 	graph.remove_vertex(a)
 
 	assert_eq(graph.get_edge_count(), 0)
-	assert_eq(b.get_neighbors().size(), 0)
-	assert_eq(c.get_neighbors().size(), 0)
-	assert_eq(d.get_neighbors().size(), 0)
+	assert_eq(b.get_neighbor_count(), 0)
+	assert_eq(c.get_neighbor_count(), 0)
+	assert_eq(d.get_neighbor_count(), 0)
 
 
 func test_remove_vertex_many_to_many():
@@ -236,13 +262,9 @@ func test_has_edge():
 
 
 func test_remove_edge():
-	var a = graph.add_vertex("a")
-	var b = graph.add_vertex("b")
-	var c = graph.add_vertex("c")
-
-	var ab = graph.add_edge(a, b)
-	var ac = graph.add_edge(a, c)
-	var bc = graph.add_edge(b, c)
+	var ab = graph.add_edge("a", "b")
+	var ac = graph.add_edge("a", "c")
+	var bc = graph.add_edge("b", "c")
 
 	assert_eq(graph.get_edge_count(), 3)
 
