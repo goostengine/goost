@@ -9,7 +9,7 @@
 #include "goost/thirdparty/hqx/HQ3x.hh"
 #include "goost/thirdparty/leptonica/allheaders.h"
 
-#include "core/local_vector.h"
+#include "goost/core/types/templates/queue.h"
 
 void GoostImage::replace_color(Ref<Image> p_image, const Color &p_color, const Color &p_with_color) {
 	ERR_FAIL_COND(p_image.is_null());
@@ -29,24 +29,6 @@ void GoostImage::replace_color(Ref<Image> p_image, const Color &p_color, const C
 	}
 	p_image->unlock();
 }
-
-// TODO: replace by `core/types/templates/queue.h`
-struct BucketFillQueue {
-	LocalVector<Vector2> array;
-	uint32_t front = 0;
-	uint32_t back = 0;
-
-	_FORCE_INLINE_ void push_back(const Vector2 &p_point) {
-		array.push_back(p_point);
-		++back;
-	}
-	_FORCE_INLINE_ Vector2 pop_front() {
-		return array[front++];
-	}
-	_FORCE_INLINE_ bool is_empty() {
-		return front == back;
-	}
-};
 
 // Based on flood-fill algorithm.
 // Scanline could perform better for 4-connected case, but this runs up to
@@ -96,9 +78,9 @@ Ref<Image> GoostImage::bucket_fill(Ref<Image> p_image, const Point2 &p_at, const
 		} break;
 	}
 
-	BucketFillQueue to_fill;
+	Queue<Vector2> to_fill;
 	// Reserve some memory for typical images such as textures, will grow as needed.
-	to_fill.array.reserve(MIN(512 * 512, width * height));
+	to_fill.reserve(MIN(512 * 512, width * height));
 	to_fill.push_back(pos);
 
 	while (!to_fill.is_empty()) {
