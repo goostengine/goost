@@ -95,7 +95,7 @@ public:
 	void remove_vertex(GraphVertex *p_vertex);
 	GraphVertex *find_vertex(const Variant &p_value);
 	bool has_vertex(GraphVertex *p_vertex) const;
-	Array get_vertex_list() const;
+	Array get_vertices() const;
 	int get_vertex_count() const { return graph->vertices.size(); }
 
 	// Edge
@@ -104,7 +104,7 @@ public:
 	void remove_edge(GraphEdge *p_edge);
 	GraphEdge *find_edge(GraphVertex *p_vertex_a, GraphVertex *p_vertex_b) const;
 	bool has_edge(GraphVertex *p_vertex_a, GraphVertex *p_vertex_b) const;
-	Array get_edge_list(GraphVertex *p_vertex_a = nullptr, GraphVertex *p_vertex_b = nullptr) const;
+	Array get_edges(GraphVertex *p_vertex_a = nullptr, GraphVertex *p_vertex_b = nullptr) const;
 	int get_edge_count() const { return graph->edges.size(); }
 
 	// Connectivity

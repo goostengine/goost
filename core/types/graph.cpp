@@ -209,14 +209,14 @@ bool Graph::has_vertex(GraphVertex *p_vertex) const {
 	return graph->vertices.has(p_vertex->id);
 }
 
-Array Graph::get_vertex_list() const {
-	Array vertex_list;
+Array Graph::get_vertices() const {
+	Array vertices;
 
 	const uint32_t *k = nullptr;
 	while ((k = graph->vertices.next(k))) {
-		vertex_list.push_back(graph->vertices[*k]);
+		vertices.push_back(graph->vertices[*k]);
 	}
-	return vertex_list;
+	return vertices;
 }
 
 Ref<Graph> GraphVertex::get_graph() const {
@@ -410,11 +410,11 @@ bool Graph::has_edge(GraphVertex *p_a, GraphVertex *p_b) const {
 	return find_edge(p_a, p_b) != nullptr;
 }
 
-Array Graph::get_edge_list(GraphVertex *p_a, GraphVertex *p_b) const {
+Array Graph::get_edges(GraphVertex *p_a, GraphVertex *p_b) const {
 	ERR_FAIL_COND_V_MSG(!p_a && p_b, Array(), "Parameter 'a' is not a valid GraphVertex");
 	ERR_FAIL_COND_V_MSG(p_a && !p_b, Array(), "Parameter 'b' is not a valid GraphVertex");
 
-	Array edge_list;
+	Array edges;
 
 	const bool fetch_all = !p_a || !p_b;
 
@@ -425,17 +425,17 @@ Array Graph::get_edge_list(GraphVertex *p_a, GraphVertex *p_b) const {
 		for (int i = 0; i < list.size(); ++i) {
 			GraphEdge *edge = list[i];
 			if (fetch_all) { // Get all edges in the graph.
-				edge_list.push_back(edge);
+				edges.push_back(edge);
 			} else { // Get all edges between vertices.
 				if (p_a == edge->a && p_b == edge->b) {
-					edge_list.push_back(edge);
+					edges.push_back(edge);
 				} else if (!edge->directed && p_a == edge->b && p_b == edge->a) {
-					edge_list.push_back(edge);
+					edges.push_back(edge);
 				}
 			}
 		}
 	}
-	return edge_list;
+	return edges;
 }
 
 Array Graph::find_connected_component(GraphVertex *p_vertex) {
@@ -718,7 +718,7 @@ void Graph::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("remove_vertex", "vertex"), &Graph::remove_vertex);
 	ClassDB::bind_method(D_METHOD("find_vertex", "value"), &Graph::find_vertex);
 	ClassDB::bind_method(D_METHOD("has_vertex", "vertex"), &Graph::has_vertex);
-	ClassDB::bind_method(D_METHOD("get_vertex_list"), &Graph::get_vertex_list);
+	ClassDB::bind_method(D_METHOD("get_vertices"), &Graph::get_vertices);
 	ClassDB::bind_method(D_METHOD("get_vertex_count"), &Graph::get_vertex_count);
 
 	ClassDB::bind_method(D_METHOD("add_edge", "a", "b", "value"), &Graph::add_edge, DEFVAL(1.0));
@@ -726,7 +726,7 @@ void Graph::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("remove_edge", "edge"), &Graph::remove_edge);
 	ClassDB::bind_method(D_METHOD("find_edge", "a", "b"), &Graph::find_edge);
 	ClassDB::bind_method(D_METHOD("has_edge", "a", "b"), &Graph::has_edge);
-	ClassDB::bind_method(D_METHOD("get_edge_list", "a", "b"), &Graph::get_edge_list, DEFVAL(Variant()), DEFVAL(Variant()));
+	ClassDB::bind_method(D_METHOD("get_edges", "a", "b"), &Graph::get_edges, DEFVAL(Variant()), DEFVAL(Variant()));
 	ClassDB::bind_method(D_METHOD("get_edge_count"), &Graph::get_edge_count);
 
 	ClassDB::bind_method(D_METHOD("find_connected_component", "vertex"), &Graph::find_connected_component);

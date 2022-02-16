@@ -20,10 +20,10 @@
 		[/codeblock]
 		All graph's vertices and edges can be traversed the following way:
 		[codeblock]
-		for v in graph.get_vertex_list():
+		for v in graph.get_vertices():
 		    print(v)
 
-		for e in graph.get_edge_list():
+		for e in graph.get_edges():
 		    print(e)
 		[/codeblock]
 		You can also use a built-in (GDScript) iterator to traverse all vertices (may be slower):
@@ -115,7 +115,7 @@
 			<argument index="0" name="a" type="GraphVertex" />
 			<argument index="1" name="b" type="GraphVertex" />
 			<description>
-				Returns the first found edge between [code]a[/code] and [code]b[/code] vertices. There may be multiple edges between vertices. If you need to find a specific edge, use [method get_edge_list] instead.
+				Returns the first found edge between [code]a[/code] and [code]b[/code] vertices. There may be multiple edges between vertices. If you need to find a specific edge, use [method get_edges] instead.
 			</description>
 		</method>
 		<method name="find_vertex">
@@ -146,7 +146,7 @@
 				Returns the total number of edges in this graph.
 			</description>
 		</method>
-		<method name="get_edge_list" qualifiers="const">
+		<method name="get_edges" qualifiers="const">
 			<return type="Array" />
 			<argument index="0" name="a" type="GraphVertex" default="null" />
 			<argument index="1" name="b" type="GraphVertex" default="null" />
@@ -160,7 +160,7 @@
 				Returns the total number of vertices in this graph.
 			</description>
 		</method>
-		<method name="get_vertex_list" qualifiers="const">
+		<method name="get_vertices" qualifiers="const">
 			<return type="Array" />
 			<description>
 				Returns a list of [GraphVertex] elements in this graph.
@@ -237,11 +237,11 @@
 				[code]backtrace:[/code] A [Dictionary] which contains exhaustive information that allows to reconstruct the shortest path. The keys hold current [GraphVertex], and values contain previous [GraphVertex]. Therefore, the shortest path between the source to any other connected vertex can be obtained in the following way:
 				[codeblock]
 				# Find the shortest path tree starting from the root vertex of interest.
-				var root = Random.choice(graph.get_vertex_list())
+				var root = Random.choice(graph.get_vertices())
 				var tree = graph.shortest_path_tree(root)
 
 				# Pick any target vertex.
-				var current = Random.choice(graph.get_vertex_list())
+				var current = Random.choice(graph.get_vertices())
 
 				# Extract shortest path.
 				var shortest_path = []

@@ -74,9 +74,9 @@ func test_add_edge_by_value_connected():
 	var b = graph.find_vertex("b")
 	var c = graph.find_vertex("c")
 
-	assert_true(a in graph.get_vertex_list())
-	assert_true(b in graph.get_vertex_list())
-	assert_true(c in graph.get_vertex_list())
+	assert_true(a in graph.get_vertices())
+	assert_true(b in graph.get_vertices())
+	assert_true(c in graph.get_vertices())
 
 	assert_eq(graph.find_edge(a, b), ab)
 	assert_eq(graph.find_edge(b, a), ab)
@@ -145,7 +145,7 @@ func test_neighborhood_directed():
 	assert_true(b in sc)
 
 
-func test_edge_list():
+func test_get_edges():
 	var a = graph.add_vertex("a")
 	var b = graph.add_vertex("b")
 	var c = graph.add_vertex("c")
@@ -157,13 +157,13 @@ func test_edge_list():
 	var ac = graph.add_edge(a, c)
 	var bc = graph.add_edge(b, c)
 
-	var edges = graph.get_edge_list(a, b)
+	var edges = graph.get_edges(a, b)
 	assert_eq(edges.size(), 2)
 	assert_ne(ab1, ab2, "Multiple undirected edges should be allowed") 
 	assert_true(ab1 in edges)
 	assert_true(ab2 in edges)
 
-	edges = graph.get_edge_list()
+	edges = graph.get_edges()
 	assert_eq(edges.size(), 4)
 	assert_true(ab1 in edges)
 	assert_true(ab2 in edges)
@@ -723,7 +723,7 @@ class _TestPerformance extends "res://addons/gut/test.gd":
 		for i in count:
 			var _v = graph.add_vertex(i)
 
-		var vertices = graph.get_vertex_list()
+		var vertices = graph.get_vertices()
 
 		for i in 1000000:
 			var ui = rng.randi() % count
@@ -748,7 +748,7 @@ class _TestPerformance extends "res://addons/gut/test.gd":
 		for i in count:
 			var _v = graph.add_vertex(i)
 
-		var vertices = graph.get_vertex_list()
+		var vertices = graph.get_vertices()
 
 		for i in count:
 			var ui = rng.randi() % count
