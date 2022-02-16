@@ -709,6 +709,31 @@ class TestInvalidData extends "res://addons/gut/test.gd":
 		assert_eq(ret, false)
 		v.free()
 
+	func test_gdscript_iterator_add_adge():
+		var ret = graph.add_directed_edge(Array([]), Array([]), 0)
+		assert_not_null(ret)
+		ret = graph._iter_next(Array([]))
+		graph.clear()
+		ret = graph.add_edge(Array([]), ".", 0)
+		ret = graph._iter_next(Array([]))
+		
+	func test_custom_iterator():
+		var V = []
+		for i in 10:
+			V.push_back(graph.add_vertex(i))
+
+		graph.iterator = GraphIteratorCustom.new()
+		var G = graph.iterator
+		G.initialize(V[0])
+
+		var steps = 0
+		while G.has_next():
+			var _n = G.next()
+			if steps == 3:
+				graph.clear()
+			steps += 1
+		assert_eq(steps, 4)
+
 
 class _TestPerformance extends "res://addons/gut/test.gd":
 

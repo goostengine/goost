@@ -667,7 +667,7 @@ void Graph::clear() {
 
 void Graph::clear_edges() {
 	graph->iterating = false;
-	
+
 	EdgeList to_delete;
 
 	const EdgeKey *k = nullptr;
@@ -696,6 +696,7 @@ Variant Graph::_iter_init(const Array &p_iter) {
 }
 
 Variant Graph::_iter_next(const Array &p_iter) {
+	ERR_FAIL_COND_V(!graph->iterating, false);
 	_iter_current = graph->vertices.next(_iter_current);
 	graph->iterating = _iter_current != nullptr;
 	return graph->iterating;
