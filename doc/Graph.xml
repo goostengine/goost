@@ -26,8 +26,13 @@
 		for e in graph.get_edge_list():
 		    print(e)
 		[/codeblock]
+		You can also use a built-in (GDScript) iterator to traverse all vertices (may be slower):
+		[codeblock]
+		for v in graph:
+		    print(v)
+		[/codeblock]
 		It is possible to extend [GraphVertex] and [GraphEdge] via script, but you should also override [method _create_vertex] and [method _create_edge] virtual methods to make the [Graph] instantiate the correct instances internally.
-		The graph can be searched by using an [member iterator]:
+		The graph can be searched by using an [member iterator] (using either depth-first or breadth-first search algorithm):
 		[codeblock]
 		var G = graph.iterator
 		G.initialize(root)
@@ -36,6 +41,7 @@
 		    var v = G.next()
 		    print(v)
 		[/codeblock]
+		For performance reasons, the graph uses unordered hashmap data structure, so insertion order of vertices and edges should not be assumed to be the same. Adding or removing vertices/edges while iterating the graph may lead to undefined behavior.
 	</description>
 	<tutorials>
 	</tutorials>

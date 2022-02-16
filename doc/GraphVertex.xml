@@ -9,6 +9,11 @@
 		for n in v.get_neighbors():
 		    print(n)
 		[/codeblock]
+		You can also use a built-in (GDScript) iterator to traverse all neighbors (may be slower):
+		[codeblock]
+		for n in v:
+		    print(n)
+		[/codeblock]
 		If you need to traverse the graph without producing duplicates, you may also consider using graph's default [member Graph.iterator].
 	</description>
 	<tutorials>

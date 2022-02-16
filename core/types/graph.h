@@ -50,6 +50,8 @@ struct GraphData {
 	// Allows to speed up the clean() method by skipping neighbor
 	// updates and removing edges from the adjacency list.
 	bool clearing_all = false; 
+	// Adding/removing vertices while iterating may lead to undefined behavior.
+	bool iterating = false;
 
 	_FORCE_INLINE_ EdgeList &get_edges(uint32_t a_id, uint32_t b_id);
 };
@@ -76,6 +78,12 @@ protected:
 	GraphVertex *_add_vertex(const Variant &p_value, uint32_t p_id = 0);
 	GraphEdge *_add_edge(const Variant &p_a, const Variant &p_b, const Variant &p_value, bool p_directed);
 	GraphEdge *_find_minimum_edge(GraphVertex *p_vertex_a, GraphVertex *p_vertex_b) const;
+
+	// Custom vertex iterator for scripting.
+	const uint32_t *_iter_current = nullptr;
+	Variant _iter_init(const Array &p_iter);
+	Variant _iter_next(const Array &p_iter);
+	Variant _iter_get(const Variant &p_iter);
 
 public:
 	// Instantiation
@@ -141,6 +149,12 @@ class GraphVertex : public Object {
 protected:
 	void _notification(int p_what);
 	static void _bind_methods();
+
+	// Custom vertex iterator for scripting.
+	const uint32_t *_iter_current = nullptr;
+	Variant _iter_init(const Array &p_iter);
+	Variant _iter_next(const Array &p_iter);
+	Variant _iter_get(const Variant &p_iter);
 
 public:
 	Array get_neighbors() const;

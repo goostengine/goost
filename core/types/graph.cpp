@@ -15,6 +15,8 @@ void GraphData::remove_vertex(GraphVertex *p_vertex) {
 	if (clearing_all) {
 		return;
 	}
+	iterating = false;
+
 	EdgeList edges_to_delete;
 
 	const uint32_t *n = nullptr;
@@ -46,6 +48,8 @@ void GraphData::remove_edge(GraphEdge *p_edge) {
 	if (clearing_all) {
 		return;
 	}
+	iterating = false;
+
 	GraphVertex *&a = p_edge->a;
 	GraphVertex *&b = p_edge->b;
 
@@ -162,6 +166,8 @@ Dictionary Graph::_get_data() const {
 }
 
 GraphVertex *Graph::_add_vertex(const Variant &p_value, uint32_t p_id) {
+	graph->iterating = false;
+
 	GraphVertex *v = _create_vertex();
 
 	uint32_t id = p_id;
@@ -293,6 +299,8 @@ int GraphVertex::get_predecessor_count() const {
 GraphEdge *Graph::_add_edge(const Variant &p_a, const Variant &p_b, const Variant &p_value, bool p_directed) {
 	ERR_FAIL_COND_V(p_a.get_type() == Variant::NIL, nullptr);
 	ERR_FAIL_COND_V(p_b.get_type() == Variant::NIL, nullptr);
+
+	graph->iterating = false;
 
 	GraphVertex *a = nullptr;
 	GraphVertex *b = nullptr;
@@ -637,6 +645,8 @@ Dictionary Graph::get_connected_components() {
 }
 
 void Graph::clear() {
+	graph->iterating = false;
+
 	graph->clearing_all = true;
 	clear_edges();
 
@@ -656,6 +666,8 @@ void Graph::clear() {
 }
 
 void Graph::clear_edges() {
+	graph->iterating = false;
+	
 	EdgeList to_delete;
 
 	const EdgeKey *k = nullptr;
@@ -677,9 +689,30 @@ void Graph::set_iterator(const Ref<GraphIterator> &p_iterator) {
 	G = p_iterator;
 }
 
+Variant Graph::_iter_init(const Array &p_iter) {
+	_iter_current = graph->vertices.next(nullptr);
+	graph->iterating = true;
+	return _iter_current != nullptr;
+}
+
+Variant Graph::_iter_next(const Array &p_iter) {
+	_iter_current = graph->vertices.next(_iter_current);
+	graph->iterating = _iter_current != nullptr;
+	return graph->iterating;
+}
+
+Variant Graph::_iter_get(const Variant &p_iter) {
+	ERR_FAIL_COND_V(!graph->iterating, Variant());
+	return graph->vertices[*_iter_current];
+}
+
 void Graph::_bind_methods() {
 	BIND_VMETHOD(MethodInfo(Variant::OBJECT, "_create_vertex"));
 	BIND_VMETHOD(MethodInfo(Variant::OBJECT, "_create_edge"));
+
+	ClassDB::bind_method(D_METHOD("_iter_init"), &Graph::_iter_init);
+	ClassDB::bind_method(D_METHOD("_iter_get"), &Graph::_iter_get);
+	ClassDB::bind_method(D_METHOD("_iter_next"), &Graph::_iter_next);
 
 	ClassDB::bind_method(D_METHOD("add_vertex", "value"), &Graph::add_vertex);
 	ClassDB::bind_method(D_METHOD("remove_vertex", "vertex"), &Graph::remove_vertex);
@@ -736,6 +769,26 @@ Graph::~Graph() {
 	}
 }
 
+Variant GraphVertex::_iter_init(const Array &p_iter) {
+	ERR_FAIL_NULL_V(graph, false);
+	_iter_current = neighbors.next(nullptr);
+	graph->iterating = true;
+	return _iter_current != nullptr;
+}
+
+Variant GraphVertex::_iter_next(const Array &p_iter) {
+	ERR_FAIL_NULL_V(graph, false);
+	_iter_current = neighbors.next(_iter_current);
+	graph->iterating = _iter_current != nullptr;
+	return graph->iterating;
+}
+
+Variant GraphVertex::_iter_get(const Variant &p_iter) {
+	ERR_FAIL_NULL_V(graph, Variant());
+	ERR_FAIL_COND_V(!graph->iterating, Variant());
+	return neighbors[*_iter_current];
+}
+
 void GraphVertex::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_PREDELETE: {
@@ -747,6 +800,10 @@ void GraphVertex::_notification(int p_what) {
 }
 
 void GraphVertex::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("_iter_init"), &GraphVertex::_iter_init);
+	ClassDB::bind_method(D_METHOD("_iter_get"), &GraphVertex::_iter_get);
+	ClassDB::bind_method(D_METHOD("_iter_next"), &GraphVertex::_iter_next);
+
 	ClassDB::bind_method(D_METHOD("get_neighbors"), &GraphVertex::get_neighbors);
 	ClassDB::bind_method(D_METHOD("get_neighbor_count"), &GraphVertex::get_neighbor_count);
 

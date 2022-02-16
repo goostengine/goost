@@ -428,6 +428,26 @@ func test_depth_iterator():
 	assert_eq(count, 100)
 
 
+func test_gdscript_iterator():
+	for i in 5:
+		var _v = graph.add_vertex(i)
+	for i in range(1, 5):
+		var _e = graph.add_edge(0, i)
+
+	for vertex in graph:
+		assert_not_null(vertex)
+		if OS.is_stdout_verbose():
+			gut.p(vertex.value)
+
+	if OS.is_stdout_verbose():	
+		gut.p("Neighbors:")
+
+	for neighbor in graph.find_vertex(0):
+		assert_not_null(neighbor)
+		if OS.is_stdout_verbose():
+			gut.p(neighbor.value)
+
+
 func test_get_connected_components():
 	var V = []
 	for i in 10:
@@ -677,6 +697,17 @@ class TestInvalidData extends "res://addons/gut/test.gd":
 		assert_null(e)
 		v.free()
 		e.free()
+		
+	func test_gdscript_iterator():
+		var ret = graph._iter_next([])
+		assert_eq(ret, false)
+		graph.clear()
+		ret = graph._iter_get([])
+		
+		var v = ClassDB.instance("GraphVertex")
+		ret = v._iter_next([])
+		assert_eq(ret, false)
+		v.free()
 
 
 class _TestPerformance extends "res://addons/gut/test.gd":
