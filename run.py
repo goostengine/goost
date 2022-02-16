@@ -117,7 +117,7 @@ if __name__ == "__main__":
         if args.inner_test_case:
             test_args.append("-ginner_class=%s" % args.inner_test_case)
 
-        if not args.windowed:
+        if not args.windowed or os.getenv("CI"):
             # Not exiting on failure only makes sense while running in
             # windowed mode, this does not matter for console output.
             test_args.append("-gexit=true")
