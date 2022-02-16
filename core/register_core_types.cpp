@@ -3,6 +3,8 @@
 #include "core/engine.h"
 #include "scene/main/scene_tree.h"
 
+#include "string_names.h"
+
 #include "image/register_image_types.h"
 #include "math/register_math_types.h"
 #include "script/register_script_types.h"
@@ -24,6 +26,8 @@ static void _variant_resource_preview_init();
 #endif
 
 void register_core_types() {
+	StringNames::create();
+
 	ClassDB::register_class<CommandLineOption>();
 	ClassDB::register_class<CommandLineHelpFormat>();
 	ClassDB::register_class<CommandLineParser>();
@@ -38,6 +42,11 @@ void register_core_types() {
 
 	ClassDB::register_class<ListNode>();
 	ClassDB::register_class<LinkedList>();
+
+	ClassDB::register_class<Graph>();
+	ClassDB::register_class<GraphVertex>();
+	ClassDB::register_class<GraphEdge>();
+	ClassDB::register_class<GraphIterator>();
 
 	ClassDB::register_class<VariantMap>();
 	ClassDB::register_class<VariantResource>();
@@ -70,6 +79,7 @@ void unregister_core_types() {
 #ifdef GOOST_SCRIPT_ENABLED
 	unregister_script_types();
 #endif
+	StringNames::free();
 }
 
 #if defined(TOOLS_ENABLED) && defined(GOOST_VariantResource)

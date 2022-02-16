@@ -31,6 +31,7 @@ gdscript/warnings/treat_warnings_as_errors=true
 gdscript/warnings/unused_class_variable=true
 gdscript/warnings/unsafe_cast=true
 gdscript/warnings/unsafe_call_argument=true
+draw/2d/antialiased=true
 
 [editor_plugins]
 

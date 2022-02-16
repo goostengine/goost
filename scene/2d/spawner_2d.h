@@ -10,7 +10,7 @@ public:
 		PROCESS_PHYSICS,
 		PROCESS_IDLE,
 	};
-	static StringName node_spawned;
+	static StringName node_spawned; // TODO: move to StringNames singleton
 
 private:
 	Ref<Resource> resource; // From which a new node is instantiated: scene or script.

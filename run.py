@@ -64,6 +64,8 @@ if __name__ == "__main__":
             help='A relative path to test file to run, for instance: "core/math/test_random.gd"')
     tests.add_argument("-tc", "--test-case",
             help="Name of a test case to run. Any test case matching the name will be run.")
+    tests.add_argument("-itc", "--inner-test-case",
+            help="Name of an inner test case to run. Any test case matching the name will be run.")
 
     # Documentation.
     doc = subparsers.add_parser("doc", help="Generate documentation.")
@@ -108,9 +110,14 @@ if __name__ == "__main__":
             # recursively from the directory defined in `.gutconfig.json`.
             res_file = "res://goost/" + args.test_file
             test_args.extend(["-gtest=%s" % res_file, '-gdir='])
+
         if args.test_case:
             test_args.append("-gunit_test_name=%s" % args.test_case)
-        if not args.windowed:
+
+        if args.inner_test_case:
+            test_args.append("-ginner_class=%s" % args.inner_test_case)
+
+        if not args.windowed or os.getenv("CI"):
             # Not exiting on failure only makes sense while running in
             # windowed mode, this does not matter for console output.
             test_args.append("-gexit=true")
