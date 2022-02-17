@@ -111,6 +111,9 @@ Export("env_goost")
 
 if env["goost_core_enabled"]:
     SConscript("core/SCsub")
+else:
+    core_sources = ["core/string_names.cpp"]
+    env_goost.add_source_files(env.modules_sources, core_sources)
 
 if env["goost_scene_enabled"]:
     SConscript("scene/SCsub")
