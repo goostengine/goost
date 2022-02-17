@@ -3,9 +3,9 @@
 #include "core/string_name.h"
 
 namespace goost {
-    void register_core_types();
-	void unregister_core_types();
-}
+void register_core_types();
+void unregister_core_types();
+} // namespace goost
 
 class StringNames {
 	friend void goost::register_core_types();
@@ -22,9 +22,10 @@ public:
 	_FORCE_INLINE_ static StringNames *get_singleton() { return singleton; }
 	static StringNames *singleton;
 
-    StringName _create_vertex;
-    StringName _create_edge;
-    StringName initialize;
-    StringName has_next;
-    StringName next;
+	StringName _create_vertex;
+	StringName _create_edge;
+	StringName initialize;
+	StringName has_next;
+	StringName next;
+	StringName node_spawned;
 };

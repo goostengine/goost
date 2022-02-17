@@ -4,8 +4,7 @@
 #include "scene/resources/packed_scene.h"
 
 #include "scene/scene_string_names.h"
-
-StringName Spawner2D::node_spawned;
+#include "goost/core/string_names.h"
 
 void Spawner2D::set_resource(const Ref<Resource> &p_resource) {
 	const Ref<PackedScene> &scene = p_resource;
@@ -202,7 +201,7 @@ void Spawner2D::_process_spawn() {
 	} else if (time < 0.0) {
 		const Node *node = spawn();
 		if (node) {
-			emit_signal(node_spawned, node);
+			emit_signal(StringNames::get_singleton()->node_spawned, node);
 		}
 		time = step / rate;
 
