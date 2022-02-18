@@ -268,6 +268,51 @@ Array GraphVertex::get_predecessors() const {
 	return ret;
 }
 
+Array GraphVertex::get_edges() const {
+	Array ret;
+	
+	const uint32_t *v = nullptr;
+	while ((v = neighbors.next(v))) {
+		const EdgeList &list = graph->get_edges(this->id, neighbors[*v]->id);
+		for (int i = 0; i < list.size(); ++i) {
+			ret.push_back(list[i]);
+		}
+	}
+	return ret;
+}
+
+Array GraphVertex::get_inward_edges() const {
+	Array ret;
+	
+	const uint32_t *v = nullptr;
+	while ((v = predecessors.next(v))) {
+		const EdgeList &list = graph->get_edges(this->id, predecessors[*v]->id);
+		for (int i = 0; i < list.size(); ++i) {
+			const GraphEdge *edge = list[i];
+			if (edge->is_directed() && this == edge->get_b() && predecessors[*v] == edge->get_a()) {
+				ret.push_back(edge);
+			}
+		}
+	}
+	return ret;
+}
+
+Array GraphVertex::get_outward_edges() const {
+	Array ret;
+
+	const uint32_t *v = nullptr;
+	while ((v = successors.next(v))) {
+		const EdgeList &list = graph->get_edges(this->id, successors[*v]->id);
+		for (int i = 0; i < list.size(); ++i) {
+			const GraphEdge *edge = list[i];
+			if (edge->is_directed() && this == edge->get_a() && successors[*v] == edge->get_b()) {
+				ret.push_back(edge);
+			}
+		}
+	}
+	return ret;
+}
+
 GraphEdge *Graph::_add_edge(const Variant &p_a, const Variant &p_b, const Variant &p_value, bool p_directed) {
 	ERR_FAIL_COND_V(p_a.get_type() == Variant::NIL, nullptr);
 	ERR_FAIL_COND_V(p_b.get_type() == Variant::NIL, nullptr);
@@ -796,6 +841,10 @@ void GraphVertex::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("get_predecessors"), &GraphVertex::get_predecessors);
 	ClassDB::bind_method(D_METHOD("get_predecessor_count"), &GraphVertex::get_predecessor_count);
+
+	ClassDB::bind_method(D_METHOD("get_edges"), &GraphVertex::get_edges);
+	ClassDB::bind_method(D_METHOD("get_inward_edges"), &GraphVertex::get_inward_edges);
+	ClassDB::bind_method(D_METHOD("get_outward_edges"), &GraphVertex::get_outward_edges);
 
 	ClassDB::bind_method(D_METHOD("set_value", "value"), &GraphVertex::set_value);
 	ClassDB::bind_method(D_METHOD("get_value"), &GraphVertex::get_value);

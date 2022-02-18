@@ -161,6 +161,7 @@ protected:
 	Variant _iter_get(const Variant &p_iter);
 
 public:
+	// Vertex connectivity.
 	Array get_neighbors() const;
 	int get_neighbor_count() const { return neighbors.size(); }
 
@@ -169,6 +170,11 @@ public:
 
 	Array get_predecessors() const;
 	int get_predecessor_count() const { return predecessors.size(); }
+
+	// Edge connectivity.
+	Array get_edges() const;
+	Array get_inward_edges() const;
+	Array get_outward_edges() const;
 
 	void set_value(const Variant &p_value) { value = p_value; }
 	Variant get_value() const { return value; }
@@ -201,8 +207,8 @@ public:
 	GraphVertex *get_a() const { return a; }
 	GraphVertex *get_b() const { return b; }
 
-	bool is_loop() { return a == b; }
-	bool is_directed() { return directed; }
+	bool is_loop() const { return a == b; }
+	bool is_directed() const { return directed; }
 
 	void set_value(const Variant &p_value) { value = p_value; }
 	Variant get_value() const { return value; }

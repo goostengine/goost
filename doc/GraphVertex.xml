@@ -4,7 +4,7 @@
 		A data structure used to represent a vertex in a [Graph].
 	</brief_description>
 	<description>
-		A vertex holds a data and information about all neighbor vertices that are connected to it. To traverse all neighbors:
+		A vertex holds a data and information about all neighbor vertices that are connected to it. To traverse all neighbors, use [method get_neighbors]:
 		[codeblock]
 		for n in v.get_neighbors():
 		    print(n)
@@ -14,15 +14,32 @@
 		for n in v:
 		    print(n)
 		[/codeblock]
+		For enumerating edges instead of vertices, use [method get_edges]:
+		[codeblock]
+		for e in v.get_edges():
+		    print(e.a, " ", e.b)
+		[/codeblock]
 		If you need to traverse the graph without producing duplicates, you may also consider using graph's default [member Graph.iterator].
 	</description>
 	<tutorials>
 	</tutorials>
 	<methods>
+		<method name="get_edges" qualifiers="const">
+			<return type="Array" />
+			<description>
+				Returns all [GraphEdge]s associated with this vertex, including inward and outward edges, see [method get_inward_edges] and [method get_outward_edges] methods.
+			</description>
+		</method>
 		<method name="get_graph" qualifiers="const">
 			<return type="Graph" />
 			<description>
 				Returns the master [Graph] that instantiated and manages this vertex.
+			</description>
+		</method>
+		<method name="get_inward_edges" qualifiers="const">
+			<return type="Array" />
+			<description>
+				Returns all [GraphEdge]s that point from predecessor vertices.
 			</description>
 		</method>
 		<method name="get_neighbor_count" qualifiers="const">
@@ -35,6 +52,12 @@
 			<return type="Array" />
 			<description>
 				Returns a list of all [GraphVertex] neighbors.
+			</description>
+		</method>
+		<method name="get_outward_edges" qualifiers="const">
+			<return type="Array" />
+			<description>
+				Returns all [GraphEdge]s that point to successor vertices.
 			</description>
 		</method>
 		<method name="get_predecessor_count" qualifiers="const">
