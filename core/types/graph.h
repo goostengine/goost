@@ -142,7 +142,11 @@ class GraphVertex : public Object {
 
 	GraphData *graph = nullptr;
 
-	HashMap<uint32_t, GraphVertex *> neighbors;
+	// The `neighbors` includes both successors and predecessors.
+	HashMap<uint32_t, GraphVertex *> neighbors; 
+	HashMap<uint32_t, GraphVertex *> successors;
+	HashMap<uint32_t, GraphVertex *> predecessors;
+
 	Variant value;
 	uint32_t id = 0;
 
@@ -157,14 +161,20 @@ protected:
 	Variant _iter_get(const Variant &p_iter);
 
 public:
+	// Vertex connectivity.
 	Array get_neighbors() const;
 	int get_neighbor_count() const { return neighbors.size(); }
 
 	Array get_successors() const;
-	int get_successor_count() const;
+	int get_successor_count() const { return successors.size(); }
 
 	Array get_predecessors() const;
-	int get_predecessor_count() const;
+	int get_predecessor_count() const { return predecessors.size(); }
+
+	// Edge connectivity.
+	Array get_edges() const;
+	Array get_incoming_edges() const;
+	Array get_outgoing_edges() const;
 
 	void set_value(const Variant &p_value) { value = p_value; }
 	Variant get_value() const { return value; }
@@ -197,8 +207,8 @@ public:
 	GraphVertex *get_a() const { return a; }
 	GraphVertex *get_b() const { return b; }
 
-	bool is_loop() { return a == b; }
-	bool is_directed() { return directed; }
+	bool is_loop() const { return a == b; }
+	bool is_directed() const { return directed; }
 
 	void set_value(const Variant &p_value) { value = p_value; }
 	Variant get_value() const { return value; }

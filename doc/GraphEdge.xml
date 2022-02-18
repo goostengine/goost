@@ -15,13 +15,13 @@
 				Returns the master [Graph] that instantiated and manages this edge.
 			</description>
 		</method>
-		<method name="is_directed">
+		<method name="is_directed" qualifiers="const">
 			<return type="bool" />
 			<description>
 				Returns [code]true[/code] if the edge has a notion of direction, otherwise returns [code]false[/code] (associative edge).
 			</description>
 		</method>
-		<method name="is_loop">
+		<method name="is_loop" qualifiers="const">
 			<return type="bool" />
 			<description>
 				Returns [code]true[/code] if the edge is a self-loop, meaning that [member a] is equal to [member b].
