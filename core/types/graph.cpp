@@ -32,8 +32,14 @@ void GraphData::remove_vertex(GraphVertex *p_vertex) {
 		}
 		if (p_vertex != n_vertex) {
 			// Handle self-loops, there's no point to remove neighbors to self,
-			// since the vertex is going to be deleted anyway.
+			// since the vertex is going to be deleted.
 			n_vertex->neighbors.erase(p_vertex->id);
+			if (n_vertex->successors.has(p_vertex->id)) {
+				n_vertex->successors.erase(p_vertex->id);
+			}
+			if (n_vertex->predecessors.has(p_vertex->id)) {
+				n_vertex->predecessors.erase(p_vertex->id);
+			}
 		}
 	}
 	for (int i = 0; i < edges_to_delete.size(); ++i) {
@@ -59,6 +65,10 @@ void GraphData::remove_edge(GraphEdge *p_edge) {
 		if (p_edge == list[i]) {
 			a->neighbors.erase(b->id);
 			b->neighbors.erase(a->id);
+			if (p_edge->directed) {
+				a->successors.erase(b->id);
+				b->predecessors.erase(a->id);
+			}
 			list.remove_unordered(i);
 			break;
 		}
@@ -242,58 +252,20 @@ Array GraphVertex::get_successors() const {
 	Array ret;
 
 	const uint32_t *n = nullptr;
-	while ((n = neighbors.next(n))) {
-		const GraphVertex *a = this;
-		const GraphVertex *b = neighbors[*n];
-
-		const EdgeList &list = graph->get_edges(a->id, b->id);
-
-		for (int i = 0; i < list.size(); ++i) {
-			GraphEdge *edge = list[i];
-			if (!edge->is_directed()) {
-				continue;
-			}
-			if (edge->get_a() == this) {
-				ret.push_back(edge->get_b());
-				// There may be multiple edges connected from the same vertex.
-				break;
-			}
-		}
+	while ((n = successors.next(n))) {
+		ret.push_back(successors[*n]);
 	}
 	return ret;
-}
-
-int GraphVertex::get_successor_count() const {
-	return get_successors().size(); // TODO: can be optimized.
 }
 
 Array GraphVertex::get_predecessors() const {
 	Array ret;
 
 	const uint32_t *n = nullptr;
-	while ((n = neighbors.next(n))) {
-		const GraphVertex *a = this;
-		const GraphVertex *b = neighbors[*n];
-
-		const EdgeList &list = graph->get_edges(a->id, b->id);
-
-		for (int i = 0; i < list.size(); ++i) {
-			GraphEdge *edge = list[i];
-			if (!edge->is_directed()) {
-				continue;
-			}
-			if (edge->get_b() == this) {
-				ret.push_back(edge->get_a());
-				// There may be multiple edges connected from the same vertex.
-				break;
-			}
-		}
+	while ((n = predecessors.next(n))) {
+		ret.push_back(predecessors[*n]);
 	}
 	return ret;
-}
-
-int GraphVertex::get_predecessor_count() const {
-	return get_predecessors().size(); // TODO: can be optimized.
 }
 
 GraphEdge *Graph::_add_edge(const Variant &p_a, const Variant &p_b, const Variant &p_value, bool p_directed) {
@@ -305,6 +277,9 @@ GraphEdge *Graph::_add_edge(const Variant &p_a, const Variant &p_b, const Varian
 	GraphVertex *a = nullptr;
 	GraphVertex *b = nullptr;
 
+	// By default, check if the passed value is GraphVertex.
+	// If not, then attempt to find an existing vertex by value.
+	// If that fails as well, then just create a new vertex.
 	if (p_a.get_type() == Variant::OBJECT) {
 		a = Object::cast_to<GraphVertex>(p_a);
 	}
@@ -326,12 +301,19 @@ GraphEdge *Graph::_add_edge(const Variant &p_a, const Variant &p_b, const Varian
 #ifdef DEBUG_ENABLED
 	ERR_FAIL_NULL_V(a, nullptr);
 	ERR_FAIL_NULL_V(b, nullptr);
-	ERR_FAIL_COND_V_MSG(a->graph != graph, nullptr, "A vertex is not owned by this graph");
-	ERR_FAIL_COND_V_MSG(b->graph != graph, nullptr, "B vertex is not owned by this graph");
+	// This issue may happen when `GraphVertex`
+	// is instantiated outside of `add_vertex()` call.
+	ERR_FAIL_COND_V_MSG(a->graph != graph, nullptr, "The 'A' vertex is not owned by this graph");
+	ERR_FAIL_COND_V_MSG(b->graph != graph, nullptr, "The 'B' vertex is not owned by this graph");
 #endif
+	// Setup neighbors.
 	a->neighbors[b->id] = b;
 	b->neighbors[a->id] = a;
-
+	if (p_directed) {
+		a->successors[b->id] = b;
+		b->predecessors[a->id] = a;
+	}
+	// Instantiate a new edge.
 	GraphEdge *edge = _create_edge();
 	edge->a = a;
 	edge->b = b;
@@ -339,6 +321,7 @@ GraphEdge *Graph::_add_edge(const Variant &p_a, const Variant &p_b, const Varian
 	edge->directed = p_directed;
 	edge->graph = graph;
 
+	// Either add or insert the edge.
 	const auto &key = EdgeKey(a->id, b->id);
 	if (!graph->edges.has(key)) {
 		EdgeList list;

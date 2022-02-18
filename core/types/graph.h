@@ -142,7 +142,11 @@ class GraphVertex : public Object {
 
 	GraphData *graph = nullptr;
 
-	HashMap<uint32_t, GraphVertex *> neighbors;
+	// The `neighbors` includes both successors and predecessors.
+	HashMap<uint32_t, GraphVertex *> neighbors; 
+	HashMap<uint32_t, GraphVertex *> successors;
+	HashMap<uint32_t, GraphVertex *> predecessors;
+
 	Variant value;
 	uint32_t id = 0;
 
@@ -161,10 +165,10 @@ public:
 	int get_neighbor_count() const { return neighbors.size(); }
 
 	Array get_successors() const;
-	int get_successor_count() const;
+	int get_successor_count() const { return successors.size(); }
 
 	Array get_predecessors() const;
-	int get_predecessor_count() const;
+	int get_predecessor_count() const { return predecessors.size(); }
 
 	void set_value(const Variant &p_value) { value = p_value; }
 	Variant get_value() const { return value; }

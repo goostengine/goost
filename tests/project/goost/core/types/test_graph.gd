@@ -145,6 +145,45 @@ func test_neighborhood_directed():
 	assert_true(b in sc)
 
 
+func test_successors_predecessors():
+	var V = []
+	for i in 10:
+		V.push_back(graph.add_vertex(i))
+
+	for i in range(1, 10):
+		var _e = graph.add_directed_edge(0, i)
+		
+	assert_eq(V[0].get_successor_count(), 9)
+	assert_eq(V[0].get_predecessor_count(), 0)
+
+	for v in V[0].get_successors():
+		assert_gt(v.value, 0)
+
+	for v in V:
+		if v == V[0]:
+			continue
+		assert_eq(v.get_predecessor_count(), 1)
+		assert_eq(V[0], v.get_predecessors()[0])
+
+
+func test_successors_predecessors_bidirected():
+	var V = []
+	for i in 10:
+		V.push_back(graph.add_vertex(i))
+
+	for i in range(1, 10):
+		var _ab = graph.add_directed_edge(0, i)
+		var _ba = graph.add_directed_edge(i, 0)
+
+	assert_eq(V[0].get_successor_count(), 9)
+	assert_eq(V[0].get_predecessor_count(), 9)
+
+	for v in V[0].get_successors():
+		assert_gt(v.value, 0)
+	for v in V[0].get_predecessors():
+		assert_gt(v.value, 0)
+
+
 func test_get_edges():
 	var a = graph.add_vertex("a")
 	var b = graph.add_vertex("b")
