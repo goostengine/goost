@@ -196,6 +196,9 @@ String VariantResource::get_property_hint_name(const PropertyHint &p_hint) {
 		case PROPERTY_HINT_SAVE_FILE: {
 			return "Save File";
 		} break;
+		case PROPERTY_HINT_ENUM_SUGGESTION: {
+			return "Enum Suggestion";
+		} break;
 		case PROPERTY_HINT_MAX: {
 			ERR_FAIL_V_MSG("", "Invalid property hint type.");
 		} break;
