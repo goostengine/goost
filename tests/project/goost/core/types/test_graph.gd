@@ -192,19 +192,19 @@ func test_vertex_edges():
 	var _e
 	_e = graph.add_edge(0, 1)
 	_e = graph.add_edge(0, 2)
-	_e = graph.add_directed_edge(0, 2) # Outward
+	_e = graph.add_directed_edge(0, 2) # Out
 	_e = graph.add_edge(0, 3)
-	_e = graph.add_directed_edge(0, 3) # Outward
-	_e = graph.add_directed_edge(3, 0) # Inward
+	_e = graph.add_directed_edge(0, 3) # Out
+	_e = graph.add_directed_edge(3, 0) # In
 
 	assert_eq(V[0].get_edges().size(), 6)
-	assert_eq(V[0].get_outward_edges().size(), 2)
-	assert_eq(V[0].get_inward_edges().size(), 1)
+	assert_eq(V[0].get_outgoing_edges().size(), 2)
+	assert_eq(V[0].get_incoming_edges().size(), 1)
 
-	for edge in V[0].get_outward_edges():
+	for edge in V[0].get_outgoing_edges():
 		assert_true(V[0] == edge.a and V[0] != edge.b)
 
-	for edge in V[0].get_inward_edges():
+	for edge in V[0].get_incoming_edges():
 		assert_true(V[0] == edge.b and V[0] != edge.a)
 
 

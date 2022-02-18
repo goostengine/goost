@@ -173,8 +173,8 @@ public:
 
 	// Edge connectivity.
 	Array get_edges() const;
-	Array get_inward_edges() const;
-	Array get_outward_edges() const;
+	Array get_incoming_edges() const;
+	Array get_outgoing_edges() const;
 
 	void set_value(const Variant &p_value) { value = p_value; }
 	Variant get_value() const { return value; }

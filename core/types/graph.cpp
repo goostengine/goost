@@ -281,7 +281,7 @@ Array GraphVertex::get_edges() const {
 	return ret;
 }
 
-Array GraphVertex::get_inward_edges() const {
+Array GraphVertex::get_incoming_edges() const {
 	Array ret;
 	
 	const uint32_t *v = nullptr;
@@ -297,7 +297,7 @@ Array GraphVertex::get_inward_edges() const {
 	return ret;
 }
 
-Array GraphVertex::get_outward_edges() const {
+Array GraphVertex::get_outgoing_edges() const {
 	Array ret;
 
 	const uint32_t *v = nullptr;
@@ -843,8 +843,8 @@ void GraphVertex::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_predecessor_count"), &GraphVertex::get_predecessor_count);
 
 	ClassDB::bind_method(D_METHOD("get_edges"), &GraphVertex::get_edges);
-	ClassDB::bind_method(D_METHOD("get_inward_edges"), &GraphVertex::get_inward_edges);
-	ClassDB::bind_method(D_METHOD("get_outward_edges"), &GraphVertex::get_outward_edges);
+	ClassDB::bind_method(D_METHOD("get_incoming_edges"), &GraphVertex::get_incoming_edges);
+	ClassDB::bind_method(D_METHOD("get_outgoing_edges"), &GraphVertex::get_outgoing_edges);
 
 	ClassDB::bind_method(D_METHOD("set_value", "value"), &GraphVertex::set_value);
 	ClassDB::bind_method(D_METHOD("get_value"), &GraphVertex::get_value);

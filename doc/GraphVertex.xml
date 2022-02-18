@@ -27,7 +27,7 @@
 		<method name="get_edges" qualifiers="const">
 			<return type="Array" />
 			<description>
-				Returns all [GraphEdge]s associated with this vertex, including inward and outward edges, see [method get_inward_edges] and [method get_outward_edges] methods.
+				Returns all [GraphEdge]s associated with this vertex, including incoming and outgoing edges, see [method get_incoming_edges] and [method get_outgoing_edges] methods.
 			</description>
 		</method>
 		<method name="get_graph" qualifiers="const">
@@ -36,7 +36,7 @@
 				Returns the master [Graph] that instantiated and manages this vertex.
 			</description>
 		</method>
-		<method name="get_inward_edges" qualifiers="const">
+		<method name="get_incoming_edges" qualifiers="const">
 			<return type="Array" />
 			<description>
 				Returns all [GraphEdge]s that point from predecessor vertices.
@@ -54,7 +54,7 @@
 				Returns a list of all [GraphVertex] neighbors.
 			</description>
 		</method>
-		<method name="get_outward_edges" qualifiers="const">
+		<method name="get_outgoing_edges" qualifiers="const">
 			<return type="Array" />
 			<description>
 				Returns all [GraphEdge]s that point to successor vertices.
