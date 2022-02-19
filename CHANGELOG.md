@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 ### Added
 
 - A general-purpose `Graph` class.
+- A `Random.choices()` method for weighted random selections.
 
 ### Removed
 

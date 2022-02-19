@@ -1,5 +1,6 @@
 #include "random.h"
 
+#include "core/local_vector.h"
 #include "core/method_bind_ext.gen.inc"
 
 Random *Random::singleton = nullptr;
@@ -102,7 +103,7 @@ Array Random::choices(const Variant &p_from, int p_count, const PoolIntArray &p_
 	LocalVector<int, int> indices;
 	Array weighted_choices;
 
-	if((p_from.get_type() == Variant::DICTIONARY) && p_weights.empty()){
+	if ((p_from.get_type() == Variant::DICTIONARY) && p_weights.empty()) {
 		Dictionary dict = p_from;
 		Array w = dict.values();
 		for (int i = 0; i < w.size(); i++) {
@@ -114,13 +115,13 @@ Array Random::choices(const Variant &p_from, int p_count, const PoolIntArray &p_
 		}
 	}
 
-	if(!weights.empty()){
-		if(p_is_cumulative) {
+	if (!weights.empty()) {
+		if (p_is_cumulative) {
 			sum = weights[weights.size() - 1];
 			cumulative_weights = weights;
 		} else {
-			for(int i = 0; i < weights.size(); i++) {
-				if(weights[i] < 0) {
+			for (int i = 0; i < weights.size(); i++) {
+				if (weights[i] < 0) {
 					ERR_FAIL_V_MSG(Array(), "Weights must be positive integers.");
 				} else {
 					sum += weights[i];
@@ -129,15 +130,14 @@ Array Random::choices(const Variant &p_from, int p_count, const PoolIntArray &p_
 			}
 		}
 
-		for(int i = 0; i < p_count; i++) {
+		for (int i = 0; i < p_count; i++) {
 			int left = 0;
 			int right = weights.size();
 			int random_number = randi() % sum;
-			// bisect
-			while (left < right)
-			{
+			// Bisect.
+			while (left < right) {
 				int mid = (left + right) / 2;
-				if(cumulative_weights[mid] < random_number) {
+				if (cumulative_weights[mid] < random_number) {
 					left = mid + 1;
 				} else {
 					right = mid;
@@ -151,13 +151,13 @@ Array Random::choices(const Variant &p_from, int p_count, const PoolIntArray &p_
 		case Variant::STRING: {
 			String str = p_from;
 			ERR_FAIL_COND_V_MSG(str.empty(), Variant(), "String is empty.");
-			if(weights.empty()){
-				for(int i = 0; i < p_count; i++) {
+			if (weights.empty()) {
+				for (int i = 0; i < p_count; i++) {
 					weighted_choices.push_back(str.substr((randi() % str.length()), 1));
 				}
 			} else {
 				ERR_FAIL_COND_V_MSG(str.length() != weights.size(), Variant(), "Size of weights does not match.");
-				for(int i = 0; i < p_count; i++) {
+				for (int i = 0; i < p_count; i++) {
 					weighted_choices.push_back(str.substr(indices[i], 1));
 				}
 			}
@@ -173,14 +173,14 @@ Array Random::choices(const Variant &p_from, int p_count, const PoolIntArray &p_
 		case Variant::ARRAY: {
 			Array arr = p_from;
 			ERR_FAIL_COND_V_MSG(arr.empty(), Variant(), "Array is empty.");
-				
-			if(weights.empty()){
-				for(int i = 0; i < p_count; i++) {
+
+			if (weights.empty()) {
+				for (int i = 0; i < p_count; i++) {
 					weighted_choices.push_back(arr[randi() % arr.size()]);
 				}
 			} else {
 				ERR_FAIL_COND_V_MSG(arr.size() != weights.size(), Variant(), "Size of weights does not match.");
-				for(int i = 0; i < p_count; i++) {
+				for (int i = 0; i < p_count; i++) {
 					weighted_choices.push_back(arr[indices[i]]);
 				}
 			}
@@ -189,7 +189,7 @@ Array Random::choices(const Variant &p_from, int p_count, const PoolIntArray &p_
 		case Variant::DICTIONARY: {
 			Dictionary dict = p_from;
 			ERR_FAIL_COND_V_MSG(dict.empty(), Variant(), "Dictionary is empty.");
-			for(int i = 0; i < p_count; i++) {
+			for (int i = 0; i < p_count; i++) {
 				weighted_choices.push_back(dict.get_key_at_index(indices[i]));
 			}
 			return weighted_choices;

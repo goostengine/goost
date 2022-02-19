@@ -40,4 +40,5 @@ See also a full list of
     lupoDharkael
     Mariano Suligoy (MarianoGnu)
     Rafał Mikrut (qarmin)
+    rusty_tendrils (sumadithya)
     Twarit Waikar (ChronicallySerious)
