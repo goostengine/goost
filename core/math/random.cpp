@@ -95,6 +95,112 @@ Variant Random::choice(const Variant &p_from) {
 	return Variant();
 }
 
+Array Random::choices(const Variant &p_from, int p_count, const PoolIntArray &p_weights, bool p_is_cumulative) {
+	int sum = 0;
+	LocalVector<int, int> cumulative_weights;
+	LocalVector<int, int> weights;
+	LocalVector<int, int> indices;
+	Array weighted_choices;
+
+	if((p_from.get_type() == Variant::DICTIONARY) && p_weights.empty()){
+		Dictionary dict = p_from;
+		Array w = dict.values();
+		for (int i = 0; i < w.size(); i++) {
+			weights.push_back(w[i]);
+		}
+	} else {
+		for (int i = 0; i < p_weights.size(); i++) {
+			weights.push_back(p_weights[i]);
+		}
+	}
+
+	if(!weights.empty()){
+		if(p_is_cumulative) {
+			sum = weights[weights.size() - 1];
+			cumulative_weights = weights;
+		} else {
+			for(int i = 0; i < weights.size(); i++) {
+				if(weights[i] < 0) {
+					ERR_FAIL_V_MSG(Array(), "Weights must be positive integers.");
+				} else {
+					sum += weights[i];
+					cumulative_weights.push_back(sum);
+				}
+			}
+		}
+
+		for(int i = 0; i < p_count; i++) {
+			int left = 0;
+			int right = weights.size();
+			int random_number = randi() % sum;
+			// bisect
+			while (left < right)
+			{
+				int mid = (left + right) / 2;
+				if(cumulative_weights[mid] < random_number) {
+					left = mid + 1;
+				} else {
+					right = mid;
+				}
+			}
+			indices.push_back(left);
+		}
+	}
+
+	switch (p_from.get_type()) {
+		case Variant::STRING: {
+			String str = p_from;
+			ERR_FAIL_COND_V_MSG(str.empty(), Variant(), "String is empty.");
+			if(weights.empty()){
+				for(int i = 0; i < p_count; i++) {
+					weighted_choices.push_back(str.substr((randi() % str.length()), 1));
+				}
+			} else {
+				ERR_FAIL_COND_V_MSG(str.length() != weights.size(), Variant(), "Size of weights does not match.");
+				for(int i = 0; i < p_count; i++) {
+					weighted_choices.push_back(str.substr(indices[i], 1));
+				}
+			}
+			return weighted_choices;
+		} break;
+		case Variant::POOL_BYTE_ARRAY:
+		case Variant::POOL_INT_ARRAY:
+		case Variant::POOL_REAL_ARRAY:
+		case Variant::POOL_STRING_ARRAY:
+		case Variant::POOL_VECTOR2_ARRAY:
+		case Variant::POOL_VECTOR3_ARRAY:
+		case Variant::POOL_COLOR_ARRAY:
+		case Variant::ARRAY: {
+			Array arr = p_from;
+			ERR_FAIL_COND_V_MSG(arr.empty(), Variant(), "Array is empty.");
+				
+			if(weights.empty()){
+				for(int i = 0; i < p_count; i++) {
+					weighted_choices.push_back(arr[randi() % arr.size()]);
+				}
+			} else {
+				ERR_FAIL_COND_V_MSG(arr.size() != weights.size(), Variant(), "Size of weights does not match.");
+				for(int i = 0; i < p_count; i++) {
+					weighted_choices.push_back(arr[indices[i]]);
+				}
+			}
+			return weighted_choices;
+		} break;
+		case Variant::DICTIONARY: {
+			Dictionary dict = p_from;
+			ERR_FAIL_COND_V_MSG(dict.empty(), Variant(), "Dictionary is empty.");
+			for(int i = 0; i < p_count; i++) {
+				weighted_choices.push_back(dict.get_key_at_index(indices[i]));
+			}
+			return weighted_choices;
+		} break;
+		default: {
+			ERR_FAIL_V_MSG(Variant(), "Unsupported: the type must be indexable.");
+		}
+	}
+	return Array();
+}
+
 void Random::shuffle(Array p_array) {
 	if (p_array.size() < 2) {
 		return;
@@ -126,6 +232,7 @@ void Random::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("range", "from", "to"), &Random::range);
 	ClassDB::bind_method(D_METHOD("choice", "from"), &Random::choice);
+	ClassDB::bind_method(D_METHOD("choices", "from", "count", "weights", "cumulative"), &Random::choices, DEFVAL(1), DEFVAL(Variant()), DEFVAL(false));
 	ClassDB::bind_method(D_METHOD("shuffle", "array"), &Random::shuffle);
 	ClassDB::bind_method(D_METHOD("decision", "probability"), &Random::decision);
 
