@@ -232,9 +232,9 @@
 			<return type="Dictionary" />
 			<argument index="0" name="root" type="GraphVertex" />
 			<description>
-				Returns a shortest path tree starting at the [code]root[/code] vertex using Dijkstra's algorithm. This solves the Single-Source Shortest Path (SSSP) problem, which allows to find the shortest paths between a given vertex to all other vertices in the graph. The algorithm is structurally equivalent to the breadth-first search, except that this uses a priority queue to choose the next vertex based on [member GraphEdge.value] weights interpreted as [float] values.
+				Returns a shortest path tree starting at the [code]root[/code] vertex using Dijkstra's algorithm. This solves the Single-Source Shortest Path (SSSP) problem, which allows to find the shortest paths between a given vertex to all other vertices in the graph. The algorithm is structurally equivalent to the breadth-first search, except that this uses a priority queue to choose the next vertex based on [member GraphEdge.value] weights interpreted as [float] values. The weight of each edge should not be negative for the Dijkstra's algorithm to work properly.
 				The tree is represented as a [Dictionary] containing the following keys:
-				[code]backtrace:[/code] A [Dictionary] which contains exhaustive information that allows to reconstruct the shortest path. The keys hold current [GraphVertex], and values contain previous [GraphVertex]. Therefore, the shortest path between the source to any other connected vertex can be obtained in the following way:
+				[code]backtrace:[/code] A [Dictionary] which contains an exhaustive information that allows to reconstruct the shortest path. The keys hold current [GraphVertex], and values contain previous [GraphVertex]. Therefore, the shortest path between the source to any other connected vertex can be obtained in the following way:
 				[codeblock]
 				# Find the shortest path tree starting from the root vertex of interest.
 				var root = Random.choice(graph.get_vertices())

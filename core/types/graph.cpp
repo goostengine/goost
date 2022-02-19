@@ -270,7 +270,7 @@ Array GraphVertex::get_predecessors() const {
 
 Array GraphVertex::get_edges() const {
 	Array ret;
-	
+
 	const uint32_t *v = nullptr;
 	while ((v = neighbors.next(v))) {
 		const EdgeList &list = graph->get_edges(this->id, neighbors[*v]->id);
@@ -283,7 +283,7 @@ Array GraphVertex::get_edges() const {
 
 Array GraphVertex::get_incoming_edges() const {
 	Array ret;
-	
+
 	const uint32_t *v = nullptr;
 	while ((v = predecessors.next(v))) {
 		const EdgeList &list = graph->get_edges(this->id, predecessors[*v]->id);
@@ -586,6 +586,7 @@ Dictionary Graph::shortest_path_tree(GraphVertex *p_root) const {
 			GraphVertex *v = graph->vertices[*k];
 			GraphEdge *edge = _find_minimum_edge(u, v);
 			real_t weight = edge->value;
+			ERR_CONTINUE_MSG(weight < 0, "The edge's weight should not be negative");
 
 			if (distance[v->id] > distance[u->id] + weight) {
 				distance[v->id] = distance[u->id] + weight;
