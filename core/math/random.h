@@ -1,6 +1,7 @@
 #pragma once
 
 #include "core/math/random_number_generator.h"
+#include "core/local_vector.h"
 
 class Random : public RandomNumberGenerator {
 	GDCLASS(Random, RandomNumberGenerator);
@@ -25,6 +26,7 @@ public:
 
 	Variant range(const Variant &p_from, const Variant &p_to);
 	Variant choice(const Variant &p_sequence);
+	Array choices(const Variant &p_sequence, int p_count = 1, const PoolIntArray &p_weights = Variant(), bool p_is_cumulative =  false);
 	void shuffle(Array p_array);
 	bool decision(float probability);
 
