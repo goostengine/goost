@@ -96,12 +96,15 @@ if __name__ == "__main__":
         test_args = [godot_bin]
         # Path to GUT test project.
         test_args.extend(["--path", "tests/project"])
+
         # Allows to speed up tests. Do not set below 15, may cause delta time errors.
         test_args.extend(["--fixed-fps", "15"])
+
         # Run in debug mode, disabling it allows to workaround:
         # https://github.com/godotengine/godot/issues/51387
         if args.debug:
             test_args.append("-d") # Use short options, GUT will break otherwise.
+
         # Path to GUT command-line script.
         test_args.extend(["-s", os.path.join(base_path, "tests/project/addons/gut/gut_cmdln.gd")])
 
@@ -131,8 +134,10 @@ if __name__ == "__main__":
 
     elif args.tool.startswith("doc"):
         print("Generating documentation ...")
+
         if not os.path.exists("doc/godot"):
             os.makedirs("doc/godot")
+
         ret = run([godot_bin, "--doctool", os.path.join(base_path, "doc/godot")],
                 windowed=args.windowed, verbose=args.verbose)
         sys.exit(ret)
