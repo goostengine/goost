@@ -158,6 +158,37 @@ func test_choice():
 	Engine.print_error_messages = true
 
 
+func test_pop():
+	var rng = Random.new_instance()
+	rng.seed = 38
+
+	var array = [1, 2, 3, 4]
+	var popped = []
+	for i in array.size():
+		var e = rng.pop(array)
+		assert_not_null(e)
+		popped.push_back(e)
+
+	assert_eq(popped[0], 3)
+	assert_eq(popped[1], 1)
+	assert_eq(popped[2], 4)
+	assert_eq(popped[3], 2)
+	popped.clear()
+
+	var dictionary = {a = 1, b = 2, c = 3, d = 4}
+	var keys = dictionary.keys()
+	for k in keys:
+		var e = rng.pop(dictionary)
+		assert_not_null(e)
+		popped.push_back(e)
+
+	assert_eq(popped[0], 3)
+	assert_eq(popped[1], 2)
+	assert_eq(popped[2], 1)
+	assert_eq(popped[3], 4)
+	popped.clear()
+
+
 func test_shuffle_array():
 	var rng = Random.new_instance()
 

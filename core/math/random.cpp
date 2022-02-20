@@ -96,6 +96,49 @@ Variant Random::choice(const Variant &p_from) {
 	return Variant();
 }
 
+Variant Random::pop(const Variant &p_from) {
+	switch (p_from.get_type()) {
+		case Variant::STRING: {
+			ERR_FAIL_V_MSG(Variant(), "Unsupported: String is passed by value.");
+		} break;
+		case Variant::POOL_BYTE_ARRAY:
+		case Variant::POOL_INT_ARRAY:
+		case Variant::POOL_REAL_ARRAY:
+		case Variant::POOL_STRING_ARRAY:
+		case Variant::POOL_VECTOR2_ARRAY:
+		case Variant::POOL_VECTOR3_ARRAY:
+		case Variant::POOL_COLOR_ARRAY: {
+			ERR_FAIL_V_MSG(Variant(), "Unsupported: Pool*Arrays are passed by value rather than reference.");
+		} break;
+		case Variant::ARRAY: {
+			Array arr = p_from;
+			ERR_FAIL_COND_V_MSG(arr.empty(), Variant(), "Array is empty.");
+
+			int idx = randi() % arr.size();
+			Variant c = arr[idx];
+			// Remove unordered for performance reasons.
+			arr[idx] = arr.back();
+			arr.pop_back();
+
+			return c;
+		} break;
+		case Variant::DICTIONARY: {
+			Dictionary dict = p_from;
+			ERR_FAIL_COND_V_MSG(dict.empty(), Variant(), "Dictionary is empty.");
+
+			int idx = randi() % dict.size();
+			Variant c = dict.get_value_at_index(idx);
+			dict.erase(dict.get_key_at_index(idx));
+
+			return c;
+		} break;
+		default: {
+			ERR_FAIL_V_MSG(Variant(), "Unsupported: the type must be indexable.");
+		}
+	}
+	return Variant();
+}
+
 Array Random::choices(const Variant &p_from, int p_count, const PoolIntArray &p_weights, bool p_is_cumulative) {
 	int sum = 0;
 	LocalVector<int, int> cumulative_weights;
@@ -232,6 +275,7 @@ void Random::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("range", "from", "to"), &Random::range);
 	ClassDB::bind_method(D_METHOD("choice", "from"), &Random::choice);
+	ClassDB::bind_method(D_METHOD("pop", "from"), &Random::pop);
 	ClassDB::bind_method(D_METHOD("choices", "from", "count", "weights", "cumulative"), &Random::choices, DEFVAL(1), DEFVAL(Variant()), DEFVAL(false));
 	ClassDB::bind_method(D_METHOD("shuffle", "array"), &Random::shuffle);
 	ClassDB::bind_method(D_METHOD("decision", "probability"), &Random::decision);
