@@ -157,6 +157,7 @@ func test_pick():
 
 	Engine.print_error_messages = true
 
+
 func test_choices():
 	var rng = Random.new_instance()
 
@@ -193,26 +194,26 @@ func test_choices():
 	assert_eq(rng.choices(""), Array([]))
 	assert_eq(rng.choices([]), Array([]))
 
-	# unequal sizes
+	# Unequal sizes.
 	assert_eq(rng.choices({"Godot": 3, "Goost": 8, "Godex": 10}, 4, [4, 9, 16, 18], true), Array([]))
 	assert_eq(rng.choices({"Godot": 3, "Goost": 8, "Godex": 10}, 4, [4, 9], true), Array([]))
 	assert_eq(rng.choices(["Godot", "Goost", "Godex"], 4, [4, 9, 16, 18], true), Array([]))
 	assert_eq(rng.choices(["Godot", "Goost", "Godex"], 4, [4, 9], true), Array([]))
 
-	# decreasing/ negative
+	# Decreasing / negative.
 	assert_eq(rng.choices({"Godot": 3, "Goost": -8, "Godex": 10}, 4, [], false), Array([]))
 	assert_eq(rng.choices({"Godot": 3, "Goost": -8, "Godex": 10}, 4, [], true), Array([]))
 	assert_eq(rng.choices({"Godot": 3, "Goost": 8, "Godex": 7}, 4, [], true), Array([]))
 	assert_eq(rng.choices({"Godot": 3, "Goost": 8, "Godex": 10}, 4, [4, -9, 16, 18], false), Array([]))
 	assert_eq(rng.choices({"Godot": 3, "Goost": 8, "Godex": 10}, 4, [4, -9, 16, 18], true), Array([]))
 	assert_eq(rng.choices({"Godot": 3, "Goost": 8, "Godex": 10}, 4, [4, 9, 6, 18], true), Array([]))
-	assert_eq(rng.choices({"roman" : 22, 22 : 25, BoxShape.new() : BoxShape.new()}, 37, PoolIntArray([]), true), Array([]))
 
-	# All zero weights
+	# All zero weights.
 	assert_eq(rng.choices({"Godot": 3, "Goost": 8, "Godex": 10}, 4, [0, 0, 0], true), Array([]))
 	assert_eq(rng.choices({"Godot": 3, "Goost": 8, "Godex": 10}, 4, [0, 0, 0], false), Array([]))
 
 	Engine.print_error_messages = true
+
 
 func test_pop():
 	var rng = Random.new_instance()
