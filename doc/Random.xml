@@ -28,11 +28,14 @@
 		</method>
 		<method name="choices">
 			<return type="Array" />
-			<argument index="0" name="from" type="Variant" />
+			<argument index="0" name="sequence" type="Variant" />
 			<argument index="1" name="count" type="int" default="1" />
 			<argument index="2" name="weights" type="PoolIntArray" default="null" />
 			<argument index="3" name="cumulative" type="bool" default="false" />
 			<description>
+				Returns an [Array] of randomly picked elements from a [code]sequence[/code], with the number of elements equal to [code]count[/code]. The elements are picked according to integer [code]weights[/code] or an array of values from the [code]sequence[/code] if it's a [Dictionary] and if [code]weights[/codes] is empty.
+				All elements of [code]weights[/code] must be non-negative integers, and must contain at least one non-zero element if [code]weights[/code] is not empty. Additionally, the order of integers should be non-decreasing if [code]cumulative[/code] is [code]true[/code].
+				If [code]weights[/code] is not empty and if [code]sequence[/code] is not a [Dictionary], then the size of [code]weights[/code] must be equal to the size of [code]sequence[/code]. 
 			</description>
 		</method>
 		<method name="color_hsv">
