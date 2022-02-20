@@ -19,7 +19,7 @@
 	<tutorials>
 	</tutorials>
 	<methods>
-		<method name="choice">
+		<method name="pick">
 			<return type="Variant" />
 			<argument index="0" name="from" type="Variant" />
 			<description>
@@ -90,7 +90,7 @@
 			<description>
 				Returns a random element from an [Array] or [Dictionary], and then removes the value from it. If container is empty, prints an error and returns [code]null[/code].
 				For performance reasons, this will modify the original order in the [Array]: the last value is swapped with the popped element, and then [method Array.pop_back] is called. See [method Array.remove] for explanations.
-				Unlike [method choice], the [String] and [b]Pool*Array[/b] types are not supported, since they are passed by value when calling this function.
+				Unlike [method pick], the [String] and [b]Pool*Array[/b] types are not supported, since they are passed by value when calling this function.
 			</description>
 		</method>
 		<method name="range">
