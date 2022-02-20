@@ -20,6 +20,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 ### Removed
 
 - The `GradientTexture2D` (available directly in Godot 3.5 now).
+- Configuration files `disable_builtin.py` and `disable_community.py`.
 
 ## [1.2] - 2021-12-19
 
