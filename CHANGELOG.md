@@ -9,7 +9,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 ### Added
 
 - A general-purpose `Graph` class.
-- A `Random.choices()` method for weighted random selections.
+- A `Random.choices()` method for weighted random selections from a sequence.
+- A `Random.pop()` method for popping random elements from a sequence.
+
+### Changed
+
+- Renamed `VariantMap` and `VariantResource` to `Map2D` and `DataContainer` respectively.
+- Renamed `Random.choice()` to `Random.pick()`, to go along with `Random.pop()`.
 
 ### Removed
 
