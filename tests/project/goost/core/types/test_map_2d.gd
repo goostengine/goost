@@ -1,7 +1,7 @@
 extends "res://addons/gut/test.gd"
 
 func test_create_clear():
-	var map = VariantMap.new()
+	var map = Map2D.new()
 	assert_true(map.is_empty())
 
 	map.create(512, 1024)
@@ -15,7 +15,7 @@ func test_create_clear():
 
 
 func test_create_from_data():
-	var map = VariantMap.new()
+	var map = Map2D.new()
 	map.create_from_data(2, 3, [0, 1, 2, 3, 4, 5])
 
 	assert_eq(map.get_element(0, 0), 0)
@@ -27,7 +27,7 @@ func test_create_from_data():
 
 
 func test_data():
-	var map = VariantMap.new()
+	var map = Map2D.new()
 	var arr = [0, 1, 2, 3, 4, 5]
 	var data = {"width": 2, "height": 3, "data": arr}
 	map.data = data
@@ -50,7 +50,7 @@ func test_data():
 
 
 func test_resize():
-	var map = VariantMap.new()
+	var map = Map2D.new()
 	map.create(4, 4)
 
 	var n = 0
@@ -74,7 +74,7 @@ func test_resize():
 
 
 func test_element_cell():
-	var map = VariantMap.new()
+	var map = Map2D.new()
 	map.create(4, 4)
 	assert_null(map.get_element(0, 0))
 
@@ -105,7 +105,7 @@ func test_element_cell():
 
 
 func test_custom_iterator():
-	var map = VariantMap.new()
+	var map = Map2D.new()
 	map.create(4, 4)
 
 	var n = 0
@@ -121,7 +121,7 @@ func test_custom_iterator():
 
 
 func test_fill():
-	var map = VariantMap.new()
+	var map = Map2D.new()
 	map.fill("Goost") # Should not crash filling empty map.
 
 	map.create(4, 4)

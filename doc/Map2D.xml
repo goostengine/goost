@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="VariantMap" inherits="Resource" version="3.5">
+<class name="Map2D" inherits="Resource" version="3.5">
 	<brief_description>
 		A two-dimensional data container.
 	</brief_description>
@@ -7,7 +7,7 @@
 		A data structure which holds an arbitrary number of elements accessed via 2D coordinates. Each cell represents a single element which stores any [Variant] compatible datatype. Can act as a helper class for other pixel-based classes such as [Image], [BitMap] etc.
 		The map is initialized with [method create] method:
 		[codeblock]
-		var map = VariantMap.new()
+		var map = Map2D.new()
 		map.create(3, 4)
 		map.set_element(2, 3, "Goost")
 		print(map.get_element(2, 3)) # Prints: "Goost".

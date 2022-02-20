@@ -3,8 +3,8 @@
 #include "core/resource.h"
 #include "core/variant.h"
 
-class VariantMap : public Resource {
-	GDCLASS(VariantMap, Resource);
+class Map2D : public Resource {
+	GDCLASS(Map2D, Resource);
 
 protected:
 	static void _bind_methods();

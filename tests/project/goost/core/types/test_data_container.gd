@@ -1,10 +1,10 @@
 extends "res://addons/gut/test.gd"
 
-var res: VariantResource
+var res: DataContainer
 
 
 func before_each():
-	res = VariantResource.new()
+	res = DataContainer.new()
 
 
 func test_set_type():
