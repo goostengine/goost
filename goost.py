@@ -4,11 +4,11 @@
 name = "Goost: Godot Engine Extension"
 short_name = "goost"
 version = {
-    "major": 1,
-    "minor": 3,
+    "major": 2,
+    "minor": 0,
     "patch": 0,
     "branch": "gd3",
-    "status": "beta",
+    "status": "dev",
     "year": 2022,
 }
 url = "https://github.com/goostengine/goost"
