@@ -1,15 +1,15 @@
-#include "variant_resource_preview.h"
+#include "data_container_preview.h"
 #include "editor/editor_node.h"
 
-bool VariantResourcePreviewGenerator::handles(const String &p_type) const {
-	return p_type == "VariantResource";
+bool DataContainerPreviewGenerator::handles(const String &p_type) const {
+	return p_type == "DataContainer";
 }
 
-Ref<Texture> VariantResourcePreviewGenerator::generate(const Ref<Resource> &p_from, const Size2 &p_size) const {
-	Ref<VariantResource> var = p_from;
-	ERR_FAIL_COND_V_MSG(var.is_null(), Ref<VariantResource>(), "Invalid reference to a VariantResource object.");
+Ref<Texture> DataContainerPreviewGenerator::generate(const Ref<Resource> &p_from, const Size2 &p_size) const {
+	Ref<DataContainer> container = p_from;
+	ERR_FAIL_COND_V_MSG(container.is_null(), Ref<DataContainer>(), "Invalid reference to a DataContainer object.");
 
-	const Variant &value = var->get_value();
+	const Variant &value = container->get_value();
 
 	Ref<Texture> tex;
 

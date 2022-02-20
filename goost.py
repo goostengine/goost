@@ -156,6 +156,7 @@ classes = {
 	"CommandLineHelpFormat": "core",
     "CommandLineOption": "core",
 	"CommandLineParser": "core",
+    "DataContainer": "core",
     "Debug2D": "scene",
     "DebugCapture": "scene",
     "GoostEngine": "core",
@@ -198,7 +199,6 @@ classes = {
     "ShapeCast2D": "physics",
     "Spawner2D": "scene",
     "Stopwatch": "scene",
-    "VariantResource": "core",
     "VisualShape2D": "scene",
 }
 

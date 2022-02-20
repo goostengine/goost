@@ -3,8 +3,8 @@
 #include "core/resource.h"
 #include "core/variant.h"
 
-class VariantResource : public Resource {
-	GDCLASS(VariantResource, Resource);
+class DataContainer : public Resource {
+	GDCLASS(DataContainer, Resource);
 
 protected:
 	bool _set(const StringName &p_name, const Variant &p_value);
@@ -45,7 +45,7 @@ public:
 
 	virtual String to_string() { return String(value); }
 
-	VariantResource() {
+	DataContainer() {
 		// Default, but can be configured with `property_name` property.
 		pi.name = "value"; 
 	}

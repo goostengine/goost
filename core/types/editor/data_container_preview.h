@@ -1,10 +1,10 @@
 #pragma once
 
 #include "editor/editor_resource_preview.h"
-#include "../variant_resource.h"
+#include "../data_container.h"
 
-class VariantResourcePreviewGenerator : public EditorResourcePreviewGenerator {
-	GDCLASS(VariantResourcePreviewGenerator, EditorResourcePreviewGenerator);
+class DataContainerPreviewGenerator : public EditorResourcePreviewGenerator {
+	GDCLASS(DataContainerPreviewGenerator, EditorResourcePreviewGenerator);
 
 public:
 	virtual bool handles(const String &p_type) const;

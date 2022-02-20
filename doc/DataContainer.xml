@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="VariantResource" inherits="Resource" version="3.5">
+<class name="DataContainer" inherits="Resource" version="3.5">
 	<brief_description>
 		A [Resource] which holds any [Variant] compatible type.
 	</brief_description>
 	<description>
-		This class allows to store any [Variant] compatible built-in types as a [Resource], such as [Vector2], [Dictionary], [Array], and even nested [VariantResource] objects themselves. These can be edited in the inspector and saved to disk to be reused throughout the project, as resources are shared between instances by default.
-		[VariantResource] is normally edited via the editor inspector, but the [member type] and [code]value[/code] can be changed via code as well:
+		This class allows to store any [Variant] compatible built-in types as a [Resource], such as [Vector2], [Dictionary], [Array], and even nested [DataContainer] objects themselves. These can be edited in the inspector and saved to disk to be reused throughout the project, as resources are shared between instances by default.
+		[DataContainer] is normally edited via the editor inspector, but the [member type] and [code]value[/code] can be changed via code as well:
 		[codeblock]
-		var res = VariantResource.new()
+		var res = DataContainer.new()
 		res.value = Vector3(1, 2, 3) # The type is set automatically.
 		print(res.value)  # prints (1, 2, 3)
 		res.type = TYPE_VECTOR2 # The previous value is converted to a new type.
@@ -51,7 +51,7 @@
 			[codeblock]
 			extends Node2D
 
-			export(VariantResource) var res = VariantResource.new()
+			export(DataContainer) var res = DataContainer.new()
 
 			func _ready():
 			    # Whenever the color is changed, redraw the canvas.

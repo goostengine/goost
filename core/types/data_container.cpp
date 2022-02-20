@@ -1,6 +1,6 @@
-#include "variant_resource.h"
+#include "data_container.h"
 
-void VariantResource::set_type(int p_type) {
+void DataContainer::set_type(int p_type) {
 	const Variant::Type prev_type = type;
 	type = static_cast<Variant::Type>(p_type);
 	// Convert previous value to a new type, if possible.
@@ -13,19 +13,19 @@ void VariantResource::set_type(int p_type) {
 	_change_notify();
 }
 
-Variant VariantResource::create(const Variant::Type &p_type) {
+Variant DataContainer::create(const Variant::Type &p_type) {
 	Variant::CallError error;
 	return Variant::construct(p_type, nullptr, 0, error);
 }
 
-Variant VariantResource::convert(const Variant &p_value, const Variant::Type &p_to_type) {
+Variant DataContainer::convert(const Variant &p_value, const Variant::Type &p_to_type) {
 	Variant::CallError error;
 	const Variant *args[1];
 	args[0] = &p_value;
 	return Variant::construct(p_to_type, args, 1, error, false); // Non-strict.
 }
 
-bool VariantResource::_set(const StringName &p_name, const Variant &p_value) {
+bool DataContainer::_set(const StringName &p_name, const Variant &p_value) {
 	String name = p_name.operator String();
 	if (name == pi.name) {
 		value = p_value;
@@ -37,7 +37,7 @@ bool VariantResource::_set(const StringName &p_name, const Variant &p_value) {
 	return true;
 }
 
-bool VariantResource::_get(const StringName &p_name, Variant &r_ret) const {
+bool DataContainer::_get(const StringName &p_name, Variant &r_ret) const {
 	String name = p_name.operator String();
 	if (name == pi.name) {
 		r_ret = value;
@@ -47,32 +47,32 @@ bool VariantResource::_get(const StringName &p_name, Variant &r_ret) const {
 	return true;
 }
 
-void VariantResource::set_property_name(const String &p_property_name) {
+void DataContainer::set_property_name(const String &p_property_name) {
 	pi.name = p_property_name;
 	_change_notify();
 }
 
-void VariantResource::set_property_hint(PropertyHint p_property_hint) {
+void DataContainer::set_property_hint(PropertyHint p_property_hint) {
 	pi.hint = p_property_hint;
 	_change_notify();
 }
 
-void VariantResource::set_property_hint_string(const String &p_property_hint_string) {
+void DataContainer::set_property_hint_string(const String &p_property_hint_string) {
 	pi.hint_string = p_property_hint_string;
 	_change_notify();
 }
 
-void VariantResource::set_property_usage(PropertyUsageFlags p_property_usage) {
+void DataContainer::set_property_usage(PropertyUsageFlags p_property_usage) {
 	pi.usage = p_property_usage;
 	_change_notify();
 }
 
-void VariantResource::_get_property_list(List<PropertyInfo> *p_list) const {
+void DataContainer::_get_property_list(List<PropertyInfo> *p_list) const {
 	// This property is changed dynamically from other properties.
 	p_list->push_back(PropertyInfo(type, pi.name, pi.hint, pi.hint_string, pi.usage));
 }
 
-String VariantResource::get_type_hints() {
+String DataContainer::get_type_hints() {
 	String type_hints;
 	for (int i = 0; i < Variant::VARIANT_MAX; ++i) {
 		type_hints += Variant::get_type_name(Variant::Type(i));
@@ -83,7 +83,7 @@ String VariantResource::get_type_hints() {
 	return type_hints;
 }
 
-String VariantResource::get_property_hint_name(const PropertyHint &p_hint) {
+String DataContainer::get_property_hint_name(const PropertyHint &p_hint) {
 	switch (p_hint) {
 		case PROPERTY_HINT_NONE: {
 			return "None";
@@ -206,10 +206,10 @@ String VariantResource::get_property_hint_name(const PropertyHint &p_hint) {
 	return "";
 }
 
-String VariantResource::get_property_hint_types() {
+String DataContainer::get_property_hint_types() {
 	String hint_types;
 	for (int i = 0; i < PropertyHint::PROPERTY_HINT_MAX; ++i) {
-		hint_types += VariantResource::get_property_hint_name(PropertyHint(i));
+		hint_types += DataContainer::get_property_hint_name(PropertyHint(i));
 		if (i < PropertyHint::PROPERTY_HINT_MAX - 1) {
 			hint_types += ",";
 		}
@@ -217,24 +217,24 @@ String VariantResource::get_property_hint_types() {
 	return hint_types;
 }
 
-void VariantResource::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("set_type", "type"), &VariantResource::set_type);
-	ClassDB::bind_method(D_METHOD("get_type"), &VariantResource::get_type);
+void DataContainer::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("set_type", "type"), &DataContainer::set_type);
+	ClassDB::bind_method(D_METHOD("get_type"), &DataContainer::get_type);
 
-	ClassDB::bind_method(D_METHOD("set_value", "value"), &VariantResource::set_value);
-	ClassDB::bind_method(D_METHOD("get_value"), &VariantResource::get_value);
+	ClassDB::bind_method(D_METHOD("set_value", "value"), &DataContainer::set_value);
+	ClassDB::bind_method(D_METHOD("get_value"), &DataContainer::get_value);
 
-	ClassDB::bind_method(D_METHOD("set_property_name", "name"), &VariantResource::set_property_name);
-	ClassDB::bind_method(D_METHOD("get_property_name"), &VariantResource::get_property_name);
+	ClassDB::bind_method(D_METHOD("set_property_name", "name"), &DataContainer::set_property_name);
+	ClassDB::bind_method(D_METHOD("get_property_name"), &DataContainer::get_property_name);
 
-	ClassDB::bind_method(D_METHOD("set_property_hint", "hint"), &VariantResource::set_property_hint);
-	ClassDB::bind_method(D_METHOD("get_property_hint"), &VariantResource::get_property_hint);
+	ClassDB::bind_method(D_METHOD("set_property_hint", "hint"), &DataContainer::set_property_hint);
+	ClassDB::bind_method(D_METHOD("get_property_hint"), &DataContainer::get_property_hint);
 
-	ClassDB::bind_method(D_METHOD("set_property_hint_string", "hint_string"), &VariantResource::set_property_hint_string);
-	ClassDB::bind_method(D_METHOD("get_property_hint_string"), &VariantResource::get_property_hint_string);
+	ClassDB::bind_method(D_METHOD("set_property_hint_string", "hint_string"), &DataContainer::set_property_hint_string);
+	ClassDB::bind_method(D_METHOD("get_property_hint_string"), &DataContainer::get_property_hint_string);
 
-	ClassDB::bind_method(D_METHOD("set_property_usage", "usage"), &VariantResource::set_property_usage);
-	ClassDB::bind_method(D_METHOD("get_property_usage"), &VariantResource::get_property_usage);
+	ClassDB::bind_method(D_METHOD("set_property_usage", "usage"), &DataContainer::set_property_usage);
+	ClassDB::bind_method(D_METHOD("get_property_usage"), &DataContainer::get_property_usage);
 
 	// DO NOT expose `value` as a property here, this is handled by `_get_property_list()` instead.
 
