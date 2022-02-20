@@ -19,13 +19,6 @@
 	<tutorials>
 	</tutorials>
 	<methods>
-		<method name="pick">
-			<return type="Variant" />
-			<argument index="0" name="from" type="Variant" />
-			<description>
-				Returns a random element from a container or indexable sequence, such as [Array], [Dictionary], [String]. If container is empty, prints an error and returns [code]null[/code].
-			</description>
-		</method>
 		<method name="choices">
 			<return type="Array" />
 			<argument index="0" name="sequence" type="Variant" />
@@ -35,7 +28,7 @@
 			<description>
 				Returns an [Array] of randomly picked elements from a [code]sequence[/code], with the number of elements equal to [code]count[/code]. The elements are picked according to integer [code]weights[/code] or an array of values from the [code]sequence[/code] if it's a [Dictionary] and if [code]weights[/codes] is empty.
 				All elements of [code]weights[/code] must be non-negative integers, and must contain at least one non-zero element if [code]weights[/code] is not empty. Additionally, the order of integers should be non-decreasing if [code]cumulative[/code] is [code]true[/code].
-				If [code]weights[/code] is not empty and if [code]sequence[/code] is not a [Dictionary], then the size of [code]weights[/code] must be equal to the size of [code]sequence[/code]. 
+				If [code]weights[/code] is not empty and if [code]sequence[/code] is not a [Dictionary], then the size of [code]weights[/code] must be equal to the size of [code]sequence[/code].
 			</description>
 		</method>
 		<method name="color_hsv">
@@ -87,9 +80,16 @@
 				Instantiates a new local [Random] instance based on [RandomNumberGenerator]. Does not override the [Random] instance accessible at [@GlobalScope].
 			</description>
 		</method>
+		<method name="pick">
+			<return type="Variant" />
+			<argument index="0" name="sequence" type="Variant" />
+			<description>
+				Returns a random element from a container or indexable [code]sequence[/code], such as [Array], [Dictionary], [String]. If container is empty, prints an error and returns [code]null[/code].
+			</description>
+		</method>
 		<method name="pop">
 			<return type="Variant" />
-			<argument index="0" name="from" type="Variant" />
+			<argument index="0" name="sequence" type="Variant" />
 			<description>
 				Returns a random element from an [Array] or [Dictionary], and then removes the value from it. If container is empty, prints an error and returns [code]null[/code].
 				For performance reasons, this will modify the original order in the [Array]: the last value is swapped with the popped element, and then [method Array.pop_back] is called. See [method Array.remove] for explanations.

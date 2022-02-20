@@ -65,10 +65,10 @@ Color Random::color_rgb(float r_min, float r_max, float g_min, float g_max, floa
 			randf_range(a_min, a_max));
 }
 
-Variant Random::pick(const Variant &p_from) {
-	switch (p_from.get_type()) {
+Variant Random::pick(const Variant &p_sequence) {
+	switch (p_sequence.get_type()) {
 		case Variant::STRING: {
-			String str = p_from;
+			String str = p_sequence;
 			ERR_FAIL_COND_V_MSG(str.empty(), Variant(), "String is empty.");
 			return str.substr(randi() % str.length(), 1); // Not size().
 		} break;
@@ -80,12 +80,12 @@ Variant Random::pick(const Variant &p_from) {
 		case Variant::POOL_VECTOR3_ARRAY:
 		case Variant::POOL_COLOR_ARRAY:
 		case Variant::ARRAY: {
-			Array arr = p_from;
+			Array arr = p_sequence;
 			ERR_FAIL_COND_V_MSG(arr.empty(), Variant(), "Array is empty.");
 			return arr[randi() % arr.size()];
 		} break;
 		case Variant::DICTIONARY: {
-			Dictionary dict = p_from;
+			Dictionary dict = p_sequence;
 			ERR_FAIL_COND_V_MSG(dict.empty(), Variant(), "Dictionary is empty.");
 			return dict.get_value_at_index(randi() % dict.size());
 		} break;
@@ -96,8 +96,8 @@ Variant Random::pick(const Variant &p_from) {
 	return Variant();
 }
 
-Variant Random::pop(const Variant &p_from) {
-	switch (p_from.get_type()) {
+Variant Random::pop(const Variant &p_sequence) {
+	switch (p_sequence.get_type()) {
 		case Variant::STRING: {
 			ERR_FAIL_V_MSG(Variant(), "Unsupported: String is passed by value.");
 		} break;
@@ -111,7 +111,7 @@ Variant Random::pop(const Variant &p_from) {
 			ERR_FAIL_V_MSG(Variant(), "Unsupported: Pool*Arrays are passed by value rather than reference.");
 		} break;
 		case Variant::ARRAY: {
-			Array arr = p_from;
+			Array arr = p_sequence;
 			ERR_FAIL_COND_V_MSG(arr.empty(), Variant(), "Array is empty.");
 
 			int idx = randi() % arr.size();
@@ -123,7 +123,7 @@ Variant Random::pop(const Variant &p_from) {
 			return c;
 		} break;
 		case Variant::DICTIONARY: {
-			Dictionary dict = p_from;
+			Dictionary dict = p_sequence;
 			ERR_FAIL_COND_V_MSG(dict.empty(), Variant(), "Dictionary is empty.");
 
 			int idx = randi() % dict.size();
@@ -280,8 +280,8 @@ void Random::_bind_methods() {
 			&Random::color_rgb, DEFVAL(0.0), DEFVAL(1.0), DEFVAL(0.0), DEFVAL(1.0), DEFVAL(0.0), DEFVAL(1.0), DEFVAL(1.0), DEFVAL(1.0));
 
 	ClassDB::bind_method(D_METHOD("range", "from", "to"), &Random::range);
-	ClassDB::bind_method(D_METHOD("pick", "from"), &Random::pick);
-	ClassDB::bind_method(D_METHOD("pop", "from"), &Random::pop);
+	ClassDB::bind_method(D_METHOD("pick", "sequence"), &Random::pick);
+	ClassDB::bind_method(D_METHOD("pop", "sequence"), &Random::pop);
 	ClassDB::bind_method(D_METHOD("choices", "sequence", "count", "weights", "cumulative"), &Random::choices, DEFVAL(1), DEFVAL(Variant()), DEFVAL(false));
 	ClassDB::bind_method(D_METHOD("shuffle", "array"), &Random::shuffle);
 	ClassDB::bind_method(D_METHOD("decision", "probability"), &Random::decision);
