@@ -168,6 +168,7 @@ func test_pop():
 		var e = rng.pop(array)
 		assert_not_null(e)
 		popped.push_back(e)
+		assert_eq(array.size() + popped.size(), 4)
 
 	assert_eq(popped[0], 3)
 	assert_eq(popped[1], 1)
@@ -176,11 +177,11 @@ func test_pop():
 	popped.clear()
 
 	var dictionary = {a = 1, b = 2, c = 3, d = 4}
-	var keys = dictionary.keys()
-	for k in keys:
+	for i in 4:
 		var e = rng.pop(dictionary)
 		assert_not_null(e)
 		popped.push_back(e)
+		assert_eq(dictionary.size() + popped.size(), 4)
 
 	assert_eq(popped[0], 3)
 	assert_eq(popped[1], 2)
