@@ -5,6 +5,7 @@
 	</brief_description>
 	<description>
 		An edge connects two [GraphVertex] vertices together. The edge's direction is determined by whether it was added via [method Graph.add_edge] or [method Graph.add_directed_edge]. If the edge is directed, then [member a] and [member b] must be interpreted as endpoints of an arrow pointing [i]from[/i] a vertex [i]to[/i] another.
+		You can call [method Object.free] to remove this edge from the [Graph] it belongs to.
 	</description>
 	<tutorials>
 	</tutorials>

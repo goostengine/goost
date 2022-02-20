@@ -207,6 +207,7 @@
 			<argument index="0" name="edge" type="GraphEdge" />
 			<description>
 				Removes an edge from the graph. If the graph is simple, you could find an edge with [method find_edge] first, and then remove it.
+				Alternatively, you can also remove the edge by calling [method Object.free] on it.
 			</description>
 		</method>
 		<method name="remove_vertex">
@@ -214,6 +215,7 @@
 			<argument index="0" name="vertex" type="GraphVertex" />
 			<description>
 				Removes the specified vertex from the graph. All edges that are connected to the vertex will be automatically deleted.
+				Alternatively, you can also remove the vertex by calling [method Object.free] on it.
 			</description>
 		</method>
 		<method name="set_iterator_bfs">

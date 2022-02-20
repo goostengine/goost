@@ -20,6 +20,7 @@
 		    print(e.a, " ", e.b)
 		[/codeblock]
 		If you need to traverse the graph without producing duplicates, you may also consider using graph's default [member Graph.iterator].
+		You can call [method Object.free] to remove this vertex from the [Graph] it belongs to.
 	</description>
 	<tutorials>
 	</tutorials>
