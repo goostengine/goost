@@ -246,6 +246,22 @@ func test_pop():
 	assert_eq(popped[3], 4)
 	popped.clear()
 
+	array.clear()
+	for i in 100:
+		array.push_back(i)
+
+	while not array.empty():
+		var _e = rng.pop(array)
+
+	assert_eq(array.size(), 0)
+
+	Engine.print_error_messages = false
+
+	assert_null(rng.pop([]))
+	assert_null(rng.pop({}))
+
+	Engine.print_error_messages = true
+
 
 func test_shuffle_array():
 	var rng = Random.new_instance()
