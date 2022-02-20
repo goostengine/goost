@@ -19,9 +19,9 @@
 				By default, generates points inside unit circle with radius [code]1.0[/code]. If you need random normalized vectors, use [member direction] instead, which is more efficient to compute.
 				If [code]radius_min == 0[/code], generates points inside a unit circle, such that [method Geometry.is_point_in_circle] shall return [code]true[/code] given the same radius.
 				If [code]radius_min != radius_max[/code], generates points within the ring's area, such that the inner area defined by [code]radius_min[/code] remains unaffected.
-				If [code]radius_min == radius_max[/code], generates points exactly [b]on[/b] the circle's boundary, but do note that a point may slightly deviate from the actual circle's boundary due to floating point error accumulation.
+				If [code]radius_min == radius_max[/code], generates points exactly [b]on[/b] the circle's boundary, but do note that a point may slightly deviate from the actual circle's boundary due to floating point error accumulation, so [method Geometry.is_point_in_circle] may occasionally return [code]false[/code].
 				[codeblock]
-				var point: Vector2()
+				var point: Vector2
 				point = Random2D.point_in_circle(1.0, 1.0) # Unit vector.
 				point = Random2D.point_in_circle(0.0, 1.0) # Inside a circle.
 				point = Random2D.point_in_circle(0.5, 1.0) # Within a ring.
