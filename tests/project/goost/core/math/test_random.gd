@@ -135,25 +135,25 @@ func test_randi_range_unbiased():
 	assert_almost_eq(zero_count / float(one_count), 1.0, 0.1)
 
 
-func test_choice():
+func test_pick():
 	var rng = Random.new_instance()
 
 	rng.seed = 58885
-	var element = rng.choice(["Godot", Color.blue, "Goost", Color.red])
+	var element = rng.pick(["Godot", Color.blue, "Goost", Color.red])
 	assert_eq(element, "Goost")
 
 	rng.seed = 222
-	element = rng.choice("Goost")
+	element = rng.pick("Goost")
 	assert_eq(element, "G")
 
 	rng.seed = 335
-	element = rng.choice({0 : "Godot", 1 : "Goost", 2 : "Godex"})
+	element = rng.pick({0 : "Godot", 1 : "Goost", 2 : "Godex"})
 	assert_eq(element, "Goost")
 
 	Engine.print_error_messages = false
 
-	assert_null(rng.choice(""))
-	assert_null(rng.choice([]))
+	assert_null(rng.pick(""))
+	assert_null(rng.pick([]))
 
 	Engine.print_error_messages = true
 

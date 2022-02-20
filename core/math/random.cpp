@@ -65,7 +65,7 @@ Color Random::color_rgb(float r_min, float r_max, float g_min, float g_max, floa
 			randf_range(a_min, a_max));
 }
 
-Variant Random::choice(const Variant &p_from) {
+Variant Random::pick(const Variant &p_from) {
 	switch (p_from.get_type()) {
 		case Variant::STRING: {
 			String str = p_from;
@@ -274,7 +274,7 @@ void Random::_bind_methods() {
 			&Random::color_rgb, DEFVAL(0.0), DEFVAL(1.0), DEFVAL(0.0), DEFVAL(1.0), DEFVAL(0.0), DEFVAL(1.0), DEFVAL(1.0), DEFVAL(1.0));
 
 	ClassDB::bind_method(D_METHOD("range", "from", "to"), &Random::range);
-	ClassDB::bind_method(D_METHOD("choice", "from"), &Random::choice);
+	ClassDB::bind_method(D_METHOD("pick", "from"), &Random::pick);
 	ClassDB::bind_method(D_METHOD("pop", "from"), &Random::pop);
 	ClassDB::bind_method(D_METHOD("choices", "from", "count", "weights", "cumulative"), &Random::choices, DEFVAL(1), DEFVAL(Variant()), DEFVAL(false));
 	ClassDB::bind_method(D_METHOD("shuffle", "array"), &Random::shuffle);

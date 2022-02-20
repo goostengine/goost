@@ -237,11 +237,11 @@
 				[code]backtrace:[/code] A [Dictionary] which contains an exhaustive information that allows to reconstruct the shortest path. The keys hold current [GraphVertex], and values contain previous [GraphVertex]. Therefore, the shortest path between the source to any other connected vertex can be obtained in the following way:
 				[codeblock]
 				# Find the shortest path tree starting from the root vertex of interest.
-				var root = Random.choice(graph.get_vertices())
+				var root = Random.pick(graph.get_vertices())
 				var tree = graph.shortest_path_tree(root)
 
 				# Pick any target vertex.
-				var current = Random.choice(graph.get_vertices())
+				var current = Random.pick(graph.get_vertices())
 
 				# Extract shortest path.
 				var shortest_path = []

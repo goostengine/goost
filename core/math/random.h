@@ -24,7 +24,7 @@ public:
 	Color color_rgb(float r_min = 0.0, float r_max = 1.0, float g_min = 0.0, float g_max = 1.0, float b_min = 0.0, float b_max = 1.0, float a_min = 1.0, float a_max = 1.0);
 
 	Variant range(const Variant &p_from, const Variant &p_to);
-	Variant choice(const Variant &p_sequence);
+	Variant pick(const Variant &p_sequence);
 	Variant pop(const Variant &p_sequence);
 	Array choices(const Variant &p_sequence, int p_count = 1, const PoolIntArray &p_weights = Variant(), bool p_is_cumulative = false);
 	void shuffle(Array p_array);

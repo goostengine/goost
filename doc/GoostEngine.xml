@@ -44,7 +44,7 @@
 				# Pick a random color constant.
 				static func rand_color_constant():
 				    var colors = GoostEngine.get_color_constants()
-				    var name = Random.choice(colors.keys())
+				    var name = Random.pick(colors.keys())
 				    var color = colors[name]
 				    return color
 				[/codeblock]
