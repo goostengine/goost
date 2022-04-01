@@ -51,12 +51,12 @@ public:
 		FORMAT_SF2,
 	};
 	
-	int format = FORMAT_MIDI; // Default.
+	Format format = FORMAT_MIDI; // Default.
 
 	Error load(const String fileName);
 	
 	void set_format(Format p_format) { format = p_format; }
-	int get_format() const { return format; }
+	Format get_format() const { return format; }
 
 	void set_data(const PoolVector<uint8_t> &p_data);
 	PoolVector<uint8_t> get_data() const;
