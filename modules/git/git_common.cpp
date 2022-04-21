@@ -1,24 +1,20 @@
 #include "git_common.h"
 #include "git_api.h"
 
-void check_git2_errors(int error, const char *message, const char *extra) {
+bool check_errors(int error, String message, String function, String file, int line) {
 	const git_error *lg2err;
 	const char *lg2msg = "", *lg2spacer = "";
 
 	if (!error) {
-		return;
+		return false;
 	}
-
 	if ((lg2err = git_error_last()) != nullptr && lg2err->message != nullptr) {
 		lg2msg = lg2err->message;
 		lg2spacer = " - ";
 	}
+	print_line(vformat("Git API: %s [%d]%s%s\n", message, error, lg2spacer, lg2msg));
 
-	if (extra) {
-		printf("Git API: %s '%s' [%d]%s%s\n", message, extra, error, lg2spacer, lg2msg);
-	} else {
-		printf("Git API: %s [%d]%s%s\n", message, error, lg2spacer, lg2msg);
-	}
+	return true;
 }
 
 extern "C" int diff_line_callback_function(const git_diff_delta *delta, const git_diff_hunk *hunk, const git_diff_line *line, void *payload) {
@@ -53,4 +49,16 @@ extern "C" int diff_line_callback_function(const git_diff_delta *delta, const gi
 	EditorVCSInterfaceGit::get_singleton()->diff_contents.push_back(result);
 
 	return 0;
+}
+
+extern "C" int diff_hunk_cb(const git_diff_delta *delta, const git_diff_hunk *range, void *payload) {
+	Array *diff_hunks = (Array *)payload;
+	Dictionary hunk;
+	hunk["old_start"] = range->old_start;
+	hunk["old_lines"] = range->old_lines;
+	hunk["new_start"] = range->new_start;
+	hunk["new_lines"] = range->new_lines;
+	diff_hunks->push_back(hunk);
+
+	return 1;
 }
