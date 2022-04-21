@@ -6,8 +6,8 @@
 #include "core/local_vector.h"
 #include "core/oa_hash_map.h"
 
-#include "core/types/templates/queue.h"
-#include "core/types/templates/stack.h"
+#include "goost/core/types/templates/queue.h"
+#include "goost/core/types/templates/stack.h"
 
 class GraphVertex;
 class GraphEdge;
@@ -49,7 +49,7 @@ struct GraphData {
 	void remove_edge(GraphEdge *p_vertex);
 	// Allows to speed up the clean() method by skipping neighbor
 	// updates and removing edges from the adjacency list.
-	bool clearing_all = false; 
+	bool clearing_all = false;
 	// Adding/removing vertices while iterating may lead to undefined behavior.
 	bool iterating = false;
 
@@ -143,7 +143,7 @@ class GraphVertex : public Object {
 	GraphData *graph = nullptr;
 
 	// The `neighbors` includes both successors and predecessors.
-	HashMap<uint32_t, GraphVertex *> neighbors; 
+	HashMap<uint32_t, GraphVertex *> neighbors;
 	HashMap<uint32_t, GraphVertex *> successors;
 	HashMap<uint32_t, GraphVertex *> predecessors;
 
