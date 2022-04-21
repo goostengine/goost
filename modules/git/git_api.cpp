@@ -312,7 +312,7 @@ Array EditorVCSInterfaceGit::_get_line_diff(String p_file_path, String p_text) {
 	git_reference *head;
 
 	git_diff_options opts = GIT_DIFF_OPTIONS_INIT;
-	git_diff *diff;
+	// git_diff *diff; // Unused: intended?
 	Array diff_contents;
 
 	opts.context_lines = 0;
@@ -340,7 +340,7 @@ Array EditorVCSInterfaceGit::_get_line_diff(String p_file_path, String p_text) {
 	git_index_free(index);
 	git_blob_free(blob);
 	git_reference_free(head);
-	git_diff_free(diff);
+	// git_diff_free(diff);
 
 	return diff_contents;
 }
