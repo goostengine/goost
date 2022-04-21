@@ -261,7 +261,7 @@ Array EditorVCSInterfaceGit::_get_file_diff(const String file_path, int area) {
 
 Array EditorVCSInterfaceGit::_parse_diff(git_diff *diff) {
 	Array diff_contents;
-	for (int i = 0; i < git_diff_num_deltas(diff); i++) {
+	for (size_t i = 0; i < git_diff_num_deltas(diff); i++) {
 		git_patch *patch;
 		const git_diff_delta *delta = git_diff_get_delta(diff, i); // file_cb
 		git_patch_from_diff(&patch, diff, i);
@@ -276,7 +276,7 @@ Array EditorVCSInterfaceGit::_parse_diff(git_diff *diff) {
 		Dictionary diff_file = create_diff_file(delta->new_file.path, delta->old_file.path);
 
 		Array diff_hunks;
-		for (int j = 0; j < git_patch_num_hunks(patch); j++) {
+		for (size_t j = 0; j < git_patch_num_hunks(patch); j++) {
 			const git_diff_hunk *git_hunk;
 			size_t line_count;
 			git_patch_get_hunk(&git_hunk, &line_count, patch, j);
@@ -284,7 +284,7 @@ Array EditorVCSInterfaceGit::_parse_diff(git_diff *diff) {
 			Dictionary diff_hunk = create_diff_hunk(git_hunk->old_start, git_hunk->new_start, git_hunk->old_lines, git_hunk->new_lines);
 
 			Array diff_lines;
-			for (int k = 0; k < line_count; k++) {
+			for (size_t k = 0; k < line_count; k++) {
 				const git_diff_line *git_diff_line;
 				git_patch_get_line_in_hunk(&git_diff_line, patch, j, k); // line_cb
 				char *content = new char[git_diff_line->content_len + 1];
