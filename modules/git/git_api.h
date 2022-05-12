@@ -15,18 +15,33 @@ class EditorVCSInterfaceGit : public EditorVCSInterface {
 	static EditorVCSInterfaceGit *singleton;
 
 	git_repository *repo = nullptr;
-	bool is_initialized;
+	bool is_initialized = false;
 
-	virtual void _commit(const String p_msg);
-	virtual bool _is_vcs_initialized();
-	virtual Dictionary _get_modified_files_data();
-	virtual Array _get_file_diff(const String file_path);
-	virtual String _get_project_name();
-	virtual String _get_vcs_name();
-	virtual bool _initialize(const String p_project_root_path);
-	virtual bool _shut_down();
-	virtual void _stage_file(const String p_file_path);
-	virtual void _unstage_file(const String p_file_path);
+	void _commit(const String p_msg);
+	bool _is_vcs_initialized();
+	Array _get_modified_files_data();
+	Array _get_file_diff(const String file_path, int area);
+	String _get_project_name();
+	String _get_vcs_name();
+	bool _initialize(const String p_project_root_path);
+	bool _shut_down();
+	void _stage_file(const String p_file_path);
+	void _unstage_file(const String p_file_path);
+	void _discard_file(String p_file_path);
+	Array _get_previous_commits();
+	Array _get_branch_list();
+	bool _checkout_branch(String p_branch);
+	Dictionary _get_data();
+	void _fetch();
+	void _pull();
+	void _push();
+	const char *_get_current_branch_name(bool full_ref);
+	void _set_up_credentials(String p_username, String p_password);
+	Array _parse_diff(git_diff *diff);
+	Array _get_line_diff(String p_file_path, String p_text);
+
+protected:
+	static void _bind_methods();
 
 public:
 	static EditorVCSInterfaceGit *get_singleton() { return singleton; }
@@ -43,27 +58,3 @@ public:
 	}
 	virtual ~EditorVCSInterfaceGit(){};
 };
-
-class EditorVCSInterfaceGitManager : public Node {
-	GDCLASS(EditorVCSInterfaceGitManager, Node);
-
-	PopupMenu *vcs_popup = nullptr;
-
-	void _project_menu_option_pressed(int p_idx, Object *p_menu);
-	bool _setup();
-	void _shutdown();
-
-protected:
-	void _notification(int p_what);
-	static void _bind_methods();
-
-public:
-	enum {
-		OPTION_SETUP_SHUTDOWN_REPOSITORY = 9000,
-	};
-	void set_popup_menu(PopupMenu *p_popup) { vcs_popup = p_popup; }
-	PopupMenu *get_popup_menu(PopupMenu *p_popup) { return vcs_popup; }
-	
-	static bool repository_exists();
-};
-
