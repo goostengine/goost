@@ -5,7 +5,7 @@
 </p>
 
 <p align="right">
-  <i>If something should be in Godot, let it be in Godot.</i>
+  <i>If it's not in Godot, let it be in Goost.</i>
 </p>
 
 # **Goost**: Godot Engine Extension
@@ -28,7 +28,7 @@ detailed instructions on how to use the extension and the list of currently
 implemented components. For a complete list of currently implemented classes,
 refer to [Goost API](https://goost.readthedocs.io/en/gd3/classes/index.html).
 
-Note that Goost is *not* an engine fork, please have a look at our
+We strongly recommend to familiarize yourself with our
 [development philosophy](https://goost.readthedocs.io/en/latest/development/general_principles.html).
 
 ## 🔽 Binary downloads
