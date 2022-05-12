@@ -5,6 +5,7 @@
 #include "editor/plugins/version_control_editor_plugin.h"
 
 #include "git_api.h"
+#include "git_manager.h"
 
 // We use a special object which manages Git VCS instance to handle notifications,
 // since `EditorVCSInterfaceGit` may not be yet initialized or shut down.
