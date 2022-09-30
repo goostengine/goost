@@ -124,6 +124,12 @@ String DataContainer::get_property_hint_name(const PropertyHint &p_hint) {
 		case PROPERTY_HINT_LAYERS_3D_PHYSICS: {
 			return "Layers 3D Physics";
 		} break;
+		case PROPERTY_HINT_LAYERS_2D_NAVIGATION: {
+			return "Layers 2D Navigation";
+		} break;
+		case PROPERTY_HINT_LAYERS_3D_NAVIGATION: {
+			return "Layers 3D Navigation";
+		} break;
 		case PROPERTY_HINT_FILE: {
 			return "File";
 		} break;
@@ -201,6 +207,9 @@ String DataContainer::get_property_hint_name(const PropertyHint &p_hint) {
 		} break;
 		case PROPERTY_HINT_MAX: {
 			ERR_FAIL_V_MSG("", "Invalid property hint type.");
+		} break;
+		case PROPERTY_HINT_LOCALE_ID: {
+			return "Locale Id";
 		} break;
 	}
 	return "";

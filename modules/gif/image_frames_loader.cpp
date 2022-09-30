@@ -88,7 +88,7 @@ void ImageFramesLoader::cleanup() {
 
 // ImageFrames
 
-RES ResourceFormatLoaderImageFrames::load(const String &p_path, const String &p_original_path, Error *r_error) {
+RES ResourceFormatLoaderImageFrames::load(const String &p_path, const String &p_original_path, Error *r_error, bool p_no_subresource_cache) {
 	FileAccess *f = FileAccess::open(p_path, FileAccess::READ);
 	if (!f) {
 		if (r_error) {
@@ -155,7 +155,7 @@ String ResourceFormatLoaderImageFrames::get_resource_type(const String &p_path) 
 
 // AnimatedTexture
 
-RES ResourceFormatLoaderAnimatedTexture::load(const String &p_path, const String &p_original_path, Error *r_error) {
+RES ResourceFormatLoaderAnimatedTexture::load(const String &p_path, const String &p_original_path, Error *r_error, bool p_no_subresource_cache) {
 	FileAccess *f = FileAccess::open(p_path, FileAccess::READ);
 	if (!f) {
 		if (r_error) {
@@ -224,7 +224,7 @@ String ResourceFormatLoaderAnimatedTexture::get_resource_type(const String &p_pa
 
 // SpriteFrames
 
-RES ResourceFormatLoaderSpriteFrames::load(const String &p_path, const String &p_original_path, Error *r_error) {
+RES ResourceFormatLoaderSpriteFrames::load(const String &p_path, const String &p_original_path, Error *r_error, bool p_no_subresource_cache) {
 	FileAccess *f = FileAccess::open(p_path, FileAccess::READ);
 	if (!f) {
 		if (r_error) {

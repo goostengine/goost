@@ -12,15 +12,15 @@ struct PriorityQueueMaxHeapComparator {
 
 template <typename T, class Comparator=PriorityQueueMinHeapComparator<T>>
 class PriorityQueue {
-	LocalVector<T, int> vector;
+	LocalVector<T> vector;
 
-	_FORCE_INLINE_ int parent(int i) const {
+	_FORCE_INLINE_ unsigned int parent(int i) const {
 		return (i - 1) / 2;
 	}
-	_FORCE_INLINE_ int left(int i) const {
+	_FORCE_INLINE_ unsigned int left(int i) const {
 		return i * 2 + 1;
 	}
-	_FORCE_INLINE_ int right(int i) const {
+	_FORCE_INLINE_ unsigned int right(int i) const {
 		return i * 2 + 2;
 	}
 	_FORCE_INLINE_ void swap(int i, int j) {
